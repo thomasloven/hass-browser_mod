@@ -19,6 +19,8 @@ class BrowserMod {
   callback(msg) {
     console.log("Got ws message");
     console.log(msg);
+    if(msg.command === "update")
+      this.update();
   }
 
   update() {
@@ -26,7 +28,11 @@ class BrowserMod {
 
     this.conn.sendMessage({
       type: 'browser_mod/update',
-
+      deviceID: deviceID,
+      browser: {},
+      player: {
+        state: "idle",
+      },
     });
 
   }

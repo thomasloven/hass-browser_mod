@@ -17,23 +17,26 @@ async def async_setup(hass, config):
     setup_view(hass, FRONTEND_SCRIPT_URL)
     _LOGGER.error(f"Registered frontend script")
 
-    async_register_command(hass, handle_connect)
-    _LOGGER.error(f"Registered connect ws command")
-
-    _LOGGER.error(f"Config")
-    _LOGGER.error(config)
-
     aliases = {}
     for d in config[DOMAIN].get("devices", {}):
         name = config[DOMAIN]["devices"][d].get("name", None)
         if name:
             aliases[name] = d
-    _LOGGER.error(aliases)
 
     hass.data[DOMAIN] = {
         "devices": {},
         "aliases": aliases,
+        "adders": [],
         }
+
+    await hass.helpers.discovery.async_load_platform("media_player", DOMAIN, {}, config)
+
+    _LOGGER.error(f"Set up media_player")
+    _LOGGER.error(hass.data[DOMAIN]["adders"])
+
+    async_register_command(hass, handle_connect)
+    async_register_command(hass, handle_update)
+    _LOGGER.error(f"Registered connect ws command")
 
     return True
 
@@ -46,9 +49,15 @@ async def async_setup(hass, config):
 def handle_connect(hass, connection, msg):
     _LOGGER.error(f"Got connection {msg}")
 
+    devices = hass.data[DOMAIN]["devices"]
+    deviceID = msg["deviceID"]
+    if deviceID in devices:
+        devices[deviceID].connect(connection, msg["id"])
+    else:
+        adder = hass.data[DOMAIN]["adders"][0]
+        devices[deviceID] = adder(hass, deviceID, connection, msg["id"])
     connection.send_message(result_message(msg["id"]))
 
-    connection.send_message(event_message(msg["id"], {"command": "update"}))
 
 @websocket_command({
     vol.Required("type"): "browser_mod/update",
@@ -57,4 +66,7 @@ def handle_connect(hass, connection, msg):
     vol.Optional("player"): dict,
 })
 def handle_update(hass, connection, msg):
-    pass
+    devices = hass.data[DOMAIN]["devices"]
+    deviceID = msg["deviceID"]
+    if deviceID in devices:
+        devices[deviceID].update(msg.get("browser", None), msg.get("player", None))
