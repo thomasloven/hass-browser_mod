@@ -1,7 +1,7 @@
 import logging
 import voluptuous as vol
 
-from homeassistant.components.websocket_api import websocket_command, result_message, async_register_command
+from homeassistant.components.websocket_api import websocket_command, result_message, event_message, async_register_command
 
 from .mod_view import setup_view
 
@@ -31,3 +31,5 @@ def handle_connect(hass, connection, msg):
     _LOGGER.error(f"Got connection {msg}")
 
     connection.send_message(result_message(msg['id']))
+
+    connection.send_message(event_message(msg['id'], {"data": "something"}))
