@@ -7,7 +7,7 @@ DOCKER_CMD:=docker run --rm -v $(CARD_TOOLS):/card-tools:ro -v $(PWD):/usr/src/$
 setup := package.json package-lock.json webpack.config.js
 
 JS := $(wildcard js/*.js)
-PY := $(wildcard custom_components/browser_mod/*.py)
+PY := $(wildcard custom_components/browser_mod/*)
 OUTPUT := ../../config/custom_components/browser_mod/__init__.py
 
 build: $(setup) custom_components/browser_mod/browser_mod.js $(OUTPUT)
