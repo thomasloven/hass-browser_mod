@@ -7,7 +7,8 @@ class BrowserMod {
 
   connect(conn) {
     console.log("Connection opened. Connecting to browser_mod");
-    this.connection = conn.subscribeMessage((msg) => this.callback(msg), {
+    this.conn = conn
+    conn.subscribeMessage((msg) => this.callback(msg), {
       type: 'browser_mod/connect',
       deviceID: deviceID,
       });
@@ -18,6 +19,16 @@ class BrowserMod {
   callback(msg) {
     console.log("Got ws message");
     console.log(msg);
+  }
+
+  update() {
+    if(!this.conn) return;
+
+    this.conn.sendMessage({
+      type: 'browser_mod/update',
+
+    });
+
   }
 
 }
