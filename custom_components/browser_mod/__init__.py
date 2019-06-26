@@ -52,7 +52,7 @@ def handle_connect(hass, connection, msg):
     devices = hass.data[DOMAIN]["devices"]
     deviceID = msg["deviceID"]
     if deviceID in devices:
-        devices[deviceID].connect(connection, msg["id"])
+        devices[deviceID].ws_connect(connection, msg["id"])
     else:
         adder = hass.data[DOMAIN]["adders"][0]
         devices[deviceID] = adder(hass, deviceID, connection, msg["id"])
@@ -69,4 +69,4 @@ def handle_update(hass, connection, msg):
     devices = hass.data[DOMAIN]["devices"]
     deviceID = msg["deviceID"]
     if deviceID in devices:
-        devices[deviceID].update(msg.get("browser", None), msg.get("player", None))
+        devices[deviceID].ws_update(msg.get("browser", None), msg.get("player", None))

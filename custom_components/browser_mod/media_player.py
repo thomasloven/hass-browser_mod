@@ -11,10 +11,15 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
     def adder(hass, deviceID, connection, cid):
         player = BrowserModPlayer(hass, deviceID)
         if connection:
-            player.connect(connection, cid)
-        _LOGGER.error(player)
+            player.ws_connect(connection, cid)
+        async_add_devices([player])
         return player
     hass.data[DOMAIN]["adders"].append(adder)
+
+    for k,v in hass.data[DOMAIN]["aliases"].items():
+        devices = hass.data[DOMAIN]["devices"]
+        devices[v] = BrowserModPlayer(hass, v, k)
+        async_add_devices([devices[v]])
 
 class BrowserModPlayer(MediaPlayerDevice):
 
@@ -22,15 +27,29 @@ class BrowserModPlayer(MediaPlayerDevice):
         self.hass = hass
         self.deviceID = deviceID
         self.alias = alias
-        _LOGGER.error(f"Create player {deviceID}")
+        self.player_state = {}
+        self.browser_state = {}
+        _LOGGER.error(f"Create player {deviceID}({alias})")
 
-    def connect(self, connection, cid):
+    @property
+    def name(self):
+        return self.alias or self.deviceID.replace('-','_')
+
+    @property
+    def device_state_attributes(self):
+        return {
+                "player": self.player_state,
+                "browser": self.browser_state,
+                }
+
+    def ws_connect(self, connection, cid):
         self.cid = cid
         self.connection = connection
-        _LOGGER.error(f"Connecting player {cid}")
+        _LOGGER.error(f"Connecting player {self.entity_id}")
         connection.send_message(event_message(cid, {"command": "update"}))
         pass
 
-    def update(self, browser, player):
-        _LOGGER.error(f"{self.deviceID}: {browser} {player}")
+    def ws_update(self, browser, player):
+        self.browser_state = browser
+        self.player_state = player
         pass
