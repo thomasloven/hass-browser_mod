@@ -1,11 +1,8 @@
 import logging
-import voluptuous as vol
-
-from homeassistant.components.websocket_api import websocket_command, result_message, event_message, async_register_command
 
 from .mod_view import setup_view
-
-DOMAIN = "browser_mod"
+from .connection import setup_connection
+from .const import DOMAIN
 
 FRONTEND_SCRIPT_URL = "/browser_mod.js"
 
@@ -34,39 +31,6 @@ async def async_setup(hass, config):
     _LOGGER.error(f"Set up media_player")
     _LOGGER.error(hass.data[DOMAIN]["adders"])
 
-    async_register_command(hass, handle_connect)
-    async_register_command(hass, handle_update)
-    _LOGGER.error(f"Registered connect ws command")
+    setup_connection(hass)
 
     return True
-
-
-
-@websocket_command({
-    vol.Required("type"): "browser_mod/connect",
-    vol.Required("deviceID"): str,
-})
-def handle_connect(hass, connection, msg):
-    _LOGGER.error(f"Got connection {msg}")
-
-    devices = hass.data[DOMAIN]["devices"]
-    deviceID = msg["deviceID"]
-    if deviceID in devices:
-        devices[deviceID].ws_connect(connection, msg["id"])
-    else:
-        adder = hass.data[DOMAIN]["adders"][0]
-        devices[deviceID] = adder(hass, deviceID, connection, msg["id"])
-    connection.send_message(result_message(msg["id"]))
-
-
-@websocket_command({
-    vol.Required("type"): "browser_mod/update",
-    vol.Required("deviceID"): str,
-    vol.Optional("browser"): dict,
-    vol.Optional("player"): dict,
-})
-def handle_update(hass, connection, msg):
-    devices = hass.data[DOMAIN]["devices"]
-    deviceID = msg["deviceID"]
-    if deviceID in devices:
-        devices[deviceID].ws_update(msg.get("browser", None), msg.get("player", None))

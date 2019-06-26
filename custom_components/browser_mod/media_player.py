@@ -1,9 +1,8 @@
 import logging
 from homeassistant.components.media_player import MediaPlayerDevice
-
 from homeassistant.components.websocket_api import event_message
 
-from . import DOMAIN
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -42,12 +41,19 @@ class BrowserModPlayer(MediaPlayerDevice):
                 "browser": self.browser_state,
                 }
 
+    def ws_send(self, command, data=None):
+        data = data or {}
+        self.connection.send_message(event_message(self.cid, {
+            "command": command,
+            **data,
+            }))
+
+
     def ws_connect(self, connection, cid):
         self.cid = cid
         self.connection = connection
-        _LOGGER.error(f"Connecting player {self.entity_id}")
-        connection.send_message(event_message(cid, {"command": "update"}))
-        pass
+        _LOGGER.error(f"Connecting {self.entity_id}")
+        self.ws_send("update")
 
     def ws_update(self, browser, player):
         self.browser_state = browser
