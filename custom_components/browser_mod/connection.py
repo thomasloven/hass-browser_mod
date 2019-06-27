@@ -46,26 +46,37 @@ def handle_update(hass, connection, msg):
 
 class BrowserModEntity(Entity):
     def __init__(self, hass, deviceID, alias=None):
-        self.hass = hass
-        self.deviceID = deviceID
-        self.alias = alias
-        self.ws_data = {}
+        self._hass = hass
+        self._deviceID = deviceID
+        self._alias = alias
+        self._ws_data = {}
+        self._ws_connection = None
         self.entity_id = async_generate_entity_id("media_player.{}", alias or deviceID, hass=hass)
 
     def ws_send(self, command, data=None):
         data = data or {}
-        self.ws_connection.send_message(event_message(self.ws_cid, {
+        self._ws_connection.send_message(event_message(self._ws_cid, {
             "command": command,
             **data,
             }))
 
     def ws_connect(self, connection, cid):
-        self.ws_cid = cid
-        self.ws_connection = connection
+        self._ws_cid = cid
+        self._ws_connection = connection
         _LOGGER.error(f"Connecting {self.entity_id}")
         self.ws_send("update")
+        connection.subscriptions[cid] = self.ws_disconnect
+        self.schedule_update_ha_state()
+
+    def ws_disconnect(self):
+        self._ws_cid = None
+        self._ws_connection = None
+        self.schedule_update_ha_state()
 
     def ws_update(self, data):
-        self.ws_data = data
+        self._ws_data = data
         self.schedule_update_ha_state()
-        pass
+
+    @property
+    def device_id(self):
+        return self._deviceID
