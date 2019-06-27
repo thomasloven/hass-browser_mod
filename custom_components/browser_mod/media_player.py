@@ -1,5 +1,15 @@
 import logging
-from homeassistant.components.media_player import MediaPlayerDevice
+from homeassistant.components.media_player import (
+        SUPPORT_PLAY, SUPPORT_PLAY_MEDIA, SUPPORT_PAUSE, SUPPORT_STOP,
+        SUPPORT_VOLUME_SET, SUPPORT_VOLUME_MUTE,
+        MediaPlayerDevice,
+    )
+from homeassistant.const import (
+        STATE_UNAVAILABLE,
+        STATE_PAUSED,
+        STATE_PLAYING,
+        STATE_IDLE,
+    )
 
 from .const import DOMAIN, DATA_DEVICES, DATA_ADDERS, DATA_ALIASES
 from .connection import BrowserModEntity
@@ -31,7 +41,41 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
     @property
     def device_state_attributes(self):
         return {
-                "player": self.ws_data.get("player"),
-                "browser": self.ws_data.get("browser"),
+                "player": self._ws_data.get("player"),
+                "browser": self._ws_data.get("browser"),
                 }
+
+    @property
+    def state(self):
+        if not self._ws_connection:
+            return STATE_UNAVAILABLE
+        return STATE_IDLE
+        return None
+    @property
+    def supported_features(self):
+        return 0
+    @property
+    def volume_level(self):
+        return 0
+    @property
+    def is_volume_mutes(self):
+        return False
+    @property
+    def media_content_id(self):
+        return ""
+
+    def set_volume_level(self, volume):
+        pass
+    def mute_volume(self, mute):
+        pass
+
+    def play_media(self, media_type, media_id, **kwargs):
+        pass
+    def media_play(self):
+        pass
+    def media_pause(self):
+        pass
+    def media_stop(self):
+        pass
+
 
