@@ -12,7 +12,6 @@ _LOGGER = logging.getLogger(__name__)
 def setup_connection(hass):
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_update)
-    _LOGGER.error(f"Registered connect ws command")
 
 
 @websocket_command({
@@ -20,7 +19,6 @@ def setup_connection(hass):
     vol.Required("deviceID"): str,
 })
 def handle_connect(hass, connection, msg):
-    _LOGGER.error(f"Got connection {msg}")
 
     devices = hass.data[DOMAIN][DATA_DEVICES]
     deviceID = msg["deviceID"]
@@ -62,7 +60,6 @@ class BrowserModEntity(Entity):
     def ws_connect(self, connection, cid):
         self._ws_cid = cid
         self._ws_connection = connection
-        _LOGGER.error(f"Connecting {self.entity_id}")
         self.ws_send("update", entity_id=self.entity_id)
         connection.subscriptions[cid] = self.ws_disconnect
         if self.hass:

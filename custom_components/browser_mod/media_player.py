@@ -38,13 +38,11 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
 
     def __init__(self, hass, deviceID, alias=None):
         super().__init__(hass, deviceID, alias)
-        _LOGGER.error(f"Create player {deviceID}({alias})")
 
     @property
     def device_state_attributes(self):
         return {
-                "player": self._ws_data.get("player"),
-                "browser": self._ws_data.get("browser"),
+                **self._ws_data.get("browser", {}),
                 }
 
     @property
