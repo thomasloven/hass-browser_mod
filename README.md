@@ -186,6 +186,7 @@ This actually means it pretty much replaces `popup-card` as well.
 - `browser_mod` uses websockets to get immediate feedback from the *device* to the backend and much better tracking of disconnects.
 - *Aliases*. 'nuff said.
 - `browser_mod` works outside of `/lovelace`.
+- This works even if the currently logged in user is not in the admin group.
 
 ### Does this replace lovelace-fullykiosk
 It will, eventually.
