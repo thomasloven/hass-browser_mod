@@ -1,18 +1,18 @@
-browser\_mod
+browser_mod
 ============
 
 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player.
 
 ## Example uses
 
-- Make the camera feed from your front door pop up on the tablett in your kitchen when someone rings the doorbell.
+- Make the camera feed from your front door pop up on the tablet in your kitchen when someone rings the doorbell.
 - Have a message pop up on every screen in the house when it's bedtime.
 - Make the browser on your workstation switch to a specific tab when the kitchen light is on after midnight
 - Play a TTS message on your work computer when the trafic sensor tells you it's time to go home.
 
 # Installation instructions
 
-*NOTE: This integration required Home Assistant version 0.95 or later*
+*NOTE: This integration requires Home Assistant version 0.95 or later*
 
 - Copy the contents of `custom_components/browser_commander/` to `<your config dir>/custom_components/browser_commander/`.
 
@@ -31,10 +31,10 @@ The most basic concept of `browser_mod` is the *device*.
 
 A *device* is a machine-browser combination identified by a unique `deviceID`. The `deviceID` is randomly generated and may look like `ded3b4dc-abedd098`.
 
-- Chrome on your desktop and Chrome on your laptor are two differnt *devices*.
+- Chrome on your desktop and Chrome on your laptop are two differnt *devices*.
 - Chrome on your laptop and Safari on your laptop are two different *devices*.
-- Two tabs in Firefox on the same computer is the same *device*.
-- Two windows in Edge on the same computer is the same *device*.
+- Two tabs in Firefox on the same computer are the same *device*.
+- Two windows in Edge on the same computer are the same *device*.
 
 In the two latter cases, the last loaded tab/window will be the *active* one.
 
@@ -55,7 +55,7 @@ This binds the *aliases* `Arrakis` to `99980b13-dabc9563` and `dashboard` to `d2
 
 Note: Aliases must be unique.
 
-## media\_player
+## media_player
 Once `browser_mod` is installed, loading up your Home Assistant frontend on a new *device* will create a new `media_player` device.
 
 Any sound played on this media player will be played by the *device*.
@@ -71,7 +71,7 @@ The `media_player` entity also has some extra attributes presenting the current 
 
 ## `browser_mod.command` service
 
-Call the `browser_mod.command` service to controll your *device* in various ways.
+Call the `browser_mod.command` service to control your *device* in various ways.
 
 All service calls have two parameters in common, `command` which is the command to execute, and `deviceID` which is a list of *devices* to execute the command on. If `deviceID` is ommitted, the command will be executed on **all** currently connected *devices*.
 
