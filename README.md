@@ -5,14 +5,14 @@ A Home Assistant integration to turn your browser into a controllable entity - a
 
 ## Example uses
 
-- Make the camera feed from your front door pop up on the tablet in your kitchen when someone rings the doorbell.
+- Make the camera feed from your front door pop up on the tablett in your kitchen when someone rings the doorbell.
 - Have a message pop up on every screen in the house when it's bedtime.
 - Make the browser on your workstation switch to a specific tab when the kitchen light is on after midnight
 - Play a TTS message on your work computer when the traffic sensor tells you it's time to go home.
 
 # Installation instructions
 
-*NOTE: This integration required Home Assistant version 0.95 or later*
+*NOTE: This integration requires Home Assistant version 0.95 or later*
 
 - Copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
@@ -33,8 +33,8 @@ A *device* is a machine-browser combination identified by a unique `deviceID`. T
 
 - Chrome on your desktop and Chrome on your laptop are two different *devices*.
 - Chrome on your laptop and Safari on your laptop are two different *devices*.
-- Two tabs in Firefox on the same computer is the same *device*.
-- Two windows in Edge on the same computer is the same *device*.
+- Two tabs in Firefox on the same computer is one *device*.
+- Two windows in Edge on the same computer is one *device*.
 
 In the two latter cases, the last loaded tab/window will be the *active* one.
 
