@@ -10,6 +10,7 @@ from homeassistant.const import (
         STATE_PAUSED,
         STATE_PLAYING,
         STATE_IDLE,
+        STATE_UNKNOWN,
     )
 
 from .const import DOMAIN, DATA_DEVICES, DATA_ADDERS, DATA_ALIASES
@@ -47,11 +48,19 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
                 }
 
     @property
+    def _player_data(self):
+        return self._ws_data.get("player", {});
+
+    @property
     def state(self):
         if not self._ws_connection:
             return STATE_UNAVAILABLE
-        return STATE_IDLE
-        return None
+        state = self._player_data.get("state", "unknown")
+        return {
+                "playing": STATE_PLAYING,
+                "paused": STATE_PAUSED,
+                "stopped": STATE_IDLE,
+                }.get(state, STATE_UNKNOWN)
     @property
     def supported_features(self):
         return (
@@ -61,26 +70,26 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
             )
     @property
     def volume_level(self):
-        return 0
+        return self._player_data.get("volume", 0)
     @property
-    def is_volume_mutes(self):
-        return False
+    def is_volume_muted(self):
+        return self._player_data.get("muted", False)
     @property
     def media_content_id(self):
-        return ""
+        return self._player_data.get("src", "")
 
     def set_volume_level(self, volume):
-        pass
+        self.ws_send("set_volume", volume_level=volume)
     def mute_volume(self, mute):
-        pass
+        self.ws_send("mute", mute=mute)
 
     def play_media(self, media_type, media_id, **kwargs):
-        pass
+        self.ws_send("play", media_content_id=media_id)
     def media_play(self):
-        pass
+        self.ws_send("play")
     def media_pause(self):
-        pass
+        self.ws_send("pause")
     def media_stop(self):
-        pass
+        self.ws_send("stop")
 
 

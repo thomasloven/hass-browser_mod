@@ -52,11 +52,10 @@ class BrowserModEntity(Entity):
         self._ws_connection = None
         self.entity_id = async_generate_entity_id("media_player.{}", alias or deviceID, hass=hass)
 
-    def ws_send(self, command, data=None):
-        data = data or {}
+    def ws_send(self, command, **kwargs):
         self._ws_connection.send_message(event_message(self._ws_cid, {
             "command": command,
-            **data,
+            **kwargs,
             }))
 
     def ws_connect(self, connection, cid):
