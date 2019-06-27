@@ -2,15 +2,16 @@ from aiohttp import web
 import aiofiles
 from homeassistant.components.http import HomeAssistantView
 
-DATA_EXTRA_MODULE_URL = 'frontend_extra_module_url'
+from .const import FRONTEND_SCRIPT_URL, DATA_EXTRA_MODULE_URL
 
-def setup_view(hass, url):
+
+def setup_view(hass):
     if DATA_EXTRA_MODULE_URL not in hass.data:
         hass.data[DATA_EXTRA_MODULE_URL] = set()
     url_set = hass.data[DATA_EXTRA_MODULE_URL]
-    url_set.add(url)
+    url_set.add(FRONTEND_SCRIPT_URL)
 
-    hass.http.register_view(ModView(hass, url))
+    hass.http.register_view(ModView(hass, FRONTEND_SCRIPT_URL))
 
 class ModView(HomeAssistantView):
 

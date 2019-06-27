@@ -29,9 +29,13 @@ class BrowserMod {
     this.conn.sendMessage({
       type: 'browser_mod/update',
       deviceID: deviceID,
-      browser: {},
-      player: {
-        state: "idle",
+      data: {
+        browser: {
+
+        },
+        player: {
+          state: "idle",
+        },
       },
     });
 
