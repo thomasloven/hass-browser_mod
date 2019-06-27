@@ -1,6 +1,7 @@
 import logging
 from homeassistant.components.media_player import (
-        SUPPORT_PLAY, SUPPORT_PLAY_MEDIA, SUPPORT_PAUSE, SUPPORT_STOP,
+        SUPPORT_PLAY, SUPPORT_PLAY_MEDIA,
+        SUPPORT_PAUSE, SUPPORT_STOP,
         SUPPORT_VOLUME_SET, SUPPORT_VOLUME_MUTE,
         MediaPlayerDevice,
     )
@@ -53,7 +54,11 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
         return None
     @property
     def supported_features(self):
-        return 0
+        return (
+            SUPPORT_PLAY | SUPPORT_PLAY_MEDIA |
+            SUPPORT_PAUSE | SUPPORT_STOP |
+            SUPPORT_VOLUME_SET | SUPPORT_VOLUME_MUTE
+            )
     @property
     def volume_level(self):
         return 0
