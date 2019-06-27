@@ -4,5 +4,5 @@
   "documentation": "",
   "dependencies": ["websocket_api", "http"],
   "codeowners": [],
-  "requirements": ["aiofiles"]
+  "requirements": []
 }

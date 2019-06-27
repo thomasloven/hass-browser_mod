@@ -1,5 +1,4 @@
 from aiohttp import web
-import aiofiles
 from homeassistant.components.http import HomeAssistantView
 
 from .const import FRONTEND_SCRIPT_URL, DATA_EXTRA_MODULE_URL
@@ -28,8 +27,8 @@ class ModView(HomeAssistantView):
         filecontent = ""
 
         try:
-            async with aiofiles.open(path, mode="r", encoding="utf-8", errors="ignore") as localfile:
-                filecontent = await localfile.read()
+            with open(path, mode="r", encoding="utf-8", errors="ignore") as localfile:
+                filecontent = localfile.read()
                 localfile.close()
         except Exception as exception:
             pass
