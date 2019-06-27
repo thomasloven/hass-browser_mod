@@ -1,5 +1,8 @@
 import { deviceID } from "/card-tools/deviceId";
 import { provideHass } from "/card-tools/hass";
+import { popUp, closePopUp } from "/card-tools/popup";
+import { fireEvent } from "/card-tools/event";
+import { moreInfo } from "/card-tools/more-info.js";
 import "./browser-player";
 
 class BrowserMod {
@@ -56,6 +59,22 @@ class BrowserMod {
       case "mute":
         this.mute(msg);
         break;
+
+      case "popup":
+        this.popup(msg);
+        break;
+      case "close-popup":
+        this.close_popup(msg);
+        break;
+      case "navigate":
+        this.navigate(msg);
+        break;
+      case "more-info":
+        this.more_info(msg);
+        break;
+      case "set-theme":
+        this.set_theme(msg);
+        break;
     }
   }
 
@@ -87,6 +106,28 @@ class BrowserMod {
     if (msg.mute === undefined)
       msg.mute = !this.player.muted;
     this.player.muted = Boolean(msg.mute)
+  }
+
+  popup(msg){
+    if(!msg.title) return;
+    if(!msg.card) return;
+    popUp(msg.title, msg.card, msg.large, msg.style);
+  }
+  close_popup(msg){
+    closePopUp();
+  }
+  navigate(msg){
+    if(!msg.navigation_path) return;
+    history.pushState(null, "", msg.navigation_path);
+    fireEvent("location-changed", {}, document.querySelector("home-assistant"));
+  }
+  more_info(msg){
+    if(!msg.entity_id) return;
+    moreInfo(msg.entity_id, msg.large);
+  }
+  set_theme(msg){
+    if(!msg.theme) msg.theme = "default";
+    fireEvent("settheme", msg.theme, document.querySelector("home-assistant"));
   }
 
 
