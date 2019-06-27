@@ -8,7 +8,24 @@ import "./browser-player";
 class BrowserMod {
 
   set hass(hass) {
+    if(!hass) return;
     this._hass = hass;
+    if(this.hassPatched) return;
+    const callService = hass.callService;
+    const newCallService = (domain, service, serviceData) => {
+      if(domain === "browser_mod" && service === "command") {
+        if(serviceData.deviceID) {
+          const index = serviceData.deviceID.indexOf('this');
+          if(index !== -1)
+            serviceData.deviceID[index] = deviceID;
+        }
+      }
+      callService(domain, service, serviceData);
+    };
+    hass.callService = newCallService;
+
+    this.hassPatched = true;
+    document.querySelector("home-assistant").hassChanged(hass, hass);
   }
 
   constructor() {
@@ -146,7 +163,7 @@ class BrowserMod {
           path: window.location.pathname,
           visibility: document.visibilityState,
           userAgent: navigator.userAgent,
-          currentUser: this._hass.user.name,
+          currentUser: this._hass && this._hass.user && this._hass.user.name,
         },
         player: {
           volume: this.player.volume,
