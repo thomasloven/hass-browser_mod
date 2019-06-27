@@ -12,7 +12,7 @@ A Home Assistant integration to turn your browser into a controllable entity - a
 
 # Installation instructions
 
-*NOTE: This integration requires Home Assistant version 0.95 or later*
+**NOTE: This integration requires Home Assistant version 0.95 or later**
 
 - Copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
@@ -27,7 +27,7 @@ browser_mod:
 # Usage
 
 ## Devices
-The most basic concept of `browser_mod` is the *device*.
+The most important concept of `browser_mod` is the *device*.
 
 A *device* is a machine-browser combination identified by a unique `deviceID`. The `deviceID` is randomly generated and may look like `ded3b4dc-abedd098`.
 
@@ -100,7 +100,7 @@ service_data:
 
 will open your second lovelace view on just the *device* `ded3b4dc-abedd098`.
 
-*Note: `navigation_path` does not have to be a lovelace path. All paths in Home Assistant works.*
+Note: `navigation_path` does not have to be a lovelace path. All paths in Home Assistant works. (E.g. `/states`, `/dev-info`, `/map`)
 
 ### more-info
 ```
@@ -190,6 +190,14 @@ This actually means it pretty much replaces `popup-card` as well.
 
 ### Does this replace lovelace-fullykiosk
 It will, eventually.
+
+### Can the deviceID be used to track me across the internet
+
+No\*. The device is stored in your browsers localStorage - a data store which is sandboxed only to Home Assistant. That means only Home Assistant can access it. Furthermore, different Home Assistant installations cannot acces each others localStorage.
+
+Some of [my lovelace plugins](https://github.com/thomasloven/hass-config/wiki/My-Lovelace-Plugins) use the device to do different things for different *devices*.
+
+**\*: There is one exception. If you are using [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/), the deviceID is taken from the browser instead of being randomly generated. This deviceID will be the same for each website that asks for it.**
 
 ---
 <a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
