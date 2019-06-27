@@ -69,6 +69,8 @@ The `media_player` entity also has some extra attributes presenting the current 
 | `userAgent` | The User Agent of the associated browser. |
 | `currentUser` | The user currently logged in on the *device*. |
 
+**NOTE: Because apple is apple; on iOS you need to touch the screen once after loading the frontend before any playback will work.**
+
 ## `browser_mod.command` service
 
 Call the `browser_mod.command` service to control your *device* in various ways.

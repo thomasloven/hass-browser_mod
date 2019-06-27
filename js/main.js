@@ -28,9 +28,16 @@ class BrowserMod {
     document.querySelector("home-assistant").hassChanged(hass, hass);
   }
 
+  playOnce(ev) {
+    if(window.browser_mod.playedOnce) return;
+    window.browser_mod.player.play();
+    window.browser_mod.playedOnce = true;
+  }
+
   constructor() {
     window.hassConnection.then((conn) => this.connect(conn.conn));
     this.player = new Audio();
+    this.playedOnce = false;
 
     const updater = this.update.bind(this);
     this.player.addEventListener("ended", updater);
@@ -39,6 +46,7 @@ class BrowserMod {
     this.player.addEventListener("volumechange", updater);
     document.addEventListener("visibilitychange", updater);
     window.addEventListener("location-changed", updater);
+    window.addEventListener("click", this.playOnce);
     provideHass(this);
   }
 
