@@ -8,18 +8,18 @@ A Home Assistant integration to turn your browser into a controllable entity - a
 - Make the camera feed from your front door pop up on the tablet in your kitchen when someone rings the doorbell.
 - Have a message pop up on every screen in the house when it's bedtime.
 - Make the browser on your workstation switch to a specific tab when the kitchen light is on after midnight
-- Play a TTS message on your work computer when the trafic sensor tells you it's time to go home.
+- Play a TTS message on your work computer when the traffic sensor tells you it's time to go home.
 
 # Installation instructions
 
 *NOTE: This integration requires Home Assistant version 0.95 or later*
 
-- Copy the contents of `custom_components/browser_commander/` to `<your config dir>/custom_components/browser_commander/`.
+- Copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
 - Add the following to your `configuration.yaml`:
 
 ```yaml
-browser_commander:
+browser_mod:
 ```
 
 - Restart Home Assistant
@@ -31,7 +31,8 @@ The most basic concept of `browser_mod` is the *device*.
 
 A *device* is a machine-browser combination identified by a unique `deviceID`. The `deviceID` is randomly generated and may look like `ded3b4dc-abedd098`.
 
-- Chrome on your desktop and Chrome on your laptop are two differnt *devices*.
+
+- Chrome on your desktop and Chrome on your laptop are two different *devices*.
 - Chrome on your laptop and Safari on your laptop are two different *devices*.
 - Two tabs in Firefox on the same computer are the same *device*.
 - Two windows in Edge on the same computer are the same *device*.
@@ -73,7 +74,7 @@ The `media_player` entity also has some extra attributes presenting the current 
 
 Call the `browser_mod.command` service to control your *device* in various ways.
 
-All service calls have two parameters in common, `command` which is the command to execute, and `deviceID` which is a list of *devices* to execute the command on. If `deviceID` is ommitted, the command will be executed on **all** currently connected *devices*.
+All service calls have two parameters in common, `command` which is the command to execute, and `deviceID` which is a list of *devices* to execute the command on. If `deviceID` is omitted, the command will be executed on **all** currently connected *devices*.
 
 `deviceID` may also contain aliases, and there's a special alias named `this` which will evaluate to the *device* from which a command was initiated (if from the frontend).
 
