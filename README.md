@@ -14,12 +14,12 @@ A Home Assistant integration to turn your browser into a controllable entity - a
 
 *NOTE: This integration required Home Assistant version 0.95 or later*
 
-- Copy the contents of `custom_components/browser_commander/` to `<your config dir>/custom_components/browser_commander/`.
+- Copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
 - Add the following to your `configuration.yaml`:
 
 ```yaml
-browser_commander:
+browser_mod:
 ```
 
 - Restart Home Assistant
