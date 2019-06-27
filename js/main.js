@@ -1,4 +1,6 @@
 import {deviceID} from "/card-tools/deviceId"
+import "./browser-player"
+
 class BrowserMod {
 
   constructor() {
@@ -73,12 +75,18 @@ class BrowserMod {
     this.player.volume = msg.volume_level;
   }
   mute(msg) {
+    if (msg.mute === undefined)
+      msg.mute = !this.player.muted;
     this.player.muted = Boolean(msg.mute)
   }
 
 
-  update() {
+  update(msg=null) {
     if(!this.conn) return;
+
+    if(msg)
+      if(msg.entity_id)
+        this.entity_id = msg.entity_id;
 
     this.conn.sendMessage({
       type: 'browser_mod/update',

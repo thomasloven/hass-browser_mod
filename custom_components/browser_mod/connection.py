@@ -62,7 +62,7 @@ class BrowserModEntity(Entity):
         self._ws_cid = cid
         self._ws_connection = connection
         _LOGGER.error(f"Connecting {self.entity_id}")
-        self.ws_send("update")
+        self.ws_send("update", entity_id=self.entity_id)
         connection.subscriptions[cid] = self.ws_disconnect
         if self.hass:
             self.schedule_update_ha_state()
