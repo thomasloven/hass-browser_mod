@@ -1,16 +1,25 @@
-import {deviceID} from "/card-tools/deviceId"
-import "./browser-player"
+import { deviceID } from "/card-tools/deviceId";
+import { provideHass } from "/card-tools/hass";
+import "./browser-player";
 
 class BrowserMod {
+
+  set hass(hass) {
+    this._hass = hass;
+  }
 
   constructor() {
     window.hassConnection.then((conn) => this.connect(conn.conn));
     this.player = new Audio();
 
-    this.player.addEventListener("ended", this.update.bind(this));
-    this.player.addEventListener("play", this.update.bind(this));
-    this.player.addEventListener("pause", this.update.bind(this));
-    this.player.addEventListener("volumechange", this.update.bind(this));
+    const updater = this.update.bind(this);
+    this.player.addEventListener("ended", updater);
+    this.player.addEventListener("play", updater);
+    this.player.addEventListener("pause", updater);
+    this.player.addEventListener("volumechange", updater);
+    document.addEventListener("visibilitychange", updater);
+    window.addEventListener("location-changed", updater);
+    provideHass(this);
   }
 
   connect(conn) {
@@ -93,7 +102,10 @@ class BrowserMod {
       deviceID: deviceID,
       data: {
         browser: {
-
+          path: window.location.pathname,
+          visibility: document.visibilityState,
+          userAgent: navigator.userAgent,
+          currentUser: this._hass.user.name,
         },
         player: {
           volume: this.player.volume,
