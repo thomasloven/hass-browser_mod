@@ -2,6 +2,7 @@ import logging
 
 from .mod_view import setup_view
 from .connection import setup_connection
+from .service import setup_service
 from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, DATA_ADDERS, CONFIG_DEVICES
 
 
@@ -31,5 +32,7 @@ async def async_setup(hass, config):
     _LOGGER.error(hass.data[DOMAIN][DATA_ADDERS])
 
     setup_connection(hass)
+
+    setup_service(hass)
 
     return True
