@@ -1,4 +1,4 @@
-browser_mod
+browser\_mod
 ============
 
 A Home Assistant integration to turn your browser into a controllable entity - and also an audio player.
@@ -55,7 +55,7 @@ This binds the *aliases* `Arrakis` to `99980b13-dabc9563` and `dashboard` to `d2
 
 Note: Aliases must be unique.
 
-## media_player
+## media\_player
 Once `browser_mod` is installed, loading up your Home Assistant frontend on a new *device* will create a new `media_player` device.
 
 Any sound played on this media player will be played by the *device*.
