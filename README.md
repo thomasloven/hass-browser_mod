@@ -68,6 +68,7 @@ The `media_player` entity also has some extra attributes presenting the current 
 | `visibility` | Whether the frontend is currently visible on the *device*. |
 | `userAgent` | The User Agent of the associated browser. |
 | `currentUser` | The user currently logged in on the *device*. |
+| 'blackout' | Whether the view on the *device* is currently blacked out (see below). |
 
 **NOTE: Because apple is apple; on iOS you need to touch the screen once after loading the frontend before any playback will work.**
 
@@ -161,6 +162,27 @@ service_data:
 
 will close all more-info dialogs and popups that are open on all connected *devices*.
 
+### blackout
+```
+service: browser_mod.command
+service_data:
+  command: blackout
+```
+
+Will cover the entire window (or screen if in full screen mode) with black.
+Moving the mouse, touching the screen or pressing any key will restore the view.
+
+Note: This will *not* turn off your screen backlight. Most screens will still emit light in a dark room.
+
+### no-blackout
+```
+service: browser_mod.command
+service_data:
+  command: no-blackout
+```
+
+Remove a blackout.
+
 ## `browser-player` card
 
 To control the playback in the current *device*, `browser_mod` includes a custom lovelace card. Just add
@@ -174,6 +196,10 @@ anywhere in your lovelace configuration.
 The player card also displays the `entityID`. Click it to select, so you can copy it.
 
 ![browser-player](https://user-images.githubusercontent.com/1299821/60288980-a4d07a80-9915-11e9-88ba-e078a3aa24f4.png)
+
+# Support
+
+[Home Assistant community forum thread](https://community.home-assistant.io/t/browser-mod-turn-your-browser-into-a-controllable-device-and-a-media-player/123806)
 
 # FAQ
 

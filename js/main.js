@@ -47,7 +47,25 @@ class BrowserMod {
     document.addEventListener("visibilitychange", updater);
     window.addEventListener("location-changed", updater);
     window.addEventListener("click", this.playOnce);
+    window.addEventListener("mousemove", this.no_blackout.bind(this));
+    window.addEventListener("mousedown", this.no_blackout.bind(this));
+    window.addEventListener("keydown", this.no_blackout.bind(this));
+    window.addEventListener("touchstart", this.no_blackout.bind(this));
     provideHass(this);
+
+    this._blackout = document.createElement("div");
+    this._blackout.style.cssText = `
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    visibility: hidden;
+    `;
+    document.body.appendChild(this._blackout);
   }
 
   connect(conn) {
@@ -94,6 +112,13 @@ class BrowserMod {
         break;
       case "set-theme":
         this.set_theme(msg);
+        break;
+
+      case "blackout":
+        this.blackout(msg);
+        break;
+      case "no-blackout":
+        this.no_blackout(msg);
         break;
     }
   }
@@ -150,6 +175,15 @@ class BrowserMod {
     fireEvent("settheme", msg.theme, document.querySelector("home-assistant"));
   }
 
+  blackout(msg){
+    this._blackout.style.visibility = "visible";
+    this.update();
+  }
+  no_blackout(msg){
+    this._blackout.style.visibility = "hidden";
+    this.update();
+  }
+
 
   update(msg=null) {
     if(!this.conn) return;
@@ -167,6 +201,7 @@ class BrowserMod {
           visibility: document.visibilityState,
           userAgent: navigator.userAgent,
           currentUser: this._hass && this._hass.user && this._hass.user.name,
+          blackout: Boolean(this._blackout.style.visibility === "visible"),
         },
         player: {
           volume: this.player.volume,
