@@ -180,8 +180,43 @@ service: browser_mod.command
 service_data:
   command: no-blackout
 ```
-
 Remove a blackout.
+
+
+If you want to test in /dev-service it will requires json formated data. It's slightly different
+
+```
+{
+"command":"navigate",
+"navigation_path":"/lovelace/6",
+"deviceID":["Arrakis"]
+}
+```
+
+Putting all together into action you could try this:
+```
+script:
+  cpha_tech:
+    sequence:
+    - service: browser_mod.command
+      data:
+        command: navigate
+        navigation_path: /lovelace/6
+        deviceID:
+          - Arrakis
+```
+```
+automation:
+  - alias: navigate
+    trigger:
+      - platform: state
+        entity_id: switch.cpha
+        to: 'on'
+    action:
+      - service: script.turn_on
+        data:
+          entity_id: script.cpha_tech
+```
 
 ## `browser-player` card
 
