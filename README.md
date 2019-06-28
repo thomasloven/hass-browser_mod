@@ -227,5 +227,9 @@ Some of [my lovelace plugins](https://github.com/thomasloven/hass-config/wiki/My
 
 **\*: There is one exception. If you are using [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/), the deviceID is taken from the browser instead of being randomly generated. This deviceID will be the same for each website that asks for it.**
 
+### How do I run commands from /dev-service?
+
+`/dev-service` requires json-formated service data. There's an explanation on the differences between yaml and json [here](http://thomasloven.com/blog/2018/08/YAML-For-Nonprogrammers/).
+
 ---
 <a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
