@@ -1,5 +1,5 @@
 import { deviceID } from "/card-tools/deviceId";
-import { provideHass } from "/card-tools/hass";
+import { lovelace_view, provideHass } from "/card-tools/hass";
 import { popUp, closePopUp } from "/card-tools/popup";
 import { fireEvent } from "/card-tools/event";
 import { moreInfo } from "/card-tools/more-info.js";
@@ -114,6 +114,10 @@ class BrowserMod {
         this.set_theme(msg);
         break;
 
+      case "lovelace-reload":
+        this.lovelace_reload(msg);
+        break;
+
       case "blackout":
         this.blackout(msg);
         break;
@@ -173,6 +177,12 @@ class BrowserMod {
   set_theme(msg){
     if(!msg.theme) msg.theme = "default";
     fireEvent("settheme", msg.theme, document.querySelector("home-assistant"));
+  }
+
+  lovelace_reload(msg) {
+    const ll = lovelace_view();
+    if (ll)
+      fireEvent("config-refresh", {}, ll);
   }
 
   blackout(msg){

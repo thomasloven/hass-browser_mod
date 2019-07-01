@@ -183,6 +183,16 @@ service_data:
 
 Remove a blackout.
 
+### lovelace-reload
+```
+service: browser_mod.command
+service_data:
+  command: lovelace-reload
+```
+
+Refreshes the lovelace config. Same as clicking "Refresh" in the top right menu in lovelace.
+
+
 ## `browser-player` card
 
 To control the playback in the current *device*, `browser_mod` includes a custom lovelace card. Just add
