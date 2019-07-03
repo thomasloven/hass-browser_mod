@@ -82,6 +82,10 @@ class BrowserMod {
         this.update(msg);
         break;
 
+      case "debug":
+        this.debug(msg);
+        break;
+
       case "play":
         this.play(msg);
         break;
@@ -132,6 +136,11 @@ class BrowserMod {
     if (this.player.ended) return "stopped";
     if (this.player.paused) return "paused";
     return "playing";
+  }
+
+  debug(msg) {
+    popUp(`deviceID`, {type: "markdown", content: `# ${deviceID}`})
+    alert(deviceID);
   }
 
   play(msg) {

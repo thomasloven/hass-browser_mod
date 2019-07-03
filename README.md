@@ -80,6 +80,16 @@ All service calls have two parameters in common, `command` which is the command 
 
 `deviceID` may also contain aliases, and there's a special alias named `this` which will evaluate to the *device* from which a command was initiated (if from the frontend).
 
+### debug
+
+```
+service: browser_mod.command
+service_data:
+  command: debug
+```
+
+Display a popup with the deviceID *and* a javascript allert with the deviceID on all connected *devices*.
+
 ### set-theme
 
 ```
