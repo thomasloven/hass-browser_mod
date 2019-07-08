@@ -39,6 +39,8 @@ class BrowserMod {
     this.player = new Audio();
     this.playedOnce = false;
 
+    this.autoclose_popup_active = false;
+
     const updater = this.update.bind(this);
     this.player.addEventListener("ended", updater);
     this.player.addEventListener("play", updater);
@@ -167,11 +169,14 @@ class BrowserMod {
   }
 
   popup(msg){
-    if(!msg.title) return;
+    if(!msg.title && !msg.auto_close) return;
     if(!msg.card) return;
-    popUp(msg.title, msg.card, msg.large, msg.style);
+    popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close);
+    if(msg.auto_close)
+      this.autoclose_popup_active = true;
   }
   close_popup(msg){
+    this.autoclose_popup_active = false;
     closePopUp();
   }
   navigate(msg){
@@ -199,6 +204,8 @@ class BrowserMod {
     this.update();
   }
   no_blackout(msg){
+    if(this.autoclose_popup_active)
+      return this.close_popup();
     this._blackout.style.visibility = "hidden";
     this.update();
   }

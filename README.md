@@ -150,8 +150,9 @@ will display the specified `entities` card as a popup on the current device.
 
 ![popup-example](https://user-images.githubusercontent.com/1299821/60288984-a7cb6b00-9915-11e9-9322-324323a9ec6e.png)
 
-The optional parameter `large: true` will make the popup wider.
-The optional parameter `style:` will apply css style options to the popup.
+The optional parameter `large: true` will make the popup wider.  
+The optional parameter `style:` will apply css style options to the popup.  
+The optional parameter `auto_close: true` will make the popup close automatically when the mouse is moved or a key is pressed on the keyboard. This also removes the header bar.  
 
 Ex:
 ```yaml
