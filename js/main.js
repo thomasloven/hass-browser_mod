@@ -20,7 +20,7 @@ class BrowserMod {
             serviceData.deviceID[index] = deviceID;
         }
       }
-      callService(domain, service, serviceData);
+      return callService(domain, service, serviceData);
     };
     hass.callService = newCallService;
 
