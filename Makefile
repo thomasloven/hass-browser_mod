@@ -8,12 +8,8 @@ setup := package.json package-lock.json webpack.config.js
 
 JS := $(wildcard js/*.js)
 PY := $(wildcard custom_components/browser_mod/*)
-OUTPUT := ../../config/custom_components/browser_mod/__init__.py
 
-build: $(setup) custom_components/browser_mod/browser_mod.js $(OUTPUT)
-
-$(OUTPUT): $(PY)
-	cp custom_components/browser_mod/* ../../config/custom_components/browser_mod/.
+build: $(setup) custom_components/browser_mod/browser_mod.js
 
 custom_components/browser_mod/browser_mod.js: $(JS)
 	$(DOCKER_CMD) npm run build
