@@ -16,7 +16,7 @@ async def async_setup(hass, config):
     for d in config[DOMAIN].get(CONFIG_DEVICES, {}):
         name = config[DOMAIN][CONFIG_DEVICES][d].get("name", None)
         if name:
-            aliases[name] = d
+            aliases[name] = d.replace('_','-')
 
     hass.data[DOMAIN] = {
         DATA_DEVICES: {},
