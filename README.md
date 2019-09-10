@@ -220,6 +220,28 @@ The player card also displays the `entityID`. Click it to select, so you can cop
 
 ![browser-player](https://user-images.githubusercontent.com/1299821/60288980-a4d07a80-9915-11e9-88ba-e078a3aa24f4.png)
 
+## use in an automation
+
+Here is example syntax for an automation which displays a camera feed when a human is detected:
+
+```
+- id: popup_camera_when_human_detected
+  alias: Popup Camera When Human Detected
+  hide_entity: true
+  initial_state: 'true'
+  trigger:
+    platform: state
+    entity_id: binary_sensor.human
+    to: 'on'
+  action:
+    - service: browser_mod.command
+      data:
+        command: more-info
+        entity_id: camera.main
+        deviceID:
+          - 12345678-12345678
+```
+
 # Support
 
 [Home Assistant community forum thread](https://community.home-assistant.io/t/browser-mod-turn-your-browser-into-a-controllable-device-and-a-media-player/123806)
