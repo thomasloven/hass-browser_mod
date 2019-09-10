@@ -96,7 +96,7 @@ Display a popup with the deviceID *and* a javascript allert with the deviceID on
 
 ```
 service: browser_mod.command
-service_data:
+data:
   command: set-theme
   theme: clear_light
 ```
@@ -106,7 +106,7 @@ will set the current theme to `clear_light` on all devices.
 ### navigate
 ```
 service: browser_mod.command
-service_data:
+data:
   command: navigate
   navigation_path: /lovelace/1
   deviceID:
@@ -120,7 +120,7 @@ Note: `navigation_path` does not have to be a lovelace path. All paths in Home A
 ### more-info
 ```
 service: browser_mod.command
-service_data:
+data:
   command: more-info
   entity_id: camera.front_door
   deviceID:
@@ -135,7 +135,7 @@ The optional parameter `large: true` will make the popup wider.
 ### popup
 ```
 service: browser_mod.command
-service_data:
+data:
   command: popup
   title: Popup example
   card:
@@ -169,7 +169,7 @@ Note: Sometimes this doesn't work if the *device* is not currently displaying a 
 ### close-popup
 ```
 service: browser_mod.command
-service_data:
+data:
   command: close-popup
 ```
 
@@ -178,7 +178,7 @@ will close all more-info dialogs and popups that are open on all connected *devi
 ### blackout
 ```
 service: browser_mod.command
-service_data:
+data:
   command: blackout
 ```
 
@@ -190,7 +190,7 @@ Note: This will *not* turn off your screen backlight. Most screens will still em
 ### no-blackout
 ```
 service: browser_mod.command
-service_data:
+data:
   command: no-blackout
 ```
 
@@ -199,7 +199,7 @@ Remove a blackout.
 ### lovelace-reload
 ```
 service: browser_mod.command
-service_data:
+data:
   command: lovelace-reload
 ```
 
