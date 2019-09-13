@@ -70,7 +70,7 @@ The `media_player` entity also has some extra attributes presenting the current 
 | `visibility` | Whether the frontend is currently visible on the *device*. |
 | `userAgent` | The User Agent of the associated browser. |
 | `currentUser` | The user currently logged in on the *device*. |
-| 'blackout' | Whether the view on the *device* is currently blacked out (see below). |
+| `blackout` | Whether the view on the *device* is currently blacked out (see below). |
 
 **NOTE: Because apple is apple; on iOS you need to touch the screen once after loading the frontend before any playback will work.**
 
@@ -195,6 +195,7 @@ service_data:
 ```
 
 Remove a blackout.
+The optional parameter `brightness` will set the screen brightness of a device running Fully Kiosk Browser to a value between 0 and 255.
 
 ### lovelace-reload
 ```
@@ -219,6 +220,22 @@ anywhere in your lovelace configuration.
 The player card also displays the `entityID`. Click it to select, so you can copy it.
 
 ![browser-player](https://user-images.githubusercontent.com/1299821/60288980-a4d07a80-9915-11e9-88ba-e078a3aa24f4.png)
+
+# Fully Kiosk Browser
+If you are using a device running [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) (PLUS version only) you will have access to a few more functions.
+
+First of all the commands `blackout` and `no-blackout` will controll the devices screen directly.
+`no-blackout` also has an optional parameter `brightness` that can set the screen brightness between 0 and 255.
+
+Second, there are a few more attributes available
+
+| attribute | content |
+| --- | --- |
+| `fullyKiosk` | True. |
+| `brightness` | The current screen brightness. |
+| `battery` | The current charge percentage of the devices battery. |
+| `charging` | Whether the battery is currently charging. |
+| `motion` | Whether the devices camera has detected any motion in the last five seconds. |
 
 # Support
 

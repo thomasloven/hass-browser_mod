@@ -48,7 +48,7 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
 
     @property
     def _player_data(self):
-        return self._ws_data.get("player", {});
+        return self._ws_data.get("player", {})
 
     @property
     def state(self):
@@ -90,5 +90,3 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
         self.ws_send("pause")
     def media_stop(self):
         self.ws_send("stop")
-
-
