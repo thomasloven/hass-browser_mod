@@ -55,6 +55,15 @@ class BrowserMod {
     window.addEventListener("touchstart", this.no_blackout.bind(this));
     provideHass(this);
 
+    if(window.fully)
+    {
+      this._fullyMotion = false;
+      this._motionTimeout = undefined;
+      fully.bind('screenOn', 'browser_mod.update();');
+      fully.bind('screenOff', 'browser_mod.update();');
+      fully.bind('onMotion', 'browser_mod.fullyMotion();');
+    }
+
     this._blackout = document.createElement("div");
     this._blackout.style.cssText = `
     position: fixed;
@@ -200,13 +209,44 @@ class BrowserMod {
   }
 
   blackout(msg){
-    this._blackout.style.visibility = "visible";
+    if (window.fully)
+    {
+      fully.turnScreenOff();
+    } else {
+      this._blackout.style.visibility = "visible";
+    }
     this.update();
   }
   no_blackout(msg){
     if(this.autoclose_popup_active)
       return this.close_popup();
-    this._blackout.style.visibility = "hidden";
+    if (window.fully)
+    {
+      if (!fully.getScreenOn())
+        fully.turnScreenOn();
+      if (msg.brightness)
+        fully.setScreenBrightness(msg.brightness);
+      this.update();
+    } else {
+      if(this._blackout.style.visibility !== "hidden") {
+        this._blackout.style.visibility = "hidden";
+        this.update();
+      }
+    }
+  }
+  is_blackout(){
+    if (window.fully)
+      return !fully.getScreenOn();
+    return Boolean(this._blackout.style.visibility === "visible")
+  }
+
+  fullyMotion() {
+    this._fullyMotion = true;
+    clearTimeout(this._motionTimeout);
+    this._motionTimeout = setTimeout(() => {
+      this._fullyMotion = false;
+      this.update();
+    }, 5000);
     this.update();
   }
 
@@ -227,7 +267,12 @@ class BrowserMod {
           visibility: document.visibilityState,
           userAgent: navigator.userAgent,
           currentUser: this._hass && this._hass.user && this._hass.user.name,
-          blackout: Boolean(this._blackout.style.visibility === "visible"),
+          blackout: this.is_blackout(),
+          fullyKiosk: window.fully ? true : undefined,
+          brightness: window.fully ? fully.getScreenBrightness() : undefined,
+          battery: window.fully ? fully.getBatteryLevel() : undefined,
+          charging: window.fully ? fully.isPlugged(): undefined,
+          motion: window.fully ? this._fullyMotion : undefined,
         },
         player: {
           volume: this.player.volume,
