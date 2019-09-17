@@ -13,48 +13,36 @@ from homeassistant.const import (
         STATE_UNKNOWN,
     )
 
-from .const import DOMAIN, DATA_DEVICES, DATA_ADDERS, DATA_ALIASES
-from .connection import BrowserModEntity
+from .helpers import setup_platform, BrowserModEntity
 
 _LOGGER = logging.getLogger(__name__)
 
+PLATFORM = 'media_player'
 
 async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
-    def adder(hass, deviceID, connection, cid):
-        player = BrowserModPlayer(hass, deviceID)
-        if connection:
-            player.ws_connect(connection, cid)
-        async_add_devices([player])
-        return player
-    hass.data[DOMAIN][DATA_ADDERS].append(adder)
-
-    for k,v in hass.data[DOMAIN][DATA_ALIASES].items():
-        devices = hass.data[DOMAIN][DATA_DEVICES]
-        devices[v] = BrowserModPlayer(hass, v, k)
-        async_add_devices([devices[v]])
+    return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModPlayer)
 
 
 class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
+    domain = PLATFORM
 
-    def __init__(self, hass, deviceID, alias=None):
-        super().__init__(hass, deviceID, alias)
+    def __init__(self, hass, connection, deviceID, alias=None):
+        super().__init__(hass, connection, deviceID, alias)
+
+    def updated(self):
+        self.schedule_update_ha_state()
 
     @property
     def device_state_attributes(self):
         return {
-                "type": "browser",
-                **self._ws_data.get("browser", {}),
+                "type": "browser_mod",
                 }
 
     @property
-    def _player_data(self):
-        return self._ws_data.get("player", {})
-
-    @property
     def state(self):
-        if not self._ws_connection:
+        if not self.connection.connection:
             return STATE_UNAVAILABLE
-        state = self._player_data.get("state", "unknown")
+        state = self.data.get("state", "unknown")
         return {
                 "playing": STATE_PLAYING,
                 "paused": STATE_PAUSED,
@@ -69,24 +57,24 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
             )
     @property
     def volume_level(self):
-        return self._player_data.get("volume", 0)
+        return self.data.get("volume", 0)
     @property
     def is_volume_muted(self):
-        return self._player_data.get("muted", False)
+        return self.data.get("muted", False)
     @property
     def media_content_id(self):
-        return self._player_data.get("src", "")
+        return self.data.get("src", "")
 
     def set_volume_level(self, volume):
-        self.ws_send("set_volume", volume_level=volume)
+        self.connection.send("set_volume", volume_level=volume)
     def mute_volume(self, mute):
-        self.ws_send("mute", mute=mute)
+        self.connection.send("mute", mute=mute)
 
     def play_media(self, media_type, media_id, **kwargs):
-        self.ws_send("play", media_content_id=media_id)
+        self.connection.send("play", media_content_id=media_id)
     def media_play(self):
-        self.ws_send("play")
+        self.connection.send("play")
     def media_pause(self):
-        self.ws_send("pause")
+        self.connection.send("pause")
     def media_stop(self):
-        self.ws_send("stop")
+        self.connection.send("stop")

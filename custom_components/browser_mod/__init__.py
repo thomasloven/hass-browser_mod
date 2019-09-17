@@ -21,13 +21,18 @@ async def async_setup(hass, config):
     hass.data[DOMAIN] = {
         DATA_DEVICES: {},
         DATA_ALIASES: aliases,
-        DATA_ADDERS: [],
+        DATA_ADDERS: {},
         }
 
     await hass.helpers.discovery.async_load_platform("media_player", DOMAIN, {}, config)
+    await hass.helpers.discovery.async_load_platform("sensor", DOMAIN, {}, config)
+    await hass.helpers.discovery.async_load_platform("light", DOMAIN, {}, config)
 
-    setup_connection(hass)
+    await setup_connection(hass, config)
 
     setup_service(hass)
 
     return True
+
+
+

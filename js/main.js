@@ -84,6 +84,7 @@ class BrowserMod {
     conn.subscribeMessage((msg) => this.callback(msg), {
       type: 'browser_mod/connect',
       deviceID: deviceID,
+      fully: window.fully ? true : undefined,
       });
   }
 
@@ -267,12 +268,7 @@ class BrowserMod {
           visibility: document.visibilityState,
           userAgent: navigator.userAgent,
           currentUser: this._hass && this._hass.user && this._hass.user.name,
-          blackout: this.is_blackout(),
           fullyKiosk: window.fully ? true : undefined,
-          brightness: window.fully ? fully.getScreenBrightness() : undefined,
-          battery: window.fully ? fully.getBatteryLevel() : undefined,
-          charging: window.fully ? fully.isPlugged(): undefined,
-          motion: window.fully ? this._fullyMotion : undefined,
         },
         player: {
           volume: this.player.volume,
@@ -280,6 +276,15 @@ class BrowserMod {
           src: this.player.src,
           state: this.player_state,
         },
+        screen: {
+          blackout: this.is_blackout(),
+          brightness: window.fully ? fully.getScreenBrightness() : undefined,
+        },
+        fully: window.fully ? {
+          battery: window.fully ? fully.getBatteryLevel() : undefined,
+          charging: window.fully ? fully.isPlugged(): undefined,
+          motion: window.fully ? this._fullyMotion : undefined,
+        } : undefined,
       },
     });
 
