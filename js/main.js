@@ -13,12 +13,10 @@ class BrowserMod {
     if(this.hassPatched) return;
     const callService = hass.callService;
     const newCallService = (domain, service, serviceData) => {
-      if(domain === "browser_mod" && service === "command") {
-        if(serviceData.deviceID) {
-          const index = serviceData.deviceID.indexOf('this');
-          if(index !== -1)
-            serviceData.deviceID[index] = deviceID;
-        }
+      if(serviceData && serviceData.deviceID) {
+        const index = serviceData.deviceID.indexOf('this');
+        if(index !== -1)
+          serviceData.deviceID[index] = deviceID;
       }
       return callService(domain, service, serviceData);
     };
@@ -61,9 +59,18 @@ class BrowserMod {
       this._motionTimeout = undefined;
       fully.bind('screenOn', 'browser_mod.update();');
       fully.bind('screenOff', 'browser_mod.update();');
+      fully.bind('pluggedAC', 'browser_mod.update();');
+      fully.bind('pluggedUSB', 'browser_mod.update();');
+      fully.bind('onBatteryLevelChanged', 'browser_mod.update();');
+      fully.bind('unplugged', 'browser_mod.update();');
+      fully.bind('networkReconnect', 'browser_mod.update();');
+
       fully.bind('onMotion', 'browser_mod.fullyMotion();');
     }
 
+    this._screenSaver = undefined;
+    this._screenSaverTimer = undefined;
+    this._screenSaverTime = 0;
     this._blackout = document.createElement("div");
     this._blackout.style.cssText = `
     position: fixed;
@@ -84,7 +91,6 @@ class BrowserMod {
     conn.subscribeMessage((msg) => this.callback(msg), {
       type: 'browser_mod/connect',
       deviceID: deviceID,
-      fully: window.fully ? true : undefined,
       });
   }
 
@@ -181,13 +187,31 @@ class BrowserMod {
   popup(msg){
     if(!msg.title && !msg.auto_close) return;
     if(!msg.card) return;
-    popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close);
-    if(msg.auto_close)
-      this.autoclose_popup_active = true;
+    const fn = () => {
+      popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close);
+      if(auto_close)
+        this.autoclose_popup_active = true;
+    };
+    if(msg.auto_close && msg.time) {
+      msg.time = parseInt(msg.time)
+      if(msg.time == -1) {
+        clearTimeout(this._screenSaverTimer);
+        this._screenSaverTime = 0;
+        return;
+      }
+      this._screenSaverTime = msg.time * 1000;
+      this._screenSaver = fn;
+      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
+    } else {
+      fn();
+    }
   }
   close_popup(msg){
     this.autoclose_popup_active = false;
     closePopUp();
+    if(this._screenSaverTime) {
+      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
+    }
   }
   navigate(msg){
     if(!msg.navigation_path) return;
@@ -210,15 +234,32 @@ class BrowserMod {
   }
 
   blackout(msg){
-    if (window.fully)
-    {
-      fully.turnScreenOff();
+    const fn = () => {
+      if (window.fully)
+      {
+        fully.turnScreenOff();
+      } else {
+        this._blackout.style.visibility = "visible";
+      }
+      this.update();
+    };
+    if(msg.time) {
+      msg.time = parseInt(msg.time)
+      if(msg.time == -1) {
+        clearTimeout(this._screenSaverTimer);
+        this._screenSaverTime = 0;
+        return;
+      }
+      this._screenSaverTime = msg.time * 1000;
+      this._screenSaver = fn;
+      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
     } else {
-      this._blackout.style.visibility = "visible";
+      fn();
     }
-    this.update();
   }
   no_blackout(msg){
+
+    clearTimeout(this._screenSaverTimer);
     if(this.autoclose_popup_active)
       return this.close_popup();
     if (window.fully)
@@ -233,6 +274,9 @@ class BrowserMod {
         this._blackout.style.visibility = "hidden";
         this.update();
       }
+    }
+    if(this._screenSaverTime) {
+      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
     }
   }
   is_blackout(){
@@ -269,6 +313,8 @@ class BrowserMod {
           userAgent: navigator.userAgent,
           currentUser: this._hass && this._hass.user && this._hass.user.name,
           fullyKiosk: window.fully ? true : undefined,
+          width: window.innerWidth,
+          height: window.innerHeight,
         },
         player: {
           volume: this.player.volume,

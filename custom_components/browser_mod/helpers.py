@@ -16,8 +16,6 @@ def get_alias(hass, deviceID):
     return None
 
 def create_entity(hass, platform, deviceID, connection):
-    _LOGGER.error("********************")
-    _LOGGER.error("Creating %s for %s", platform, deviceID)
     adder = hass.data[DOMAIN][DATA_ADDERS][platform]
     entity = adder(hass, deviceID, connection, get_alias(hass, deviceID))
     return entity

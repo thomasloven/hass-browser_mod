@@ -10,23 +10,18 @@ from .helpers import get_devices, create_entity
 _LOGGER = logging.getLogger(__name__)
 
 async def setup_connection(hass, config):
-    _LOGGER.error("--------------------")
-    _LOGGER.error("Setting up BM connection")
 
     @websocket_command({
         vol.Required("type"): WS_CONNECT,
         vol.Required("deviceID"): str,
     })
     def handle_connect(hass, connection, msg):
-        _LOGGER.error("--------------------")
-        _LOGGER.error("CONNECTING BM")
         deviceID = msg["deviceID"]
 
         device = get_devices(hass).get(deviceID, BrowserModConnection(hass, deviceID))
         device.connect(connection, msg["id"])
         get_devices(hass)[deviceID] = device
 
-        _LOGGER.error("DONE")
         connection.send_message(result_message(msg["id"]))
 
     @websocket_command({
@@ -35,9 +30,6 @@ async def setup_connection(hass, config):
         vol.Optional("data"): dict,
     })
     def handle_update( hass, connection, msg):
-        _LOGGER.error("--------------------")
-        _LOGGER.error("UPDATING BM")
-        _LOGGER.error(msg)
         devices = get_devices(hass)
         deviceID = msg["deviceID"]
         if deviceID in devices:
@@ -56,11 +48,10 @@ class BrowserModConnection:
         self.media_player = None
         self.screen = None
         self.sensor = None
+        self.fully = None
 
     def connect(self, connection, cid):
         self.connection.append((connection, cid))
-        _LOGGER.error("********************")
-        _LOGGER.error("Connected %s", self.deviceID)
         self.send("update")
 
         def disconnect():
@@ -77,15 +68,6 @@ class BrowserModConnection:
                 }))
 
     def update(self, data):
-        _LOGGER.error("********************")
-        _LOGGER.error("Got update %s for %s", data, self.deviceID)
-        if data.get('player'):
-            self.media_player = self.media_player or create_entity(
-                    self.hass,
-                    'media_player',
-                    self.deviceID,
-                    self)
-            self.media_player.data = data.get('player')
         if data.get('browser'):
             self.sensor = self.sensor or create_entity(
                     self.hass,
@@ -93,6 +75,15 @@ class BrowserModConnection:
                     self.deviceID,
                     self)
             self.sensor.data = data.get('browser')
+
+        if data.get('player'):
+            self.media_player = self.media_player or create_entity(
+                    self.hass,
+                    'media_player',
+                    self.deviceID,
+                    self)
+            self.media_player.data = data.get('player')
+
         if data.get('screen'):
             self.screen = self.screen or create_entity(
                     self.hass,
@@ -100,4 +91,12 @@ class BrowserModConnection:
                     self.deviceID,
                     self)
             self.screen.data = data.get('screen')
+
+        if data.get('fully'):
+            self.fully = self.fully or create_entity(
+                    self.hass,
+                    'binary_sensor',
+                    self.deviceID,
+                    self)
+            self.fully.data = data.get('fully')
 

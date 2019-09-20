@@ -1,11 +1,12 @@
 import logging
 from datetime import datetime
 
-from homeassistant.const import STATE_UNAVAILABLE
+from homeassistant.const import STATE_UNAVAILABLE, ATTR_BATTERY_CHARGING, ATTR_BATTERY_LEVEL, STATE_ON, STATE_OFF
+from homeassistant.components.binary_sensor import DEVICE_CLASS_MOTION
 
 from .helpers import setup_platform, BrowserModEntity
 
-PLATFORM = 'sensor'
+PLATFORM = 'binary_sensor'
 
 async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModSensor)
@@ -25,13 +26,25 @@ class BrowserModSensor(BrowserModEntity):
     def state(self):
         if not self.connection.connection:
             return STATE_UNAVAILABLE
-        return len(self.connection.connection)
+        if self.data.get('motion', False):
+            return STATE_ON
+        return STATE_OFF
+
+    @property
+    def is_on(self):
+        return not self.data.get('motion', False)
+
+
+    @property
+    def device_class(self):
+        return DEVICE_CLASS_MOTION
 
     @property
     def device_state_attributes(self):
         return {
                 "type": "browser_mod",
                 "last_seen": self.last_seen,
-                "deviceID": self.deviceID,
+                ATTR_BATTERY_LEVEL: self.data.get('battery', None),
+                ATTR_BATTERY_CHARGING: self.data.get('charging', None),
                 **self.data
                 }

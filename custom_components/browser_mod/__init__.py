@@ -26,6 +26,7 @@ async def async_setup(hass, config):
 
     await hass.helpers.discovery.async_load_platform("media_player", DOMAIN, {}, config)
     await hass.helpers.discovery.async_load_platform("sensor", DOMAIN, {}, config)
+    await hass.helpers.discovery.async_load_platform("binary_sensor", DOMAIN, {}, config)
     await hass.helpers.discovery.async_load_platform("light", DOMAIN, {}, config)
 
     await setup_connection(hass, config)

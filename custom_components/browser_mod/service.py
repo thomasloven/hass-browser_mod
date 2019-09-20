@@ -19,6 +19,6 @@ def setup_service(hass):
 
         for t in targets:
             if t in devices:
-                devices[t].ws_send(command, **data)
+                devices[t].send(command, **data)
 
     hass.services.async_register(DOMAIN, 'command', handle_command)

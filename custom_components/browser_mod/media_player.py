@@ -36,6 +36,7 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
     def device_state_attributes(self):
         return {
                 "type": "browser_mod",
+                "deviceID": self.deviceID,
                 }
 
     @property
