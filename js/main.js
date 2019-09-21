@@ -1,5 +1,5 @@
 import { deviceID } from "/card-tools/deviceId";
-import { lovelace_view, provideHass } from "/card-tools/hass";
+import { lovelace_view, provideHass, load_lovelace } from "/card-tools/hass";
 import { popUp, closePopUp } from "/card-tools/popup";
 import { fireEvent } from "/card-tools/event";
 import { moreInfo } from "/card-tools/more-info.js";
@@ -33,6 +33,7 @@ class BrowserMod {
   }
 
   constructor() {
+    window.setTimeout(load_lovelace, 500);
     window.hassConnection.then((conn) => this.connect(conn.conn));
     this.player = new Audio();
     this.playedOnce = false;
@@ -339,4 +340,3 @@ class BrowserMod {
 }
 
 window.browser_mod = new BrowserMod();
-
