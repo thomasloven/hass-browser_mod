@@ -189,7 +189,7 @@ class BrowserMod {
     if(!msg.card) return;
     const fn = () => {
       popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close);
-      if(auto_close)
+      if(msg.auto_close)
         this.autoclose_popup_active = true;
     };
     if(msg.auto_close && msg.time) {
