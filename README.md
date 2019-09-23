@@ -13,6 +13,8 @@ A Home Assistant integration to turn your browser into a controllable entity - a
 - Play a TTS message on your work computer when the traffic sensor tells you it's time to go home.
 - Display a full screen clock on your screen if no one's touched it for five minutes
 
+For more usage examples, see the [cookbook](https://github.com/thomasloven/hass-browser_mod/wiki/Cookbook).
+
 # Installation instructions
 
 **NOTE: This integration requires Home Assistant version 0.95 or later**
