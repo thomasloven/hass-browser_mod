@@ -3,7 +3,7 @@ browser\_mod
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-A Home Assistant integration to turn your browser into a controllable entity - and also an audio player.
+A Home Assistant integration to turn your browser into a controllable entity - and also an audio player and a security camera (WIP).
 
 ## Example uses
 
@@ -61,12 +61,13 @@ This binds the *aliases* `arrakis` to `99980b13-dabc9563` and `dashboard` to `d2
 Note: Aliases must be unique.
 
 ## Entities
-Once `browser_mod` is installed, loading up your Home Assistant frontend on a new *device* will create three or four new devices.
+Once `browser_mod` is installed, loading up your Home Assistant frontend on a new *device* will create three to five new devices.
 
 - `sensor.<device>`
 - `media_player.<device>`
 - `light.<device>`
-- If you're using Fully Kiosk Browser `binary_sensor.<device>`
+- If you've enabled it: `camera.<device>`
+- If you're using Fully Kiosk Browser: `binary_sensor.<device>`
 
 `<device>` here will be the `deviceID` of the *device* but with the dash (`-`) replaced by an underscore (`_`). If you've defined an alias, it will be that instead.
 
@@ -104,6 +105,24 @@ The `media_player` can be used to play sounds on the *device*.
 The `light` can be used to blackout the screen.
 For Fully Kiosk Browser, the screen will actually turn off.
 For other browsers, the interface will just be covered with black (the screen is still on, will have a visible glow in the dark, and you won't save any battery).
+
+### camera (EXPERIMENTAL)
+
+For security and UX reasons, the camera must be enabled manually on a device by device basis.
+
+Enabling the camera is done by adding `camera: true` to the devices configuration in `configuration.yaml`:
+```yaml
+browser_mod:
+  devices:
+    99980b13-dabc9563:
+      name: arrakis
+      camera: true
+    d2fc860c-16379d23:
+      name: dashboard
+```
+After restarting Home Assistant (and [clearing cache](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins#clearing-cache)), the next time you load your interface your browser will ask you if you want Home Assistant to be able to access your camera. Some browsers (e.g. mobile Safari) will ask every time you make a hard refresh.
+
+Be aware that keeping the camera on may make your device run hot and drain your battery.
 
 ### binary\_sensor
 

@@ -27,6 +27,7 @@ class BrowserMod {
   }
 
   playOnce(ev) {
+    if(this._video) this._video.play();
     if(window.browser_mod.playedOnce) return;
     window.browser_mod.player.play();
     window.browser_mod.playedOnce = true;
@@ -297,12 +298,57 @@ class BrowserMod {
   }
 
 
+  start_camera() {
+    if(this._video) return;
+    this._video = document.createElement("video");
+    this._video.autoplay = true;
+    this._video.playsInline = true;
+    this._video.style.cssText = `
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    `;
+    this._canvas = document.createElement("canvas");
+    this._canvas.style.cssText = `
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    `;
+    document.body.appendChild(this._canvas);
+    document.body.appendChild(this._video);
+    navigator.mediaDevices.getUserMedia({video: true, audio: false}).then((stream) => {
+      this._video.srcObject = stream;
+      this._video.play();
+      this.send_cam();
+    });
+  }
+
+  send_cam(data) {
+    const context = this._canvas.getContext('2d');
+    context.drawImage(this._video, 0, 0, this._canvas.width, this._canvas.height);
+    this.conn.sendMessage({
+      type: 'browser_mod/update',
+      deviceID: deviceID,
+      data: {
+        camera: this._canvas.toDataURL('image/png'),
+      },
+    });
+    setTimeout(this.send_cam.bind(this), 5000);
+  }
+
+
   update(msg=null) {
     if(!this.conn) return;
 
-    if(msg)
-      if(msg.entity_id)
+    if(msg) {
+      if(msg.entity_id) {
         this.entity_id = msg.entity_id;
+      }
+      if(msg.camera) {
+        this.start_camera();
+      }
+    }
+
 
     this.conn.sendMessage({
       type: 'browser_mod/update',

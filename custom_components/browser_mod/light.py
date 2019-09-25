@@ -37,6 +37,8 @@ class BrowserModLight(Light, BrowserModEntity):
     def device_state_attributes(self):
         return {
                 "type": "browser_mod",
+                "deviceID": self.deviceID,
+                "last_seen": self.last_seen,
                 }
 
     @property

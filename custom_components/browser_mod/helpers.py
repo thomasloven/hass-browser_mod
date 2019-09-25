@@ -2,7 +2,7 @@ import logging
 
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
 
-from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, DATA_ADDERS, CONFIG_DEVICES
+from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, DATA_ADDERS, CONFIG_DEVICES, DATA_CONFIG
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -14,6 +14,10 @@ def get_alias(hass, deviceID):
         if v == deviceID:
             return k
     return None
+
+def get_config(hass, deviceID):
+    config = hass.data[DOMAIN][DATA_CONFIG]
+    return config.get(deviceID, config.get(deviceID.replace('-','_'), {}))
 
 def create_entity(hass, platform, deviceID, connection):
     adder = hass.data[DOMAIN][DATA_ADDERS][platform]
