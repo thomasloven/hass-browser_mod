@@ -1,4 +1,7 @@
-from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES
+import logging
+from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, USER_COMMANDS
+
+_LOGGER = logging.getLogger(__name__)
 
 def setup_service(hass):
 
@@ -8,6 +11,8 @@ def setup_service(hass):
             return
 
         targets = call.data.get("deviceID", None)
+        if isinstance(targets, str):
+            targets = [targets]
         devices = hass.data[DOMAIN][DATA_DEVICES]
         aliases = hass.data[DOMAIN][DATA_ALIASES]
         if not targets:
@@ -21,4 +26,12 @@ def setup_service(hass):
             if t in devices:
                 devices[t].send(command, **data)
 
+    def command_wrapper(call):
+        command = call.service.replace('_','-')
+        call.data = dict(call.data)
+        call.data['command'] = command
+        handle_command(call)
+
     hass.services.async_register(DOMAIN, 'command', handle_command)
+    for cmd in USER_COMMANDS:
+        hass.services.async_register(DOMAIN, cmd.replace('-','_'), command_wrapper)
