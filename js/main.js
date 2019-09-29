@@ -167,6 +167,24 @@ class BrowserMod {
     alert(deviceID);
   }
 
+  _set_screensaver(fn, time) {
+    clearTimeout(this._screenSaverTimer);
+    if(!fn) {
+      if(this._screenSaverTime)
+        this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
+    } else {
+      time = parseInt(time)
+      if(time == -1) {
+        clearTimeout(this._screenSaverTimer);
+        this._screenSaverTime = 0;
+        return;
+      }
+      this._screenSaverTime = time * 1000;
+      this._screenSaver = fn;
+      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
+    }
+  }
+
   play(msg) {
     const src = msg.media_content_id;
     if(src)
@@ -193,31 +211,23 @@ class BrowserMod {
   popup(msg){
     if(!msg.title && !msg.auto_close) return;
     if(!msg.card) return;
+
     const fn = () => {
       popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close);
       if(msg.auto_close)
         this.autoclose_popup_active = true;
     };
+
     if(msg.auto_close && msg.time) {
-      msg.time = parseInt(msg.time)
-      if(msg.time == -1) {
-        clearTimeout(this._screenSaverTimer);
-        this._screenSaverTime = 0;
-        return;
-      }
-      this._screenSaverTime = msg.time * 1000;
-      this._screenSaver = fn;
-      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
+      this._set_screensaver(fn, msg.time);
     } else {
       fn();
     }
   }
   close_popup(msg){
+    this._set_screensaver();
     this.autoclose_popup_active = false;
     closePopUp();
-    if(this._screenSaverTime) {
-      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
-    }
   }
   navigate(msg){
     if(!msg.navigation_path) return;
@@ -250,22 +260,13 @@ class BrowserMod {
       this.update();
     };
     if(msg.time) {
-      msg.time = parseInt(msg.time)
-      if(msg.time == -1) {
-        clearTimeout(this._screenSaverTimer);
-        this._screenSaverTime = 0;
-        return;
-      }
-      this._screenSaverTime = msg.time * 1000;
-      this._screenSaver = fn;
-      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
+      this._set_screensaver(fn, msg.time)
     } else {
       fn();
     }
   }
   no_blackout(msg){
-
-    clearTimeout(this._screenSaverTimer);
+    this._set_screensaver();
     if(this.autoclose_popup_active)
       return this.close_popup();
     if (window.fully)
@@ -280,9 +281,6 @@ class BrowserMod {
         this._blackout.style.visibility = "hidden";
         this.update();
       }
-    }
-    if(this._screenSaverTime) {
-      this._screenSaverTimer = setTimeout(this._screenSaver, this._screenSaverTime)
     }
   }
   is_blackout(){
