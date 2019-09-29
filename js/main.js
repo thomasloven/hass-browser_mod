@@ -14,9 +14,13 @@ class BrowserMod {
     const callService = hass.callService;
     const newCallService = (domain, service, serviceData) => {
       if(serviceData && serviceData.deviceID) {
-        const index = serviceData.deviceID.indexOf('this');
-        if(index !== -1)
-          serviceData.deviceID[index] = deviceID;
+        if(Array.isArray(serviceData.deviceID)) {
+          const index = serviceData.deviceID.indexOf('this');
+          if(index !== -1)
+            serviceData.deviceID[index] = deviceID;
+        } else if(serviceData.deviceID === "this") {
+          serviceData.deviceID = deviceID;
+        }
       }
       return callService(domain, service, serviceData);
     };
