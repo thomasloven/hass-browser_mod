@@ -16,6 +16,7 @@ class BrowserModLight(Light, BrowserModEntity):
 
     def __init__(self, hass, connection, deviceID, alias=None):
         super().__init__(hass, connection, deviceID, alias)
+        self.last_seen = None
 
     def updated(self):
         self.last_seen = datetime.now()

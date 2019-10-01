@@ -28,6 +28,7 @@ class BrowserModPlayer(MediaPlayerDevice, BrowserModEntity):
 
     def __init__(self, hass, connection, deviceID, alias=None):
         super().__init__(hass, connection, deviceID, alias)
+        self.last_seen = None
 
     def updated(self):
         self.schedule_update_ha_state()
