@@ -221,6 +221,7 @@ class BrowserMod {
     if(msg.auto_close && msg.time) {
       this._set_screensaver(fn, msg.time);
     } else {
+      // closePopUp();
       fn();
     }
   }

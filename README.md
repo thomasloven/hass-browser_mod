@@ -129,32 +129,30 @@ Be aware that keeping the camera on may make your device run hot and drain your 
 The `binary_sensor` will only be available for Fully Kiosk Browser PRO *devices*.
 It's state will be the state of the camera motion detector of the *device* (5 second cooldown).
 
-## `browser_mod.command` service
+## Services
 
-Call the `browser_mod.command` service to control your *device* in various ways.
+`browser_mod` registers a number of services.
 
-All service calls have two parameters in common, `command` which is the command to execute, and `deviceID` which is a list of *devices* to execute the command on. If `deviceID` is omitted, the command will be executed on **all** currently connected *devices*. `deviceID` may also contain aliases.
+All service calls have one parameter in common; `deviceID` which is a list of *devices* to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currenctly connected *devices*. `deviceID` may also contain aliases.
 
-There is a special function that will replace the special alias `this` with the current deviceID in the list `deviceID` for any service call from the frontend. In the examples below it will be shown used for the `browser_mod.command` service, but it also works e.g for calling scripts from the frontend.
+If a service is called from the frontend (e.g. by using the `call-service` tap action), a value of `this` in the `deviceID` list will be replaced with the ID of the *device* the call was made from.
+Alternatively, `deviceID: this` will also work.
 
 All examples below are given in the syntax used for calling them from lovelace via e.g. an entity-button card with `tap_action:` set to `call-service`. If you call the service from a script or an automation, the syntax will be slightly different.
 
 ### debug
 
 ```
-service: browser_mod.command
-service_data:
-  command: debug
+service: browser_mod.debug
 ```
 
 Display a popup with the deviceID *and* a javascript alert with the deviceID on all connected *devices*.
 
-### set-theme
+### set_theme
 
 ```
-service: browser_mod.command
+service: browser_mod.set_theme
 service_data:
-  command: set-theme
   theme: clear_light
 ```
 
@@ -162,9 +160,8 @@ will set the current theme to `clear_light` on all devices.
 
 ### navigate
 ```
-service: browser_mod.command
+service: browser_mod.navigate
 service_data:
-  command: navigate
   navigation_path: /lovelace/1
   deviceID:
     - ded3b4dc-abedd098
@@ -174,11 +171,10 @@ will open your second lovelace view on just the *device* `ded3b4dc-abedd098`.
 
 Note: `navigation_path` does not have to be a lovelace path. All paths in Home Assistant works. (E.g. `/states`, `/dev-info`, `/map`)
 
-### more-info
+### more_info
 ```
-service: browser_mod.command
+service: browser_mod.more_info
 service_data:
-  command: more-info
   entity_id: camera.front_door
   deviceID:
     - ded3b4dc-abedd098
@@ -191,9 +187,8 @@ The optional parameter `large: true` will make the popup wider.
 
 ### popup
 ```
-service: browser_mod.command
+service: browser_mod.popup
 service_data:
-  command: popup
   title: Popup example
   card:
     type: entities
@@ -203,9 +198,10 @@ service_data:
       - light.ceiling_lights
   deviceID:
     - this
+    - dashboard
 ```
 
-will display the specified `entities` card as a popup on the current device.
+will display the specified `entities` card as a popup on the current device and on `dashboard`
 
 ![popup-example](https://user-images.githubusercontent.com/1299821/60288984-a7cb6b00-9915-11e9-9322-324323a9ec6e.png)
 
@@ -224,44 +220,38 @@ Ex:
 
 Note: Sometimes this doesn't work if the *device* is not currently displaying a lovelace path. I'm looking into that...
 
-### close-popup
+### close_popup
 ```
-service: browser_mod.command
-service_data:
-  command: close-popup
+service: browser_mod.close_popup
 ```
 
 will close all more-info dialogs and popups that are open on all connected *devices*.
 
 ### blackout
 ```
-service: browser_mod.command
+service: browser_mod.blackout
 service_data:
-  command: blackout
+  deviceID: this
 ```
 
-Will cover the entire window (or screen if in full screen mode) with black.
+Will cover the entire window (or screen if in full screen mode) with black on the current device.
 Moving the mouse, touching the screen or pressing any key will restore the view.
 
 The optional parameter `time:` will make the blackout turn on automatically after the specified number of seconds. It works kind of like a screensaver and will keep turning on until `blackout` is called again with `time: -1`.
 
 Note: This will *not* turn off your screen backlight. Most screens will still emit light in a dark room.
 
-### no-blackout
+### no_blackout
 ```
-service: browser_mod.command
-service_data:
-  command: no-blackout
+service: browser_mod.no_blackout
 ```
 
 Remove a blackout.
 The optional parameter `brightness` will set the screen brightness of a device running Fully Kiosk Browser to a value between 0 and 255.
 
-### lovelace-reload
+### lovelace_reload
 ```
-service: browser_mod.command
-service_data:
-  command: lovelace-reload
+service: browser_mod.lovelace_reload
 ```
 
 Refreshes the lovelace config. Same as clicking "Refresh" in the top right menu in lovelace.
@@ -283,6 +273,8 @@ The player card also displays the `entityID`. Click it to select, so you can cop
 
 # Fully Kiosk Browser
 If you are using a device running [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) (PLUS version only) you will have access to a few more functions.
+
+For this to work you need to activate `Settings->Advanced Web Settings->Javascript Interface (PLUS)` and `Settings->Motion Detection (PLUS)->Enable Visual Motion Detection`.
 
 First of all the commands `blackout` and `no-blackout` will control the devices screen directly.
 `no-blackout` also has an optional parameter `brightness` that can set the screen brightness between 0 and 255.
@@ -330,6 +322,10 @@ Some of [my lovelace plugins](https://github.com/thomasloven/hass-config/wiki/My
 ### How do I run commands from /dev-service?
 
 `/dev-service` requires json-formatted service data. There's an explanation on the differences between yaml and json [here](http://thomasloven.com/blog/2018/08/YAML-For-Nonprogrammers/).
+
+### How do I run commands from a script/automation?
+
+Basically, just replace `service_data` with `data` or `data_template`, whichever fits your needs.
 
 ---
 <a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
