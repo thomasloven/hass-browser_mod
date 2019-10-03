@@ -2,7 +2,7 @@ import logging
 
 from homeassistant.helpers.entity import Entity, async_generate_entity_id
 
-from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, DATA_ADDERS, CONFIG_DEVICES, DATA_CONFIG
+from .const import DOMAIN, DATA_DEVICES, DATA_ALIASES, DATA_ADDERS, CONFIG_DEVICES, DATA_CONFIG, CONFIG_PREFIX
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ def get_alias(hass, deviceID):
     return None
 
 def get_config(hass, deviceID):
-    config = hass.data[DOMAIN][DATA_CONFIG]
+    config = hass.data[DOMAIN][DATA_CONFIG].get(CONFIG_DEVICES, {})
     return config.get(deviceID, config.get(deviceID.replace('-','_'), {}))
 
 def create_entity(hass, platform, deviceID, connection):
@@ -39,7 +39,8 @@ class BrowserModEntity(Entity):
         self.connection = connection
         self.deviceID = deviceID
         self._data = {}
-        self.entity_id = async_generate_entity_id(self.domain+".{}", alias or deviceID, hass=hass)
+        prefix = hass.data[DOMAIN][DATA_CONFIG].get(CONFIG_PREFIX, '')
+        self.entity_id = async_generate_entity_id(self.domain+".{}", alias or f"{prefix}{deviceID}", hass=hass)
 
     def updated(self):
         pass

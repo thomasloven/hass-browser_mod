@@ -10,6 +10,7 @@ DATA_ADDERS = "adders"
 DATA_CONFIG = "config"
 
 CONFIG_DEVICES = "devices"
+CONFIG_PREFIX = "prefix"
 
 WS_ROOT = DOMAIN
 WS_CONNECT = "{}/connect".format(WS_ROOT)
@@ -26,4 +27,5 @@ USER_COMMANDS = [
         "lovelace-reload",
         "blackout",
         "no-blackout",
+        "toast",
         ]

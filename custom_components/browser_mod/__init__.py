@@ -22,7 +22,7 @@ async def async_setup(hass, config):
         DATA_DEVICES: {},
         DATA_ALIASES: aliases,
         DATA_ADDERS: {},
-        DATA_CONFIG: config[DOMAIN].get(CONFIG_DEVICES, {}),
+        DATA_CONFIG: config[DOMAIN],
         }
 
     await hass.helpers.discovery.async_load_platform("media_player", DOMAIN, {}, config)

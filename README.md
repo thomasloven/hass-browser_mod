@@ -60,6 +60,16 @@ This binds the *aliases* `arrakis` to `99980b13-dabc9563` and `dashboard` to `d2
 
 Note: Aliases must be unique.
 
+### Prefix
+You can add a custom prefix to all entity ids in `configuration.yaml`:
+
+E.g. to give entities default names like `media_player.browser_99980b13_dabc9563` add:
+```yaml
+browser_mod:
+  prefix: "browser_"
+```
+This does not apply to devices with an alias.
+
 ## Entities
 Once `browser_mod` is installed, loading up your Home Assistant frontend on a new *device* will create three to five new devices.
 
@@ -184,6 +194,16 @@ service_data:
 will show the more-info dialog of `camera.front_door` on the *devices* `ded3b4dc-abedd098` and `dashboard`.
 
 The optional parameter `large: true` will make the popup wider.
+
+### toast
+```
+service: browser_mod.toast
+service_data:
+  message: Short message
+```
+
+Display a toast notification on all devices.
+The optional parameter `duration:` determines the time (in ms) that the toast is shown. Set to 0 for persistent display. Default is 3000.
 
 ### popup
 ```

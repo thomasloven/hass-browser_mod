@@ -126,6 +126,9 @@ class BrowserMod {
         this.mute(msg);
         break;
 
+      case "toast":
+        this.toast(msg);
+        break;
       case "popup":
         this.popup(msg);
         break;
@@ -206,6 +209,15 @@ class BrowserMod {
     if (msg.mute === undefined)
       msg.mute = !this.player.muted;
     this.player.muted = Boolean(msg.mute)
+  }
+
+  toast(msg) {
+    if(!msg.message) return;
+
+    fireEvent("hass-notification", {
+      message: msg.message,
+      duration: msg.duration !== undefined ? parseInt(msg.duration) : undefined
+    }, document.querySelector("home-assistant"));
   }
 
   popup(msg){
