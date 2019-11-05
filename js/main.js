@@ -1,8 +1,8 @@
-import { deviceID } from "/card-tools/deviceId";
-import { lovelace_view, provideHass, load_lovelace } from "/card-tools/hass";
-import { popUp, closePopUp } from "/card-tools/popup";
-import { fireEvent } from "/card-tools/event";
-import { moreInfo } from "/card-tools/more-info.js";
+import { deviceID } from "card-tools/src/deviceId";
+import { lovelace_view, provideHass, load_lovelace } from "card-tools/src/hass";
+import { popUp, closePopUp } from "card-tools/src/popup";
+import { fireEvent } from "card-tools/src/event";
+import { moreInfo } from "card-tools/src/more-info.js";
 import "./browser-player";
 
 class BrowserMod {

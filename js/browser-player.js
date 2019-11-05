@@ -1,6 +1,6 @@
-import { LitElement, html, css } from "/card-tools/lit-element";
-import { deviceID } from "/card-tools/deviceId"
-import { moreInfo } from "/card-tools/more-info"
+import { LitElement, html, css } from "card-tools/src/lit-element";
+import { deviceID } from "card-tools/src/deviceId"
+import { moreInfo } from "card-tools/src/more-info"
 
 class BrowserPlayer extends LitElement {
 
