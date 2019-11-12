@@ -315,6 +315,14 @@ Second, there are a few more attributes available
 
 # FAQ
 
+### Where can I find my deviceID?
+
+The easiest way is to go to `developer-tools/service` and call the `browser_mod.debug` service.
+
+But you can also find the device id on the `browser-player` card, if you added one to your lovelace config.
+
+An alternative way is to type `localStorage["lovelace-player-device-id"]` into your browsers console.
+
 ### Does this replace lovelace-player and lovelace-browser-commander
 Yes.
 
