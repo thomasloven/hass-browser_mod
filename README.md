@@ -70,6 +70,24 @@ browser_mod:
 ```
 This does not apply to devices with an alias.
 
+### Disabling entities
+`browser_mod` creates a number of entities, which is explained below. In some cases, you may not want to do that. If so, add a list of entity types you do *not* want to add to a `disable` section, either for each device, or globally to ignore for all unknown devices:
+
+E.g. to disable the `light` and `media_player` for the device aliased to `arrakis`, AND disable *all* entities for all devices which *don't* have an alias:
+
+```yaml
+browser_mod:
+  devices:
+    99980b13-dabc9563:
+      name: arrakis
+      disable:
+        - light
+        - media_player
+  disable:
+    - all
+````
+
+
 ## Entities
 Once `browser_mod` is installed, loading up your Home Assistant frontend on a new *device* will create three to five new devices.
 

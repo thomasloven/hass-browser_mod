@@ -74,7 +74,8 @@ class BrowserModConnection:
                     'sensor',
                     self.deviceID,
                     self)
-            self.sensor.data = data.get('browser')
+            if self.sensor:
+                self.sensor.data = data.get('browser')
 
         if data.get('player'):
             self.media_player = self.media_player or create_entity(
@@ -82,7 +83,8 @@ class BrowserModConnection:
                     'media_player',
                     self.deviceID,
                     self)
-            self.media_player.data = data.get('player')
+            if self.media_player:
+                self.media_player.data = data.get('player')
 
         if data.get('screen'):
             self.screen = self.screen or create_entity(
@@ -90,7 +92,8 @@ class BrowserModConnection:
                     'light',
                     self.deviceID,
                     self)
-            self.screen.data = data.get('screen')
+            if self.screen:
+                self.screen.data = data.get('screen')
 
         if data.get('fully'):
             self.fully = self.fully or create_entity(
@@ -98,7 +101,8 @@ class BrowserModConnection:
                     'binary_sensor',
                     self.deviceID,
                     self)
-            self.fully.data = data.get('fully')
+            if self.fully:
+                self.fully.data = data.get('fully')
 
         if data.get('camera'):
             self.camera = self.camera or create_entity(
@@ -106,5 +110,6 @@ class BrowserModConnection:
                     'camera',
                     self.deviceID,
                     self)
-            self.camera.data = data.get('camera')
+            if self.camera:
+                self.camera.data = data.get('camera')
 

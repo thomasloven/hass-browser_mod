@@ -11,6 +11,8 @@ DATA_CONFIG = "config"
 
 CONFIG_DEVICES = "devices"
 CONFIG_PREFIX = "prefix"
+CONFIG_DISABLE = "disable"
+CONFIG_DISABLE_ALL = "all"
 
 WS_ROOT = DOMAIN
 WS_CONNECT = "{}/connect".format(WS_ROOT)
