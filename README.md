@@ -327,6 +327,49 @@ Second, there are a few more attributes available
 | `charging` | Whether the battery is currently charging. |
 | `motion` | Whether the devices camera has detected any motion in the last five seconds. |
 
+# Replacing more-info dialogs
+With browser_mod, you can replace any more-info dialog with any lovelace card you choose yourself. This can be done either per lovelace view, or globally (even outside of lovelace).
+
+The replacement is included in your lovelace or lovelace view configuration, and the syntax is exactly like the `popup` service, except you can't use `auto_close` or `time`.
+
+Ex:
+```yaml
+views:
+  - title: Home view
+    icon: mdi:house
+    popup_cards:
+      light.ceiling_light:
+        title: My popup
+        card:
+          type: entities
+          entities:
+            - light.ceiling_light_bulb1
+            - light.ceiling_light_bulb2
+            - light.ceiling_light_bulb3
+            - light.ceiling_light_bulb4
+```
+
+This would show an entities card with four bulbs any time the more-info dialog for `light.ceiling_light` would normally be shown when you're on the Home view in lovelace.
+
+```yaml
+title: My home
+resources:
+  - url: /local/card-mod.js
+    type: module
+popup_cards:
+  sensor.sensor1:
+    title: First sensor
+    card:
+      type: gauge
+      entity: sensor.sensor1
+  sensor.sensor2:
+    title: Second sensor
+    card:
+      type: gauge
+      entity: sensor.sensor2
+```
+This would replace the more-info dialogs of `sensor.sensor1` and `sensor.sensor2` anywhere in your interface. Even outside of lovelace - be careful about that.
+
 # Support
 
 [Home Assistant community forum thread](https://community.home-assistant.io/t/browser-mod-turn-your-browser-into-a-controllable-device-and-a-media-player/123806)

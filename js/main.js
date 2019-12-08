@@ -1,5 +1,5 @@
 import { deviceID } from "card-tools/src/deviceId";
-import { lovelace_view, provideHass, load_lovelace } from "card-tools/src/hass";
+import { lovelace_view, provideHass, load_lovelace, lovelace } from "card-tools/src/hass";
 import { popUp, closePopUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
 import { moreInfo } from "card-tools/src/more-info.js";
@@ -46,6 +46,7 @@ class BrowserMod {
   constructor() {
     window.setTimeout(this._load_lovelace.bind(this), 500);
     window.hassConnection.then((conn) => this.connect(conn.conn));
+    document.querySelector("home-assistant").addEventListener("hass-more-info", this.popup_card.bind(this));
     this.player = new Audio();
     this.playedOnce = false;
 
@@ -169,6 +170,22 @@ class BrowserMod {
     if (this.player.ended) return "stopped";
     if (this.player.paused) return "paused";
     return "playing";
+  }
+
+  popup_card(ev) {
+    const moreInfoEl = document.querySelector("home-assistant")._moreInfoEl;
+    if(moreInfoEl && !moreInfoEl.getAttribute('aria-hidden')) return;
+    if(!lovelace()) return;
+    const ll = lovelace();
+    const data = {
+      ...ll.config.popup_cards,
+      ...ll.config.views[ll.current_view].popup_cards,
+    };
+
+    if(!ev.detail || !ev.detail.entityId) return;
+    const d = data[ev.detail.entityId];
+    if(!d) return;
+    popUp(d.title, d.card, d.large || false, d.style);
   }
 
   debug(msg) {
