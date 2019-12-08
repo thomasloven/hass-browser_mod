@@ -37,8 +37,14 @@ class BrowserMod {
     window.browser_mod.playedOnce = true;
   }
 
+  _load_lovelace() {
+    if(!load_lovelace()) {
+      let timer = window.setTimeout(this._load_lovelace.bind(this), 100);
+    }
+  }
+
   constructor() {
-    window.setTimeout(load_lovelace, 500);
+    window.setTimeout(this._load_lovelace.bind(this), 500);
     window.hassConnection.then((conn) => this.connect(conn.conn));
     this.player = new Audio();
     this.playedOnce = false;
