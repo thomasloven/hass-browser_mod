@@ -1,5 +1,5 @@
 import { deviceID } from "card-tools/src/deviceId";
-import { lovelace_view, provideHass, load_lovelace, lovelace } from "card-tools/src/hass";
+import { lovelace_view, provideHass, load_lovelace, lovelace, hass } from "card-tools/src/hass";
 import { popUp, closePopUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
 import { moreInfo } from "card-tools/src/more-info.js";
@@ -27,7 +27,10 @@ class BrowserMod {
     hass.callService = newCallService;
 
     this.hassPatched = true;
-    document.querySelector("home-assistant").hassChanged(hass, hass);
+    if(document.querySelector("hc-main"))
+      document.querySelector("hc-main").hassChanged(hass,hass);
+    else
+      document.querySelector("home-assistant").hassChanged(hass, hass);
   }
 
   playOnce(ev) {
@@ -44,9 +47,16 @@ class BrowserMod {
   }
 
   constructor() {
-    window.setTimeout(this._load_lovelace.bind(this), 500);
-    window.hassConnection.then((conn) => this.connect(conn.conn));
-    document.querySelector("home-assistant").addEventListener("hass-more-info", this.popup_card.bind(this));
+    this.entity_id = deviceID.replace("-","_");
+    this.cast = document.querySelector("hc-main") !== null;
+    if(!this.cast) {
+      window.setTimeout(this._load_lovelace.bind(this), 500);
+      window.hassConnection.then((conn) => this.connect(conn.conn));
+      document.querySelector("home-assistant").addEventListener("hass-more-info", this.popup_card.bind(this));
+    } else {
+      this.connect(hass().connection);
+    }
+
     this.player = new Audio();
     this.playedOnce = false;
 
@@ -379,14 +389,13 @@ class BrowserMod {
     if(!this.conn) return;
 
     if(msg) {
-      if(msg.entity_id) {
-        this.entity_id = msg.entity_id;
+      if(msg.name) {
+        this.entity_id = msg.name.toLowerCase();
       }
       if(msg.camera) {
         this.start_camera();
       }
     }
-
 
     this.conn.sendMessage({
       type: 'browser_mod/update',
@@ -423,4 +432,4 @@ class BrowserMod {
 
 }
 
-window.browser_mod = new BrowserMod();
+window.browser_mod = window.browser_mod || new BrowserMod();

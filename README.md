@@ -17,8 +17,6 @@ For more usage examples, see the [cookbook](https://github.com/thomasloven/hass-
 
 # Installation instructions
 
-**NOTE: This integration requires Home Assistant version 0.95 or later**
-
 - Copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
 - Add the following to your `configuration.yaml`:
@@ -28,6 +26,17 @@ browser_mod:
 ```
 
 - Restart Home Assistant
+
+> Note: If you want to use browser_mod with Home Assistant Cast, you need to also add:
+>
+> ```yaml
+> resources:
+>   - url: /browser_mod.js
+>     type: module
+> ```
+> to your `ui_lovelace.yaml`.
+> Don't worry about where to put browser_mod.js, the integration will handle that automatically, and please note that it's **not** `/local/browser_mod.js`.
+
 
 # Usage
 

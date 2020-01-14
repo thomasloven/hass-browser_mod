@@ -21,7 +21,7 @@ class BrowserPlayer extends LitElement {
     window.browser_mod.set_volume({volume_level: vol});
   }
   handleMoreInfo(ev) {
-    moreInfo(window.browser_mod.entity_id);
+    moreInfo("media_player."+window.browser_mod.entity_id);
   }
   handlePlayPause(ev) {
     if (window.browser_mod.player.paused)
@@ -104,4 +104,5 @@ class BrowserPlayer extends LitElement {
 
 }
 
-customElements.define("browser-player", BrowserPlayer);
+if(!customElements.get("browser-player"))
+  customElements.define("browser-player", BrowserPlayer);
