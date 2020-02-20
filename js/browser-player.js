@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "card-tools/src/lit-element";
 import { deviceID } from "card-tools/src/deviceId"
 import { moreInfo } from "card-tools/src/more-info"
+import "./browser-player-editor.js"
 
 class BrowserPlayer extends LitElement {
 
@@ -8,6 +9,13 @@ class BrowserPlayer extends LitElement {
     return {
       hass: {},
     };
+  }
+
+  static getConfigElement() {
+    return document.createElement("browser-player-editor");
+  }
+  static getStubConfig() {
+    return {};
   }
 
   setConfig(config) {

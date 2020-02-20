@@ -107,6 +107,11 @@ class BrowserMod {
     visibility: hidden;
     `;
     document.body.appendChild(this._blackout);
+
+    const pjson = require('../package.json');
+    console.info(`%cBROWSER_MOD ${pjson.version} IS INSTALLED
+    %cDeviceID: ${deviceID}`,
+    "color: green; font-weight: bold", "");
   }
 
   connect(conn) {
