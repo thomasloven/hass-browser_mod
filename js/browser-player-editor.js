@@ -16,5 +16,6 @@ class BrowserPlayerEditor extends LitElement {
 
 if(!customElements.get("browser-player-editor")) {
   customElements.define("browser-player-editor", BrowserPlayerEditor);
-  registerCard("browser-player", "Browser Player");
+  window.customCards = window.customCards || [];
+  window.customCards.push({type:"browser-player", name: "Browser Player", preview: true});
 }

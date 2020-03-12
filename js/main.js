@@ -16,9 +16,12 @@ class BrowserMod {
       if(serviceData && serviceData.deviceID) {
         if(Array.isArray(serviceData.deviceID)) {
           const index = serviceData.deviceID.indexOf('this');
-          if(index !== -1)
+          if(index !== -1) {
+            serviceData = JSON.parse(JSON.stringify(serviceData));
             serviceData.deviceID[index] = deviceID;
+          }
         } else if(serviceData.deviceID === "this") {
+          serviceData = JSON.parse(JSON.stringify(serviceData));
           serviceData.deviceID = deviceID;
         }
       }
