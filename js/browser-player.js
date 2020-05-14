@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "card-tools/src/lit-element";
-import { deviceID } from "card-tools/src/deviceId"
+import { deviceID } from "card-tools/src/deviceID"
 import { moreInfo } from "card-tools/src/more-info"
 import "./browser-player-editor.js"
 
