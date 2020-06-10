@@ -40,6 +40,8 @@ browser_mod:
 
 # Usage
 
+Here's a fantastic video summary of all `browser_mod` functions by Pinkywafer: [Youtube link](https://www.youtube.com/watch?v=atpIP2RYldA).
+
 ## Devices
 The most important concept of `browser_mod` is the *device*.
 

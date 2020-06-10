@@ -43,13 +43,13 @@ class BrowserPlayer extends LitElement {
     return html`
     <ha-card>
       <div class="card-content">
-      <paper-icon-button
+      <ha-icon-button
         .icon=${player.muted
           ? "mdi:volume-off"
           : "mdi:volume-high"
         }
         @click=${this.handleMute}
-      ></paper-icon-button>
+      ></ha-icon-button>
       <ha-paper-slider
         min=0
         max=1
