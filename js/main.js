@@ -49,12 +49,20 @@ class BrowserMod {
     }
   }
 
+  _connect() {
+    if(!window.hassConnection) {
+      window.setTimeout(() => this._connect(), 100);
+    } else {
+      window.hassConnection.then((conn) => this.connect(conn.conn));
+    }
+  }
+
   constructor() {
     this.entity_id = deviceID.replace("-","_");
     this.cast = document.querySelector("hc-main") !== null;
     if(!this.cast) {
       window.setTimeout(this._load_lovelace.bind(this), 500);
-      window.hassConnection.then((conn) => this.connect(conn.conn));
+      this._connect();
       document.querySelector("home-assistant").addEventListener("hass-more-info", this.popup_card.bind(this));
     } else {
       this.connect(hass().connection);

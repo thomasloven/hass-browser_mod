@@ -47,6 +47,10 @@ class BrowserPlayer extends LitElement {
   }
 
   render() {
+    if(!window.browser_mod) {
+      window.setTimeout(() => this.requestUpdate(), 100);
+      return html``;
+    }
     const player = window.browser_mod.player;
     return html`
     <ha-card>
