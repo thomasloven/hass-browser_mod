@@ -1,0 +1,16 @@
+default_config:
+
+demo:
+
+browser_mod:
+
+lovelace:
+  mode: yaml
+  resources:
+    - url: /local/card-mod.js
+      type: module
+  dashboards:
+    lovelace-yaml:
+      mode: yaml
+      title: yaml
+      filename: lovelace.yaml
