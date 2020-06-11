@@ -1,21 +1,30 @@
-import { LitElement, html, css } from "card-tools/src/lit-element";
 import { registerCard } from "card-tools/src/editor";
 
-class BrowserPlayerEditor extends LitElement {
-    setConfig(config) {
+const bases = [customElements.whenDefined('home-assistant-main'), customElements.whenDefined('hui-view')];
+Promise.race(bases).then(() => {
 
-    }
-    render() {
-        return html`
-        <div>
-        Nothing to configure.
-        </div>
-        `;
-    }
-}
+  const LitElement = customElements.get('home-assistant-main')
+    ? Object.getPrototypeOf(customElements.get('home-assistant-main'))
+    : Object.getPrototypeOf(customElements.get('hui-view'));
+  const html = LitElement.prototype.html;
+  const css = LitElement.prototype.css;
 
-if(!customElements.get("browser-player-editor")) {
-  customElements.define("browser-player-editor", BrowserPlayerEditor);
-  window.customCards = window.customCards || [];
-  window.customCards.push({type:"browser-player", name: "Browser Player", preview: true});
-}
+  class BrowserPlayerEditor extends LitElement {
+      setConfig(config) {
+
+      }
+      render() {
+          return html`
+          <div>
+          Nothing to configure.
+          </div>
+          `;
+      }
+  }
+
+  if(!customElements.get("browser-player-editor")) {
+    customElements.define("browser-player-editor", BrowserPlayerEditor);
+    window.customCards = window.customCards || [];
+    window.customCards.push({type:"browser-player", name: "Browser Player", preview: true});
+  }
+});

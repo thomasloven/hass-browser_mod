@@ -1,7 +1,15 @@
-import { LitElement, html, css } from "card-tools/src/lit-element";
 import { deviceID } from "card-tools/src/deviceId"
 import { moreInfo } from "card-tools/src/more-info"
 import "./browser-player-editor.js"
+
+const bases = [customElements.whenDefined('home-assistant-main'), customElements.whenDefined('hui-view')];
+Promise.race(bases).then(() => {
+
+const LitElement = customElements.get('home-assistant-main')
+  ? Object.getPrototypeOf(customElements.get('home-assistant-main'))
+  : Object.getPrototypeOf(customElements.get('hui-view'));
+const html = LitElement.prototype.html;
+const css = LitElement.prototype.css;
 
 class BrowserPlayer extends LitElement {
 
@@ -114,3 +122,4 @@ class BrowserPlayer extends LitElement {
 
 if(!customElements.get("browser-player"))
   customElements.define("browser-player", BrowserPlayer);
+});

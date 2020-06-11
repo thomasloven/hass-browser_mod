@@ -440,4 +440,8 @@ class BrowserMod {
 
 }
 
-window.browser_mod = window.browser_mod || new BrowserMod();
+
+const bases = [customElements.whenDefined('home-assistant-main'), customElements.whenDefined('hui-view')];
+Promise.race(bases).then(() => {
+  window.browser_mod = window.browser_mod || new BrowserMod();
+});
