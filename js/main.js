@@ -211,7 +211,7 @@ class BrowserMod {
     if(!ev.detail || !ev.detail.entityId) return;
     const d = data[ev.detail.entityId];
     if(!d) return;
-    popUp(d.title, d.card, d.large || false, d.style);
+    popUp(d.title, d.card, d.large || false, d.style, autoclose_popup_card=d.autoclose_popup_card);
   }
 
   debug(msg) {
