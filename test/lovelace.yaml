@@ -1,0 +1,18 @@
+name: browser_mod
+views:
+  - title: Player
+    cards:
+      - type: custom:browser-player
+      - type: button
+        entity: sun.sun
+        name: popup
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID: this
+            title: Test
+            card:
+              type: markdown
+              content: Hello!
+

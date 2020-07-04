@@ -3,6 +3,15 @@ import { deviceID } from "card-tools/src/deviceID"
 import { moreInfo } from "card-tools/src/more-info"
 import "./browser-player-editor.js"
 
+const bases = [customElements.whenDefined('home-assistant-main'), customElements.whenDefined('hui-view')];
+Promise.race(bases).then(() => {
+
+const LitElement = customElements.get('home-assistant-main')
+  ? Object.getPrototypeOf(customElements.get('home-assistant-main'))
+  : Object.getPrototypeOf(customElements.get('hui-view'));
+const html = LitElement.prototype.html;
+const css = LitElement.prototype.css;
+
 class BrowserPlayer extends LitElement {
 
   static get properties() {
@@ -39,6 +48,10 @@ class BrowserPlayer extends LitElement {
   }
 
   render() {
+    if(!window.browser_mod) {
+      window.setTimeout(() => this.requestUpdate(), 100);
+      return html``;
+    }
     const player = window.browser_mod.player;
     return html`
     <ha-card>
@@ -114,3 +127,4 @@ class BrowserPlayer extends LitElement {
 
 if(!customElements.get("browser-player"))
   customElements.define("browser-player", BrowserPlayer);
+});
