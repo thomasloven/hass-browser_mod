@@ -1,4 +1,10 @@
 name: browser_mod
+popup_cards:
+  sun.sun:
+    title: Popup-card
+    card:
+      type: markdown
+      content: Popup for sun.sun
 views:
   - title: Player
     cards:
@@ -16,3 +22,59 @@ views:
               type: markdown
               content: Hello!
 
+      - type: button
+        entity: sun.sun
+        name: large
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID: this
+            title: Test
+            large: true
+            card:
+              type: markdown
+              content: Hello!
+
+      - type: button
+        entity: sun.sun
+        name: Style
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID: this
+            title: Test
+            style:
+              border-radius: 20px
+            card:
+              type: markdown
+              content: Hello!
+
+      - type: button
+        entity: sun.sun
+        name: Auto Close
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID: this
+            title: Test
+            auto_close: true
+            card:
+              type: markdown
+              content: Hello!
+
+      - type: button
+        entity: sun.sun
+        name: Hide Header
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            deviceID: this
+            title: Test
+            hide_header: true
+            card:
+              type: markdown
+              content: Hello!

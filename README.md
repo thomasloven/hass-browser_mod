@@ -258,6 +258,7 @@ will display the specified `entities` card as a popup on the current device and 
 
 The optional parameter `large: true` will make the popup wider.  
 The optional parameter `style:` will apply CSS style options to the popup.  
+The optional parameter `hide_header: true` will hide the header bar and close button.  
 The optional parameter `auto_close: true` will make the popup close automatically when the mouse is moved or a key is pressed on the keyboard. This also removes the header bar.  
 The optional parameter `time:` (only useable if `auto_close: true` is also set) will turn the popup into a "screensaver". See the `blackout` command below.  
 
