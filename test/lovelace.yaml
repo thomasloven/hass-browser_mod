@@ -46,10 +46,23 @@ views:
             deviceID: this
             title: Test
             style:
-              border-radius: 20px
+              .: |
+                app-toolbar {
+                  background: rgba(0,0,0,0.5) !important;
+                }
+              $: |
+                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                  border-radius: 20px;
+                  background: rgba(0,0,0,0);
+                }
             card:
               type: markdown
               content: Hello!
+              style: |
+                ha-card {
+                  --ha-card-background: rgba(0,0,0,0.5);
+                  color: white;
+                }
 
       - type: button
         entity: sun.sun
