@@ -43,8 +43,8 @@ class BrowserMod {
     window.browser_mod.playedOnce = true;
   }
 
-  _load_lovelace() {
-    if(!load_lovelace()) {
+  async _load_lovelace() {
+    if(!await load_lovelace()) {
       let timer = window.setTimeout(this._load_lovelace.bind(this), 100);
     }
   }
