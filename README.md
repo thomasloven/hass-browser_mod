@@ -174,7 +174,7 @@ It's state will be the state of the camera motion detector of the *device* (5 se
 
 `browser_mod` registers a number of services.
 
-All service calls have one parameter in common; `deviceID` which is a list of *devices* to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currenctly connected *devices*. `deviceID` may also contain aliases.
+All service calls have one parameter in common; `deviceID` which is a list of *devices* to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currently connected *devices*. `deviceID` may also contain aliases.
 
 If a service is called from the frontend (e.g. by using the `call-service` tap action), a value of `this` in the `deviceID` list will be replaced with the ID of the *device* the call was made from.
 Alternatively, `deviceID: this` will also work.
