@@ -10,6 +10,7 @@ views:
     cards:
       - type: custom:browser-player
       - type: button
+        class: border
         entity: sun.sun
         name: popup
         tap_action:
@@ -56,13 +57,22 @@ views:
                   background: rgba(0,0,0,0);
                 }
             card:
-              type: markdown
-              content: Hello!
-              style: |
-                ha-card {
-                  --ha-card-background: rgba(0,0,0,0.5);
-                  color: white;
-                }
+              type: vertical-stack
+              cards:
+              - type: markdown
+                content: Hello!
+                style: |
+                  ha-card {
+                    --ha-card-background: rgba(0,0,0,0.5);
+                    color: white;
+                  }
+              - type: markdown
+                content: Hello!
+                style: |
+                  ha-card {
+                    --ha-card-background: rgba(0,0,0,0.5);
+                    color: red;
+                  }
 
       - type: button
         entity: sun.sun
