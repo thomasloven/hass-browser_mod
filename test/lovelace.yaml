@@ -9,95 +9,20 @@ views:
   - title: Player
     cards:
       - type: custom:browser-player
-      - type: button
-        class: border
-        entity: sun.sun
-        name: popup
-        tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
-            deviceID: this
-            title: Test
-            card:
-              type: markdown
-              content: Hello!
-
-      - type: button
-        entity: sun.sun
-        name: large
-        tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
-            deviceID: this
-            title: Test
-            large: true
-            card:
-              type: markdown
-              content: Hello!
-
-      - type: button
-        entity: sun.sun
-        name: Style
-        tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
-            deviceID: this
-            title: Test
+      - type: picture-elements
+        image: https://placekitten.com/g/800/600
+        elements:
+          - type: state-icon
+            entity: light.bed_light
             style:
-              .: |
-                app-toolbar {
-                  background: rgba(0,0,0,0.5) !important;
-                }
-              $: |
-                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-                  border-radius: 20px;
-                  background: rgba(0,0,0,0);
-                }
-            card:
-              type: vertical-stack
-              cards:
-              - type: markdown
-                content: Hello!
-                style: |
-                  ha-card {
-                    --ha-card-background: rgba(0,0,0,0.5);
-                    color: white;
-                  }
-              - type: markdown
-                content: Hello!
-                style: |
-                  ha-card {
-                    --ha-card-background: rgba(0,0,0,0.5);
-                    color: red;
-                  }
+              top: 50%
+              left: 50%
+              animation: spin 4s linear infinite
+        style: |
+          @keyframes spin {
+            100% {
+              transform: rotate(360deg);
+            }
+          }
 
-      - type: button
-        entity: sun.sun
-        name: Auto Close
-        tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
-            deviceID: this
-            title: Test
-            auto_close: true
-            card:
-              type: markdown
-              content: Hello!
-
-      - type: button
-        entity: sun.sun
-        name: Hide Header
-        tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
-            deviceID: this
-            title: Test
-            hide_header: true
-            card:
-              type: markdown
-              content: Hello!
+  - !include views/popup.yaml

@@ -1,0 +1,232 @@
+x-anchors:
+  default: &default
+    type: button
+    entity: light.bed_light
+    icon: mdi:settings
+
+  desc: &desc
+    type: markdown
+    style: |
+      code {
+        font-size: 8pt;
+        line-height: normal;
+        white-space: pre-wrap;
+        }
+
+title: Popup
+cards:
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+          service: browser_mod.popup
+          service_data:
+            title: Default
+            card:
+              type: markdown
+              content: Popup!
+          ```
+      - <<: *default
+        name: Default
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: Default
+            card:
+              type: markdown
+              content: Popup!
+
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+          service: browser_mod.popup
+          service_data:
+            title: Large
+            large: true
+            card:
+              type: markdown
+              content: Popup!
+          ```
+      - <<: *default
+        name: Large
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: Large
+            large: true
+            card:
+              type: markdown
+              content: Popup!
+
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+          service: browser_mod.popup
+          service_data:
+            title: Hide Header
+            hide_header: true
+            card:
+              type: markdown
+              content: Popup!
+          ```
+      - <<: *default
+        name: Hide header
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: Hide Header
+            hide_header: true
+            card:
+              type: markdown
+              content: Popup!
+
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+          service: browser_mod.popup
+          service_data:
+            title: Auto close
+            auto_close: true
+            card:
+              type: markdown
+              content: Popup!
+          ```
+      - <<: *default
+        name: Auto close
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: Auto close
+            auto_close: true
+            card:
+              type: markdown
+              content: Popup!
+
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+          service: browser_mod.popup
+          service_data:
+            title: Popup 1
+            card:
+              <<: *default
+              tap_action:
+                action: call-service
+                service: browser_mod.popup
+                service_data:
+                  title: Popup 2
+                  card:
+                    type: markdown
+                    content: Popup!
+          ```
+      - <<: *default
+        name: Nested popup
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: Popup 1
+            card:
+              <<: *default
+              tap_action:
+                action: call-service
+                service: browser_mod.popup
+                service_data:
+                  title: Popup 2
+                  card:
+                    type: markdown
+                    content: Popup!
+
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          More info in popup.
+          May have different behavior depending on whether a more-info dialog
+          has ever been opened before a popup.
+      - type: entities
+        entities: [light.bed_light]
+      - <<: *default
+        name: More info in popup
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: More info in popup
+            card:
+              type: entities
+              entities: [light.bed_light]
+
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+            style:
+              $: |
+                .mdc-dialog {
+                  backdrop-filter: blur(17px);
+                  -webkit-backdrop-filter: blur(17px);
+                }
+                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                  border-radius: 25px;
+                }
+              .: |
+                :host {
+                  --mdc-theme-surface: rgba(0,0,0,0);
+                  --secondary-background-color: rgba(0,0,0,0.5);
+                  --ha-card-background: rgba(0,0,0,0.5);
+                }
+                :host .content {
+                  width: 90vw;
+                  height: 90vh;
+                }
+          ```
+      - <<: *default
+        name: Styled
+        tap_action:
+          action: call-service
+          service: browser_mod.popup
+          service_data:
+            title: Styled popup
+            card:
+              type: markdown
+              content: Popup!
+            style:
+              $: |
+                .mdc-dialog {
+                  backdrop-filter: blur(17px);
+                  -webkit-backdrop-filter: blur(17px);
+                }
+                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                  border-radius: 25px;
+                }
+              .: |
+                :host {
+                  --mdc-theme-surface: rgba(0,0,0,0);
+                  --secondary-background-color: rgba(0,0,0,0.5);
+                  --ha-card-background: rgba(0,0,0,0.5);
+                }
+                :host .content {
+                  width: 90vw;
+                  height: 90vh;
+                }
+
+  - <<: *default
+    name: Close popup
+    tap_action:
+      action: call-service
+      service: browser_mod.close_popup
