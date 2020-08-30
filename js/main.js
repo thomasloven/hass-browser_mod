@@ -368,7 +368,6 @@ class BrowserMod {
     this._video = document.createElement("video");
     this._video.autoplay = true;
     this._video.playsInline = true;
-    
     this._video.style.cssText = `
     visibility: hidden;
     width: 0;
