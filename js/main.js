@@ -368,6 +368,7 @@ class BrowserMod {
     this._video = document.createElement("video");
     this._video.autoplay = true;
     this._video.playsInline = true;
+    
     this._video.style.cssText = `
     visibility: hidden;
     width: 0;
@@ -390,7 +391,7 @@ class BrowserMod {
 
   send_cam(data) {
     const context = this._canvas.getContext('2d');
-    context.drawImage(this._video, 0, 0, this._canvas.width, this._canvas.height);
+    context.drawImage(this._video, 0, 0, this._video.videoWidth, this._video.videoHeight);
     this.conn.sendMessage({
       type: 'browser_mod/update',
       deviceID: deviceID,
