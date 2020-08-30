@@ -358,7 +358,7 @@ class BrowserMod {
     this._motionTimeout = setTimeout(() => {
       this._fullyMotion = false;
       this.update();
-    }, 5000);
+    }, 1000);
     this.update();
   }
 
@@ -398,7 +398,7 @@ class BrowserMod {
         camera: this._canvas.toDataURL('image/png'),
       },
     });
-    setTimeout(this.send_cam.bind(this), 5000);
+    setTimeout(this.send_cam.bind(this), 1000);
   }
 
 
