@@ -389,6 +389,8 @@ class BrowserMod {
   }
 
   send_cam(data) {
+    this._canvas.width = this._video.videoWidth;
+    this._canvas.height = this._video.videoHeight;
     const context = this._canvas.getContext('2d');
     context.drawImage(this._video, 0, 0, this._video.videoWidth, this._video.videoHeight);
     this.conn.sendMessage({
