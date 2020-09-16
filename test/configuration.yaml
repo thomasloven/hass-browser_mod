@@ -14,3 +14,13 @@ lovelace:
       mode: yaml
       title: yaml
       filename: lovelace.yaml
+
+frontend:
+  themes:
+    test:
+      card-mod-theme: test
+      card-mod-more-info-yaml: |
+        $: |
+          .mdc-dialog {
+            backdrop-filter: grayscale(0.7) blur(5px);
+          }

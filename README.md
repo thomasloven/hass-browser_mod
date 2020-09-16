@@ -71,6 +71,11 @@ This binds the *aliases* `arrakis` to `99980b13-dabc9563` and `dashboard` to `d2
 
 Note: Aliases must be unique.
 
+
+#### Experimental: Custom deviceID
+You can also set a deviceID by adding `?deviceID=mydeviceID` to the end of the URL you're using to access Home Assistant. Be careful - I have no idea what could happen if several devices were to have the same ID.
+Use `?deviceID=clear` to generate a new random one.
+
 ### Prefix
 You can add a custom prefix to all entity ids in `configuration.yaml`:
 
@@ -257,19 +262,11 @@ will display the specified `entities` card as a popup on the current device and 
 ![popup-example](https://user-images.githubusercontent.com/1299821/60288984-a7cb6b00-9915-11e9-9322-324323a9ec6e.png)
 
 The optional parameter `large: true` will make the popup wider.  
-The optional parameter `style:` will apply CSS style options to the popup.  
+The optional parameter `hide_header: true` will hide the header bar and close button.  
 The optional parameter `auto_close: true` will make the popup close automatically when the mouse is moved or a key is pressed on the keyboard. This also removes the header bar.  
 The optional parameter `time:` (only useable if `auto_close: true` is also set) will turn the popup into a "screensaver". See the `blackout` command below.  
 
-Ex:
-```yaml
-  style:
-    border-radius: 20px
-    --ha-card-border-radius: 20px
-    --ha-card-background: red
-```
-
-Note: Sometimes this doesn't work if the *device* is not currently displaying a lovelace path. I'm looking into that...
+If [card-mod](https://github.com/thomasloven/lovelace-card-mod) is installed, the popup can be styled by the optional `style` parameter, or by the `card-mod-more-info[-yaml]` theme variable.
 
 ### close_popup
 ```

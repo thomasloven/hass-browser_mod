@@ -1,18 +1,28 @@
 name: browser_mod
+popup_cards:
+  sun.sun:
+    title: Popup-card
+    card:
+      type: markdown
+      content: Popup for sun.sun
 views:
   - title: Player
     cards:
       - type: custom:browser-player
-      - type: button
-        entity: sun.sun
-        name: popup
-        tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
-            deviceID: this
-            title: Test
-            card:
-              type: markdown
-              content: Hello!
+      - type: picture-elements
+        image: https://placekitten.com/g/800/600
+        elements:
+          - type: state-icon
+            entity: light.bed_light
+            style:
+              top: 50%
+              left: 50%
+              animation: spin 4s linear infinite
+        style: |
+          @keyframes spin {
+            100% {
+              transform: rotate(360deg);
+            }
+          }
 
+  - !include views/popup.yaml

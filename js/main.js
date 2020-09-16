@@ -43,8 +43,8 @@ class BrowserMod {
     window.browser_mod.playedOnce = true;
   }
 
-  _load_lovelace() {
-    if(!load_lovelace()) {
+  async _load_lovelace() {
+    if(!await load_lovelace()) {
       let timer = window.setTimeout(this._load_lovelace.bind(this), 100);
     }
   }
@@ -177,11 +177,9 @@ class BrowserMod {
       case "set-theme":
         this.set_theme(msg);
         break;
-
       case "lovelace-reload":
         this.lovelace_reload(msg);
         break;
-
       case "window-reload":
         window.location.reload(false);
         break;
@@ -203,8 +201,6 @@ class BrowserMod {
   }
 
   popup_card(ev) {
-    const moreInfoEl = document.querySelector("home-assistant")._moreInfoEl;
-    if(moreInfoEl && !moreInfoEl.getAttribute('aria-hidden')) return;
     if(!lovelace()) return;
     const ll = lovelace();
     const data = {
@@ -215,7 +211,10 @@ class BrowserMod {
     if(!ev.detail || !ev.detail.entityId) return;
     const d = data[ev.detail.entityId];
     if(!d) return;
+    window.setTimeout(() => {
+    fireEvent("hass-more-info", {entityId: "."}, document.querySelector("home-assistant"));
     popUp(d.title, d.card, d.large || false, d.style);
+    }, 50);
   }
 
   debug(msg) {
@@ -278,7 +277,7 @@ class BrowserMod {
     if(!msg.card) return;
 
     const fn = () => {
-      popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close);
+      popUp(msg.title, msg.card, msg.large, msg.style, msg.auto_close||msg.hide_header);
       if(msg.auto_close)
         this.autoclose_popup_active = true;
     };
