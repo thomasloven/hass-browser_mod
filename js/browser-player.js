@@ -62,14 +62,14 @@ class BrowserPlayer extends LitElement {
         }
         @click=${this.handleMute}
       ></ha-icon-button>
-      <ha-paper-slider
+      <ha-slider
         min=0
         max=1
         step=0.01
         ?disabled=${player.muted}
         value=${player.volume}
         @change=${this.handleVolumeChange}
-      ></ha-paper-slider>
+      ></ha-slider>
 
       ${window.browser_mod.player_state === "stopped"
         ? html`<div class="placeholder"></div>`
