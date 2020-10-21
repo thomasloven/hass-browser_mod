@@ -14,7 +14,7 @@ set_theme:
   fields:
     theme:
       description: 'Theme to change to'
-      example: 'clear_light'
+      example: '{theme: "clear_light"}'
 navigate:
   description: 'Navigate to a path on a browser.'
   fields:
