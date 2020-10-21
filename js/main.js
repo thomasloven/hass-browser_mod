@@ -358,7 +358,7 @@ class BrowserMod {
     this._motionTimeout = setTimeout(() => {
       this._fullyMotion = false;
       this.update();
-    }, 500);
+    }, 5000);
     this.update();
   }
 
