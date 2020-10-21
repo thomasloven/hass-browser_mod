@@ -199,7 +199,8 @@ Display a popup with the deviceID *and* a javascript alert with the deviceID on 
 ```
 service: browser_mod.set_theme
 service_data:
-  theme: clear_light
+  theme:
+    theme: clear_light
 ```
 
 will set the current theme to `clear_light` on all devices.
