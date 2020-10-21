@@ -3,6 +3,9 @@ default_config:
 demo:
 
 browser_mod:
+  devices:
+    camdevice:
+      camera: true
 
 lovelace:
   mode: yaml

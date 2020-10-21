@@ -381,6 +381,9 @@ class BrowserMod {
     `;
     document.body.appendChild(this._canvas);
     document.body.appendChild(this._video);
+    if(!navigator.mediaDevices) {
+      return;
+    }
     navigator.mediaDevices.getUserMedia({video: true, audio: false}).then((stream) => {
       this._video.srcObject = stream;
       this._video.play();
