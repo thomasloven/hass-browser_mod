@@ -6,6 +6,8 @@ browser_mod:
   devices:
     camdevice:
       camera: true
+    testdevice:
+      alias: test
 
 lovelace:
   mode: yaml
@@ -27,3 +29,13 @@ frontend:
           .mdc-dialog {
             backdrop-filter: grayscale(0.7) blur(5px);
           }
+
+tts:
+  - platform: google_translate
+    base_url: http://localhost:5001
+
+
+script:
+  cm_debug:
+    sequence:
+      - service: browser_mod.debug
