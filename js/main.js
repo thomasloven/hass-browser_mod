@@ -77,7 +77,7 @@ class BrowserMod extends ext(BrowserModConnection, [
 
   set_theme(msg){
     if(!msg.theme) msg.theme = "default";
-    fireEvent("settheme", msg.theme, document.querySelector("home-assistant"));
+    fireEvent("settheme", {theme: msg.theme}, document.querySelector("home-assistant"));
   }
 
   lovelace_reload(msg) {
@@ -107,5 +107,4 @@ class BrowserMod extends ext(BrowserModConnection, [
 const bases = [customElements.whenDefined('home-assistant'), customElements.whenDefined('hc-main')];
 Promise.race(bases).then(() => {
   window.browser_mod = window.browser_mod || new BrowserMod();
-  window.bm = (cmd) => window.browser_mod.msg_callback(cmd);
 });

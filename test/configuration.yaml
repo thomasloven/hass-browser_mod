@@ -23,6 +23,8 @@ lovelace:
 
 frontend:
   themes:
+    red:
+      primary-color: red
     test:
       card-mod-theme: test
       card-mod-more-info-yaml: |
@@ -33,8 +35,7 @@ frontend:
 
 tts:
   - platform: google_translate
-    base_url: http://localhost:5001
-
+    base_url: !env_var OUT_ADDR
 
 script:
   cm_debug:

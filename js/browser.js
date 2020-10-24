@@ -21,7 +21,7 @@ export const BrowserModBrowserMixin = (C) => class extends C {
                 fullyKiosk: this.isFully,
                 width: window.innerWidth,
                 height: window.innerHeight,
-                battery: this.isFully ? window.fully.getBatteryLevel() : battery ? battery.level*100 : undefined,
+                battery_level: this.isFully ? window.fully.getBatteryLevel() : battery ? battery.level*100 : undefined,
                 charging: this.isFully ? window.fully.isPlugged() : battery ? battery.charging : undefined,
             }});
         });
