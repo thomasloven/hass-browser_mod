@@ -12,15 +12,18 @@ import { BrowserModScreensaverMixin } from "./screensaver";
 import { BrowserModPopupsMixin } from "./popups";
 import { BrowserModBrowserMixin } from "./browser";
 
-class BrowserMod extends
-  BrowserModBrowserMixin(
-  BrowserModPopupsMixin(
-  BrowserModScreensaverMixin(
-  BrowserModCameraMixin(
-  FullyKioskMixin(
-  BrowserModMediaPlayerMixin(
-  BrowserModConnection
-)))))) {
+
+const ext = (baseClass, mixins) =>
+  mixins.reduceRight((base, mixin) => mixin(base), baseClass);
+
+class BrowserMod extends ext(BrowserModConnection, [
+  BrowserModBrowserMixin,
+  BrowserModPopupsMixin,
+  BrowserModScreensaverMixin,
+  BrowserModCameraMixin,
+  FullyKioskMixin,
+  BrowserModMediaPlayerMixin,
+  ]) {
 
 
   constructor() {

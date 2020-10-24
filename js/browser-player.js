@@ -1,4 +1,4 @@
-import { deviceID } from "card-tools/src/deviceId"
+import { deviceID, setDeviceID } from "card-tools/src/deviceId"
 import { moreInfo } from "card-tools/src/more-info"
 import "./browser-player-editor.js"
 
@@ -28,22 +28,31 @@ class BrowserPlayer extends LitElement {
 
   setConfig(config) {
     this._config = config;
+    for (const event of ["play", "pause", "ended", "volumechange", "canplay", "loadeddata"])
+      window.browser_mod.player.addEventListener(event, () => this.requestUpdate());
   }
   handleMute(ev) {
-    window.browser_mod.mute({});
+    window.browser_mod.player_mute();
   }
   handleVolumeChange(ev) {
     const vol = parseFloat(ev.target.value);
-    window.browser_mod.set_volume({volume_level: vol});
+    window.browser_mod.player_set_volume(vol);
   }
   handleMoreInfo(ev) {
     moreInfo("media_player."+window.browser_mod.entity_id);
   }
   handlePlayPause(ev) {
     if (window.browser_mod.player.paused)
-      window.browser_mod.play({});
+      window.browser_mod.player_play();
     else
-      window.browser_mod.pause({});
+      window.browser_mod.player_pause();
+  }
+  setDeviceID() {
+    const newID = prompt("Set deviceID", deviceID);
+    if (newID !== deviceID) {
+      setDeviceID(newID);
+      this.requestUpdate();
+    }
   }
 
   render() {
@@ -74,22 +83,22 @@ class BrowserPlayer extends LitElement {
       ${window.browser_mod.player_state === "stopped"
         ? html`<div class="placeholder"></div>`
         : html`
-          <paper-icon-button
+          <ha-icon-button
             .icon=${player.paused
               ? "mdi:play"
               : "mdi:pause"
             }
             @click=${this.handlePlayPause}
             highlight
-          ></paper-icon-button>
+          ></ha-icon-button>
           `}
-      <paper-icon-button
-        .icon=${"mdi:settings"}
+      <ha-icon-button
+        .icon=${"mdi:cog"}
         @click=${this.handleMoreInfo}
-      ></paper-icon-button>
+      ></ha-icon-button>
       </div>
 
-      <div class="device-id">
+      <div class="device-id" @click=${this.setDeviceID}>
       ${deviceID}
       </div>
 

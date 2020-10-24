@@ -16,7 +16,7 @@ export const BrowserModPopupsMixin = (C) => class extends C {
     }
 
     _popup_card(ev) {
-        if(!lovelace) return;
+        if(!lovelace()) return;
         if(!ev.detail || !ev.detail.entityId) return;
         const data = {
             ...lovelace().config.popup_cards,

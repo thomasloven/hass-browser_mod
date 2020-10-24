@@ -28,6 +28,11 @@ export const BrowserModScreensaverMixin = (C) => class extends C {
             display: none;
         `;
         document.body.appendChild(this._blackout_panel);
+
+        if(this.isFully) {
+            window.fully.bind("screenOn", "window.browser_mod.screen_update();");
+            window.fully.bind("screenOff", "window.browser_mod.screen_update();");
+        }
     }
 
     screensaver_set(fn, clearfn, time) {
@@ -110,7 +115,7 @@ export const BrowserModScreensaverMixin = (C) => class extends C {
     screen_update() {
         this.sendUpdate({screen: {
             blackout: this.isFully
-                ? window.fully.getScreenOn()
+                ? !window.fully.getScreenOn()
                 : Boolean(this._blackout_panel.style.display === "block"),
             brightness: this.isFully ? window.fully.getScreenBrightness() : undefined,
         }})

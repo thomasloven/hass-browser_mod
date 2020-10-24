@@ -15,14 +15,14 @@ export const FullyKioskMixin = (C) => class extends C {
             fully.bind(event, "window.browser_mod.fully_update();");
         }
 
-        fully.bind("onMotion", "window.browser_mod.fullyMotionTriggered();");
+        window.fully.bind("onMotion", "window.browser_mod.fullyMotionTriggered();");
     }
 
     fully_update() {
         if(!this.isFully) return
         this.sendUpdate({fully: {
-            battery: fully.getBatteryLevel(),
-            charging: fully.isPlugged(),
+            battery: window.fully.getBatteryLevel(),
+            charging: window.fully.isPlugged(),
             motion: this._fullyMotion,
         }})
     }
