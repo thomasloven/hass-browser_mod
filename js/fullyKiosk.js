@@ -11,15 +11,33 @@ export const FullyKioskMixin = (C) => class extends C {
         this._fullyMotion = false;
         this._motionTimeout = undefined;
 
-        for (const event of ["screenOn", "screenOff", "pluggedAC", "pluggedUSB", "onBatteryLevelChanged", "unplugged", "networkReconnect"]) {
-            fully.bind(event, "window.browser_mod.fully_update();");
+        for (const ev of ["screenOn", "screenOff", "pluggedAC", "pluggedUSB", "onBatteryLevelChanged", "unplugged", "networkReconnect", "onMotion"]) {
+            window.fully.bind(ev, `window.browser_mod.fully_update("${ev}");`);
         }
 
-        window.fully.bind("onMotion", "window.browser_mod.fullyMotionTriggered();");
+        this._keepingAlive = false;
     }
 
-    fully_update() {
+    fully_update(event) {
         if(!this.isFully) return
+        if(event === "screenOn") {
+            window.clearTimeout(this._keepAliveTimer);
+            if(!this._keepingAlive)
+                this.screen_update();
+        } else if (event === "screenOff") {
+            this.screen_update();
+            this._keepingAlive = false;
+            if(this.config.force_stay_awake) {
+                this._keepAliveTimer = window.setTimeout(() => {
+                    this._keepingAlive = true;
+                    window.fully.turnScreenOn();
+                    window.fully.turnScreenOff();
+                }, 270000);
+            }
+        } else if (event === "onMotion") {
+            this.fullyMotionTriggered();
+        }
+
         this.sendUpdate({fully: {
             battery: window.fully.getBatteryLevel(),
             charging: window.fully.isPlugged(),

@@ -8,6 +8,8 @@ browser_mod:
       camera: true
     testdevice:
       alias: test
+    fully:
+      force_stay_awake: true
 
 
 lovelace:

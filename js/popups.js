@@ -42,7 +42,7 @@ export const BrowserModPopupsMixin = (C) => class extends C {
 
         const open = () => {
             popUp(
-                cfg.tile,
+                cfg.title,
                 cfg.card,
                 cfg.large,
                 cfg.style,

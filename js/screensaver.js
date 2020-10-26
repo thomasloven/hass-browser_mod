@@ -29,10 +29,6 @@ export const BrowserModScreensaverMixin = (C) => class extends C {
         `;
         document.body.appendChild(this._blackout_panel);
 
-        if(this.isFully) {
-            window.fully.bind("screenOn", "window.browser_mod.screen_update();");
-            window.fully.bind("screenOff", "window.browser_mod.screen_update();");
-        }
     }
 
     screensaver_set(fn, clearfn, time) {
@@ -92,7 +88,7 @@ export const BrowserModScreensaverMixin = (C) => class extends C {
         this.screensaver_set(
             () => {
                 if(this.isFully)
-                    window.fully.turnScreenOff();
+                    window.fully.turnScreenOff(true);
                 else
                     this._blackout_panel.style.display = "block";
                 this.screen_update();
@@ -109,6 +105,8 @@ export const BrowserModScreensaverMixin = (C) => class extends C {
     }
 
     no_blackout() {
+        if(this.isFully)
+            window.fully.turnScreenOn();
         this.screensaver_stop();
     }
 
