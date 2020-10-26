@@ -72,9 +72,13 @@ This binds the *aliases* `arrakis` to `99980b13-dabc9563` and `dashboard` to `d2
 Note: Aliases must be unique.
 
 
-#### Experimental: Custom deviceID
+#### Changing deviceID
+You can change the deviceID of your device by adding a `browser-player` card to your lovelace interface and clicking the deviceID at the bottom of the card. Set it to `clear` to generate a new random one.
+
 You can also set a deviceID by adding `?deviceID=mydeviceID` to the end of the URL you're using to access Home Assistant. Be careful - I have no idea what could happen if several devices were to have the same ID.
 Use `?deviceID=clear` to generate a new random one.
+
+**Take care to avoid deviceID collissions. There's no telling what could happen if more devices share the same ID.**
 
 ### Prefix
 You can add a custom prefix to all entity ids in `configuration.yaml`:
@@ -137,6 +141,8 @@ The sensor also has the following attributes:
 | `fullyKiosk` | True if the *device* is a Fully Kiosk browser. Undefined otherwise. |
 | `width` | The current width of the browser window in pixels. |
 | `height` | The current height of the browser window in pixels. |
+| `battery_level` | The current battery level of your device - if supported |
+| `charging` | The current charging state of your device - if supported |
 
 ### media\_player
 
@@ -150,7 +156,7 @@ The `light` can be used to blackout the screen.
 For Fully Kiosk Browser, the screen will actually turn off.
 For other browsers, the interface will just be covered with black (the screen is still on, will have a visible glow in the dark, and you won't save any battery).
 
-### camera (EXPERIMENTAL)
+### camera
 
 For security and UX reasons, the camera must be enabled manually on a device by device basis.
 
@@ -179,7 +185,7 @@ It's state will be the state of the camera motion detector of the *device* (5 se
 
 `browser_mod` registers a number of services.
 
-All service calls have one parameter in common; `deviceID` which is a list of *devices* to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currenctly connected *devices*. `deviceID` may also contain aliases.
+All service calls have one parameter in common; `deviceID` which is a list of *devices* to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currently connected *devices*. `deviceID` may also contain aliases.
 
 If a service is called from the frontend (e.g. by using the `call-service` tap action), a value of `this` in the `deviceID` list will be replaced with the ID of the *device* the call was made from.
 Alternatively, `deviceID: this` will also work.
@@ -333,7 +339,7 @@ Second, there are a few more attributes available
 | --- | --- |
 | `fullyKiosk` | True. |
 | `brightness` | The current screen brightness. |
-| `battery` | The current charge percentage of the devices battery. |
+| `battery_level` | The current charge percentage of the devices battery. |
 | `charging` | Whether the battery is currently charging. |
 | `motion` | Whether the devices camera has detected any motion in the last five seconds. |
 

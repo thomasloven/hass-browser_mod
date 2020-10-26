@@ -3,6 +3,12 @@ default_config:
 demo:
 
 browser_mod:
+  devices:
+    camdevice:
+      camera: true
+    testdevice:
+      alias: test
+
 
 lovelace:
   mode: yaml
@@ -17,6 +23,8 @@ lovelace:
 
 frontend:
   themes:
+    red:
+      primary-color: red
     test:
       card-mod-theme: test
       card-mod-more-info-yaml: |
@@ -24,3 +32,12 @@ frontend:
           .mdc-dialog {
             backdrop-filter: grayscale(0.7) blur(5px);
           }
+
+tts:
+  - platform: google_translate
+    base_url: !env_var OUT_ADDR
+
+script:
+  cm_debug:
+    sequence:
+      - service: browser_mod.debug

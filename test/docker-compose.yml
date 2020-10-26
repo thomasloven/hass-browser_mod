@@ -52,6 +52,8 @@ services:
     volumes: *x-files
     ports:
       - "5001:8123"
+    environment:
+      OUT_ADDR: "http://${DOCKER_GATEWAY_HOST:-localhost}:5001"
     command: *x-command
 
   dev:
