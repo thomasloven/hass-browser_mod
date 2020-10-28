@@ -1,10 +1,10 @@
 name: browser_mod
 popup_cards:
   sun.sun:
-    title: Popup-card
+    title: Global Popup-card
     card:
       type: markdown
-      content: Popup for sun.sun
+      content: Gobal popup for sun.sun
 views:
   - title: Player
     cards:
@@ -24,5 +24,35 @@ views:
               transform: rotate(360deg);
             }
           }
+      - type: button
+        entity: sun.sun
+        name: Global popup-card
+        tap_action:
+          action: more-info
 
   - !include views/popup.yaml
+
+  - title: Popup card
+    popup_cards:
+      sun.sun:
+        title: Local Popup-card
+        card:
+          type: markdown
+          content: Local popup for sun.sun
+      climate.hvac:
+        title: Local Popup-card
+        card:
+          type: markdown
+          content: Local popup for climate.hvac
+
+    cards:
+      - type: button
+        entity: climate.hvac
+        name: Local popup-card
+        tap_action:
+          action: more-info
+      - type: button
+        entity: sun.sun
+        name: Override global popup-card
+        tap_action:
+          action: more-info

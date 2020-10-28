@@ -42,10 +42,12 @@ export const FullyKioskMixin = (C) => class extends C {
             battery: window.fully.getBatteryLevel(),
             charging: window.fully.isPlugged(),
             motion: this._fullyMotion,
+            ip: window.fully.getIp4Address(),
         }})
     }
 
     fullyMotionTriggered() {
+        if(this._keepingAlive) return;
         this._fullyMotion = true;
         clearTimeout(this._motionTimeout);
         this._motionTimeout = setTimeout(() => {

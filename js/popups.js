@@ -25,15 +25,15 @@ export const BrowserModPopupsMixin = (C) => class extends C {
         const d = data[ev.detail.entityId];
         if(!d) return;
 
-        window.queueMicrotask(() => {
+        popUp(
+            d.title,
+            d.card,
+            d.large || false,
+            d.style
+        );
+        window.setTimeout(() => {
             fireEvent("hass-more-info", {entityID: "."}, document.querySelector("home-assistant"));
-            popUp(
-                d.title,
-                d.card,
-                d.large || false,
-                d.style
-            );
-        });
+        }, 50);
     }
 
     do_popup(cfg) {
