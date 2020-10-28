@@ -1,7 +1,7 @@
 {
   "name": "browser_mod",
   "private": true,
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "scripts": {
     "build": "webpack",
@@ -12,7 +12,7 @@
   "author": "Thomas Lovén",
   "license": "MIT",
   "devDependencies": {
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {

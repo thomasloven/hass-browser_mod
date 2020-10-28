@@ -57,6 +57,7 @@ class BrowserMod extends ext(BrowserModConnection, [
       navigate: (msg) => this.do_navigate(msg.navigation_path),
       "set-theme": (msg) => this.set_theme(msg),
       "lovelace-reload": (msg) => this.lovelace_reload(msg),
+      "window-reload": () => window.location.reload(false),
 
       blackout: (msg) => this.do_blackout(msg.time ? parseInt(msg.time) : undefined),
       "no-blackout": (msg) => {
