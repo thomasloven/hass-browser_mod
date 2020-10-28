@@ -11,7 +11,7 @@ export const BrowserModBrowserMixin = (C) => class extends C {
     }
 
     sensor_update() {
-        window.queueMicrotask( async () => {
+        const update = async () => {
             const battery = navigator.getBattery ? await navigator.getBattery() : undefined;
             this.sendUpdate({browser: {
                 path: window.location.pathname,
@@ -24,7 +24,8 @@ export const BrowserModBrowserMixin = (C) => class extends C {
                 battery_level: this.isFully ? window.fully.getBatteryLevel() : battery ? battery.level*100 : undefined,
                 charging: this.isFully ? window.fully.isPlugged() : battery ? battery.charging : undefined,
             }});
-        });
+        };
+        update();
     }
 
     do_navigate(path) {
