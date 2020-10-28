@@ -28,6 +28,7 @@ USER_COMMANDS = [
         "more-info",
         "set-theme",
         "lovelace-reload",
+        "window-reload",
         "blackout",
         "no-blackout",
         "toast",

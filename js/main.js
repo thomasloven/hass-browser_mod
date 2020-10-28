@@ -1,4 +1,4 @@
-import { deviceID } from "card-tools/src/deviceId";
+import { deviceID } from "card-tools/src/deviceID";
 import { lovelace_view } from "card-tools/src/hass";
 import { popUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
@@ -57,6 +57,7 @@ class BrowserMod extends ext(BrowserModConnection, [
       navigate: (msg) => this.do_navigate(msg.navigation_path),
       "set-theme": (msg) => this.set_theme(msg),
       "lovelace-reload": (msg) => this.lovelace_reload(msg),
+      "window-reload": () => window.location.reload(false),
 
       blackout: (msg) => this.do_blackout(msg.time ? parseInt(msg.time) : undefined),
       "no-blackout": (msg) => {
