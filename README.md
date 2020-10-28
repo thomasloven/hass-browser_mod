@@ -310,6 +310,12 @@ service: browser_mod.lovelace_reload
 
 Refreshes the lovelace config. Same as clicking "Refresh" in the top right menu in lovelace.
 
+### window_reload
+```
+service: browser_mod.window_reload
+```
+
+Forces the browser to reload the page. Same as clicking your browsers refresh button.
 
 ## `browser-player` card
 
