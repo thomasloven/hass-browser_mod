@@ -95,6 +95,7 @@ class BrowserMod extends ext(BrowserModConnection, [
       if(msg.camera) {
         this.setup_camera();
       }
+      this.config = {...this.config, ...msg};
     }
     this.player_update();
     this.fully_update();

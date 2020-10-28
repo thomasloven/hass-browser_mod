@@ -432,5 +432,19 @@ Some of [my lovelace plugins](https://github.com/thomasloven/hass-config/wiki/My
 
 Basically, just replace `service_data` with `data` or `data_template`, whichever fits your needs.
 
+### My Fully Kiosk Browser device goes unavailable after the screen has been turned off for five minutes
+
+This seems to be a problem with Android, and not much to do about it.
+As a workaround you can add the following to your configuration:
+
+```yaml
+browser_mod:
+  devices:
+    d2fc860c-16379d23: # DeviceID of your FKB device
+      force_stay_awake: true
+```
+
+That will make the screen turn on and off again for a second regularly to stop the five minute timer from running out.
+
 ---
 <a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
