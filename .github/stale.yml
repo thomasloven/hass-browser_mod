@@ -5,5 +5,7 @@ exemptLabels:
   - feature-request
 staleLabel: stale
 markComment: >
-  This issue has been automatically marked as stale because it has not had recent activity. It will be closed if no further activity occurs. Thank you for your contributions.
+  This issue has been automatically marked as stale, because it has not had recent activity. It'll be closed if no more activity occurs.
+  Is the issue still a problem, even on the latest version? Try creating a new issue.
+  Thank you for your contributions.
 closeComment: false
