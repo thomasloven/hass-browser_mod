@@ -348,6 +348,7 @@ Second, there are a few more attributes available
 | `battery_level` | The current charge percentage of the devices battery. |
 | `charging` | Whether the battery is currently charging. |
 | `motion` | Whether the devices camera has detected any motion in the last five seconds. |
+| `ip` | The current ipv4 address . |
 
 # Replacing more-info dialogs
 With browser_mod, you can replace any more-info dialog with any lovelace card you choose yourself. This can be done either per lovelace view, or globally (even outside of lovelace).
