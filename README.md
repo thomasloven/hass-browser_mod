@@ -56,6 +56,10 @@ In the two latter cases, the last loaded tab/window will be the *active* one.
 
 Note: Incognito mode will generate a new `deviceID` and thus a new *device* every time it's started.
 
+### Finding the deviceID
+
+The deviceID of the current browser is displayed in the browser javascript console. To open it, hit F12 with Chrome, Firefox and Edge then select the Console tab.
+
 ### Aliases
 Since the deviceID can be a bit hard to remember for devices you use often, you can specify an alias in `configuration.yaml`
 
