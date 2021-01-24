@@ -8,33 +8,36 @@ assignees: ''
 
 My Home Assistant version: 0.XX.X
 
-What I am doing:
+**What I am doing:**
 
 
-What I expected to happen:
+**What I expected to happen:**
 
 
-What happened instead:
+**What happened instead:**
 
 
 **Minimal** steps to reproduce:
 
 
 ```yaml
-# The least ammount of code possible to reproduce my error
+# The least amount of code or steps possible to reproduce my error
 
-
-
-# End of code
+# Put your code/steps here
 ```
 
 
-Error messages from the browser console:
+**Error messages from the browser console:**
 
+```
+// Select everything from the browser console and copy it
+
+// Paste it here
+```
 
 ---
 
-**By putting an X in the boxes ([ ]) below, I indicate that I:**
+**By replacing the space in the checkboxes ([ ]) with an X below, I indicate that I:**
 
 - [ ] Understand that this is a channel for reporting bugs, not a support forum (https://community.home-assistant.io/).
 
