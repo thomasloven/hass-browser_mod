@@ -32,4 +32,6 @@ USER_COMMANDS = [
         "blackout",
         "no-blackout",
         "toast",
+        "commands",
+        "call_service",
         ]

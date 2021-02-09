@@ -17,11 +17,12 @@ views:
             style:
               top: 50%
               left: 50%
+              transform: none
               animation: spin 4s linear infinite
         style: |
           @keyframes spin {
             100% {
-              transform: rotate(360deg);
+              transform: rotate(359deg);
             }
           }
       - type: button

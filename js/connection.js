@@ -27,26 +27,6 @@ export class BrowserModConnection{
 
     set hass(hass) {
         this._hass = hass;
-        if(!hass || this._hass_patched) return;
-
-        this._hass_patched = true;
-        const callService = hass.callService;
-
-        hass.callService = (domain, service, serviceData) => {
-            if(serviceData && serviceData.deviceID) {
-                serviceData = JSON.parse(JSON.stringify(serviceData));
-
-                const orig = JSON.stringify(serviceData.deviceID);
-                const patched = orig.replace('"this"', `"${deviceID}"`);
-                serviceData.deviceID = JSON.parse(patched);
-            }
-            return callService(domain, service, serviceData);
-        }
-
-        if (document.querySelector("hc-main"))
-            document.querySelector("hc-main").hassChanged(hass, hass);
-        else
-            document.querySelector("home-assistant").hassChanged(hass, hass);
     }
 
     get connected() {

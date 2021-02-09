@@ -32,6 +32,12 @@ class BrowserMod extends ext(BrowserModConnection, [
     this.cast = document.querySelector("hc-main") !== null;
     this.connect();
 
+    document.body.addEventListener("ll-custom", (ev) => {
+      if(ev.detail.browser_mod) {
+        this.msg_callback(ev.detail.browser_mod);
+      }
+    })
+
     const pjson = require('../package.json');
     console.info(`%cBROWSER_MOD ${pjson.version} IS INSTALLED
     %cDeviceID: ${deviceID}`,
@@ -57,7 +63,7 @@ class BrowserMod extends ext(BrowserModConnection, [
       navigate: (msg) => this.do_navigate(msg.navigation_path),
       "set-theme": (msg) => this.set_theme(msg),
       "lovelace-reload": (msg) => this.lovelace_reload(msg),
-      "window-reload": () => window.location.reload(false),
+      "window-reload": () => window.location.reload(),
 
       blackout: (msg) => this.do_blackout(msg.time ? parseInt(msg.time) : undefined),
       "no-blackout": (msg) => {
@@ -66,9 +72,16 @@ class BrowserMod extends ext(BrowserModConnection, [
         }
         this.no_blackout()
       },
+
+      "call-service": (msg) => this.call_service(msg),
+      "commands": (msg) => {
+        for(const m of msg.commands) {
+          this.msg_callback(m);
+        }
+      },
     };
 
-    handlers[msg.command](msg);
+    handlers[msg.command.replace("_","-")](msg);
   }
 
   debug(msg) {
@@ -85,6 +98,23 @@ class BrowserMod extends ext(BrowserModConnection, [
     const ll = lovelace_view();
     if (ll)
       fireEvent("config-refresh", {}, ll);
+  }
+
+  call_service(msg) {
+    const _replaceThis = (data) => {
+      if (typeof(data) === "string" && data === "this")
+        return deviceID;
+      if (Array.isArray(data))
+        return data.map(_replaceThis);
+      if (data.constructor == Object) {
+        for (const key in data)
+          data[key] = _replaceThis(data[key]);
+      }
+      return data;
+    }
+    const [domain, service] = msg.service.split(".", 2);
+    let service_data = _replaceThis(JSON.parse(JSON.stringify(msg.service_data)));
+    this._hass.callService(domain, service, service_data);
   }
 
   update(msg=null) {
@@ -108,5 +138,9 @@ class BrowserMod extends ext(BrowserModConnection, [
 
 const bases = [customElements.whenDefined('home-assistant'), customElements.whenDefined('hc-main')];
 Promise.race(bases).then(() => {
-  window.browser_mod = window.browser_mod || new BrowserMod();
+  window.setTimeout(() => {
+    window.browser_mod = window.browser_mod || new BrowserMod();
+    },
+    1000
+  );
 });

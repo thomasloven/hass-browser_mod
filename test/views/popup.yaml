@@ -1,8 +1,7 @@
 x-anchors:
   default: &default
     type: button
-    entity: light.bed_light
-    icon: mdi:settings
+    icon: mdi:star
 
   desc: &desc
     type: markdown
@@ -15,24 +14,25 @@ x-anchors:
 
 title: Popup
 cards:
+  - <<: *desc
+    content: |
+      ## Service: `browser_mod.popup`
   - type: vertical-stack
     cards:
       - <<: *desc
         content: |
           ```
-          service: browser_mod.popup
-          service_data:
-            title: Default
-            card:
-              type: markdown
-              content: Popup!
+          title: Default
+          card:
+            type: markdown
+            content: Popup!
           ```
       - <<: *default
         name: Default
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: Default
             card:
               type: markdown
@@ -43,20 +43,18 @@ cards:
       - <<: *desc
         content: |
           ```
-          service: browser_mod.popup
-          service_data:
-            title: Large
-            large: true
-            card:
-              type: markdown
-              content: Popup!
+          title: Large
+          large: true
+          card:
+            type: markdown
+            content: Popup!
           ```
       - <<: *default
         name: Large
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: Large
             large: true
             card:
@@ -68,20 +66,18 @@ cards:
       - <<: *desc
         content: |
           ```
-          service: browser_mod.popup
-          service_data:
-            title: Hide Header
-            hide_header: true
-            card:
-              type: markdown
-              content: Popup!
+          title: Hide Header
+          hide_header: true
+          card:
+            type: markdown
+            content: Popup!
           ```
       - <<: *default
         name: Hide header
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: Hide Header
             hide_header: true
             card:
@@ -93,20 +89,18 @@ cards:
       - <<: *desc
         content: |
           ```
-          service: browser_mod.popup
-          service_data:
-            title: Auto close
-            auto_close: true
-            card:
-              type: markdown
-              content: Popup!
+          title: Auto close
+          auto_close: true
+          card:
+            type: markdown
+            content: Popup!
           ```
       - <<: *default
         name: Auto close
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: Auto close
             auto_close: true
             card:
@@ -118,33 +112,32 @@ cards:
       - <<: *desc
         content: |
           ```
-          service: browser_mod.popup
-          service_data:
-            title: Popup 1
-            card:
-              <<: *default
-              tap_action:
-                action: call-service
-                service: browser_mod.popup
-                service_data:
-                  title: Popup 2
-                  card:
-                    type: markdown
-                    content: Popup!
+
+          title: Popup 1
+          card:
+            <<: *default
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                command: popup
+                title: Popup 2
+                card:
+                  type: markdown
+                  content: Popup!
           ```
       - <<: *default
         name: Nested popup
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: Popup 1
             card:
               <<: *default
               tap_action:
-                action: call-service
-                service: browser_mod.popup
-                service_data:
+                action: fire-dom-event
+                browser_mod:
+                  command: popup
                   title: Popup 2
                   card:
                     type: markdown
@@ -162,9 +155,9 @@ cards:
       - <<: *default
         name: More info in popup
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: More info in popup
             card:
               type: entities
@@ -198,9 +191,9 @@ cards:
       - <<: *default
         name: Styled
         tap_action:
-          action: call-service
-          service: browser_mod.popup
-          service_data:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
             title: Styled popup
             card:
               type: markdown

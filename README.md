@@ -187,33 +187,33 @@ It's state will be the state of the camera motion detector of the *device* (5 se
 
 All service calls have one parameter in common; `deviceID` which is a list of *devices* to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currently connected *devices*. `deviceID` may also contain aliases.
 
-If a service is called from the frontend (e.g. by using the `call-service` tap action), a value of `this` in the `deviceID` list will be replaced with the ID of the *device* the call was made from.
-Alternatively, `deviceID: this` will also work.
+You can also activate any service from the frontend by using the `fire-dom-event` `tap_action`.
 
-All examples below are given in the syntax used for calling them from lovelace via e.g. an entity-button card with `tap_action:` set to `call-service`. If you call the service from a script or an automation, the syntax will be slightly different.
 
-### debug
 
-```
+
+### - debug
+
+```yaml
 service: browser_mod.debug
 ```
 
 Display a popup with the deviceID *and* a javascript alert with the deviceID on all connected *devices*.
 
-### set_theme
+### - set_theme
 
-```
+```yaml
 service: browser_mod.set_theme
-service_data:
+data:
   theme: clear_light
 ```
 
 will set the current theme to `clear_light` on all devices.
 
-### navigate
-```
+### - navigate
+```yaml
 service: browser_mod.navigate
-service_data:
+data:
   navigation_path: /lovelace/1
   deviceID:
     - ded3b4dc-abedd098
@@ -223,10 +223,10 @@ will open your second lovelace view on just the *device* `ded3b4dc-abedd098`.
 
 Note: `navigation_path` does not have to be a lovelace path. All paths in Home Assistant works. (E.g. `/states`, `/dev-info`, `/map`)
 
-### more_info
-```
+### - more_info
+```yaml
 service: browser_mod.more_info
-service_data:
+data:
   entity_id: camera.front_door
   deviceID:
     - ded3b4dc-abedd098
@@ -237,20 +237,20 @@ will show the more-info dialog of `camera.front_door` on the *devices* `ded3b4dc
 
 The optional parameter `large: true` will make the popup wider.
 
-### toast
-```
+### - toast
+```yaml
 service: browser_mod.toast
-service_data:
+data:
   message: Short message
 ```
 
 Display a toast notification on all devices.
 The optional parameter `duration:` determines the time (in ms) that the toast is shown. Set to 0 for persistent display. Default is 3000.
 
-### popup
-```
+### - popup
+```yaml
 service: browser_mod.popup
-service_data:
+data:
   title: Popup example
   card:
     type: entities
@@ -274,17 +274,17 @@ The optional parameter `time:` (only useable if `auto_close: true` is also set) 
 
 If [card-mod](https://github.com/thomasloven/lovelace-card-mod) is installed, the popup can be styled by the optional `style` parameter, or by the `card-mod-more-info[-yaml]` theme variable.
 
-### close_popup
-```
+### - close_popup
+```yaml
 service: browser_mod.close_popup
 ```
 
 will close all more-info dialogs and popups that are open on all connected *devices*.
 
-### blackout
-```
+### - blackout
+```yaml
 service: browser_mod.blackout
-service_data:
+data:
   deviceID: this
 ```
 
@@ -295,29 +295,88 @@ The optional parameter `time:` will make the blackout turn on automatically afte
 
 Note: This will *not* turn off your screen backlight. Most screens will still emit light in a dark room.
 
-### no_blackout
-```
+### - no_blackout
+```yaml
 service: browser_mod.no_blackout
 ```
 
 Remove a blackout.
 The optional parameter `brightness` will set the screen brightness of a device running Fully Kiosk Browser to a value between 0 and 255.
 
-### lovelace_reload
-```
+### - lovelace_reload
+```yaml
 service: browser_mod.lovelace_reload
 ```
 
 Refreshes the lovelace config. Same as clicking "Refresh" in the top right menu in lovelace.
 
-### window_reload
-```
+### - window_reload
+```yaml
 service: browser_mod.window_reload
 ```
 
 Forces the browser to reload the page. Same as clicking your browsers refresh button.
 
-## `browser-player` card
+### - command
+```yaml
+service: browser_mod.command
+data:
+  command: <command>
+  <data>
+```
+
+This can be used to send any command to a *device* by changing `command:` and appending any other options.  
+E.g. the following two service calls will perform the same function:
+
+```yaml
+service: browser_mod.command
+data:
+  command: Toast
+  message: Hello World!
+
+service: browser_mod.toast
+data:
+  message: Hello World!
+```
+### - commands
+```yaml
+service: browser_mod.commands
+data:
+  commands:
+    - command: <command>
+      <data>
+    - command: <command>
+      <data>
+```
+This service can be used to call several services listed in the `commands:` parameter consecutively.
+
+## Run a command from the frontend
+To run a command from the frontend, you can use the tap_action `fire-dom-event` with a `browser_mod` parameter.  
+E.g:
+
+```yaml
+type: button
+icon: mdi:star
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    command: toast
+    message: Hello, world!
+```
+
+There's also a special command which is only useful from the frontend:
+### - call_service
+```yaml
+command: call-service:
+service: <service>
+service_data:
+  <service_data>
+```
+This works exactly like a `call_service` tap_action, but if `service_data` contains the parameter `deviceID` and that contains the word `this`, that will be replaced with the current deviced deviceID.
+This may be useful for e.g. calling scripts if you want to know from where it was triggered.
+
+
+# `browser-player` card
 
 To control the playback in the current *device*, `browser_mod` includes a custom lovelace card. Just add
 
@@ -330,6 +389,7 @@ anywhere in your lovelace configuration.
 The player card also displays the `entityID`. Click it to select, so you can copy it.
 
 ![browser-player](https://user-images.githubusercontent.com/1299821/60288980-a4d07a80-9915-11e9-88ba-e078a3aa24f4.png)
+
 
 # Fully Kiosk Browser
 If you are using a device running [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/) (PLUS version only) you will have access to a few more functions.
@@ -348,6 +408,7 @@ Second, there are a few more attributes available
 | `battery_level` | The current charge percentage of the devices battery. |
 | `charging` | Whether the battery is currently charging. |
 | `motion` | Whether the devices camera has detected any motion in the last five seconds. |
+
 
 # Replacing more-info dialogs
 With browser_mod, you can replace any more-info dialog with any lovelace card you choose yourself. This can be done either per lovelace view, or globally (even outside of lovelace).
@@ -392,9 +453,11 @@ popup_cards:
 ```
 This would replace the more-info dialogs of `sensor.sensor1` and `sensor.sensor2` anywhere in your interface. Even outside of lovelace - be careful about that.
 
+
 # Support
 
 [Home Assistant community forum thread](https://community.home-assistant.io/t/browser-mod-turn-your-browser-into-a-controllable-device-and-a-media-player/123806)
+
 
 # FAQ
 
@@ -428,15 +491,7 @@ No\*. The device is stored in your browsers localStorage - a data store which is
 
 Some of [my lovelace plugins](https://github.com/thomasloven/hass-config/wiki/My-Lovelace-Plugins) use the device to do different things for different *devices*.
 
-**\*: There is one exception. If you are using [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/), the deviceID is taken from the browser instead of being randomly generated. This deviceID will be the same for each website that asks for it.**
-
-### How do I run commands from /dev-service?
-
-`/dev-service` requires json-formatted service data. There's an explanation on the differences between yaml and json [here](http://thomasloven.com/blog/2018/08/YAML-For-Nonprogrammers/).
-
-### How do I run commands from a script/automation?
-
-Basically, just replace `service_data` with `data` or `data_template`, whichever fits your needs.
+> *\*There is one exception. If you are using [Fully Kiosk Browser](https://www.ozerov.de/fully-kiosk-browser/), the deviceID is taken from the browser instead of being randomly generated. This deviceID will be the same for each website that asks for it.*
 
 ### My Fully Kiosk Browser device goes unavailable after the screen has been turned off for five minutes
 
