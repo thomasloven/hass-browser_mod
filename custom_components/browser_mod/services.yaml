@@ -124,5 +124,5 @@ delay:
     deviceID:
       description: '(optional) List of receiving browsers'
       example: '["99980b13-dabc9563", "office_computer"]'
-  call_service:
-    description: ""
+call_service:
+  description: ""
