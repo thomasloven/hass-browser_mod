@@ -325,13 +325,13 @@ data:
   <data>
 ```
 
-This can be used to send any command to a *device* by changing `command:` and appending any other options.  
+This can be used to send any command to a *device* by setting `command:` to the service name and appending any other options.  
 E.g. the following two service calls will perform the same function:
 
 ```yaml
 service: browser_mod.command
 data:
-  command: Toast
+  command: toast
   message: Hello World!
 
 service: browser_mod.toast
@@ -349,6 +349,15 @@ data:
       <data>
 ```
 This service can be used to call several services listed in the `commands:` parameter consecutively.
+
+### - delay
+```yaml
+service: browser_mod.delay
+data:
+  seconds: <seconds>
+```
+
+Do nothing for `<seconds>` seconds.
 
 ## Run a command from the frontend
 To run a command from the frontend, you can use the tap_action `fire-dom-event` with a `browser_mod` parameter.  
@@ -463,7 +472,7 @@ This would replace the more-info dialogs of `sensor.sensor1` and `sensor.sensor2
 
 ### Where can I find my deviceID?
 
-The easiest way is to go to `developer-tools/service` and call the `browser_mod.debug` service.
+The easiest way is to go to `/developer-tools/service` and call the `browser_mod.debug` service.
 
 But you can also find the device id on the `browser-player` card, if you added one to your lovelace config.
 

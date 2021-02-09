@@ -34,4 +34,5 @@ USER_COMMANDS = [
         "toast",
         "commands",
         "call_service",
+        "delay",
         ]

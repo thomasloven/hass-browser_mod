@@ -44,7 +44,7 @@ class BrowserMod extends ext(BrowserModConnection, [
     "color: green; font-weight: bold", "");
   }
 
-  msg_callback(msg) {
+  async msg_callback(msg) {
     const handlers = {
       update: (msg) => this.update(msg),
       debug: (msg) => this.debug(msg),
@@ -74,14 +74,15 @@ class BrowserMod extends ext(BrowserModConnection, [
       },
 
       "call-service": (msg) => this.call_service(msg),
-      "commands": (msg) => {
+      "commands": async (msg) => {
         for(const m of msg.commands) {
-          this.msg_callback(m);
+          await this.msg_callback(m);
         }
       },
+      "delay": async (msg) => await new Promise((resolve) => {window.setTimeout(resolve, msg.seconds*1000)}),
     };
 
-    handlers[msg.command.replace("_","-")](msg);
+    await handlers[msg.command.replace("_","-")](msg);
   }
 
   debug(msg) {
