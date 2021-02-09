@@ -7,7 +7,7 @@ export class BrowserModConnection{
         const isCast = document.querySelector("hc-main") !== null;
         if(!isCast) {
             if(!window.hassConnection) {
-                window.setTimeout(() => this._do_connect(), 100);
+                window.setTimeout(() => this.connect(), 100);
                 return;
             } else {
                 this._connection = (await window.hassConnection).conn;
