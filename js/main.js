@@ -52,7 +52,7 @@ class BrowserMod extends ext(BrowserModConnection, [
       play: (msg) => this.player_play(msg.media_content_id),
       pause: (msg) => this.player_pause(),
       stop: (msg) => this.player_stop(),
-      set_volume: (msg) => this.player_set_volume(msg.volume_level),
+      "set-volume": (msg) => this.player_set_volume(msg.volume_level),
       mute: (msg) => this.player_mute(msg.mute),
 
       toast: (msg) => this.do_toast(msg.message, msg.duration),
