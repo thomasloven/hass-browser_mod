@@ -11,17 +11,13 @@ browser_mod:
     fully:
       force_stay_awake: true
 
-
 lovelace:
-  mode: yaml
-  resources:
-    - url: /local/card-mod.js
-      type: module
+  mode: storage
   dashboards:
     lovelace-yaml:
       mode: yaml
       title: yaml
-      filename: lovelace.yaml
+      filename: test/lovelace.yaml
 
 frontend:
   themes:
@@ -37,7 +33,7 @@ frontend:
 
 tts:
   - platform: google_translate
-    base_url: !env_var OUT_ADDR
+#    base_url: !env_var OUT_ADDR
 
 script:
   cm_debug:
