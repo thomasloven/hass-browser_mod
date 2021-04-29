@@ -12,6 +12,7 @@ def setup_view(hass):
 
     hass.http.register_view(ModView(hass, FRONTEND_SCRIPT_URL))
 
+
 class ModView(HomeAssistantView):
 
     name = "browser_mod_script"
@@ -33,4 +34,6 @@ class ModView(HomeAssistantView):
         except Exception as exception:
             pass
 
-        return web.Response(body=filecontent, content_type="text/javascript", charset="utf-8")
+        return web.Response(
+            body=filecontent, content_type="text/javascript", charset="utf-8"
+        )
