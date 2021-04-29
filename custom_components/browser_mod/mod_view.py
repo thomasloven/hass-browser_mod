@@ -31,7 +31,7 @@ class ModView(HomeAssistantView):
             with open(path, mode="r", encoding="utf-8", errors="ignore") as localfile:
                 filecontent = localfile.read()
                 localfile.close()
-        except Exception as exception:
+        except Exception:
             pass
 
         return web.Response(

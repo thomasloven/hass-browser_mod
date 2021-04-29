@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 
 from homeassistant.const import STATE_UNAVAILABLE
