@@ -45,6 +45,8 @@ views:
         card:
           type: markdown
           content: Local popup for climate.hvac
+      light.kitchen_lights:
+        type: No card
 
     cards:
       - type: button
@@ -55,5 +57,10 @@ views:
       - type: button
         entity: sun.sun
         name: Override global popup-card
+        tap_action:
+          action: more-info
+      - type: button
+        entity: light.kitchen_lights
+        name: No card config
         tap_action:
           action: more-info

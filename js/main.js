@@ -1,4 +1,4 @@
-import { deviceID } from "card-tools/src/deviceId";
+import { deviceID } from "card-tools/src/deviceID";
 import { lovelace_view } from "card-tools/src/hass";
 import { popUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
@@ -12,7 +12,6 @@ import { BrowserModScreensaverMixin } from "./screensaver";
 import { BrowserModPopupsMixin } from "./popups";
 import { BrowserModBrowserMixin } from "./browser";
 
-
 const ext = (baseClass, mixins) =>
   mixins.reduceRight((base, mixin) => mixin(base), baseClass);
 
@@ -23,9 +22,7 @@ class BrowserMod extends ext(BrowserModConnection, [
   BrowserModCameraMixin,
   FullyKioskMixin,
   BrowserModMediaPlayerMixin,
-  ]) {
-
-
+]) {
   constructor() {
     super();
     this.entity_id = deviceID.replace("-", "_");
@@ -33,15 +30,18 @@ class BrowserMod extends ext(BrowserModConnection, [
     this.connect();
 
     document.body.addEventListener("ll-custom", (ev) => {
-      if(ev.detail.browser_mod) {
+      if (ev.detail.browser_mod) {
         this.msg_callback(ev.detail.browser_mod);
       }
-    })
+    });
 
-    const pjson = require('../package.json');
-    console.info(`%cBROWSER_MOD ${pjson.version} IS INSTALLED
+    const pjson = require("../package.json");
+    console.info(
+      `%cBROWSER_MOD ${pjson.version} IS INSTALLED
     %cDeviceID: ${deviceID}`,
-    "color: green; font-weight: bold", "");
+      "color: green; font-weight: bold",
+      ""
+    );
   }
 
   async msg_callback(msg) {
@@ -65,83 +65,88 @@ class BrowserMod extends ext(BrowserModConnection, [
       "lovelace-reload": (msg) => this.lovelace_reload(msg),
       "window-reload": () => window.location.reload(),
 
-      blackout: (msg) => this.do_blackout(msg.time ? parseInt(msg.time) : undefined),
+      blackout: (msg) =>
+        this.do_blackout(msg.time ? parseInt(msg.time) : undefined),
       "no-blackout": (msg) => {
-        if(msg.brightness && this.isFully) {
+        if (msg.brightness && this.isFully) {
           window.fully.setScreenBrightness(msg.brightness);
         }
-        this.no_blackout()
+        this.no_blackout();
       },
 
       "call-service": (msg) => this.call_service(msg),
-      "commands": async (msg) => {
-        for(const m of msg.commands) {
+      commands: async (msg) => {
+        for (const m of msg.commands) {
           await this.msg_callback(m);
         }
       },
-      "delay": async (msg) => await new Promise((resolve) => {window.setTimeout(resolve, msg.seconds*1000)}),
+      delay: async (msg) =>
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, msg.seconds * 1000);
+        }),
     };
 
-    await handlers[msg.command.replace("_","-")](msg);
+    await handlers[msg.command.replace("_", "-")](msg);
   }
 
   debug(msg) {
-    popUp(`deviceID`, {type: "markdown", content: `# ${deviceID}`})
+    popUp(`deviceID`, { type: "markdown", content: `# ${deviceID}` });
     alert(deviceID);
   }
 
-  set_theme(msg){
-    if(!msg.theme) msg.theme = "default";
-    fireEvent("settheme", {theme: msg.theme}, document.querySelector("home-assistant"));
+  set_theme(msg) {
+    if (!msg.theme) msg.theme = "default";
+    fireEvent(
+      "settheme",
+      { theme: msg.theme },
+      document.querySelector("home-assistant")
+    );
   }
 
   lovelace_reload(msg) {
     const ll = lovelace_view();
-    if (ll)
-      fireEvent("config-refresh", {}, ll);
+    if (ll) fireEvent("config-refresh", {}, ll);
   }
 
   call_service(msg) {
     const _replaceThis = (data) => {
-      if (typeof(data) === "string" && data === "this")
-        return deviceID;
-      if (Array.isArray(data))
-        return data.map(_replaceThis);
+      if (typeof data === "string" && data === "this") return deviceID;
+      if (Array.isArray(data)) return data.map(_replaceThis);
       if (data.constructor == Object) {
-        for (const key in data)
-          data[key] = _replaceThis(data[key]);
+        for (const key in data) data[key] = _replaceThis(data[key]);
       }
       return data;
-    }
-    const [domain, service] = msg.service.split(".", 2);
-    let service_data = _replaceThis(JSON.parse(JSON.stringify(msg.service_data)));
+    };
+    const [domain, service] = msg.service.split(".", 2);
+    let service_data = _replaceThis(
+      JSON.parse(JSON.stringify(msg.service_data))
+    );
     this._hass.callService(domain, service, service_data);
   }
 
-  update(msg=null) {
-    if(msg) {
-      if(msg.name) {
+  update(msg = null) {
+    if (msg) {
+      if (msg.name) {
         this.entity_id = msg.name.toLowerCase();
       }
-      if(msg.camera) {
+      if (msg.camera) {
         this.setup_camera();
       }
-      this.config = {...this.config, ...msg};
+      this.config = { ...this.config, ...msg };
     }
     this.player_update();
     this.fully_update();
     this.screen_update();
     this.sensor_update();
   }
-
 }
 
-
-const bases = [customElements.whenDefined('home-assistant'), customElements.whenDefined('hc-main')];
+const bases = [
+  customElements.whenDefined("home-assistant"),
+  customElements.whenDefined("hc-main"),
+];
 Promise.race(bases).then(() => {
   window.setTimeout(() => {
     window.browser_mod = window.browser_mod || new BrowserMod();
-    },
-    1000
-  );
+  }, 1000);
 });
