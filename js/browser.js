@@ -34,7 +34,9 @@ export const BrowserModBrowserMixin = (C) =>
               : battery
               ? battery.charging
               : undefined,
-            darkMode: this._hass.themes.darkMode,
+            darkMode:
+              this._hass && this._hass.themes && this._hass.themes.darkMode,
+            userData: this._hass && this._hass.user,
           },
         });
       };
