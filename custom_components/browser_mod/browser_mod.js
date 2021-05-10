@@ -202,7 +202,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((module) => {
 
 "use strict";
-eval("module.exports = JSON.parse('{\"name\":\"browser_mod\",\"private\":true,\"version\":\"1.3.0\",\"description\":\"\",\"scripts\":{\"build\":\"webpack\",\"watch\":\"webpack --watch --mode=development\",\"update-card-tools\":\"npm uninstall card-tools && npm install thomasloven/lovelace-card-tools\"},\"keywords\":[],\"author\":\"Thomas Lovén\",\"license\":\"MIT\",\"devDependencies\":{\"webpack\":\"^5.36.2\",\"webpack-cli\":\"^4.7.0\"},\"dependencies\":{\"card-tools\":\"github:thomasloven/lovelace-card-tools\"}}');\n\n//# sourceURL=webpack://browser_mod/./package.json?");
+eval("module.exports = JSON.parse('{\"name\":\"browser_mod\",\"private\":true,\"version\":\"1.3.1\",\"description\":\"\",\"scripts\":{\"build\":\"webpack\",\"watch\":\"webpack --watch --mode=development\",\"update-card-tools\":\"npm uninstall card-tools && npm install thomasloven/lovelace-card-tools\"},\"keywords\":[],\"author\":\"Thomas Lovén\",\"license\":\"MIT\",\"devDependencies\":{\"webpack\":\"^5.36.2\",\"webpack-cli\":\"^4.7.0\"},\"dependencies\":{\"card-tools\":\"github:thomasloven/lovelace-card-tools\"}}');\n\n//# sourceURL=webpack://browser_mod/./package.json?");
 
 /***/ })
 
