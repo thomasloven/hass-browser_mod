@@ -403,12 +403,8 @@ service: <service>
 service_data:
   <service_data>
 ```
-<<<<<<< HEAD
-This works exactly like a `call_service` tap_action, but if `service_data` contains the parameter `deviceID` and that contains the word `this`, that will be replaced with the current device's deviceID.
-=======
 
-This works exactly like a `call_service` tap_action, but if `service_data` contains the parameter `deviceID` and that contains the word `this`, that will be replaced with the current deviced deviceID.
->>>>>>> Code linting
+This works exactly like a `call_service` tap_action, but if `service_data` contains the parameter `deviceID` and that contains the word `this`, that will be replaced with the current device's deviceID.
 This may be useful for e.g. calling scripts if you want to know from where it was triggered.
 
 # `browser-player` card
