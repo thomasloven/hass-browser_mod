@@ -40,7 +40,7 @@ async def setup_connection(hass, config):
     def handle_update(hass, connection, msg):
         devices = get_devices(hass)
         deviceID = msg["deviceID"]
-        if deviceID in devices:
+        if deviceID in devices and is_setup_complete(hass):
             devices[deviceID].update(msg.get("data", None))
 
     async_register_command(hass, handle_connect)
