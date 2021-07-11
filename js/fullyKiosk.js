@@ -25,6 +25,15 @@ export const FullyKioskMixin = (C) =>
         window.fully.bind(ev, `window.browser_mod.fully_update("${ev}");`);
       }
 
+      window.fully.bind(
+        "onScreensaverStart",
+        `window.browser_mod.fully_screensaver = true; window.browser_mod.screen_update();`
+      );
+      window.fully.bind(
+        "onScreensaverStop",
+        `window.browser_mod.fully_screensaver = false; window.browser_mod.screen_update();`
+      );
+
       this._keepingAlive = false;
     }
 

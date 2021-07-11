@@ -92,15 +92,21 @@ export const BrowserModScreensaverMixin = (C) =>
     do_blackout(timeout) {
       this.screensaver_set(
         () => {
-          if (this.isFully) window.fully.turnScreenOff(true);
-          else this._blackout_panel.style.display = "block";
+          if (this.isFully) {
+            if (this.config.screensaver) window.fully.startScreensaver();
+            else window.fully.turnScreenOff(true);
+          } else {
+            this._blackout_panel.style.display = "block";
+          }
           this.screen_update();
         },
         () => {
           if ((this._blackout_panel.style.display = "block"))
             this._blackout_panel.style.display = "none";
-          if (this.isFully && !window.fully.getScreenOn())
-            window.fully.turnScreenOn();
+          if (this.isFully) {
+            if (!window.fully.getScreenOn()) window.fully.turnScreenOn();
+            window.fully.stopScreensaver();
+          }
           this.screen_update();
         },
         timeout || 0
@@ -108,7 +114,10 @@ export const BrowserModScreensaverMixin = (C) =>
     }
 
     no_blackout() {
-      if (this.isFully) window.fully.turnScreenOn();
+      if (this.isFully) {
+        window.fully.turnScreenOn();
+        window.fully.stopScreensaver();
+      }
       this.screensaver_stop();
     }
 
@@ -116,7 +125,9 @@ export const BrowserModScreensaverMixin = (C) =>
       this.sendUpdate({
         screen: {
           blackout: this.isFully
-            ? !window.fully.getScreenOn()
+            ? this.fully_screensaver !== undefined
+              ? this.fully_screensaver
+              : !window.fully.getScreenOn()
             : Boolean(this._blackout_panel.style.display === "block"),
           brightness: this.isFully
             ? window.fully.getScreenBrightness()

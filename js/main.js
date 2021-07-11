@@ -11,6 +11,7 @@ import { BrowserModCameraMixin } from "./camera";
 import { BrowserModScreensaverMixin } from "./screensaver";
 import { BrowserModPopupsMixin } from "./popups";
 import { BrowserModBrowserMixin } from "./browser";
+import pjson from "../package.json";
 
 const ext = (baseClass, mixins) =>
   mixins.reduceRight((base, mixin) => mixin(base), baseClass);
@@ -35,7 +36,6 @@ class BrowserMod extends ext(BrowserModConnection, [
       }
     });
 
-    const pjson = require("../package.json");
     console.info(
       `%cBROWSER_MOD ${pjson.version} IS INSTALLED
     %cDeviceID: ${deviceID}`,

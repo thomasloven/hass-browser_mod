@@ -37,6 +37,7 @@ export const BrowserModBrowserMixin = (C) =>
             darkMode:
               this._hass && this._hass.themes && this._hass.themes.darkMode,
             userData: this._hass && this._hass.user,
+            config: this.config,
           },
         });
       };

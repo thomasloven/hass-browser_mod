@@ -10,6 +10,8 @@ browser_mod:
       alias: test
     fully:
       force_stay_awake: true
+    fully2:
+      screensaver: true
 
 lovelace:
   mode: storage

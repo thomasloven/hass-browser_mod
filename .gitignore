@@ -2,3 +2,4 @@ node_modules/
 **/__pycache__/
 .vscode
 .env
+custom_components/hacs/
