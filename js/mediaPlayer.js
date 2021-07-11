@@ -8,9 +8,15 @@ export const BrowserModMediaPlayerMixin = (C) =>
         this.player.addEventListener(event, () => this.player_update());
       }
 
-      window.addEventListener("click", () => this.player.play(), {
-        once: true,
-      });
+      window.addEventListener(
+        "click",
+        () => {
+          if (!this.player.ended) this.player.play();
+        },
+        {
+          once: true,
+        }
+      );
     }
 
     player_update(ev) {
