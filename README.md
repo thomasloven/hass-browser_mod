@@ -166,6 +166,8 @@ For other browsers, the interface will just be covered with black (the screen is
 
 For security and UX reasons, the camera must be enabled manually on a device by device basis.
 
+> **NOTE:** Browser only allow access to the camera in secure contexts (since 2019). That means it only works if you access Home Assistant through `https://`, NOT `http://` or through `localhost`.
+
 Enabling the camera is done by adding `camera: true` to the devices configuration in `configuration.yaml`:
 
 ```yaml
