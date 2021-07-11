@@ -129,7 +129,7 @@ class BrowserMod extends ext(BrowserModConnection, [
       if (msg.name) {
         this.entity_id = msg.name.toLowerCase();
       }
-      if (msg.camera) {
+      if (msg.camera && !this.isFully) {
         this.setup_camera();
       }
       this.config = { ...this.config, ...msg };

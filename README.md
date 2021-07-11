@@ -184,7 +184,7 @@ After restarting Home Assistant (and [clearing cache](https://github.com/thomasl
 
 Be aware that keeping the camera on may make your device run hot and drain your battery.
 
-The camera does not work well with Fully Kiosk Browser. If you're using FKB, use the built-in camera functionality instead. It's better in every way.
+For Fully Kiosk Browser, the camera requires Motion Detection (PLUS) to be enabled, and will only appear for the first time once motion has been detected. It does not need to be enabled in the configuration, though.
 
 ### binary_sensor
 

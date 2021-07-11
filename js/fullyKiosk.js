@@ -66,12 +66,27 @@ export const FullyKioskMixin = (C) =>
       });
     }
 
+    startCamera() {
+      if (this._fullyCameraTimer !== undefined) return;
+      this._fullyCameraTimer = window.setInterval(() => {
+        this.sendUpdate({
+          camera: window.fully.getCamshotJpgBase64(),
+        });
+      }, 200);
+    }
+    stopCamera() {
+      window.clearInterval(this._fullyCameraTimer);
+      this._fullyCameraTimer = undefined;
+    }
+
     fullyMotionTriggered() {
       if (this._keepingAlive) return;
       this._fullyMotion = true;
+      this.startCamera();
       clearTimeout(this._motionTimeout);
       this._motionTimeout = setTimeout(() => {
         this._fullyMotion = false;
+        this.stopCamera();
         this.fully_update();
       }, 5000);
       this.fully_update();

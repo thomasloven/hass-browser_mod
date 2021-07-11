@@ -28,9 +28,15 @@ export const BrowserModCameraMixin = (C) =>
 
       this._camera_framerate = 2;
 
-      window.addEventListener("click", () => this._video.play(), {
-        once: true,
-      });
+      window.addEventListener(
+        "click",
+        () => {
+          if (this._video.ended || this._video.paused) this._video.play();
+        },
+        {
+          once: true,
+        }
+      );
     }
 
     update_camera() {
