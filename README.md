@@ -540,6 +540,15 @@ browser_mod:
 
 That will make the screen turn on and off again for a second regularly to stop the five minute timer from running out.
 
+Optionally, you can make the screen black by using the Screensaver instead of turning the screen off. In that case, you can set the `light` entity to control and respond to the screensaver rather than the screen state through:
+
+```yaml
+browser_mod:
+  devices:
+    d2fc860c-16379d23: # DeviceID of your FKB device
+      screensaver: true
+```
+
 ---
 
 <a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
