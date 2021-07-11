@@ -191,23 +191,90 @@ For Fully Kiosk Browser, the camera requires Motion Detection (PLUS) to be enabl
 The `binary_sensor` will only be available for Fully Kiosk Browser PRO _devices_.
 It's state will be the state of the camera motion detector of the _device_ (5 second cooldown).
 
-## Services
+## Commands
 
-`browser_mod` registers a number of services.
+`browser_mod` has a number of commands that will perform various things for one or many _devices_.
 
-All service calls have one parameter in common; `deviceID` which is a list of _devices_ to execute the comand on. If `deviceID` is omitted, the command will be executed on **all** currently connected _devices_. `deviceID` may also contain aliases.
+### Calling services
 
-You can also activate any service from the frontend by using the `fire-dom-event` `tap_action`.
+There are three ways of calling commands.
 
-### - debug
+<details><summary>From the backend</summary>
+This is how commands are called from scripts or automations.
+
+```yaml
+service: browser_mod.<command>
+data:
+  parameter: value
+  other_parameter: other value
+  deviceID:
+    - device1
+    - device2
+```
+
+Note that `parameter` and `other_parameter` etc. depends on the command, but `deviceID` (which is optional) is available for all commands unless otherwise stated.
+
+`deviceID` shall be a list of device IDs that the command will be run on. \
+If `deviceID` is not specified, the command will be run on ALL connected _devices_.
+
+</details>
+
+<details><summary>From the frontend via call-service</summary>
+This is the same configuration as above, but for use in lovelace configurations, e.g. a [button card](https://www.home-assistant.io/lovelace/button/#tap-action).
+
+```yaml
+tap_action:
+  action: call-service
+  service: browser_mod.<command>
+  service_data:
+    parameter: value
+    other_parameter: other value
+    deviceID:
+      - device1
+      - device2
+```
+
+If `deviceID` is not specified, the command will be run on ALL connected _devices_.
+
+</details>
+
+<details><summary>From the frontend via fire-dom-event</summary>
+When using this as a `tap_action`, the command will be run on ONLY the _device_ the command that was tapped.
+
+`deviceID` will be ignored.
+
+```yaml
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    command: <command>
+    parameter: value
+    other_parameter: other value
+```
+
+> Note: This works for [`tap_action`, `hold_action` and `double_tap_action`](https://www.home-assistant.io/lovelace/actions/) for all core Lovelace cards, but may not be supported by all custom cards yet.
+
+</details>
+
+### Available commands
+
+<details><summary>debug</summary>
+Display a popup with the deviceID _and_ a javascript alert with the deviceID on all connected _devices_.
 
 ```yaml
 service: browser_mod.debug
 ```
 
-Display a popup with the deviceID _and_ a javascript alert with the deviceID on all connected _devices_.
+</details>
 
-### - set_theme
+<details><summary>set_theme</summary>
+Set the current theme.
+
+This changes the _frontend_ setting - the same as if you click your initials in the bottom left corner and pick a theme from there.
+
+Parameters:
+
+- `theme` - the name of the theme to set
 
 ```yaml
 service: browser_mod.set_theme
@@ -215,38 +282,50 @@ data:
   theme: clear_light
 ```
 
-will set the current theme to `clear_light` on all devices.
+</details>
 
-### - navigate
+<details><summary>navigate</summary>
+Navigate to a different view or panel.
+
+Works like the `navigate` `tap_action`.
+
+Parameters:
+
+- `navigation_path` - the path to navigate to
 
 ```yaml
 service: browser_mod.navigate
 data:
   navigation_path: /lovelace/1
-  deviceID:
-    - ded3b4dc-abedd098
 ```
-
-will open your second lovelace view on just the _device_ `ded3b4dc-abedd098`.
 
 Note: `navigation_path` does not have to be a lovelace path. All paths in Home Assistant works. (E.g. `/states`, `/dev-info`, `/map`)
 
-### - more_info
+</details>
+
+<details><summary>more_info</summary>
+Displays the more-info dialog for an entity.
+
+Parameters:
+
+- `entity_id` - the entity whose more-info dialog should be opened.
+- `large` - if set to `true` will make the popup wider. (**optional**, default: `false`)
 
 ```yaml
 service: browser_mod.more_info
 data:
   entity_id: camera.front_door
-  deviceID:
-    - ded3b4dc-abedd098
-    - dashboard
 ```
 
-will show the more-info dialog of `camera.front_door` on the _devices_ `ded3b4dc-abedd098` and `dashboard`.
+</details>
 
-The optional parameter `large: true` will make the popup wider.
+<details><summary>toast</summary>
+Display a notification toast.
 
-### - toast
+Parameters:
+
+- `message` - the message to display
+- `duration` - time in ms the toast is shown. (**optional**, default: 3000)
 
 ```yaml
 service: browser_mod.toast
@@ -254,10 +333,20 @@ data:
   message: Short message
 ```
 
-Display a toast notification on all devices.
-The optional parameter `duration:` determines the time (in ms) that the toast is shown. Set to 0 for persistent display. Default is 3000.
+</details>
 
-### - popup
+<details><summary>popup</summary>
+Display a lovelace card as a popup over the interface.
+
+Parameters:
+
+- `title` - heading text
+- `card` - Lovelace card configuration
+- `large` - if set to `true` will make the popup wider. (**optional**, default: `false`)
+- `hide_header` - if set to `true` will hide the header bar and close button (**optional**, default: `false`)
+- `auto_close` - if set to `true` the popup will close automatically when the mouse or keyboard is touched. Also hides the header. (**optional**, default: `false`)
+- `time` - if used with `auto_close` will turn the popup into a "screensaver". See the `blackout` command
+- `style` - see below
 
 ```yaml
 service: browser_mod.popup
@@ -269,145 +358,144 @@ data:
       - light.bed_light
       - light.kitchen_lights
       - light.ceiling_lights
-  deviceID:
-    - this
-    - dashboard
 ```
-
-will display the specified `entities` card as a popup on the current device and on `dashboard`
 
 ![popup-example](https://user-images.githubusercontent.com/1299821/60288984-a7cb6b00-9915-11e9-9322-324323a9ec6e.png)
 
-The optional parameter `large: true` will make the popup wider.
-The optional parameter `hide_header: true` will hide the header bar and close button.
-The optional parameter `auto_close: true` will make the popup close automatically when the mouse is moved or a key is pressed on the keyboard. This also removes the header bar.
-The optional parameter `time:` (only useable if `auto_close: true` is also set) will turn the popup into a "screensaver". See the `blackout` command below.
-
 If [card-mod](https://github.com/thomasloven/lovelace-card-mod) is installed, the popup can be styled by the optional `style` parameter, or by the `card-mod-more-info[-yaml]` theme variable.
 
-### - close_popup
+</details>
+
+<details><summary>close_popup</summary>
+Will close all more-info dialogs and popups that are open.
 
 ```yaml
 service: browser_mod.close_popup
 ```
 
-will close all more-info dialogs and popups that are open on all connected _devices_.
+</details>
 
-### - blackout
+<details><summary>blackout</summary>
+Will cover the entire browser window with a black box. \
+Moving the mouse, touching the screen or pressing any key will restore the view.
+
+> Note: This will _not_ turn off your screen backlight. Most screens will still emit light in a dark room.
+
+Parameters:
+
+- `time` - if set, the blackout will turn on automatically after this many seconds of inactivity. Kind of like a screensaver. Call the `blackout` command with `time` set to `-1` to disable. (**Optional**, default: None)
 
 ```yaml
 service: browser_mod.blackout
-data:
-  deviceID: this
 ```
 
-Will cover the entire window (or screen if in full screen mode) with black on the current device.
-Moving the mouse, touching the screen or pressing any key will restore the view.
+</details>
 
-The optional parameter `time:` will make the blackout turn on automatically after the specified number of seconds. It works kind of like a screensaver and will keep turning on until `blackout` is called again with `time: -1`.
+<details><summary>no_blackout</summary>
+Remove a blackout.
 
-Note: This will _not_ turn off your screen backlight. Most screens will still emit light in a dark room.
+Parameters:
 
-### - no_blackout
+- `brightness` - will set the screen brightness in Fully Kiosk Browser to a value between 0 and 255 (**Optional**, default: none)
 
 ```yaml
 service: browser_mod.no_blackout
 ```
 
-Remove a blackout.
-The optional parameter `brightness` will set the screen brightness of a device running Fully Kiosk Browser to a value between 0 and 255.
+</details>
 
-### - lovelace_reload
+<details><summary>lovelace_reload</summary>
+Refreshes the lovelace config. Same as clicking "Refresh" in the top right menu in lovelace.
 
 ```yaml
 service: browser_mod.lovelace_reload
 ```
 
-Refreshes the lovelace config. Same as clicking "Refresh" in the top right menu in lovelace.
+</details>
 
-### - window_reload
+<details><summary>window_reload</summary>
+Forces the browser to reload the page. Same as clicking your browsers refresh button.
+
+> Note: This is not guaranteed to clear the frontend cache.
 
 ```yaml
 service: browser_mod.window_reload
 ```
 
-Forces the browser to reload the page. Same as clicking your browsers refresh button.
+</details>
 
-### - command
+<details><summary>command</summary>
+This command is deprecated and left in for backwards compatibility
+</details>
 
-```yaml
-service: browser_mod.command
-data:
-  command: <command>
-  <data>
-```
+<details><summary>commands</summary>
+Command**s** with an **s**. Will call a list of commands consecutively.
 
-This can be used to send any command to a _device_ by setting `command:` to the service name and appending any other options.
-E.g. the following two service calls will perform the same function:
+This is mostly useful with the `fire-dom-event` method of calling commands.
 
-```yaml
-service: browser_mod.command
-data:
-  command: toast
-  message: Hello World!
+Parameters:
 
-service: browser_mod.toast
-data:
-  message: Hello World!
-```
-
-### - commands
+- `commands` - list of `browser_mod` commands to perform.
 
 ```yaml
 service: browser_mod.commands
 data:
   commands:
     - command: <command>
-      <data>
+      <parameters>
     - command: <command>
-      <data>
+      <parameters>
 ```
 
-This service can be used to call several services listed in the `commands:` parameter consecutively.
+</details>
 
-### - delay
+<details><summary>delay</summary>
+Do nothing for a specified time.
+Most useful with the `commands` command.
+
+Parameters:
+
+- `seconds` - number of seconds to wait
 
 ```yaml
-service: browser_mod.delay
+service: browser_mod.commands
 data:
-  seconds: <seconds>
+  commands:
+    - command: blackout
+    - command: delay
+      seconds: 5
+    - command: no_blackout
 ```
 
-Do nothing for `<seconds>` seconds.
+</details>
 
-## Run a command from the frontend
+<details><summary>call_service</summary>
+This command is **only** runnable through `fire-dom-event`.
+Will call a Home Assistant service but will replace `deviceID: this` with the deviceID of the current _device_.
 
-To run a command from the frontend, you can use the tap_action `fire-dom-event` with a `browser_mod` parameter.
-E.g:
+Parameters:
 
-```yaml
-type: button
-icon: mdi:star
-tap_action:
-  action: fire-dom-event
-  browser_mod:
-    command: toast
-    message: Hello, world!
-```
-
-There's also a special command which is only useful from the frontend:
-
-### - call_service
+- `service` - the service to call
+- `service_data` - data for the service
 
 ```yaml
-command: call-service:
-service: <service>
+command: call-service
+service: script.do_stuff
 service_data:
-  <service_data>
+  some_variable: 42
+  deviceID: this
 ```
 
-This works exactly like a `call_service` tap_action, but if `service_data` contains the parameter `deviceID` and that contains the word `this`, that will be replaced with the current device's deviceID.
-This may be useful for e.g. calling scripts if you want to know from where it was triggered.
+Example script:
+
+```yaml
+sequence:
+  - service: system_log.write
+    data:
+      message: "The do_stuff script was called from the device {{ deviceID }}"
+```
+
+</details>
 
 # `browser-player` card
 
