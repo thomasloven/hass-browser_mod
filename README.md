@@ -129,8 +129,7 @@ E.g:
 Connecting your phone with `deviceID: ded3b4dc-abedd098` will create the entities `sensor.ded3b4dc_abedd098`, `media_player.ded3b4dc_abedd098` and `light.ded3b4dc_abedd098`.
 Connecting with the computer named `Arrakis` above with `deviceID: 99980b13-dabc9563` will create the entities `sensor.arrakis`, `media_player.arrakis` and `light.arrakis`.
 
-### sensor
-
+<details><summary>sensor</summary>
 The `sensor` will display the number of connected views (tabs/windows) of the device. Note that using multiple view isn't really recommended, and any action targeting a device will happen in the last loaded view.
 
 The sensor also has the following attributes:
@@ -150,20 +149,22 @@ The sensor also has the following attributes:
 | `battery_level` | The current battery level of your device - if supported             |
 | `charging`      | The current charging state of your device - if supported            |
 
-### media_player
+</details>
 
+<details><summary>media_player</summary>
 The `media_player` can be used to play sounds on the _device_.
 
 **NOTE: Because Apple is Apple; on iOS you need to touch the screen once after loading the frontend before any playback will work.**
 
-### light
+</details>
 
+<details><summary>light</summary>
 The `light` can be used to blackout the screen.
 For Fully Kiosk Browser, the screen will actually turn off.
 For other browsers, the interface will just be covered with black (the screen is still on, will have a visible glow in the dark, and you won't save any battery).
+</details>
 
-### camera
-
+<details><summary>camera</summary>
 For security and UX reasons, the camera must be enabled manually on a device by device basis.
 
 > **NOTE:** Browser only allow access to the camera in secure contexts (since 2019). That means it only works if you access Home Assistant through `https://`, NOT `http://` or through `localhost`.
@@ -186,16 +187,18 @@ Be aware that keeping the camera on may make your device run hot and drain your 
 
 For Fully Kiosk Browser, the camera requires Motion Detection (PLUS) to be enabled, and will only appear for the first time once motion has been detected. It does not need to be enabled in the configuration, though.
 
-### binary_sensor
+</details>
 
+<details><summary>binary_sensor</summary>
 The `binary_sensor` will only be available for Fully Kiosk Browser PRO _devices_.
 It's state will be the state of the camera motion detector of the _device_ (5 second cooldown).
+</details>
 
 ## Commands
 
 `browser_mod` has a number of commands that will perform various things for one or many _devices_.
 
-### Calling services
+### Calling commands
 
 There are three ways of calling commands.
 
@@ -255,6 +258,8 @@ tap_action:
 > Note: This works for [`tap_action`, `hold_action` and `double_tap_action`](https://www.home-assistant.io/lovelace/actions/) for all core Lovelace cards, but may not be supported by all custom cards yet.
 
 </details>
+
+&nbsp;
 
 ### Available commands
 
@@ -507,7 +512,7 @@ type: custom:browser-player
 
 anywhere in your lovelace configuration.
 
-The player card also displays the `entityID`. Click it to select, so you can copy it.
+The player card also displays the `entityID`. Click it to change it.
 
 ![browser-player](https://user-images.githubusercontent.com/1299821/60288980-a4d07a80-9915-11e9-88ba-e078a3aa24f4.png)
 
