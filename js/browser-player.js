@@ -75,7 +75,9 @@ Promise.race(bases).then(() => {
             <ha-icon-button
               .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}
               @click=${this.handleMute}
-            ></ha-icon-button>
+            >
+              <ha-icon .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}></ha-icon>
+            </ha-icon-button>
             <ha-slider
               min="0"
               max="1"
@@ -92,12 +94,16 @@ Promise.race(bases).then(() => {
                     .icon=${player.paused ? "mdi:play" : "mdi:pause"}
                     @click=${this.handlePlayPause}
                     highlight
-                  ></ha-icon-button>
+                  >
+                    <ha-icon .icon=${player.paused ? "mdi:play" : "mdi:pause"}></ha-icon>
+                  </ha-icon-button>
                 `}
             <ha-icon-button
               .icon=${"mdi:cog"}
               @click=${this.handleMoreInfo}
-            ></ha-icon-button>
+            >
+              <ha-icon .icon=${"mdi:cog"}></ha-icon>
+            </ha-icon-button>
           </div>
 
           <div class="device-id" @click=${this.setDeviceID}>${deviceID}</div>
