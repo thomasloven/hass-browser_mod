@@ -93,7 +93,9 @@ const e="lovelace-player-device-id";function t(){if(!localStorage[e]){const t=()
             <ha-icon-button
               .icon=${e.muted?"mdi:volume-off":"mdi:volume-high"}
               @click=${this.handleMute}
-            ></ha-icon-button>
+            >
+              <ha-icon .icon=${e.muted?"mdi:volume-off":"mdi:volume-high"}></ha-icon>
+            </ha-icon-button>
             <ha-slider
               min="0"
               max="1"
@@ -108,12 +110,16 @@ const e="lovelace-player-device-id";function t(){if(!localStorage[e]){const t=()
                     .icon=${e.paused?"mdi:play":"mdi:pause"}
                     @click=${this.handlePlayPause}
                     highlight
-                  ></ha-icon-button>
+                  >
+                    <ha-icon .icon=${e.paused?"mdi:play":"mdi:pause"}></ha-icon>
+                  </ha-icon-button>
                 `}
             <ha-icon-button
               .icon=${"mdi:cog"}
               @click=${this.handleMoreInfo}
-            ></ha-icon-button>
+            >
+              <ha-icon .icon=${"mdi:cog"}></ha-icon>
+            </ha-icon-button>
           </div>
 
           <div class="device-id" @click=${this.setDeviceID}>${s}</div>
