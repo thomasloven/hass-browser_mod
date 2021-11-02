@@ -27,8 +27,11 @@ Promise.race(bases).then(() => {
       return {};
     }
 
-    setConfig(config) {
+    async setConfig(config) {
       this._config = config;
+      while (!window.browser_mod) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
       for (const event of [
         "play",
         "pause",
@@ -72,11 +75,10 @@ Promise.race(bases).then(() => {
       return html`
         <ha-card>
           <div class="card-content">
-            <ha-icon-button
-              .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}
-              @click=${this.handleMute}
-            >
-              <ha-icon .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}></ha-icon>
+            <ha-icon-button @click=${this.handleMute}>
+              <ha-icon
+                .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}
+              ></ha-icon>
             </ha-icon-button>
             <ha-slider
               min="0"
@@ -90,18 +92,13 @@ Promise.race(bases).then(() => {
             ${window.browser_mod.player_state === "stopped"
               ? html`<div class="placeholder"></div>`
               : html`
-                  <ha-icon-button
-                    .icon=${player.paused ? "mdi:play" : "mdi:pause"}
-                    @click=${this.handlePlayPause}
-                    highlight
-                  >
-                    <ha-icon .icon=${player.paused ? "mdi:play" : "mdi:pause"}></ha-icon>
+                  <ha-icon-button @click=${this.handlePlayPause} highlight>
+                    <ha-icon
+                      .icon=${player.paused ? "mdi:play" : "mdi:pause"}
+                    ></ha-icon>
                   </ha-icon-button>
                 `}
-            <ha-icon-button
-              .icon=${"mdi:cog"}
-              @click=${this.handleMoreInfo}
-            >
+            <ha-icon-button @click=${this.handleMoreInfo}>
               <ha-icon .icon=${"mdi:cog"}></ha-icon>
             </ha-icon-button>
           </div>
@@ -132,6 +129,9 @@ Promise.race(bases).then(() => {
           -webkit-user-select: all;
           -moz-user-select: all;
           -ms-user-select: all;
+        }
+        ha-icon-button ha-icon {
+          display: flex;
         }
       `;
     }
