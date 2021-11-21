@@ -50,7 +50,7 @@ class BrowserModSensor(BrowserModEntity):
         return DEVICE_CLASS_MOTION
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "last_seen": self.last_seen,
