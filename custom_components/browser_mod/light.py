@@ -40,7 +40,7 @@ class BrowserModLight(LightEntity, BrowserModEntity):
         return not self.data.get("blackout", False)
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "deviceID": self.deviceID,
