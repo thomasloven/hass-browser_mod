@@ -83,6 +83,9 @@ async def async_clean_devices(hass, data):
     entities_to_remove = []
     for e in entity_entries:
         entity = hass.states.get(e.entity_id)
+        if e.disabled_by == "integration":
+            entities_to_remove.append(e)
+            continue
         if entity.state != STATE_UNAVAILABLE:
             continue
         if e.device_id in devices_to_keep:
