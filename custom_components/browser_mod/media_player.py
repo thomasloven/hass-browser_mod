@@ -1,4 +1,5 @@
 import logging
+from homeassistant.components import media_source
 from homeassistant.components.media_player import (
     SUPPORT_PLAY,
     SUPPORT_PLAY_MEDIA,
@@ -7,6 +8,14 @@ from homeassistant.components.media_player import (
     SUPPORT_VOLUME_SET,
     SUPPORT_VOLUME_MUTE,
     MediaPlayerEntity,
+)
+from homeassistant.components.media_player.browse_media import (
+    async_process_play_media_url,
+)
+from homeassistant.components.media_player.const import (
+    MEDIA_TYPE_MUSIC,
+    MEDIA_TYPE_URL,
+    SUPPORT_BROWSE_MEDIA,
 )
 from homeassistant.const import (
     STATE_UNAVAILABLE,
@@ -42,7 +51,7 @@ class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
         self.schedule_update_ha_state()
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "deviceID": self.deviceID,
@@ -68,6 +77,7 @@ class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
             | SUPPORT_STOP
             | SUPPORT_VOLUME_SET
             | SUPPORT_VOLUME_MUTE
+            | SUPPORT_BROWSE_MEDIA
         )
 
     @property
@@ -88,8 +98,22 @@ class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
     def mute_volume(self, mute):
         self.connection.send("mute", mute=mute)
 
-    def play_media(self, media_type, media_id, **kwargs):
+    async def async_play_media(self, media_type, media_id, **kwargs):
+        if media_source.is_media_source_id(media_id):
+            media_type = MEDIA_TYPE_URL
+            play_item = await media_source.async_resolve_media(self.hass, media_id)
+            media_id = play_item.url
+        if media_type in (MEDIA_TYPE_URL, MEDIA_TYPE_MUSIC):
+            media_id = async_process_play_media_url(self.hass, media_id)
         self.connection.send("play", media_content_id=media_id)
+
+    async def async_browse_media(self, media_content_type=None, media_content_id=None):
+        """Implement the websocket media browsing helper."""
+        return await media_source.async_browse_media(
+            self.hass,
+            media_content_id,
+            content_filter=lambda item: item.media_content_type.startswith("audio/"),
+        )
 
     def media_play(self):
         self.connection.send("play")
