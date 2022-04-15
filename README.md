@@ -26,7 +26,7 @@ browser_mod:
 
 - Restart Home Assistant
 
-> Note: If you want to use browser_mod with Home Assistant Cast, you need to also add:
+> Note: If you want to use browser_mod with Home Assistant Cast, you need to also add the following.  Additionally, this can be added to allow the HA Companion App to function properly without uninstalling/reinstalling.
 >
 > ```yaml
 > resources:
