@@ -42,7 +42,7 @@ class BrowserModPlayer(MediaPlayerEntity, BrowserModEntity):
         self.schedule_update_ha_state()
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "deviceID": self.deviceID,

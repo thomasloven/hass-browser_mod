@@ -37,7 +37,7 @@ class BrowserModCamera(Camera, BrowserModEntity):
         return base64.b64decode(self.data.split(",")[-1])
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             "type": "browser_mod",
             "deviceID": self.deviceID,
