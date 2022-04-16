@@ -115,6 +115,12 @@ lovelace_reload:
     deviceID:
       description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
+window_reload:
+  description: "Forces the browser to reload the page. Same as clicking your browser's refresh button. Note: This is not guaranteed to clear the frontend cache."
+  fields:
+    deviceID:
+      description: "(optional) List of receiving browsers"
+      example: '["99980b13-dabc9563", "office_computer"]'
 delay:
   description: "Do nothing for a while"
   fields:

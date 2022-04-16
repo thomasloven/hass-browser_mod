@@ -419,7 +419,7 @@ service: browser_mod.lovelace_reload
 </details>
 
 <details><summary>window_reload</summary>
-Forces the browser to reload the page. Same as clicking your browsers refresh button.
+Forces the browser to reload the page. Same as clicking your browser's refresh button.
 
 > Note: This is not guaranteed to clear the frontend cache.
 
