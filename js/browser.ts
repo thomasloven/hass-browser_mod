@@ -1,4 +1,5 @@
 import { fireEvent } from "card-tools/src/event";
+import { ha_element } from "card-tools/src/hass";
 
 export const BrowserModBrowserMixin = (C) =>
   class extends C {
@@ -12,9 +13,7 @@ export const BrowserModBrowserMixin = (C) =>
 
     sensor_update() {
       const update = async () => {
-        const battery = navigator.getBattery
-          ? await navigator.getBattery()
-          : undefined;
+        const battery = (<any>navigator).getBattery?.();
         this.sendUpdate({
           browser: {
             path: window.location.pathname,
@@ -24,16 +23,9 @@ export const BrowserModBrowserMixin = (C) =>
             fullyKiosk: this.isFully,
             width: window.innerWidth,
             height: window.innerHeight,
-            battery_level: this.isFully
-              ? window.fully.getBatteryLevel()
-              : battery
-              ? battery.level * 100
-              : undefined,
-            charging: this.isFully
-              ? window.fully.isPlugged()
-              : battery
-              ? battery.charging
-              : undefined,
+            battery_level:
+              window.fully?.getBatteryLevel() ?? battery?.level * 100,
+            charging: window.fully?.isPlugged() ?? battery?.charging,
             darkMode:
               this._hass && this._hass.themes && this._hass.themes.darkMode,
             userData: this._hass && this._hass.user,
@@ -47,10 +39,6 @@ export const BrowserModBrowserMixin = (C) =>
     do_navigate(path) {
       if (!path) return;
       history.pushState(null, "", path);
-      fireEvent(
-        "location-changed",
-        {},
-        document.querySelector("home-assistant")
-      );
+      fireEvent("location-changed", {}, ha_element());
     }
   };

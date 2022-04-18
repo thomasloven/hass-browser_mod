@@ -1,13 +1,13 @@
 import nodeResolve from "@rollup/plugin-node-resolve";
 import json from "@rollup/plugin-json";
-// import typescript from "rollup-plugin-typescript2";
+import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import babel from "@rollup/plugin-babel";
 
 const dev = process.env.ROLLUP_WATCH;
 
 export default {
-  input: "js/main.js",
+  input: "js/main.ts",
   output: {
     file: "custom_components/browser_mod/browser_mod.js",
     format: "es",
@@ -15,7 +15,7 @@ export default {
   plugins: [
     nodeResolve(),
     json(),
-    // typescript(),
+    typescript(),
     babel({
       exclude: "node_modules/**",
     }),

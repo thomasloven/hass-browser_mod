@@ -37,7 +37,7 @@ export const FullyKioskMixin = (C) =>
       this._keepingAlive = false;
     }
 
-    fully_update(event) {
+    fully_update(event?) {
       if (!this.isFully) return;
       if (event === "screenOn") {
         window.clearTimeout(this._keepAliveTimer);

@@ -1,5 +1,5 @@
 import { fireEvent } from "card-tools/src/event";
-import { load_lovelace, lovelace } from "card-tools/src/hass";
+import { load_lovelace, lovelace, ha_element } from "card-tools/src/hass";
 import { moreInfo } from "card-tools/src/more-info";
 import { closePopUp, popUp } from "card-tools/src/popup";
 
@@ -28,11 +28,7 @@ export const BrowserModPopupsMixin = (C) =>
 
       this.do_popup(d);
       window.setTimeout(() => {
-        fireEvent(
-          "hass-more-info",
-          { entityID: "." },
-          document.querySelector("home-assistant")
-        );
+        fireEvent("hass-more-info", { entityID: "." }, ha_element());
       }, 50);
     }
 
@@ -83,7 +79,7 @@ export const BrowserModPopupsMixin = (C) =>
           message,
           duration: parseInt(duration),
         },
-        document.querySelector("home-assistant")
+        ha_element()
       );
     }
   };

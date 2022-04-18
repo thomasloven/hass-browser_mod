@@ -80,7 +80,7 @@ export const BrowserModScreensaverMixin = (C) =>
     _ss_clear() {
       window.clearTimeout(this._screenSaverTimer);
       for (const [k, v] of Object.entries(this._screenSaver.listeners)) {
-        window.removeEventListener(k, v);
+        window.removeEventListener(k as any, v as any);
       }
     }
 

@@ -2,6 +2,7 @@ import { deviceID } from "card-tools/src/deviceID";
 import { lovelace_view } from "card-tools/src/hass";
 import { popUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
+import { ha_element } from "card-tools/src/hass";
 import "./browser-player";
 
 import { BrowserModConnection } from "./connection";
@@ -16,7 +17,7 @@ import pjson from "../package.json";
 const ext = (baseClass, mixins) =>
   mixins.reduceRight((base, mixin) => mixin(base), baseClass);
 
-class BrowserMod extends ext(BrowserModConnection, [
+export class BrowserMod extends ext(BrowserModConnection, [
   BrowserModBrowserMixin,
   BrowserModPopupsMixin,
   BrowserModScreensaverMixin,
@@ -31,8 +32,8 @@ class BrowserMod extends ext(BrowserModConnection, [
     this.connect();
 
     document.body.addEventListener("ll-custom", (ev) => {
-      if (ev.detail.browser_mod) {
-        this.msg_callback(ev.detail.browser_mod);
+      if ((ev as CustomEvent).detail.browser_mod) {
+        this.msg_callback((ev as CustomEvent).detail.browser_mod);
       }
     });
 
@@ -69,7 +70,7 @@ class BrowserMod extends ext(BrowserModConnection, [
         this.do_blackout(msg.time ? parseInt(msg.time) : undefined),
       "no-blackout": (msg) => {
         if (msg.brightness && this.isFully) {
-          window.fully.setScreenBrightness(msg.brightness);
+          (window as any).fully.setScreenBrightness(msg.brightness);
         }
         this.no_blackout();
       },
@@ -96,11 +97,7 @@ class BrowserMod extends ext(BrowserModConnection, [
 
   set_theme(msg) {
     if (!msg.theme) msg.theme = "default";
-    fireEvent(
-      "settheme",
-      { theme: msg.theme },
-      document.querySelector("home-assistant")
-    );
+    fireEvent("settheme", { theme: msg.theme }, ha_element());
   }
 
   lovelace_reload(msg) {
@@ -147,6 +144,7 @@ const bases = [
 ];
 Promise.race(bases).then(() => {
   window.setTimeout(() => {
-    window.browser_mod = window.browser_mod || new BrowserMod();
+    (window as any).browser_mod =
+      (window as any).browser_mod || new BrowserMod();
   }, 1000);
 });

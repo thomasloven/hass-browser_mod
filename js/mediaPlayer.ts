@@ -19,7 +19,7 @@ export const BrowserModMediaPlayerMixin = (C) =>
       );
     }
 
-    player_update(ev) {
+    player_update(ev?) {
       this.sendUpdate({
         player: {
           volume: this.player.volume,

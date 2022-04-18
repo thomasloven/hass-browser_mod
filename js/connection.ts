@@ -1,16 +1,18 @@
 import { deviceID } from "card-tools/src/deviceID";
 import { hass, provideHass } from "card-tools/src/hass";
 
+const hassWindow: any = window;
+
 export class BrowserModConnection {
+  _connection;
+  _hass;
+
   async connect() {
     const isCast = document.querySelector("hc-main") !== null;
     if (!isCast) {
-      if (!window.hassConnection) {
-        window.setTimeout(() => this.connect(), 100);
-        return;
-      } else {
-        this._connection = (await window.hassConnection).conn;
-      }
+      while (!hassWindow.hassConnection)
+        await new Promise((resolve) => window.setTimeout(resolve, 100));
+      this._connection = (await hassWindow.hassConnection).conn;
     } else {
       this._connection = hass().connection;
     }
@@ -20,7 +22,6 @@ export class BrowserModConnection {
       deviceID: deviceID,
     });
 
-    this._hass_patched = false;
     provideHass(this);
   }
 
