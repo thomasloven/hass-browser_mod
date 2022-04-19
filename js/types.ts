@@ -30,5 +30,7 @@ declare global {
   interface Window {
     browser_mod?: BrowserMod;
     fully?: FullyKiosk;
+    hassConnection?: Promise<any>;
+    customCards?: [{}?];
   }
 }

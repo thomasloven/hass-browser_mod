@@ -3,6 +3,7 @@ import { property } from "lit/decorators.js";
 
 import { deviceID, setDeviceID } from "card-tools/src/deviceID";
 import { fireEvent } from "card-tools/src/event";
+import { hass_loaded } from "card-tools/src/hass";
 
 import "./browser-player-editor.ts";
 
@@ -132,11 +133,8 @@ class BrowserPlayer extends LitElement {
 }
 
 (async () => {
-  while (
-    (customElements.get("home-assistant") ?? customElements.get("hc-main")) ===
-    undefined
-  )
-    await new Promise((resolve) => window.setTimeout(resolve, 100));
+  await hass_loaded();
+
   if (!customElements.get("browser-player"))
     customElements.define("browser-player", BrowserPlayer);
 })();

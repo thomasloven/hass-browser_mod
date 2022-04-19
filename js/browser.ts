@@ -19,16 +19,15 @@ export const BrowserModBrowserMixin = (C) =>
             path: window.location.pathname,
             visibility: document.visibilityState,
             userAgent: navigator.userAgent,
-            currentUser: this._hass && this._hass.user && this._hass.user.name,
+            currentUser: this.hass?.user?.name,
             fullyKiosk: this.isFully,
             width: window.innerWidth,
             height: window.innerHeight,
             battery_level:
               window.fully?.getBatteryLevel() ?? battery?.level * 100,
             charging: window.fully?.isPlugged() ?? battery?.charging,
-            darkMode:
-              this._hass && this._hass.themes && this._hass.themes.darkMode,
-            userData: this._hass && this._hass.user,
+            darkMode: this.hass?.themes?.darkMode,
+            userData: this.hass?.user,
             config: this.config,
           },
         });

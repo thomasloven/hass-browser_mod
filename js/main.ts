@@ -2,7 +2,7 @@ import { deviceID } from "card-tools/src/deviceID";
 import { lovelace_view } from "card-tools/src/hass";
 import { popUp } from "card-tools/src/popup";
 import { fireEvent } from "card-tools/src/event";
-import { ha_element } from "card-tools/src/hass";
+import { ha_element, hass_loaded } from "card-tools/src/hass";
 import "./browser-player";
 
 import { BrowserModConnection } from "./connection";
@@ -107,7 +107,7 @@ export class BrowserMod extends ext(BrowserModConnection, [
 
   call_service(msg) {
     const _replaceThis = (data) => {
-      if (typeof data === "string" && data === "this") return deviceID;
+      if (data === "this") return deviceID;
       if (Array.isArray(data)) return data.map(_replaceThis);
       if (data.constructor == Object) {
         for (const key in data) data[key] = _replaceThis(data[key]);
@@ -118,7 +118,7 @@ export class BrowserMod extends ext(BrowserModConnection, [
     let service_data = _replaceThis(
       JSON.parse(JSON.stringify(msg.service_data))
     );
-    this._hass.callService(domain, service, service_data);
+    this.hass.callService(domain, service, service_data);
   }
 
   update(msg = null) {
@@ -138,13 +138,8 @@ export class BrowserMod extends ext(BrowserModConnection, [
   }
 }
 
-const bases = [
-  customElements.whenDefined("home-assistant"),
-  customElements.whenDefined("hc-main"),
-];
-Promise.race(bases).then(() => {
-  window.setTimeout(() => {
-    (window as any).browser_mod =
-      (window as any).browser_mod || new BrowserMod();
-  }, 1000);
-});
+(async () => {
+  await hass_loaded();
+
+  if (!window.browser_mod) window.browser_mod = new BrowserMod();
+})();

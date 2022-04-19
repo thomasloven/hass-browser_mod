@@ -1,4 +1,5 @@
 import { LitElement, html } from "lit";
+import { hass_loaded } from "card-tools/src/hass";
 
 class BrowserPlayerEditor extends LitElement {
   setConfig(config) {}
@@ -8,15 +9,12 @@ class BrowserPlayerEditor extends LitElement {
 }
 
 (async () => {
-  while (
-    (customElements.get("home-assistant") ?? customElements.get("hc-main")) ===
-    undefined
-  )
-    await new Promise((resolve) => window.setTimeout(resolve, 100));
+  await hass_loaded();
+
   if (!customElements.get("browser-player-editor")) {
     customElements.define("browser-player-editor", BrowserPlayerEditor);
-    (window as any).customCards = (window as any).customCards || [];
-    (window as any).customCards.push({
+    window.customCards = window.customCards || [];
+    window.customCards.push({
       type: "browser-player",
       name: "Browser Player",
       preview: true,

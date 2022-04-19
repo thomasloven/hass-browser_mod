@@ -36,6 +36,14 @@ function ha_element() {
     return document.querySelector("home-assistant");
 }
 
+async function hass_loaded() {
+  await Promise.race([
+    customElements.whenDefined("home-assistant"),
+    customElements.whenDefined("hc-main")
+  ]);
+  return true;
+}
+
 function hass() {
   if(document.querySelector('hc-main'))
     return document.querySelector('hc-main').hass;
@@ -123,7 +131,6 @@ async function load_lovelace() {
   if(p.hass === undefined) {
     await new Promise(resolve => {
       window.addEventListener('connection-status', (ev) => {
-        console.log(ev);
         resolve();
       }, {once: true});
     });
@@ -509,10 +516,7 @@ class BrowserPlayerEditor extends s {
     }
 }
 (async () => {
-    var _a;
-    while (((_a = customElements.get("home-assistant")) !== null && _a !== void 0 ? _a : customElements.get("hc-main")) ===
-        undefined)
-        await new Promise((resolve) => window.setTimeout(resolve, 100));
+    await hass_loaded();
     if (!customElements.get("browser-player-editor")) {
         customElements.define("browser-player-editor", BrowserPlayerEditor);
         window.customCards = window.customCards || [];
@@ -641,37 +645,30 @@ __decorate([
     e()
 ], BrowserPlayer.prototype, "hass", void 0);
 (async () => {
-    var _a;
-    while (((_a = customElements.get("home-assistant")) !== null && _a !== void 0 ? _a : customElements.get("hc-main")) ===
-        undefined)
-        await new Promise((resolve) => window.setTimeout(resolve, 100));
+    await hass_loaded();
     if (!customElements.get("browser-player"))
         customElements.define("browser-player", BrowserPlayer);
 })();
 
-const hassWindow = window;
 class BrowserModConnection {
     async connect() {
         const isCast = document.querySelector("hc-main") !== null;
         if (!isCast) {
-            while (!hassWindow.hassConnection)
+            while (!window.hassConnection)
                 await new Promise((resolve) => window.setTimeout(resolve, 100));
-            this._connection = (await hassWindow.hassConnection).conn;
+            this.connection = (await window.hassConnection).conn;
         }
         else {
-            this._connection = hass().connection;
+            this.connection = hass().connection;
         }
-        this._connection.subscribeMessage((msg) => this.msg_callback(msg), {
+        this.connection.subscribeMessage((msg) => this.msg_callback(msg), {
             type: "browser_mod/connect",
             deviceID: deviceID,
         });
         provideHass(this);
     }
-    set hass(hass) {
-        this._hass = hass;
-    }
     get connected() {
-        return this._connection !== undefined;
+        return this.connection !== undefined;
     }
     msg_callback(message) {
         console.log(message);
@@ -679,7 +676,7 @@ class BrowserModConnection {
     sendUpdate(data) {
         if (!this.connected)
             return;
-        this._connection.sendMessage({
+        this.connection.sendMessage({
             type: "browser_mod/update",
             deviceID,
             data,
@@ -1072,21 +1069,21 @@ const BrowserModBrowserMixin = (C) => class extends C {
     }
     sensor_update() {
         const update = async () => {
-            var _a, _b, _c, _d, _e, _f;
+            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
             const battery = (_b = (_a = navigator).getBattery) === null || _b === void 0 ? void 0 : _b.call(_a);
             this.sendUpdate({
                 browser: {
                     path: window.location.pathname,
                     visibility: document.visibilityState,
                     userAgent: navigator.userAgent,
-                    currentUser: this._hass && this._hass.user && this._hass.user.name,
+                    currentUser: (_d = (_c = this.hass) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.name,
                     fullyKiosk: this.isFully,
                     width: window.innerWidth,
                     height: window.innerHeight,
-                    battery_level: (_d = (_c = window.fully) === null || _c === void 0 ? void 0 : _c.getBatteryLevel()) !== null && _d !== void 0 ? _d : (battery === null || battery === void 0 ? void 0 : battery.level) * 100,
-                    charging: (_f = (_e = window.fully) === null || _e === void 0 ? void 0 : _e.isPlugged()) !== null && _f !== void 0 ? _f : battery === null || battery === void 0 ? void 0 : battery.charging,
-                    darkMode: this._hass && this._hass.themes && this._hass.themes.darkMode,
-                    userData: this._hass && this._hass.user,
+                    battery_level: (_f = (_e = window.fully) === null || _e === void 0 ? void 0 : _e.getBatteryLevel()) !== null && _f !== void 0 ? _f : (battery === null || battery === void 0 ? void 0 : battery.level) * 100,
+                    charging: (_h = (_g = window.fully) === null || _g === void 0 ? void 0 : _g.isPlugged()) !== null && _h !== void 0 ? _h : battery === null || battery === void 0 ? void 0 : battery.charging,
+                    darkMode: (_k = (_j = this.hass) === null || _j === void 0 ? void 0 : _j.themes) === null || _k === void 0 ? void 0 : _k.darkMode,
+                    userData: (_l = this.hass) === null || _l === void 0 ? void 0 : _l.user,
                     config: this.config,
                 },
             });
@@ -1214,7 +1211,7 @@ class BrowserMod extends ext(BrowserModConnection, [
     }
     call_service(msg) {
         const _replaceThis = (data) => {
-            if (typeof data === "string" && data === "this")
+            if (data === "this")
                 return deviceID;
             if (Array.isArray(data))
                 return data.map(_replaceThis);
@@ -1226,7 +1223,7 @@ class BrowserMod extends ext(BrowserModConnection, [
         };
         const [domain, service] = msg.service.split(".", 2);
         let service_data = _replaceThis(JSON.parse(JSON.stringify(msg.service_data)));
-        this._hass.callService(domain, service, service_data);
+        this.hass.callService(domain, service, service_data);
     }
     update(msg = null) {
         if (msg) {
@@ -1244,15 +1241,10 @@ class BrowserMod extends ext(BrowserModConnection, [
         this.sensor_update();
     }
 }
-const bases = [
-    customElements.whenDefined("home-assistant"),
-    customElements.whenDefined("hc-main"),
-];
-Promise.race(bases).then(() => {
-    window.setTimeout(() => {
-        window.browser_mod =
-            window.browser_mod || new BrowserMod();
-    }, 1000);
-});
+(async () => {
+    await hass_loaded();
+    if (!window.browser_mod)
+        window.browser_mod = new BrowserMod();
+})();
 
 export { BrowserMod };
