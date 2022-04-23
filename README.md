@@ -280,11 +280,13 @@ This changes the _frontend_ setting - the same as if you click your initials in 
 Parameters:
 
 - `theme` - the name of the theme to set
+- `dark` - true to enable dark mode, false to enable light mode, auto to follow the browser's setting. Only applicable to themes that support dark mode.
 
 ```yaml
 service: browser_mod.set_theme
 data:
   theme: clear_light
+  dark: true
 ```
 
 </details>

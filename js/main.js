@@ -95,12 +95,16 @@ class BrowserMod extends ext(BrowserModConnection, [
   }
 
   set_theme(msg) {
-    if (!msg.theme) msg.theme = "default";
-    fireEvent(
-      "settheme",
-      { theme: msg.theme },
-      document.querySelector("home-assistant")
-    );
+    const data = {};
+    if (msg.hasOwnProperty("theme")) {
+      data.theme = msg.theme || "default";
+    }
+    if (msg.hasOwnProperty("dark")) {
+      // HASS expects an explicit `dark` property whose value is `undefined` to set
+      // the dark mode to auto
+      data.dark = msg.dark === "auto" ? undefined : msg.dark;
+    }
+    fireEvent("settheme", data, document.querySelector("home-assistant"));
   }
 
   lovelace_reload(msg) {

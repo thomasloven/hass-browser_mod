@@ -25,8 +25,11 @@ set_theme:
   description: "On all browsers, change the theme."
   fields:
     theme:
-      description: "Theme to change to"
+      description: "(optional) Theme to change to"
       example: '{theme: "clear_light"}'
+    dark:
+      description: "(optional) True to enable dark mode, false to enable light mode, auto to follow the browser's setting. Only applicable to themes that support dark mode."
+      example: 'true'
     deviceID:
       description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
