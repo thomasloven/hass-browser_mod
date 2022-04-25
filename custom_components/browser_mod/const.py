@@ -1,6 +1,7 @@
 DOMAIN = "browser_mod"
 
 FRONTEND_SCRIPT_URL = "/browser_mod.js"
+SETTINGS_PANEL_URL = "/browser_mod_panel.js"
 
 DATA_EXTRA_MODULE_URL = "frontend_extra_module_url"
 

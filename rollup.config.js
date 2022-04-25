@@ -6,19 +6,37 @@ import babel from "@rollup/plugin-babel";
 
 const dev = process.env.ROLLUP_WATCH;
 
-export default {
-  input: "js/main.ts",
-  output: {
-    file: "custom_components/browser_mod/browser_mod.js",
-    format: "es",
+module.exports = [
+  {
+    input: "js/browser_mod.ts",
+    output: {
+      file: "custom_components/browser_mod/browser_mod.js",
+      format: "es",
+    },
+    plugins: [
+      nodeResolve(),
+      json(),
+      typescript(),
+      babel({
+        exclude: "node_modules/**",
+      }),
+      !dev && terser({ format: { comments: false } }),
+    ],
   },
-  plugins: [
-    nodeResolve(),
-    json(),
-    typescript(),
-    babel({
-      exclude: "node_modules/**",
-    }),
-    !dev && terser({ format: { comments: false } }),
-  ],
-};
+  {
+    input: "js/browser_mod_panel.ts",
+    output: {
+      file: "custom_components/browser_mod/browser_mod_panel.js",
+      format: "es",
+    },
+    plugins: [
+      nodeResolve(),
+      json(),
+      typescript(),
+      babel({
+        exclude: "node_modules/**",
+      }),
+      !dev && terser({ format: { comments: false } }),
+    ],
+  },
+];

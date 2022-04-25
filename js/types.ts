@@ -1,6 +1,6 @@
 const a = {};
 
-import { BrowserMod } from "./main";
+import { BrowserMod } from "./browser_mod";
 
 interface FullyKiosk {
   // Get device info
