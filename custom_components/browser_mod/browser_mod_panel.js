@@ -70,16 +70,33 @@ class BrowserModPanel extends s {
         </app-header>
 
         <ha-config-section .narrow=${this.narrow} full-width>
-          <ha-card header="Device ID">
+          <ha-card header="This Browser">
             <div class="card-content">
+              <div class="option">
+                <h3>Enable</h3>
+                <ha-switch></ha-switch>
+              </div>
+              Enable this browser as a Device in Home Assistant
+              <div class="option">
+                <h3>DeviceID</h3>
+              </div>
+              <ha-textfield .value=${deviceID}> </ha-textfield>
               The device ID is a unique identifier for your browser/device
               combination.
-              <ha-textfield .value=${deviceID}> </ha-textfield>
+              <div class="option">
+                <h3>Enable Camera</h3>
+                <ha-switch> </ha-switch>
+              </div>
+              Get Camera input from this device (hardware dependent)
             </div>
             <div class="card-actions">
               <div class="spacer"></div>
               <mwc-button>Update</mwc-button>
             </div>
+          </ha-card>
+
+          <ha-card header="Current User">
+            <div class="card-content"></div>
           </ha-card>
 
           <ha-card header="Tweaks">

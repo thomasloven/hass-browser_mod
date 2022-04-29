@@ -8,7 +8,7 @@ const dev = process.env.ROLLUP_WATCH;
 
 module.exports = [
   {
-    input: "js/browser_mod.ts",
+    input: "js/plugin/main.ts",
     output: {
       file: "custom_components/browser_mod/browser_mod.js",
       format: "es",
@@ -24,7 +24,7 @@ module.exports = [
     ],
   },
   {
-    input: "js/browser_mod_panel.ts",
+    input: "js/config_panel/main.ts",
     output: {
       file: "custom_components/browser_mod/browser_mod_panel.js",
       format: "es",
