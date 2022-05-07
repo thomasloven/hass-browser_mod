@@ -113,6 +113,22 @@ browser_mod:
     - all
 ```
 
+### Clearing out old devices
+
+`browser_mod` creates devices and entities for every browser used to access Home Assistant. This can leave extra devices and entities laying around for browsers you no longer use. To automatically clear out devices and entities that are no longer used, call the `browser_mod.clean_devices` service, either by going to `/developer-tools/service panel` or by setting up a recurring automation to clean out old browsers on a schedule:
+
+```
+# clean out old devices every day at midnight
+trigger:
+  - platform: time_pattern
+    hours: "0"
+    minutes: "0"
+action:
+  - service: browser_mod.clean_devices
+```
+
+Devices listed in `configuration.yaml` and devices which are currently connected will be kept; all others will be removed.
+
 ## Entities
 
 Once `browser_mod` is installed, loading up your Home Assistant frontend on a new _device_ will create three to five new devices.
@@ -473,6 +489,11 @@ data:
       seconds: 5
     - command: no_blackout
 ```
+
+</details>
+
+<details><summary>clean_devices</summary>
+Remove any unused devices and entities created by browser_mod. Devices which are listed under the browser_mod key in configuration.yaml and devices which are currently connected are kept; all others are removed.
 
 </details>
 
