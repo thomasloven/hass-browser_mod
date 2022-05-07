@@ -133,5 +133,7 @@ delay:
     deviceID:
       description: "(optional) List of receiving browsers"
       example: '["99980b13-dabc9563", "office_computer"]'
+clean_devices:
+  description: "Remove any unused devices and entities created by browser_mod. Devices which are listed under the browser_mod key in configuration.yaml and devices which are currently connected are kept; all others are removed."
 call_service:
   description: ""
