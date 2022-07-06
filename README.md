@@ -608,7 +608,7 @@ This would replace the more-info dialogs of `sensor.sensor1` and `sensor.sensor2
 
 Attributes of the `sensor` may include a list of specific HTML elements along with their attributes. The list will be updated whenever the attributes change.
 
-In order to activate this feature, put the following in the dashboard configuration file:
+In order to activate this feature, put the following in the dashboard configuration file (eg. `ui-lovelace.yaml`):
 
 ```yaml
 browser_mod:
