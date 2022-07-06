@@ -618,6 +618,18 @@ browser_mod:
 
 The `elements` node is a list of selectors. For syntax please refer to [this page](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
 
+Below is an example attribute of the `sensor`:
+
+```yaml
+elements: 
+  '#wallpanel-screensaver-container':
+    id: wallpanel-screensaver-container
+    style: >-
+      position: fixed; top: 0px; left: 0px; width: 100vw; height: 100vh;
+      background: rgb(0, 0, 0); opacity: 1; z-index: 1000; visibility: visible;
+      transition: opacity 3000ms ease-in-out 0s;
+```
+
 # Support
 
 [Home Assistant community forum thread](https://community.home-assistant.io/t/browser-mod-turn-your-browser-into-a-controllable-device-and-a-media-player/123806)
