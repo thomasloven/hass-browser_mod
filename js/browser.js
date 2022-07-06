@@ -1,13 +1,29 @@
 import { fireEvent } from "card-tools/src/event";
+import { load_lovelace, lovelace } from "card-tools/src/hass";
 
 export const BrowserModBrowserMixin = (C) =>
   class extends C {
     constructor() {
       super();
+
+      const isCast = document.querySelector("hc-main") !== null;
+      if (!isCast) load_lovelace();
+
       document.addEventListener("visibilitychange", () => this.sensor_update());
       window.addEventListener("location-changed", () => this.sensor_update());
 
       window.setInterval(() => this.sensor_update(), 10000);
+
+      const browser_mod_config = lovelace().config.browser_mod;
+      if (!browser_mod_config || !browser_mod_config.elements) return;
+
+      var observer = new MutationObserver(() => this.sensor_update());
+
+      browser_mod_config.elements.forEach(function(element) {
+        var el = document.querySelector(element);
+        if (!el) return;
+        observer.observe(el, { attributes : true });
+      });
     }
 
     sensor_update() {
@@ -38,10 +54,29 @@ export const BrowserModBrowserMixin = (C) =>
               this._hass && this._hass.themes && this._hass.themes.darkMode,
             userData: this._hass && this._hass.user,
             config: this.config,
+            elements: this.get_elements(),
           },
         });
       };
       update();
+    }
+
+    get_elements() {
+      const browser_mod_config = lovelace().config.browser_mod;
+      if (!browser_mod_config || !browser_mod_config.elements) return;
+      var result = {};
+
+      browser_mod_config.elements.forEach(function(element) {
+        result[element] = {};
+        var el = document.querySelector(element);
+        if (!el) return;
+        var attrs = el.attributes;
+        for (var i = 0; i < attrs.length; i++) {
+          result[element][attrs[i].name] = attrs[i].value;
+        }
+      });
+
+      return result;
     }
 
     do_navigate(path) {

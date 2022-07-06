@@ -134,20 +134,21 @@ The `sensor` will display the number of connected views (tabs/windows) of the de
 
 The sensor also has the following attributes:
 
-| attribute       | content                                                             |
-| --------------- | ------------------------------------------------------------------- |
-| `type`          | `browser_mod`                                                       |
-| `last_seen`     | The time when the _device_ was last seen                            |
-| `deviceID`      | The deviceID of the _device_.                                       |
-| `path`          | The currently displayed path on the _device_.                       |
-| `visibility`    | Whether the frontend is currently visible on the _device_.          |
-| `userAgent`     | The User Agent of the associated browser.                           |
-| `currentUser`   | The user currently logged in on the _device_.                       |
-| `fullyKiosk`    | True if the _device_ is a Fully Kiosk browser. Undefined otherwise. |
-| `width`         | The current width of the browser window in pixels.                  |
-| `height`        | The current height of the browser window in pixels.                 |
-| `battery_level` | The current battery level of your device - if supported             |
-| `charging`      | The current charging state of your device - if supported            |
+| attribute       | content                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| `type`          | `browser_mod`                                                                                  |
+| `last_seen`     | The time when the _device_ was last seen                                                       |
+| `deviceID`      | The deviceID of the _device_.                                                                  |
+| `path`          | The currently displayed path on the _device_.                                                  |
+| `visibility`    | Whether the frontend is currently visible on the _device_.                                     |
+| `userAgent`     | The User Agent of the associated browser.                                                      |
+| `currentUser`   | The user currently logged in on the _device_.                                                  |
+| `fullyKiosk`    | True if the _device_ is a Fully Kiosk browser. Undefined otherwise.                            |
+| `width`         | The current width of the browser window in pixels.                                             |
+| `height`        | The current height of the browser window in pixels.                                            |
+| `battery_level` | The current battery level of your device - if supported                                        |
+| `charging`      | The current charging state of your device - if supported                                       |
+| `elements`      | The list of tracked elements with their attributes - see [below](#tracking-dashboard-elements) |
 
 </details>
 
@@ -602,6 +603,20 @@ popup_cards:
 ```
 
 This would replace the more-info dialogs of `sensor.sensor1` and `sensor.sensor2` anywhere in your interface. Even outside of lovelace - be careful about that.
+
+# Tracking dashboard elements
+
+Attributes of the `sensor` may include a list of specific HTML elements along with their attributes. The list will be updated whenever the attributes change.
+
+In order to activate this feature, put the following in the dashboard configuration file:
+
+```yaml
+browser_mod:
+  elements:
+    - "#wallpanel-screensaver-container"
+```
+
+The `elements` node is a list of selectors. For syntax please refer to [this page](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector).
 
 # Support
 
