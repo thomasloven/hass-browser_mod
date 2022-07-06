@@ -53,4 +53,13 @@ export const BrowserModBrowserMixin = (C) =>
         document.querySelector("home-assistant")
       );
     }
+
+    do_dispatch_event(msg) {
+      console.log(msg);
+      if (!msg.event_object || !msg.event_type) return;
+      if (["MouseEvent", "TouchEvent", "FocusEvent", "KeyboardEvent", "WheelEvent", "InputEvent", "CompositionEvent"].indexOf(msg.event_object) < 0) return;
+      var ev_obj = eval(msg.event_object);
+      var ev = new ev_obj(msg.event_type, msg.event_options);
+      window.dispatchEvent(ev);
+    }
   };

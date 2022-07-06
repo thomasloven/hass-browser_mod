@@ -54,6 +54,21 @@ more_info:
     large:
       description: "(optional) Set to true to make wider"
       example: "true"
+dispatch_event:
+  description: "Create and dispatch an event in a browser."
+  fields:
+    deviceID:
+      description: "(optional) List of receiving browsers"
+      example: '["99980b13-dabc9563", "office_computer"]'
+    event_object:
+      description: "Descendant of UIEvent"
+      example: "MouseEvent"
+    event_type:
+      description: "Event type supported by the event object"
+      example: "mousemove"
+    event_options:
+      description: "(optional) Event properties"
+      example: '{"clientX" : 1}'
 toast:
   description: "Show a toast message in the bottom left on all browsers."
   fields:

@@ -60,6 +60,8 @@ class BrowserMod extends ext(BrowserModConnection, [
       "close-popup": (msg) => this.do_close_popup(),
       "more-info": (msg) => this.do_more_info(msg.entity_id, msg.large),
 
+      "dispatch-event": (msg) => this.do_dispatch_event(msg),
+
       navigate: (msg) => this.do_navigate(msg.navigation_path),
       "set-theme": (msg) => this.set_theme(msg),
       "lovelace-reload": (msg) => this.lovelace_reload(msg),

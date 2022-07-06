@@ -26,6 +26,7 @@ USER_COMMANDS = [
     "close-popup",
     "navigate",
     "more-info",
+    "dispatch-event",
     "set-theme",
     "lovelace-reload",
     "window-reload",
