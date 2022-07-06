@@ -326,6 +326,26 @@ data:
 
 </details>
 
+<details><summary>dispatch_event</summary>
+Create and dispatch an event in a browser.
+
+Parameters:
+
+- `event_object` - descendant of UIEvent.
+- `event_type` - event type supported by the event object.
+- `event_options` - event properties. (**optional**, default: none)
+
+```yaml
+service: browser_mod.dispatch_event
+data:
+  event_object: MouseEvent
+  event_type: mousemove
+  event_options:
+    clientX: 1
+```
+
+</details>
+
 <details><summary>toast</summary>
 Display a notification toast.
 
