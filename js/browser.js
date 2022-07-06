@@ -14,6 +14,13 @@ export const BrowserModBrowserMixin = (C) =>
 
       window.setInterval(() => this.sensor_update(), 10000);
 
+      this.is_observer_setup = false;
+    }
+
+    setup_observer() {
+      if (this.is_observer_setup) return;
+      this.is_observer_setup = true;
+
       const browser_mod_config = lovelace().config.browser_mod;
       if (!browser_mod_config || !browser_mod_config.elements) return;
 
@@ -62,6 +69,8 @@ export const BrowserModBrowserMixin = (C) =>
     }
 
     get_elements() {
+      this.setup_observer();
+
       const browser_mod_config = lovelace().config.browser_mod;
       if (!browser_mod_config || !browser_mod_config.elements) return;
       var result = {};
