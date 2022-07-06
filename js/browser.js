@@ -21,6 +21,7 @@ export const BrowserModBrowserMixin = (C) =>
       if (this.is_observer_setup) return;
       this.is_observer_setup = true;
 
+      if (!lovelace() || !lovelace().config) return;
       const browser_mod_config = lovelace().config.browser_mod;
       if (!browser_mod_config || !browser_mod_config.elements) return;
 
@@ -71,6 +72,7 @@ export const BrowserModBrowserMixin = (C) =>
     get_elements() {
       this.setup_observer();
 
+      if (!lovelace() || !lovelace().config) return;
       const browser_mod_config = lovelace().config.browser_mod;
       if (!browser_mod_config || !browser_mod_config.elements) return;
       var result = {};
