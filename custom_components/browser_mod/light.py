@@ -1,64 +1,43 @@
-from datetime import datetime
+from homeassistant.components.light import LightEntity, ColorMode
 
-from homeassistant.const import STATE_UNAVAILABLE, STATE_ON, STATE_OFF
-from homeassistant.components.light import LightEntity, SUPPORT_BRIGHTNESS
-
-from .helpers import setup_platform, BrowserModEntity
-
-PLATFORM = "light"
+from .helpers import setup_platform, BrowserModEntity2
+from .const import DOMAIN, DATA_ADDERS
 
 
-async def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
-    return setup_platform(hass, config, async_add_devices, PLATFORM, BrowserModLight)
-
+async def async_setup_platform(hass, config_entry, async_add_entities, discoveryInfo = None):
+    hass.data[DOMAIN][DATA_ADDERS]["light"] = async_add_entities
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     await async_setup_platform(hass, {}, async_add_entities)
 
 
-class BrowserModLight(LightEntity, BrowserModEntity):
-    domain = PLATFORM
+class BrowserModLight(BrowserModEntity2, LightEntity):
 
-    def __init__(self, hass, connection, deviceID, alias=None):
-        super().__init__(hass, connection, deviceID, alias)
-        self.last_seen = None
-
-    def updated(self):
-        self.last_seen = datetime.now()
-        self.schedule_update_ha_state()
+    def __init__(self, coordinator, deviceID, device):
+        super().__init__(coordinator, deviceID, "Screen")
+        self.device = device
 
     @property
-    def state(self):
-        if not self.connection.connection:
-            return STATE_UNAVAILABLE
-        if self.data.get("blackout", False):
-            return STATE_OFF
-        return STATE_ON
+    def entity_registry_visible_default(self):
+        return True
 
     @property
     def is_on(self):
-        return not self.data.get("blackout", False)
+        return self._data.get("screen_on", None)
 
     @property
-    def extra_state_attributes(self):
-        return {
-            "type": "browser_mod",
-            "deviceID": self.deviceID,
-            "last_seen": self.last_seen,
-        }
-
+    def supported_color_modes(self):
+        return {ColorMode.BRIGHTNESS}
     @property
-    def supported_features(self):
-        if self.data.get("brightness", False):
-            return SUPPORT_BRIGHTNESS
-        return 0
+    def color_mode(self):
+        return ColorMode.BRIGHTNESS
 
     @property
     def brightness(self):
-        return self.data.get("brightness", None)
+        return self._data.get("screen_brightness", 1)
 
     def turn_on(self, **kwargs):
-        self.connection.send("no-blackout", **kwargs)
+        self.device.send("screen_on", **kwargs)
 
     def turn_off(self, **kwargs):
-        self.connection.send("blackout")
+        self.device.send("screen_off")

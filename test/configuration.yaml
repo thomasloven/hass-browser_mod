@@ -2,16 +2,21 @@ default_config:
 
 demo:
 
-browser_mod:
-  devices:
-    camdevice:
-      camera: true
-    testdevice:
-      alias: test
-    fully:
-      force_stay_awake: true
-    fully2:
-      screensaver: true
+logger:
+  default: warning
+  logs:
+    custom_components.browser_mod: info
+
+# browser_mod:
+#   devices:
+#     camdevice:
+#       camera: true
+#     testdevice:
+#       alias: test
+#     fully:
+#       force_stay_awake: true
+#     fully2:
+#       screensaver: true
 
 lovelace:
   mode: storage

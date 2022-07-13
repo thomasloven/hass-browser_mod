@@ -8,7 +8,10 @@ export const BrowserModBrowserMixin = (C) =>
       document.addEventListener("visibilitychange", () => this.sensor_update());
       window.addEventListener("location-changed", () => this.sensor_update());
 
-      window.setInterval(() => this.sensor_update(), 10000);
+      this.addEventListener("browser-mod-connected", () =>
+        this.sensor_update()
+      );
+      // window.setInterval(() => this.sensor_update(), 10000);
     }
 
     sensor_update() {
@@ -28,7 +31,7 @@ export const BrowserModBrowserMixin = (C) =>
             charging: window.fully?.isPlugged() ?? battery?.charging,
             darkMode: this.hass?.themes?.darkMode,
             userData: this.hass?.user,
-            config: this.config,
+            // config: this.config,
           },
         });
       };

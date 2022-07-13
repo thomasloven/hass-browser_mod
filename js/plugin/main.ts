@@ -5,8 +5,10 @@ import { fireEvent } from "card-tools/src/event";
 import { ha_element, hass_loaded } from "card-tools/src/hass";
 import "./browser-player";
 
-import { BrowserModConnection } from "./connection";
-import { BrowserModMediaPlayerMixin } from "./mediaPlayer";
+// import { BrowserModConnection } from "./connection";
+import { ConnectionMixin } from "./connection";
+import { ScreenSaverMixin } from "./screensaver";
+import { MediaPlayerMixin } from "./mediaPlayer";
 import { FullyKioskMixin } from "./fullyKiosk";
 import { BrowserModCameraMixin } from "./camera";
 import { BrowserModScreensaverMixin } from "./screensaver";
@@ -17,14 +19,15 @@ import pjson from "../../package.json";
 const ext = (baseClass, mixins) =>
   mixins.reduceRight((base, mixin) => mixin(base), baseClass);
 
-export class BrowserMod extends ext(BrowserModConnection, [
-  BrowserModBrowserMixin,
-  BrowserModPopupsMixin,
-  BrowserModScreensaverMixin,
-  BrowserModCameraMixin,
-  FullyKioskMixin,
-  BrowserModMediaPlayerMixin,
-]) {
+// export class BrowserMod extends ext(BrowserModConnection, [
+//   BrowserModBrowserMixin,
+//   BrowserModPopupsMixin,
+//   BrowserModScreensaverMixin,
+//   BrowserModCameraMixin,
+//   FullyKioskMixin,
+//   BrowserModMediaPlayerMixin,
+// ]) {
+export class BrowserMod extends MediaPlayerMixin(ScreenSaverMixin(ConnectionMixin(EventTarget))) {
   constructor() {
     super();
     this.entity_id = deviceID.replace("-", "_");
@@ -121,21 +124,21 @@ export class BrowserMod extends ext(BrowserModConnection, [
     this.hass.callService(domain, service, service_data);
   }
 
-  update(msg = null) {
-    if (msg) {
-      if (msg.name) {
-        this.entity_id = msg.name.toLowerCase();
-      }
-      if (msg.camera && !this.isFully) {
-        this.setup_camera();
-      }
-      this.config = { ...this.config, ...msg };
-    }
-    this.player_update();
-    this.fully_update();
-    this.screen_update();
-    this.sensor_update();
-  }
+  // update(msg = null) {
+  //   if (msg) {
+  //     if (msg.name) {
+  //       this.entity_id = msg.name.toLowerCase();
+  //     }
+  //     if (msg.camera && !this.isFully) {
+  //       this.setup_camera();
+  //     }
+  //     this.config = { ...this.config, ...msg };
+  //   }
+  //   this.player_update();
+  //   this.fully_update();
+  //   this.screen_update();
+  //   this.sensor_update();
+  // }
 }
 
 (async () => {

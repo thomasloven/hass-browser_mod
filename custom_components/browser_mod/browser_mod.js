@@ -1,25 +1,25 @@
-const ID_STORAGE_KEY = 'lovelace-player-device-id';
+const ID_STORAGE_KEY$1 = 'lovelace-player-device-id';
 function _deviceID() {
-  if(!localStorage[ID_STORAGE_KEY])
+  if(!localStorage[ID_STORAGE_KEY$1])
   {
     const s4 = () => {
       return Math.floor((1+Math.random())*100000).toString(16).substring(1);
     };
     if(window['fully'] && typeof fully.getDeviceId === "function")
-      localStorage[ID_STORAGE_KEY] = fully.getDeviceId();
+      localStorage[ID_STORAGE_KEY$1] = fully.getDeviceId();
     else
-      localStorage[ID_STORAGE_KEY] = `${s4()}${s4()}-${s4()}${s4()}`;
+      localStorage[ID_STORAGE_KEY$1] = `${s4()}${s4()}-${s4()}${s4()}`;
   }
-  return localStorage[ID_STORAGE_KEY];
+  return localStorage[ID_STORAGE_KEY$1];
 }
 let deviceID = _deviceID();
 
 const setDeviceID = (id) => {
   if(id === null) return;
   if(id === "clear") {
-    localStorage.removeItem(ID_STORAGE_KEY);
+    localStorage.removeItem(ID_STORAGE_KEY$1);
   } else {
-    localStorage[ID_STORAGE_KEY] = id;
+    localStorage[ID_STORAGE_KEY$1] = id;
   }
   deviceID = _deviceID();
 };
@@ -44,7 +44,7 @@ async function hass_loaded() {
   return true;
 }
 
-function hass() {
+function hass$1() {
   if(document.querySelector('hc-main'))
     return document.querySelector('hc-main').hass;
 
@@ -53,7 +53,7 @@ function hass() {
 
   return undefined;
 }
-function provideHass(element) {
+function provideHass$1(element) {
   if(document.querySelector('hc-main'))
     return document.querySelector('hc-main').provideHass(element);
 
@@ -61,32 +61,6 @@ function provideHass(element) {
     return document.querySelector("home-assistant").provideHass(element);
 
   return undefined;
-}
-
-function lovelace() {
-  var root = document.querySelector("hc-main");
-  if(root) {
-    var ll = root._lovelaceConfig;
-    ll.current_view = root._lovelacePath;
-    return ll;
-  }
-
-  root = document.querySelector("home-assistant");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("home-assistant-main");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("app-drawer-layout partial-panel-resolver");
-  root = root && root.shadowRoot || root;
-  root = root && root.querySelector("ha-panel-lovelace");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("hui-root");
-  if (root) {
-    var ll =  root.lovelace;
-    ll.current_view = root.___curView;
-    return ll;
-  }
-
-  return null;
 }
 function lovelace_view() {
   var root = document.querySelector("hc-main");
@@ -127,14 +101,14 @@ async function load_lovelace() {
   await ppr.routerOptions.routes.tmp.load();
   if(!customElements.get("ha-panel-lovelace")) return false;
   const p = document.createElement("ha-panel-lovelace");
-  p.hass = hass();
+  p.hass = hass$1();
   if(p.hass === undefined) {
     await new Promise(resolve => {
       window.addEventListener('connection-status', (ev) => {
         resolve();
       }, {once: true});
     });
-    p.hass = hass();
+    p.hass = hass$1();
   }
   p.panel = {config: {mode: null}};
   p._fetchConfig();
@@ -217,15 +191,6 @@ new Promise(async (resolve, reject) => {
     });
   }
 });
-
-async function closePopUp() {
-  const root = document.querySelector("home-assistant") || document.querySelector("hc-root");
-  fireEvent("hass-more-info", {entityId: "."}, root);
-  const el = await selectTree(root, "$ card-tools-popup");
-
-  if(el)
-    el.closeDialog();
-}
 
 async function popUp(title, card, large=false, style={}, fullscreen=false) {
   if(!customElements.get("card-tools-popup"))
@@ -412,7 +377,7 @@ async function popUp(title, card, large=false, style={}, fullscreen=false) {
       root.shadowRoot.insertBefore(el,mi);
     else
       root.shadowRoot.appendChild(el);
-    provideHass(el);
+    provideHass$1(el);
   }
 
   if(!window._moreInfoDialogListener) {
@@ -650,456 +615,316 @@ __decorate([
         customElements.define("browser-player", BrowserPlayer);
 })();
 
-class BrowserModConnection {
-    async connect() {
-        const isCast = document.querySelector("hc-main") !== null;
-        if (!isCast) {
-            while (!window.hassConnection)
-                await new Promise((resolve) => window.setTimeout(resolve, 100));
-            this.connection = (await window.hassConnection).conn;
-        }
-        else {
-            this.connection = hass().connection;
-        }
-        this.connection.subscribeMessage((msg) => this.msg_callback(msg), {
-            type: "browser_mod/connect",
-            deviceID: deviceID,
-        });
-        provideHass(this);
-    }
-    get connected() {
-        return this.connection !== undefined;
-    }
-    msg_callback(message) {
-        console.log(message);
-    }
-    sendUpdate(data) {
-        if (!this.connected)
-            return;
-        this.connection.sendMessage({
-            type: "browser_mod/update",
-            deviceID,
-            data,
-        });
-    }
+async function _hass_base_el() {
+    await Promise.race([
+        customElements.whenDefined("home-assistant"),
+        customElements.whenDefined("hc-main"),
+    ]);
+    const element = customElements.get("home-assistant")
+        ? "home-assistant"
+        : "hc-main";
+    while (!document.querySelector(element))
+        await new Promise((r) => window.setTimeout(r, 100));
+    return document.querySelector(element);
+}
+async function hass() {
+    const base = await _hass_base_el();
+    while (!base.hass)
+        await new Promise((r) => window.setTimeout(r, 100));
+    return base.hass;
+}
+async function provideHass(el) {
+    const base = await _hass_base_el();
+    base.provideHass(el);
 }
 
-const BrowserModMediaPlayerMixin = (C) => class extends C {
-    constructor() {
-        super();
-        this.player = new Audio();
-        for (const event of ["play", "pause", "ended", "volumechange"]) {
-            this.player.addEventListener(event, () => this.player_update());
+const ID_STORAGE_KEY = "browser_mod-device-id";
+const ConnectionMixin = (SuperClass) => {
+    class BrowserModConnection extends SuperClass {
+        constructor() {
+            super(...arguments);
+            this.connected = false;
+            this.connectionPromise = new Promise(resolve => { this._connectionResolve = resolve; });
         }
-        window.addEventListener("click", () => {
-            if (!this.player.ended)
+        LOG(...args) {
+            const dt = new Date();
+            console.log(`${dt.toLocaleTimeString()}`, ...args);
+        }
+        fireEvent(event, detail = undefined) {
+            this.dispatchEvent(new CustomEvent(event, { detail }));
+        }
+        incoming_message(msg) {
+            var _a;
+            if (msg.command) {
+                this.LOG("Command:", msg);
+                this.fireEvent(`command-${msg.command}`, msg);
+            }
+            else if (msg.result) {
+                this.update_config(msg.result);
+            }
+            (_a = this._connectionResolve) === null || _a === void 0 ? void 0 : _a.call(this);
+        }
+        update_config(cfg) {
+            var _a;
+            this.LOG("Receive:", cfg);
+            let update = false;
+            if (!this.registered && ((_a = cfg.devices) === null || _a === void 0 ? void 0 : _a[this.deviceID])) {
+                update = true;
+            }
+            this._data = cfg;
+            if (!this.connected) {
+                this.connected = true;
+                this.fireEvent("browser-mod-connected");
+            }
+            this.fireEvent("browser-mod-config-update");
+            if (update)
+                this.sendUpdate({});
+        }
+        async connect() {
+            const conn = (await hass()).connection;
+            this.connection = conn;
+            // Subscribe to configuration updates
+            conn.subscribeMessage((msg) => this.incoming_message(msg), {
+                type: "browser_mod/connect",
+                deviceID: this.deviceID,
+            });
+            // Keep connection status up to date
+            conn.addEventListener("disconnected", () => {
+                this.connected = false;
+                this.fireEvent("browser-mod-disconnected");
+            });
+            conn.addEventListener("ready", () => {
+                this.connected = true;
+                this.fireEvent("browser-mod-connected");
+                this.sendUpdate({});
+            });
+            provideHass(this);
+        }
+        get config() {
+            var _a, _b;
+            return (_b = (_a = this._data) === null || _a === void 0 ? void 0 : _a.config) !== null && _b !== void 0 ? _b : {};
+        }
+        get devices() {
+            var _a, _b;
+            return (_b = (_a = this._data) === null || _a === void 0 ? void 0 : _a.devices) !== null && _b !== void 0 ? _b : [];
+        }
+        get registered() {
+            var _a;
+            return ((_a = this.devices) === null || _a === void 0 ? void 0 : _a[this.deviceID]) !== undefined;
+        }
+        set registered(reg) {
+            (async () => {
+                if (reg) {
+                    if (this.registered)
+                        return;
+                    await this.connection.sendMessage({
+                        type: "browser_mod/register",
+                        deviceID: this.deviceID,
+                    });
+                }
+                else {
+                    if (!this.registered)
+                        return;
+                    await this.connection.sendMessage({
+                        type: "browser_mod/unregister",
+                        deviceID: this.deviceID,
+                    });
+                }
+            })();
+        }
+        get meta() {
+            if (!this.registered)
+                return null;
+            return this.devices[this.deviceID].meta;
+        }
+        set meta(value) {
+            (async () => {
+                await this.connection.sendMessage({
+                    type: "browser_mod/reregister",
+                    deviceID: this.deviceID,
+                    data: Object.assign(Object.assign({}, this.devices[this.deviceID]), { meta: value })
+                });
+            })();
+        }
+        sendUpdate(data) {
+            if (!this.connected || !this.registered)
+                return;
+            this.LOG("Send:", data);
+            this.connection.sendMessage({
+                type: "browser_mod/update",
+                deviceID: this.deviceID,
+                data,
+            });
+        }
+        get deviceID() {
+            if (localStorage[ID_STORAGE_KEY])
+                return localStorage[ID_STORAGE_KEY];
+            this.deviceID = "";
+            return this.deviceID;
+        }
+        set deviceID(id) {
+            var _a, _b;
+            function _createDeviceID() {
+                var _a, _b;
+                const s4 = () => {
+                    return Math.floor((1 + Math.random()) * 100000)
+                        .toString(16)
+                        .substring(1);
+                };
+                return (_b = (_a = window.fully) === null || _a === void 0 ? void 0 : _a.getDeviceId()) !== null && _b !== void 0 ? _b : `${s4()}${s4()}-${s4()}${s4()}`;
+            }
+            if (id === "")
+                id = _createDeviceID();
+            const oldID = localStorage[ID_STORAGE_KEY];
+            localStorage[ID_STORAGE_KEY] = id;
+            this.fireEvent("browser-mod-config-update");
+            if (((_a = this.devices) === null || _a === void 0 ? void 0 : _a[oldID]) !== undefined && ((_b = this.devices) === null || _b === void 0 ? void 0 : _b[this.deviceID]) === undefined) {
+                (async () => {
+                    await this.connection.sendMessage({
+                        type: "browser_mod/reregister",
+                        deviceID: oldID,
+                        data: Object.assign(Object.assign({}, this.devices[oldID]), { deviceID: this.deviceID })
+                    });
+                })();
+            }
+            // TODO: Send update to backend to update device
+        }
+    }
+    return BrowserModConnection;
+};
+
+const ScreenSaverMixin = (SuperClass) => {
+    class ScreenSaverMixinClass extends SuperClass {
+        constructor() {
+            super();
+            this._listeners = {};
+            this._brightness = 255;
+            const panel = this._panel = document.createElement("div");
+            panel.setAttribute("browser-mod", "");
+            panel.attachShadow({ mode: "open" });
+            const styleEl = document.createElement("style");
+            styleEl.innerHTML = `
+        :host {
+          background: rgba(0,0,0, var(--darkness));
+          position: fixed;
+          left: 0;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 10000;
+          display: block;
+          pointer-events: none;
+        }
+        :host([dark]) {
+          background: rgba(0,0,0,1);
+        }
+      `;
+            panel.shadowRoot.appendChild(styleEl);
+            document.body.appendChild(panel);
+            this.addEventListener("command-screen_off", () => this._screen_off());
+            this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
+            this.connectionPromise.then(() => this._screen_on());
+        }
+        _screen_off() {
+            this._panel.setAttribute("dark", "");
+            this.sendUpdate({
+                screen_on: false,
+                screen_brightness: 0,
+            });
+            const l = () => this._screen_on();
+            for (const ev of ["pointerdown", "pointermove", "keydown"]) {
+                this._listeners[ev] = l;
+                window.addEventListener(ev, l);
+            }
+        }
+        _screen_on(ev = undefined) {
+            var _a;
+            if ((_a = ev === null || ev === void 0 ? void 0 : ev.detail) === null || _a === void 0 ? void 0 : _a.brightness) {
+                this._brightness = ev.detail.brightness;
+                this._panel.style.setProperty("--darkness", 1 - ev.detail.brightness / 255);
+            }
+            this._panel.removeAttribute("dark");
+            this.sendUpdate({
+                screen_on: true,
+                screen_brightness: this._brightness,
+            });
+            for (const ev of ["pointerdown", "pointermove", "keydown"]) {
+                if (this._listeners[ev]) {
+                    window.removeEventListener(ev, this._listeners[ev]);
+                    this._listeners[ev] = undefined;
+                }
+            }
+        }
+    }
+    return ScreenSaverMixinClass;
+};
+
+const MediaPlayerMixin = (SuperClass) => {
+    return class MediaPlayerMixinClass extends SuperClass {
+        constructor() {
+            super();
+            this.player = new Audio();
+            this._player_enabled = false;
+            for (const ev of ["play", "pause", "ended", "volumechange"]) {
+                this.player.addEventListener(ev, () => this._player_update());
+            }
+            window.addEventListener("pointerdown", () => {
+                this._player_enabled = true;
+                if (!this.player.ended)
+                    this.player.play();
+            }, { once: true });
+            this.addEventListener("command-player-play", (ev) => {
+                var _a;
+                if ((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.media_content_id)
+                    this.player.src = ev.detail.media_content_id;
                 this.player.play();
-        }, {
-            once: true,
-        });
-    }
-    player_update(ev) {
-        this.sendUpdate({
-            player: {
-                volume: this.player.volume,
-                muted: this.player.muted,
-                src: this.player.src,
-                state: this.player_state,
-            },
-        });
-    }
-    get player_state() {
-        if (!this.player.src)
-            return "stopped";
-        if (this.player.ended)
-            return "stopped";
-        if (this.player.paused)
-            return "paused";
-        return "playing";
-    }
-    player_play(src) {
-        if (src)
-            this.player.src = src;
-        this.player.play();
-    }
-    player_pause() {
-        this.player.pause();
-    }
-    player_stop() {
-        this.player.pause();
-        this.player.src = null;
-    }
-    player_set_volume(level) {
-        if (level === undefined)
-            return;
-        this.player.volume = level;
-    }
-    player_mute(mute) {
-        if (mute === undefined)
-            mute = !this.player.muted;
-        this.player.muted = Boolean(mute);
-    }
-};
-
-const FullyKioskMixin = (C) => class extends C {
-    get isFully() {
-        return window.fully !== undefined;
-    }
-    constructor() {
-        super();
-        if (!this.isFully)
-            return;
-        this._fullyMotion = false;
-        this._motionTimeout = undefined;
-        for (const ev of [
-            "screenOn",
-            "screenOff",
-            "pluggedAC",
-            "pluggedUSB",
-            "onBatteryLevelChanged",
-            "unplugged",
-            "networkReconnect",
-            "onMotion",
-        ]) {
-            window.fully.bind(ev, `window.browser_mod.fully_update("${ev}");`);
-        }
-        window.fully.bind("onScreensaverStart", `window.browser_mod.fully_screensaver = true; window.browser_mod.screen_update();`);
-        window.fully.bind("onScreensaverStop", `window.browser_mod.fully_screensaver = false; window.browser_mod.screen_update();`);
-        this._keepingAlive = false;
-    }
-    fully_update(event) {
-        if (!this.isFully)
-            return;
-        if (event === "screenOn") {
-            window.clearTimeout(this._keepAliveTimer);
-            if (!this._keepingAlive)
-                this.screen_update();
-        }
-        else if (event === "screenOff") {
-            this.screen_update();
-            this._keepingAlive = false;
-            if (this.config.force_stay_awake) {
-                this._keepAliveTimer = window.setTimeout(() => {
-                    this._keepingAlive = true;
-                    window.fully.turnScreenOn();
-                    window.fully.turnScreenOff();
-                }, 270000);
-            }
-        }
-        else if (event === "onMotion") {
-            this.fullyMotionTriggered();
-        }
-        this.sendUpdate({
-            fully: {
-                battery: window.fully.getBatteryLevel(),
-                charging: window.fully.isPlugged(),
-                motion: this._fullyMotion,
-                ip: window.fully.getIp4Address(),
-            },
-        });
-    }
-    startCamera() {
-        if (this._fullyCameraTimer !== undefined)
-            return;
-        this._fullyCameraTimer = window.setInterval(() => {
-            this.sendUpdate({
-                camera: window.fully.getCamshotJpgBase64(),
             });
-        }, 200);
-    }
-    stopCamera() {
-        window.clearInterval(this._fullyCameraTimer);
-        this._fullyCameraTimer = undefined;
-    }
-    fullyMotionTriggered() {
-        if (this._keepingAlive)
-            return;
-        this._fullyMotion = true;
-        this.startCamera();
-        clearTimeout(this._motionTimeout);
-        this._motionTimeout = setTimeout(() => {
-            this._fullyMotion = false;
-            this.stopCamera();
-            this.fully_update();
-        }, 5000);
-        this.fully_update();
-    }
-};
-
-const BrowserModCameraMixin = (C) => class extends C {
-    setup_camera() {
-        console.log("Starting camera");
-        if (this._video)
-            return;
-        this._video = document.createElement("video");
-        this._video.autoplay = true;
-        this._video.playsInline = true;
-        this._video.style.display = "none";
-        this._canvas = document.createElement("canvas");
-        this._canvas.style.display = "none";
-        document.body.appendChild(this._video);
-        document.body.appendChild(this._canvas);
-        if (!navigator.mediaDevices)
-            return;
-        console.log("Starting devices");
-        navigator.mediaDevices
-            .getUserMedia({ video: true, audio: false })
-            .then((stream) => {
-            this._video.srcObject = stream;
-            this._video.play();
-            this.update_camera();
-        });
-        this._camera_framerate = 2;
-        window.addEventListener("click", () => {
-            if (this._video.ended || this._video.paused)
-                this._video.play();
-        }, {
-            once: true,
-        });
-    }
-    update_camera() {
-        this._canvas.width = this._video.videoWidth;
-        this._canvas.height = this._video.videoHeight;
-        const context = this._canvas.getContext("2d");
-        context.drawImage(this._video, 0, 0, this._video.videoWidth, this._video.videoHeight);
-        this.sendUpdate({
-            camera: this._canvas.toDataURL("image/jpeg"),
-        });
-        setTimeout(() => this.update_camera(), Math.round(1000 / this._camera_framerate));
-    }
-};
-
-const BrowserModScreensaverMixin = (C) => class extends C {
-    constructor() {
-        super();
-        this._blackout_panel = document.createElement("div");
-        this._screenSaver = undefined;
-        this._screenSaverTimer = undefined;
-        this._screenSaverTimeOut = 0;
-        this._screenSaver = {
-            fn: undefined,
-            clearfn: undefined,
-            timer: undefined,
-            timeout: undefined,
-            listeners: {},
-            active: false,
-        };
-        this._blackout_panel.style.cssText = `
-            position: fixed;
-            left: 0;
-            top: 0;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            display: none;
-        `;
-        document.body.appendChild(this._blackout_panel);
-    }
-    screensaver_set(fn, clearfn, time) {
-        this._ss_clear();
-        this._screenSaver = {
-            fn,
-            clearfn,
-            timer: undefined,
-            timeout: time,
-            listeners: {},
-            active: false,
-        };
-        const l = () => this.screensaver_update();
-        for (const event of ["mousemove", "mousedown", "keydown", "touchstart"]) {
-            window.addEventListener(event, l);
-            this._screenSaver.listeners[event] = l;
-        }
-        this._screenSaver.timer = window.setTimeout(() => this._ss_run(), time * 1000);
-    }
-    screensaver_update() {
-        if (this._screenSaver.active) {
-            this.screensaver_stop();
-        }
-        else {
-            window.clearTimeout(this._screenSaver.timer);
-            this._screenSaver.timer = window.setTimeout(() => this._ss_run(), this._screenSaver.timeout * 1000);
-        }
-    }
-    screensaver_stop() {
-        this._ss_clear();
-        this._screenSaver.active = false;
-        if (this._screenSaver.clearfn)
-            this._screenSaver.clearfn();
-        if (this._screenSaver.timeout) {
-            this.screensaver_set(this._screenSaver.fn, this._screenSaver.clearfn, this._screenSaver.timeout);
-        }
-    }
-    _ss_clear() {
-        window.clearTimeout(this._screenSaverTimer);
-        for (const [k, v] of Object.entries(this._screenSaver.listeners)) {
-            window.removeEventListener(k, v);
-        }
-    }
-    _ss_run() {
-        this._screenSaver.active = true;
-        this._screenSaver.fn();
-    }
-    do_blackout(timeout) {
-        this.screensaver_set(() => {
-            if (this.isFully) {
-                if (this.config.screensaver)
-                    window.fully.startScreensaver();
+            this.addEventListener("command-player-pause", (ev) => this.player.pause());
+            this.addEventListener("command-player-stop", (ev) => {
+                this.player.src = null;
+                this.player.pause();
+            });
+            this.addEventListener("command-player-set-volume", (ev) => {
+                var _a;
+                if (((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.volume_level) === undefined)
+                    return;
+                this.player.volume = ev.detail.volume_level;
+            });
+            this.addEventListener("command-player-mute", (ev) => {
+                var _a;
+                if (((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.mute) !== undefined)
+                    this.player.muted = Boolean(ev.detail.mute);
                 else
-                    window.fully.turnScreenOff(true);
-            }
-            else {
-                this._blackout_panel.style.display = "block";
-            }
-            this.screen_update();
-        }, () => {
-            if ((this._blackout_panel.style.display = "block"))
-                this._blackout_panel.style.display = "none";
-            if (this.isFully) {
-                if (!window.fully.getScreenOn())
-                    window.fully.turnScreenOn();
-                window.fully.stopScreensaver();
-            }
-            this.screen_update();
-        }, timeout || 0);
-    }
-    no_blackout() {
-        if (this.isFully) {
-            window.fully.turnScreenOn();
-            window.fully.stopScreensaver();
-        }
-        this.screensaver_stop();
-    }
-    screen_update() {
-        this.sendUpdate({
-            screen: {
-                blackout: this.isFully
-                    ? this.fully_screensaver !== undefined
-                        ? this.fully_screensaver
-                        : !window.fully.getScreenOn()
-                    : Boolean(this._blackout_panel.style.display === "block"),
-                brightness: this.isFully
-                    ? window.fully.getScreenBrightness()
-                    : undefined,
-            },
-        });
-    }
-};
-
-async function moreInfo(entity, large=false) {
-  const root = document.querySelector("hc-main") || document.querySelector("home-assistant");
-  fireEvent("hass-more-info", {entityId: entity}, root);
-  const el = await selectTree(root, "$ ha-more-info-dialog");
-  if(el)
-    el.large = large;
-  return el;
-}
-
-const BrowserModPopupsMixin = (C) => class extends C {
-    constructor() {
-        super();
-        if (document.querySelector("home-assistant"))
-            document
-                .querySelector("home-assistant")
-                .addEventListener("hass-more-info", (ev) => this._popup_card(ev));
-        const isCast = document.querySelector("hc-main") !== null;
-        if (!isCast)
-            load_lovelace();
-    }
-    _popup_card(ev) {
-        if (!lovelace())
-            return;
-        if (!ev.detail || !ev.detail.entityId)
-            return;
-        const data = Object.assign(Object.assign({}, lovelace().config.popup_cards), lovelace().config.views[lovelace().current_view].popup_cards);
-        const d = data[ev.detail.entityId];
-        if (!d)
-            return;
-        this.do_popup(d);
-        window.setTimeout(() => {
-            fireEvent("hass-more-info", { entityID: "." }, ha_element());
-        }, 50);
-    }
-    do_popup(cfg) {
-        if (!(cfg.title || cfg.auto_close || cfg.hide_header)) {
-            console.error("browser_mod: popup: Must specify title, auto_close or hide_header.");
-            return;
-        }
-        if (!cfg.card) {
-            console.error("browser_mod: popup: No card specified");
-            return;
-        }
-        const open = () => {
-            popUp(cfg.title, cfg.card, cfg.large, cfg.style, cfg.auto_close || cfg.hide_header);
-        };
-        if (cfg.auto_close) {
-            this.screensaver_set(open, closePopUp, cfg.time);
-        }
-        else {
-            open();
-        }
-    }
-    do_close_popup() {
-        this.screensaver_stop();
-        closePopUp();
-    }
-    do_more_info(entity_id, large) {
-        if (!entity_id)
-            return;
-        moreInfo(entity_id, large);
-    }
-    do_toast(message, duration) {
-        if (!message)
-            return;
-        fireEvent("hass-notification", {
-            message,
-            duration: parseInt(duration),
-        }, ha_element());
-    }
-};
-
-const BrowserModBrowserMixin = (C) => class extends C {
-    constructor() {
-        super();
-        document.addEventListener("visibilitychange", () => this.sensor_update());
-        window.addEventListener("location-changed", () => this.sensor_update());
-        window.setInterval(() => this.sensor_update(), 10000);
-    }
-    sensor_update() {
-        const update = async () => {
-            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-            const battery = (_b = (_a = navigator).getBattery) === null || _b === void 0 ? void 0 : _b.call(_a);
-            this.sendUpdate({
-                browser: {
-                    path: window.location.pathname,
-                    visibility: document.visibilityState,
-                    userAgent: navigator.userAgent,
-                    currentUser: (_d = (_c = this.hass) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.name,
-                    fullyKiosk: this.isFully,
-                    width: window.innerWidth,
-                    height: window.innerHeight,
-                    battery_level: (_f = (_e = window.fully) === null || _e === void 0 ? void 0 : _e.getBatteryLevel()) !== null && _f !== void 0 ? _f : (battery === null || battery === void 0 ? void 0 : battery.level) * 100,
-                    charging: (_h = (_g = window.fully) === null || _g === void 0 ? void 0 : _g.isPlugged()) !== null && _h !== void 0 ? _h : battery === null || battery === void 0 ? void 0 : battery.charging,
-                    darkMode: (_k = (_j = this.hass) === null || _j === void 0 ? void 0 : _j.themes) === null || _k === void 0 ? void 0 : _k.darkMode,
-                    userData: (_l = this.hass) === null || _l === void 0 ? void 0 : _l.user,
-                    config: this.config,
-                },
+                    this.player.muted = !this.player.muted;
             });
-        };
-        update();
-    }
-    do_navigate(path) {
-        if (!path)
-            return;
-        history.pushState(null, "", path);
-        fireEvent("location-changed", {}, ha_element());
-    }
+            this.connectionPromise.then(() => this._player_update());
+        }
+        _player_update() {
+            const state = this._player_enabled
+                ? this.player.src
+                    ? this.player.ended
+                        ? "stopped"
+                        : this.player.paused
+                            ? "paused"
+                            : "playing"
+                    : "stopped"
+                : "unavailable";
+            this.sendUpdate({
+                player: {
+                    volume: this.player.volume,
+                    muted: this.player.muted,
+                    src: this.player.src,
+                    state,
+                }
+            });
+        }
+    };
 };
 
 var name = "browser_mod";
-var version = "1.5.3";
+var version = "2.0.0b0";
 var description = "";
 var scripts = {
 	build: "rollup -c",
@@ -1137,15 +962,15 @@ var pjson = {
 	dependencies: dependencies
 };
 
-const ext = (baseClass, mixins) => mixins.reduceRight((base, mixin) => mixin(base), baseClass);
-class BrowserMod extends ext(BrowserModConnection, [
-    BrowserModBrowserMixin,
-    BrowserModPopupsMixin,
-    BrowserModScreensaverMixin,
-    BrowserModCameraMixin,
-    FullyKioskMixin,
-    BrowserModMediaPlayerMixin,
-]) {
+// export class BrowserMod extends ext(BrowserModConnection, [
+//   BrowserModBrowserMixin,
+//   BrowserModPopupsMixin,
+//   BrowserModScreensaverMixin,
+//   BrowserModCameraMixin,
+//   FullyKioskMixin,
+//   BrowserModMediaPlayerMixin,
+// ]) {
+class BrowserMod extends MediaPlayerMixin(ScreenSaverMixin(ConnectionMixin(EventTarget))) {
     constructor() {
         super();
         this.entity_id = deviceID.replace("-", "_");
@@ -1224,21 +1049,6 @@ class BrowserMod extends ext(BrowserModConnection, [
         const [domain, service] = msg.service.split(".", 2);
         let service_data = _replaceThis(JSON.parse(JSON.stringify(msg.service_data)));
         this.hass.callService(domain, service, service_data);
-    }
-    update(msg = null) {
-        if (msg) {
-            if (msg.name) {
-                this.entity_id = msg.name.toLowerCase();
-            }
-            if (msg.camera && !this.isFully) {
-                this.setup_camera();
-            }
-            this.config = Object.assign(Object.assign({}, this.config), msg);
-        }
-        this.player_update();
-        this.fully_update();
-        this.screen_update();
-        this.sensor_update();
     }
 }
 (async () => {

@@ -1,73 +1,45 @@
 import logging
 
-from homeassistant import config_entries
-
-from .mod_view import setup_view
-from .connection import setup_connection
-from .service import setup_service
+from .store import BrowserModStore
+from .mod_view import async_setup_view
+from .connection import async_setup_connection
 from .const import (
     DOMAIN,
     DATA_DEVICES,
-    DATA_ALIASES,
     DATA_ADDERS,
-    CONFIG_DEVICES,
-    DATA_CONFIG,
-    DATA_SETUP_COMPLETE,
+    DATA_STORE
 )
 
-COMPONENTS = [
-    "media_player",
-    "sensor",
-    "binary_sensor",
-    "light",
-    "camera",
-]
+from .coordinator import Coordinator
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup(hass, config):
 
-    if not hass.config_entries.async_entries(DOMAIN):
-        hass.async_create_task(
-            hass.config_entries.flow.async_init(
-                DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
-            )
-        )
-
-    aliases = {}
-    for d in config[DOMAIN].get(CONFIG_DEVICES, {}):
-        name = config[DOMAIN][CONFIG_DEVICES][d].get("name", None)
-        if name:
-            aliases[name] = d.replace("_", "-")
+    store = BrowserModStore(hass)
+    await store.load()
 
     hass.data[DOMAIN] = {
         DATA_DEVICES: {},
-        DATA_ALIASES: aliases,
         DATA_ADDERS: {},
-        DATA_CONFIG: config[DOMAIN],
-        DATA_SETUP_COMPLETE: False,
+        DATA_STORE: store,
     }
-
-    await setup_connection(hass, config)
-    setup_view(hass)
-
-    for component in COMPONENTS:
-        hass.async_create_task(
-            hass.helpers.discovery.async_load_platform(component, DOMAIN, {}, config)
-        )
-
-    await setup_service(hass)
-
-    hass.data[DOMAIN][DATA_SETUP_COMPLETE] = True
-
-    for device in hass.data[DOMAIN][DATA_DEVICES].values():
-        device.trigger_update()
 
     return True
 
 
 async def async_setup_entry(hass, config_entry):
+
+    await hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
+    await hass.config_entries.async_forward_entry_setup(config_entry, "binary_sensor")
+    await hass.config_entries.async_forward_entry_setup(config_entry, "light")
+    await hass.config_entries.async_forward_entry_setup(config_entry, "media_player")
+
+    await async_setup_connection(hass)
+    await async_setup_view(hass)
+
+    return True
     for component in COMPONENTS:
         hass.async_create_task(
             hass.config_entries.async_forward_entry_setup(config_entry, component)
