@@ -3,18 +3,21 @@ import voluptuous as vol
 from datetime import datetime, timezone
 
 from homeassistant.components.websocket_api import (
-    websocket_command,
-    result_message,
     event_message,
     async_register_command,
 )
 
 from homeassistant.components import websocket_api
 
-from .const import WS_CONNECT, WS_REGISTER, WS_UNREGISTER, WS_REREGISTER, WS_UPDATE, DOMAIN
-from .helpers import get_devices, create_entity, get_config, is_setup_complete
+from .const import (
+    WS_CONNECT,
+    WS_REGISTER,
+    WS_UNREGISTER,
+    WS_REREGISTER,
+    WS_UPDATE,
+    DOMAIN,
+)
 
-from .coordinator import Coordinator
 from .device import getDevice, deleteDevice
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,13 +45,10 @@ async def async_setup_connection(hass):
             dev = getDevice(hass, deviceID)
             dev.update_settings(hass, store.get_device(deviceID).asdict())
             dev.connection = (connection, msg["id"])
-            await store.set_device(deviceID,
-                    last_seen=datetime.now(
-                        tz=timezone.utc
-                    ).isoformat()
-                )
+            await store.set_device(
+                deviceID, last_seen=datetime.now(tz=timezone.utc).isoformat()
+            )
         listener(store.asdict())
-
 
     @websocket_api.websocket_command(
         {
@@ -60,11 +60,8 @@ async def async_setup_connection(hass):
     async def handle_register(hass, connection, msg):
         deviceID = msg["deviceID"]
         store = hass.data[DOMAIN]["store"]
-        await store.set_device(deviceID,
-                enabled=True
-            )
+        await store.set_device(deviceID, enabled=True)
         connection.send_result(msg["id"])
-
 
     @websocket_api.websocket_command(
         {
@@ -117,7 +114,6 @@ async def async_setup_connection(hass):
         deviceSettings.update(data)
         await store.set_device(deviceID, **deviceSettings)
 
-
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_UPDATE,
@@ -129,13 +125,11 @@ async def async_setup_connection(hass):
     async def handle_update(hass, connection, msg):
         deviceID = msg["deviceID"]
         store = hass.data[DOMAIN]["store"]
-        devices = hass.data[DOMAIN]["devices"]
 
         if store.get_device(deviceID).enabled:
             dev = getDevice(hass, deviceID)
             dev.data.update(msg.get("data", {}))
             dev.coordinator.async_set_updated_data(dev.data)
-
 
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_register)

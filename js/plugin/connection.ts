@@ -9,7 +9,9 @@ export const ConnectionMixin = (SuperClass) => {
     private _data;
     public connected = false;
     private _connectionResolve;
-    public connectionPromise = new Promise(resolve => { this._connectionResolve = resolve; });
+    public connectionPromise = new Promise((resolve) => {
+      this._connectionResolve = resolve;
+    });
 
     LOG(...args) {
       const dt = new Date();
@@ -23,7 +25,7 @@ export const ConnectionMixin = (SuperClass) => {
     private incoming_message(msg) {
       if (msg.command) {
         this.LOG("Command:", msg);
-        this.fireEvent(`command-${msg.command}`, msg)
+        this.fireEvent(`command-${msg.command}`, msg);
       } else if (msg.result) {
         this.update_config(msg.result);
       }
@@ -103,7 +105,6 @@ export const ConnectionMixin = (SuperClass) => {
       })();
     }
 
-
     private async _reregister(newData = {}) {
       await this.connection.sendMessage({
         type: "browser_mod/reregister",
@@ -165,7 +166,10 @@ export const ConnectionMixin = (SuperClass) => {
 
       this.fireEvent("browser-mod-config-update");
 
-      if (this.devices?.[oldID] !== undefined && this.devices?.[this.deviceID] === undefined) {
+      if (
+        this.devices?.[oldID] !== undefined &&
+        this.devices?.[this.deviceID] === undefined
+      ) {
         (async () => {
           await this.connection.sendMessage({
             type: "browser_mod/reregister",
@@ -173,9 +177,9 @@ export const ConnectionMixin = (SuperClass) => {
             data: {
               ...this.devices[oldID],
               deviceID: this.deviceID,
-            }
-          })
-        })()
+            },
+          });
+        })();
       }
 
       // TODO: Send update to backend to update device
@@ -183,4 +187,4 @@ export const ConnectionMixin = (SuperClass) => {
   }
 
   return BrowserModConnection;
-}
+};

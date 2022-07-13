@@ -1,6 +1,5 @@
 export const ScreenSaverMixin = (SuperClass) => {
   class ScreenSaverMixinClass extends SuperClass {
-
     private _panel;
     private _listeners = {};
     private _brightness = 255;
@@ -8,7 +7,7 @@ export const ScreenSaverMixin = (SuperClass) => {
     constructor() {
       super();
 
-      const panel = this._panel = document.createElement("div")
+      const panel = (this._panel = document.createElement("div"));
       panel.setAttribute("browser-mod", "");
       panel.attachShadow({ mode: "open" });
       const styleEl = document.createElement("style");
@@ -29,7 +28,7 @@ export const ScreenSaverMixin = (SuperClass) => {
         :host([dark]) {
           background: rgba(0,0,0,1);
         }
-      `
+      `;
       panel.shadowRoot.appendChild(styleEl);
       document.body.appendChild(panel);
 
@@ -54,10 +53,13 @@ export const ScreenSaverMixin = (SuperClass) => {
       }
     }
 
-    private _screen_on(ev=undefined) {
+    private _screen_on(ev = undefined) {
       if (ev?.detail?.brightness) {
         this._brightness = ev.detail.brightness;
-        this._panel.style.setProperty("--darkness", 1-ev.detail.brightness/255)
+        this._panel.style.setProperty(
+          "--darkness",
+          1 - ev.detail.brightness / 255
+        );
       }
       this._panel.removeAttribute("dark");
       this.sendUpdate({
@@ -67,15 +69,14 @@ export const ScreenSaverMixin = (SuperClass) => {
 
       for (const ev of ["pointerdown", "pointermove", "keydown"]) {
         if (this._listeners[ev]) {
-          window.removeEventListener(ev, this._listeners[ev])
+          window.removeEventListener(ev, this._listeners[ev]);
           this._listeners[ev] = undefined;
         }
       }
     }
-
   }
-  return ScreenSaverMixinClass
-}
+  return ScreenSaverMixinClass;
+};
 
 export const BrowserModScreensaverMixin = (C) =>
   class extends C {

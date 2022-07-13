@@ -644,7 +644,9 @@ const ConnectionMixin = (SuperClass) => {
         constructor() {
             super(...arguments);
             this.connected = false;
-            this.connectionPromise = new Promise(resolve => { this._connectionResolve = resolve; });
+            this.connectionPromise = new Promise((resolve) => {
+                this._connectionResolve = resolve;
+            });
         }
         LOG(...args) {
             const dt = new Date();
@@ -787,12 +789,13 @@ const ConnectionMixin = (SuperClass) => {
             const oldID = localStorage[ID_STORAGE_KEY];
             localStorage[ID_STORAGE_KEY] = id;
             this.fireEvent("browser-mod-config-update");
-            if (((_a = this.devices) === null || _a === void 0 ? void 0 : _a[oldID]) !== undefined && ((_b = this.devices) === null || _b === void 0 ? void 0 : _b[this.deviceID]) === undefined) {
+            if (((_a = this.devices) === null || _a === void 0 ? void 0 : _a[oldID]) !== undefined &&
+                ((_b = this.devices) === null || _b === void 0 ? void 0 : _b[this.deviceID]) === undefined) {
                 (async () => {
                     await this.connection.sendMessage({
                         type: "browser_mod/reregister",
                         deviceID: oldID,
-                        data: Object.assign(Object.assign({}, this.devices[oldID]), { deviceID: this.deviceID })
+                        data: Object.assign(Object.assign({}, this.devices[oldID]), { deviceID: this.deviceID }),
                     });
                 })();
             }
@@ -808,7 +811,7 @@ const ScreenSaverMixin = (SuperClass) => {
             super();
             this._listeners = {};
             this._brightness = 255;
-            const panel = this._panel = document.createElement("div");
+            const panel = (this._panel = document.createElement("div"));
             panel.setAttribute("browser-mod", "");
             panel.attachShadow({ mode: "open" });
             const styleEl = document.createElement("style");
@@ -926,7 +929,7 @@ const MediaPlayerMixin = (SuperClass) => {
                     muted: this.player.muted,
                     src: this.player.src,
                     state,
-                }
+                },
             });
         }
     };

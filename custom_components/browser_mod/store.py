@@ -1,8 +1,5 @@
 import logging
 import attr
-from dataclasses import dataclass
-
-from homeassistant.loader import bind_hass
 
 STORAGE_VERSION = 1
 STORAGE_KEY = "browser_mod.storage"
@@ -71,8 +68,8 @@ class BrowserModStore:
 
     async def updated(self):
         self.dirty = True
-        for l in self.listeners:
-            l(attr.asdict(self.data))
+        for listener in self.listeners:
+            listener(attr.asdict(self.data))
         await self.save()
 
     def asdict(self):
