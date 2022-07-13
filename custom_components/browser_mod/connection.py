@@ -15,7 +15,7 @@ from .const import WS_CONNECT, WS_REGISTER, WS_UNREGISTER, WS_REREGISTER, WS_UPD
 from .helpers import get_devices, create_entity, get_config, is_setup_complete
 
 from .coordinator import Coordinator
-from .device import getDevice
+from .device import getDevice, deleteDevice
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -40,6 +40,7 @@ async def async_setup_connection(hass):
 
         if store.get_device(deviceID).enabled:
             dev = getDevice(hass, deviceID)
+            dev.update_settings(hass, store.get_device(deviceID).asdict())
             dev.connection = (connection, msg["id"])
             await store.set_device(deviceID,
                     last_seen=datetime.now(
@@ -75,12 +76,8 @@ async def async_setup_connection(hass):
     async def handle_unregister(hass, connection, msg):
         deviceID = msg["deviceID"]
         store = hass.data[DOMAIN]["store"]
-        devices = hass.data[DOMAIN]["devices"]
 
-        if deviceID in devices:
-            devices[deviceID].delete(hass)
-            del devices[deviceID]
-
+        deleteDevice(hass, deviceID)
         await store.delete_device(deviceID)
 
         connection.send_result(msg["id"])
@@ -96,28 +93,29 @@ async def async_setup_connection(hass):
     async def handle_reregister(hass, connection, msg):
         deviceID = msg["deviceID"]
         store = hass.data[DOMAIN]["store"]
-        devices = hass.data[DOMAIN]["devices"]
 
         data = msg["data"]
         del data["last_seen"]
-        device = {}
+        deviceSettings = {}
+
         if "deviceID" in data:
             newDeviceID = data["deviceID"]
             del data["deviceID"]
 
-            oldDevice = store.get_device(deviceID)
-            if oldDevice:
-                device = oldDevice.asdict()
+            oldDeviceSettings = store.get_device(deviceID)
+            if oldDeviceSettings:
+                deviceSettings = oldDeviceSettings.asdict()
             await store.delete_device(deviceID)
 
-            if deviceID in devices:
-                devices[deviceID].delete(hass)
-                del devices[deviceID]
+            deleteDevice(hass, deviceID)
 
             deviceID = newDeviceID
 
-        device.update(data)
-        await store.set_device(deviceID, **device)
+        if (dev := getDevice(hass, deviceID, create=False)) is not None:
+            dev.update_settings(hass, data)
+
+        deviceSettings.update(data)
+        await store.set_device(deviceID, **deviceSettings)
 
 
     @websocket_api.websocket_command(

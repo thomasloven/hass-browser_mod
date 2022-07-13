@@ -26,21 +26,27 @@ class DeviceStoreData:
     def asdict(self):
         return attr.asdict(self)
 
+
 @attr.s
 class ConfigStoreData:
-    devices = attr.ib(type=dict[str: DeviceStoreData], factory=dict)
+    devices = attr.ib(type=dict[str:DeviceStoreData], factory=dict)
     version = attr.ib(type=str, default="2.0")
 
     @classmethod
-    def from_dict(cls, data):
-        devices = {k: DeviceStoreData.from_dict(v) for k,v in data["devices"].items()}
-        return cls(**(data | {
-            "devices": devices,
-            }
-        ))
+    def from_dict(cls, data={}):
+        devices = {k: DeviceStoreData.from_dict(v) for k, v in data["devices"].items()}
+        return cls(
+            **(
+                data
+                | {
+                    "devices": devices,
+                }
+            )
+        )
 
     def asdict(self):
         return attr.asdict(self)
+
 
 class BrowserModStore:
     def __init__(self, hass):
@@ -55,10 +61,12 @@ class BrowserModStore:
             self.dirty = False
 
     async def load(self):
-        self.data = ConfigStoreData.from_dict(await self.store.async_load())
+        stored = await self.store.async_load()
+        if stored:
+            self.data = ConfigStoreData.from_dict(stored)
         if self.data is None:
             self.data = ConfigStoreData()
-            self.save()
+            await self.save()
         self.dirty = False
 
     async def updated(self):

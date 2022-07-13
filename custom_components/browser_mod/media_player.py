@@ -25,26 +25,33 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 
-from .helpers import BrowserModEntity2
+from .helpers import BrowserModEntity
 from .const import DOMAIN, DATA_ADDERS
 
 
-async def async_setup_platform(hass, config_entry, async_add_entities, discoveryInfo = None):
+async def async_setup_platform(
+    hass, config_entry, async_add_entities, discoveryInfo=None
+):
     hass.data[DOMAIN][DATA_ADDERS]["media_player"] = async_add_entities
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     await async_setup_platform(hass, {}, async_add_entities)
 
 
-class BrowserModPlayer(BrowserModEntity2, MediaPlayerEntity):
-
+class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     def __init__(self, coordinator, deviceID, device):
-        super().__init__(coordinator, deviceID, None)
+        BrowserModEntity.__init__(self, coordinator, deviceID, None)
+        MediaPlayerEntity.__init__(self)
         self.device = device
 
     @property
     def unique_id(self):
         return f"{self.deviceID}-player"
+
+    @property
+    def entity_registry_visible_default(self):
+        return True
 
     @property
     def state(self):
@@ -76,7 +83,6 @@ class BrowserModPlayer(BrowserModEntity2, MediaPlayerEntity):
     def is_volume_muted(self):
         return self._data.get("player", {}).get("muted", False)
 
-
     def set_volume_level(self, volume):
         self.device.send("player-set-volume", volume_level=volume)
 
@@ -86,7 +92,9 @@ class BrowserModPlayer(BrowserModEntity2, MediaPlayerEntity):
     async def async_play_media(self, media_type, media_id, **kwargs):
         if media_source.is_media_source_id(media_id):
             media_type = MEDIA_TYPE_URL
-            play_item = await media_source.async_resolve_media(self.hass, media_id, self.entity_id)
+            play_item = await media_source.async_resolve_media(
+                self.hass, media_id, self.entity_id
+            )
             media_id = play_item.url
         if media_type in (MEDIA_TYPE_URL, MEDIA_TYPE_MUSIC):
             media_id = async_process_play_media_url(self.hass, media_id)

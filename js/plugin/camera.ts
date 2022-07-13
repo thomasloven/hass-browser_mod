@@ -1,63 +1,72 @@
-export const BrowserModCameraMixin = (C) =>
-  class extends C {
-    setup_camera() {
-      console.log("Starting camera");
+export const CameraMixin = (SuperClass) => {
+  return class CameraMixinClass extends SuperClass {
+    private _video;
+    private _canvas;
+    private _framerate;
 
-      if (this._video) return;
-      this._video = document.createElement("video");
-      this._video.autoplay = true;
-      this._video.playsInline = true;
-      this._video.style.display = "none";
-
-      this._canvas = document.createElement("canvas");
-      this._canvas.style.display = "none";
-
-      document.body.appendChild(this._video);
-      document.body.appendChild(this._canvas);
-
-      if (!navigator.mediaDevices) return;
-
-      console.log("Starting devices");
-      navigator.mediaDevices
-        .getUserMedia({ video: true, audio: false })
-        .then((stream) => {
-          this._video.srcObject = stream;
-          this._video.play();
-          this.update_camera();
-        });
-
-      this._camera_framerate = 2;
+    constructor() {
+      super();
+      this._framerate = 2;
 
       window.addEventListener(
-        "click",
+        "pointerdown",
         () => {
-          if (this._video.ended || this._video.paused) this._video.play();
+          this._setup_camera();
         },
-        {
-          once: true,
-        }
+        { once: true }
       );
     }
 
-    update_camera() {
-      this._canvas.width = this._video.videoWidth;
-      this._canvas.height = this._video.videoHeight;
+    async _setup_camera() {
+      if (this._video) return;
+      await this.connectionPromise;
+      if (!this.cameraEnabled) return;
+      const video = (this._video = document.createElement("video"));
+      video.autoplay = true;
+      video.playsInline = true;
+      video.style.display = "none";
 
+      const canvas = (this._canvas = document.createElement("canvas"));
+      canvas.style.display = "none";
+
+      document.body.appendChild(video);
+      document.body.appendChild(canvas);
+
+      if (!navigator.mediaDevices) return;
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: false,
+      });
+
+      video.srcObject = stream;
+      video.play();
+      this.update_camera();
+    }
+
+    async update_camera() {
+      if (!this.cameraEnabled) {
+        const stream = this._video?.srcObject;
+        if (stream) {
+          stream.getTracks().forEach((t) => t.stop());
+          this._video.scrObject = undefined;
+        }
+        return;
+      }
+      const video = this._video;
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      this._canvas.width = width;
+      this._canvas.height = height;
       const context = this._canvas.getContext("2d");
-      context.drawImage(
-        this._video,
-        0,
-        0,
-        this._video.videoWidth,
-        this._video.videoHeight
-      );
+      context.drawImage(video, 0, 0, width, height);
 
       this.sendUpdate({
         camera: this._canvas.toDataURL("image/jpeg"),
       });
-      setTimeout(
-        () => this.update_camera(),
-        Math.round(1000 / this._camera_framerate)
-      );
+
+      const interval = Math.round(1000 / this._framerate);
+      setTimeout(() => this.update_camera(), interval);
     }
   };
+};

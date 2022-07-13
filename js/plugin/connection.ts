@@ -103,21 +103,32 @@ export const ConnectionMixin = (SuperClass) => {
       })();
     }
 
+
+    private async _reregister(newData = {}) {
+      await this.connection.sendMessage({
+        type: "browser_mod/reregister",
+        deviceID: this.deviceID,
+        data: {
+          ...this.devices[this.deviceID],
+          ...newData,
+        },
+      });
+    }
+
     get meta() {
       if (!this.registered) return null;
       return this.devices[this.deviceID].meta;
     }
     set meta(value) {
-      (async () => {
-        await this.connection.sendMessage({
-          type: "browser_mod/reregister",
-          deviceID: this.deviceID,
-          data: {
-            ...this.devices[this.deviceID],
-            meta: value,
-          }
-        })
-      })()
+      this._reregister({ meta: value });
+    }
+
+    get cameraEnabled() {
+      if (!this.registered) return null;
+      return this.devices[this.deviceID].camera;
+    }
+    set cameraEnabled(value) {
+      this._reregister({ camera: value });
     }
 
     sendUpdate(data) {

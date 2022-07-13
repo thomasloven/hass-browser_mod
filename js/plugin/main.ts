@@ -9,8 +9,8 @@ import "./browser-player";
 import { ConnectionMixin } from "./connection";
 import { ScreenSaverMixin } from "./screensaver";
 import { MediaPlayerMixin } from "./mediaPlayer";
+import { CameraMixin } from "./camera";
 import { FullyKioskMixin } from "./fullyKiosk";
-import { BrowserModCameraMixin } from "./camera";
 import { BrowserModScreensaverMixin } from "./screensaver";
 import { BrowserModPopupsMixin } from "./popups";
 import { BrowserModBrowserMixin } from "./browser";
@@ -27,7 +27,9 @@ const ext = (baseClass, mixins) =>
 //   FullyKioskMixin,
 //   BrowserModMediaPlayerMixin,
 // ]) {
-export class BrowserMod extends MediaPlayerMixin(ScreenSaverMixin(ConnectionMixin(EventTarget))) {
+export class BrowserMod extends CameraMixin(
+  MediaPlayerMixin(ScreenSaverMixin(ConnectionMixin(EventTarget)))
+) {
   constructor() {
     super();
     this.entity_id = deviceID.replace("-", "_");

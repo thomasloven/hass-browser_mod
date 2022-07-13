@@ -17,6 +17,9 @@ loadDevTools().then(() => {
     changeDeviceID(ev) {
       window.browser_mod.deviceID = ev.target.value;
     }
+    toggleCameraEnabled() {
+      window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
+    }
 
     unregister_device(ev) {
       const deviceID = ev.currentTarget.deviceID;
@@ -68,7 +71,13 @@ loadDevTools().then(() => {
                       ></ha-icon>
                     `}
               </h1>
-              <div class="card-content">Browser-mod not connected.</div>
+              <div class="card-content">
+                <p>Settings that apply to this browser.</p>
+                <p>
+                  It is strongly recommended to refresh your browser window
+                  after any change to those settings.
+                </p>
+              </div>
               <div class="card-content">
                 <ha-settings-row>
                   <span slot="heading">Enable</span>
@@ -99,7 +108,10 @@ loadDevTools().then(() => {
                     >Get camera input from this device (hardware
                     dependent)</span
                   >
-                  <ha-switch> </ha-switch>
+                  <ha-switch
+                    .checked=${window.browser_mod?.cameraEnabled}
+                    @change=${this.toggleCameraEnabled}
+                  ></ha-switch>
                 </ha-settings-row>
               </div>
             </ha-card>
@@ -116,7 +128,10 @@ loadDevTools().then(() => {
                         .datetime=${window.browser_mod.devices[d].last_seen}
                       ></ha-relative-time>
                     </span>
-                    <ha-icon-button .deviceID=${d} @click=${this.unregister_device}>
+                    <ha-icon-button
+                      .deviceID=${d}
+                      @click=${this.unregister_device}
+                    >
                       <ha-icon .icon=${"mdi:delete"}></ha-icon>
                     </ha-icon-button>
                     <ha-icon-button>

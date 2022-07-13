@@ -72,8 +72,8 @@ def setup_platform(hass, config, async_add_devices, platform, cls):
 def is_setup_complete(hass):
     return hass.data[DOMAIN][DATA_SETUP_COMPLETE]
 
-class BrowserModEntity2(CoordinatorEntity):
 
+class BrowserModEntity(CoordinatorEntity):
     def __init__(self, coordinator, deviceID, name):
         super().__init__(coordinator)
         self.deviceID = deviceID
@@ -101,55 +101,15 @@ class BrowserModEntity2(CoordinatorEntity):
     @property
     def name(self):
         return self._name
+
     @property
     def has_entity_name(self):
         return True
+
     @property
     def entity_registry_visible_default(self):
         return False
+
     @property
     def unique_id(self):
         return f"{self.deviceID}-{self._name.replace(' ','_')}"
-
-
-class BrowserModEntity(Entity):
-    def __init__(self, hass, connection, deviceID, alias=None):
-        self.hass = hass
-        self.connection = connection
-        self.deviceID = deviceID
-        self._data = {}
-        self._alias = alias
-        prefix = hass.data[DOMAIN][DATA_CONFIG].get(CONFIG_PREFIX, "")
-        self.entity_id = async_generate_entity_id(
-            self.domain + ".{}", alias or f"{prefix}{deviceID}", hass=hass
-        )
-
-    def updated(self):
-        pass
-
-    @property
-    def device_info(self):
-        return {
-            "identifiers": {(DOMAIN, self.deviceID)},
-            "name": self._alias or self.deviceID,
-        }
-
-    @property
-    def unique_id(self):
-        return f"{self.domain}-{self.deviceID}"
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, data):
-        self._data = data
-        self.updated()
-
-    @property
-    def device_id(self):
-        return self.deviceID
-
-    def send(self, command, **kwargs):
-        self.connection.send(command, **kwargs)
