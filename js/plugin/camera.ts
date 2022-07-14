@@ -4,6 +4,9 @@ export const CameraMixin = (SuperClass) => {
     private _canvas;
     private _framerate;
 
+    // TODO: Enable WebRTC?
+    // https://levelup.gitconnected.com/establishing-the-webrtc-connection-videochat-with-javascript-step-3-48d4ae0e9ea4
+
     constructor() {
       super();
       this._framerate = 2;

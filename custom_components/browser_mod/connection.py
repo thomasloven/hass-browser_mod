@@ -128,8 +128,7 @@ async def async_setup_connection(hass):
 
         if store.get_device(deviceID).enabled:
             dev = getDevice(hass, deviceID)
-            dev.data.update(msg.get("data", {}))
-            dev.coordinator.async_set_updated_data(dev.data)
+            dev.update(hass, msg.get("data", {}))
 
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_register)

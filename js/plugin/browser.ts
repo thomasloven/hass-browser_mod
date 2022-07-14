@@ -1,20 +1,21 @@
 import { fireEvent } from "card-tools/src/event";
 import { ha_element } from "card-tools/src/hass";
 
-export const BrowserModBrowserMixin = (C) =>
-  class extends C {
+export const BrowserStateMixin = (SuperClass) => {
+  return class BrowserStateMixinClass extends SuperClass {
     constructor() {
       super();
-      document.addEventListener("visibilitychange", () => this.sensor_update());
-      window.addEventListener("location-changed", () => this.sensor_update());
-
-      this.addEventListener("browser-mod-connected", () =>
-        this.sensor_update()
+      document.addEventListener("visibilitychange", () =>
+        this._browser_state_update()
       );
-      // window.setInterval(() => this.sensor_update(), 10000);
+      window.addEventListener("location-changed", () =>
+        this._browser_state_update()
+      );
+
+      this.connectionPromise.then(() => this._browser_state_update());
     }
 
-    sensor_update() {
+    _browser_state_update() {
       const update = async () => {
         const battery = (<any>navigator).getBattery?.();
         this.sendUpdate({
@@ -23,7 +24,7 @@ export const BrowserModBrowserMixin = (C) =>
             visibility: document.visibilityState,
             userAgent: navigator.userAgent,
             currentUser: this.hass?.user?.name,
-            fullyKiosk: this.isFully,
+            fullyKiosk: this.isFully || false,
             width: window.innerWidth,
             height: window.innerHeight,
             battery_level:
@@ -31,7 +32,7 @@ export const BrowserModBrowserMixin = (C) =>
             charging: window.fully?.isPlugged() ?? battery?.charging,
             darkMode: this.hass?.themes?.darkMode,
             userData: this.hass?.user,
-            // config: this.config,
+            ip_address: window.fully?.getIp4Address(),
           },
         });
       };
@@ -44,3 +45,4 @@ export const BrowserModBrowserMixin = (C) =>
       fireEvent("location-changed", {}, ha_element());
     }
   };
+};

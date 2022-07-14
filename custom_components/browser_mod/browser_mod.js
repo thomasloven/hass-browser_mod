@@ -937,6 +937,8 @@ const MediaPlayerMixin = (SuperClass) => {
 
 const CameraMixin = (SuperClass) => {
     return class CameraMixinClass extends SuperClass {
+        // TODO: Enable WebRTC?
+        // https://levelup.gitconnected.com/establishing-the-webrtc-connection-videochat-with-javascript-step-3-48d4ae0e9ea4
         constructor() {
             super();
             this._framerate = 2;
@@ -1041,6 +1043,46 @@ const RequireInteractMixin = (SuperClass) => {
     };
 };
 
+const BrowserStateMixin = (SuperClass) => {
+    return class BrowserStateMixinClass extends SuperClass {
+        constructor() {
+            super();
+            document.addEventListener("visibilitychange", () => this._browser_state_update());
+            window.addEventListener("location-changed", () => this._browser_state_update());
+            this.connectionPromise.then(() => this._browser_state_update());
+        }
+        _browser_state_update() {
+            const update = async () => {
+                var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+                const battery = (_b = (_a = navigator).getBattery) === null || _b === void 0 ? void 0 : _b.call(_a);
+                this.sendUpdate({
+                    browser: {
+                        path: window.location.pathname,
+                        visibility: document.visibilityState,
+                        userAgent: navigator.userAgent,
+                        currentUser: (_d = (_c = this.hass) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.name,
+                        fullyKiosk: this.isFully || false,
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                        battery_level: (_f = (_e = window.fully) === null || _e === void 0 ? void 0 : _e.getBatteryLevel()) !== null && _f !== void 0 ? _f : (battery === null || battery === void 0 ? void 0 : battery.level) * 100,
+                        charging: (_h = (_g = window.fully) === null || _g === void 0 ? void 0 : _g.isPlugged()) !== null && _h !== void 0 ? _h : battery === null || battery === void 0 ? void 0 : battery.charging,
+                        darkMode: (_k = (_j = this.hass) === null || _j === void 0 ? void 0 : _j.themes) === null || _k === void 0 ? void 0 : _k.darkMode,
+                        userData: (_l = this.hass) === null || _l === void 0 ? void 0 : _l.user,
+                        ip_address: (_m = window.fully) === null || _m === void 0 ? void 0 : _m.getIp4Address(),
+                    },
+                });
+            };
+            update();
+        }
+        do_navigate(path) {
+            if (!path)
+                return;
+            history.pushState(null, "", path);
+            fireEvent("location-changed", {}, ha_element());
+        }
+    };
+};
+
 var name = "browser_mod";
 var version = "2.0.0b0";
 var description = "";
@@ -1088,7 +1130,7 @@ var pjson = {
 //   FullyKioskMixin,
 //   BrowserModMediaPlayerMixin,
 // ]) {
-class BrowserMod extends CameraMixin(MediaPlayerMixin(ScreenSaverMixin(RequireInteractMixin(ConnectionMixin(EventTarget))))) {
+class BrowserMod extends BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))))) {
     constructor() {
         super();
         this.entity_id = deviceID.replace("-", "_");

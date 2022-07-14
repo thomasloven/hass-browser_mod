@@ -21,77 +21,74 @@ class BrowserModDevice:
         """ """
         self.deviceID = deviceID
         self.coordinator = Coordinator(hass, deviceID)
-        self.entities = []
-        self.camera_entity = None
+        self.entities = {}
         self.data = {}
-        self.setup_sensors(hass)
+        self.settings = {}
         self.connection = None
 
-    def update_settings(self, hass, settings):
-        if settings.get("camera", False) and self.camera_entity is None:
-            self.add_camera(hass)
-        elif self.camera_entity and not settings.get("camera", False):
-            self.remove_camera(hass)
+        self.update_entities(hass)
 
-    def setup_sensors(self, hass):
+    def update(self, hass, newData):
+        self.data.update(newData)
+        self.update_entities(hass)
+        self.coordinator.async_set_updated_data(self.data)
+
+    def update_settings(self, hass, settings):
+        self.settings = settings
+        self.update_entities(hass)
+
+    def update_entities(self, hass):
         """Create all entities associated with the device."""
 
         coordinator = self.coordinator
         deviceID = self.deviceID
 
-        sensors = [
-            ("battery_level", "Browser battery", "%", "battery"),
-            ("path", "Browser path"),
-            ("userAgent", "Browser userAgent"),
-            ("visibility", "Browser visibility"),
-            ("currentUser", "Browser user"),
-            ("height", "Browser height", "px"),
-            ("width", "Browser width", "px"),
-        ]
-        adder = hass.data[DOMAIN][DATA_ADDERS]["sensor"]
-        new = [BrowserSensor(coordinator, deviceID, *s) for s in sensors]
-        adder(new)
-        self.entities += new
+        def _assert_browser_sensor(type, name, *properties):
+            if name in self.entities:
+                return
+            adder = hass.data[DOMAIN][DATA_ADDERS][type]
+            cls = {"sensor": BrowserSensor, "binary_sensor": BrowserBinarySensor}[type]
+            new = cls(coordinator, deviceID, name, *properties)
+            adder([new])
+            self.entities[name] = new
 
-        binary_sensors = [
-            ("charging", "Browser charging"),
-            ("darkMode", "Browser dark mode"),
-            ("fullyKiosk", "Browser FullyKiosk"),
-        ]
-        adder = hass.data[DOMAIN][DATA_ADDERS]["binary_sensor"]
-        new = [BrowserBinarySensor(coordinator, deviceID, *s) for s in binary_sensors]
-        adder(new)
-        self.entities += new
+        _assert_browser_sensor("sensor", "path", "Browser path")
+        _assert_browser_sensor("sensor", "visibility", "Browser visibility")
+        _assert_browser_sensor("sensor", "userAgent", "Browser userAgent")
+        _assert_browser_sensor("sensor", "currentUser", "Browser user")
+        _assert_browser_sensor("sensor", "width", "Browser width", "px")
+        _assert_browser_sensor("sensor", "height", "Browser height", "px")
+        if self.data.get("browser", {}).get("battery_level", None) is not None:
+            _assert_browser_sensor(
+                "sensor", "battery_level", "Browser battery", "%", "battery"
+            )
 
-        adder = hass.data[DOMAIN][DATA_ADDERS]["light"]
-        new = [BrowserModLight(coordinator, deviceID, self)]
-        adder(new)
-        self.entities += new
+        _assert_browser_sensor("binary_sensor", "darkMode", "Browser dark mode")
+        _assert_browser_sensor("binary_sensor", "fullyKiosk", "Browser FullyKiosk")
+        if self.data.get("browser", {}).get("charging", None) is not None:
+            _assert_browser_sensor("binary_sensor", "charging", "Browser charging")
 
-        adder = hass.data[DOMAIN][DATA_ADDERS]["media_player"]
-        new = [BrowserModPlayer(coordinator, deviceID, self)]
-        adder(new)
-        self.entities += new
+        if "screen" not in self.entities:
+            adder = hass.data[DOMAIN][DATA_ADDERS]["light"]
+            new = BrowserModLight(coordinator, deviceID, self)
+            adder([new])
+            self.entities["screen"] = new
 
-    def add_camera(self, hass):
-        if self.camera_entity is not None:
-            return
-        coordinator = self.coordinator
-        deviceID = self.deviceID
-        adder = hass.data[DOMAIN][DATA_ADDERS]["camera"]
-        self.camera_entity = BrowserModCamera(coordinator, deviceID)
-        adder([self.camera_entity])
-        self.entities.append(self.camera_entity)
-        pass
+        if "player" not in self.entities:
+            adder = hass.data[DOMAIN][DATA_ADDERS]["media_player"]
+            new = BrowserModPlayer(coordinator, deviceID, self)
+            adder([new])
+            self.entities["player"] = new
 
-    def remove_camera(self, hass):
-        if self.camera_entity is None:
-            return
-        er = entity_registry.async_get(hass)
-        er.async_remove(self.camera_entity.entity_id)
-        self.entities.remove(self.camera_entity)
-        self.camera_entity = None
-        pass
+        if "camera" not in self.entities and self.settings.get("camera"):
+            adder = hass.data[DOMAIN][DATA_ADDERS]["camera"]
+            new = BrowserModCamera(coordinator, deviceID)
+            adder([new])
+            self.entities["camera"] = new
+        if "camera" in self.entities and not self.settings.get("camera"):
+            er = entity_registry.async_get(hass)
+            er.async_remove(self.entities["camera"].entity_id)
+            del self.entities["camera"]
 
     def send(self, command, **kwargs):
         """Send a command to this device."""
@@ -115,11 +112,10 @@ class BrowserModDevice:
         dr = device_registry.async_get(hass)
         er = entity_registry.async_get(hass)
 
-        for e in self.entities:
+        for e in self.entities.items():
             er.async_remove(e.entity_id)
 
-        self.entities = []
-        self.camera_entity = None
+        self.entities = {}
 
         device = dr.async_get_device({(DOMAIN, self.deviceID)})
         dr.async_remove_device(device.id)

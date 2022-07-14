@@ -22,10 +22,14 @@ class BrowserModEntity(CoordinatorEntity):
 
     @property
     def device_info(self):
+        config_url = {}
+        if ip := self._data.get("browser", {}).get("ip_address"):
+            config_url = {"configuration_url": f"http://{ip}:2323"}
         return {
             "identifiers": {(DOMAIN, self.deviceID)},
             "name": self.deviceID,
             "manufacturer": "Browser Mod",
+            **config_url,
         }
 
     @property

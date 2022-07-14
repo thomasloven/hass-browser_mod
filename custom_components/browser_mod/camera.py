@@ -35,6 +35,5 @@ class BrowserModCamera(BrowserModEntity, Camera):
 
     def camera_image(self, width=None, height=None):
         if "camera" not in self._data:
-            LOGGER.error(self._data)
             return None
         return base64.b64decode(self._data["camera"].split(",")[-1])
