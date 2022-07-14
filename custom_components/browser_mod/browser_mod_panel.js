@@ -60,6 +60,7 @@ const i=(i,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,
  */var n;null!=(null===(n=window.HTMLSlotElement)||void 0===n?void 0:n.prototype.assignedElements)?(o,n)=>o.assignedElements(n):(o,n)=>o.assignedNodes(n).filter((o=>o.nodeType===Node.ELEMENT_NODE));
 
 // Loads in ha-config-dashboard which is used to copy styling
+// Also provides ha-settings-row
 const loadDevTools = async () => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     if (customElements.get("ha-config-dashboard"))
@@ -202,19 +203,12 @@ loadDevTools().then(() => {
                     >
                       <ha-icon .icon=${"mdi:delete"}></ha-icon>
                     </ha-icon-button>
-                    <ha-icon-button>
-                      <ha-icon .icon=${"mdi:wrench"}></ha-icon>
-                    </ha-icon-button>
                   </ha-settings-row>`)}
               </div>
             </ha-card>
 
             <ha-card outlined header="Tweaks">
               <div class="card-content">
-                <ha-settings-row>
-                  <span slot="heading">Auto enable devices</span>
-                  <ha-switch></ha-switch>
-                </ha-settings-row>
                 <ha-settings-row>
                   <span slot="heading">User sidebar</span>
                   <span slot="description"

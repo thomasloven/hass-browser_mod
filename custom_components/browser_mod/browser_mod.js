@@ -812,9 +812,11 @@ const ScreenSaverMixin = (SuperClass) => {
             this._listeners = {};
             this._brightness = 255;
             const panel = (this._panel = document.createElement("div"));
-            panel.setAttribute("browser-mod", "");
+            document.body.append(panel);
+            panel.classList.add("browser-mod-blackout");
             panel.attachShadow({ mode: "open" });
             const styleEl = document.createElement("style");
+            panel.shadowRoot.append(styleEl);
             styleEl.innerHTML = `
         :host {
           background: rgba(0,0,0, var(--darkness));
@@ -833,8 +835,6 @@ const ScreenSaverMixin = (SuperClass) => {
           background: rgba(0,0,0,1);
         }
       `;
-            panel.shadowRoot.appendChild(styleEl);
-            document.body.appendChild(panel);
             this.addEventListener("command-screen_off", () => this._screen_off());
             this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
             this.connectionPromise.then(() => this._screen_on());
@@ -882,11 +882,11 @@ const MediaPlayerMixin = (SuperClass) => {
             for (const ev of ["play", "pause", "ended", "volumechange"]) {
                 this.player.addEventListener(ev, () => this._player_update());
             }
-            window.addEventListener("pointerdown", () => {
+            this.firstInteraction.then(() => {
                 this._player_enabled = true;
                 if (!this.player.ended)
                     this.player.play();
-            }, { once: true });
+            });
             this.addEventListener("command-player-play", (ev) => {
                 var _a;
                 if ((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.media_content_id)
@@ -940,24 +940,33 @@ const CameraMixin = (SuperClass) => {
         constructor() {
             super();
             this._framerate = 2;
-            window.addEventListener("pointerdown", () => {
-                this._setup_camera();
-            }, { once: true });
+            this._setup_camera();
         }
         async _setup_camera() {
             if (this._video)
                 return;
             await this.connectionPromise;
+            await this.firstInteraction;
             if (!this.cameraEnabled)
                 return;
+            const div = document.createElement("div");
+            document.body.append(div);
+            div.classList.add("browser-mod-camera");
+            div.attachShadow({ mode: "open" });
+            const styleEl = document.createElement("style");
+            div.shadowRoot.append(styleEl);
+            styleEl.innerHTML = `
+      :host {
+        display: none;
+      }`;
             const video = (this._video = document.createElement("video"));
+            div.shadowRoot.append(video);
             video.autoplay = true;
             video.playsInline = true;
             video.style.display = "none";
             const canvas = (this._canvas = document.createElement("canvas"));
+            div.shadowRoot.append(canvas);
             canvas.style.display = "none";
-            document.body.appendChild(video);
-            document.body.appendChild(canvas);
             if (!navigator.mediaDevices)
                 return;
             const stream = await navigator.mediaDevices.getUserMedia({
@@ -990,6 +999,44 @@ const CameraMixin = (SuperClass) => {
             });
             const interval = Math.round(1000 / this._framerate);
             setTimeout(() => this.update_camera(), interval);
+        }
+    };
+};
+
+const RequireInteractMixin = (SuperClass) => {
+    return class RequireInteractMixinClass extends SuperClass {
+        constructor() {
+            super();
+            this.firstInteraction = new Promise((resolve) => {
+                this._interactionResolve = resolve;
+            });
+            window.addEventListener("pointerdown", this._interactionResolve);
+            this.show_indicator();
+        }
+        async show_indicator() {
+            await this.connectionPromise;
+            if (!this.registered)
+                return;
+            const interactSymbol = document.createElement("div");
+            document.body.append(interactSymbol);
+            interactSymbol.classList.add("browser-mod-require-interaction");
+            interactSymbol.attachShadow({ mode: "open" });
+            const styleEl = document.createElement("style");
+            interactSymbol.shadowRoot.append(styleEl);
+            styleEl.innerHTML = `
+      :host {
+        position: fixed;
+        right: 8px;
+        bottom: 8px;
+        color: var(--warning-color, red);
+        opacity: 0.5;
+        --mdc-icon-size: 48px;
+      }`;
+            const icon = document.createElement("ha-icon");
+            interactSymbol.shadowRoot.append(icon);
+            icon.icon = "mdi:gesture-tap";
+            await this.firstInteraction;
+            interactSymbol.remove();
         }
     };
 };
@@ -1041,7 +1088,7 @@ var pjson = {
 //   FullyKioskMixin,
 //   BrowserModMediaPlayerMixin,
 // ]) {
-class BrowserMod extends CameraMixin(MediaPlayerMixin(ScreenSaverMixin(ConnectionMixin(EventTarget)))) {
+class BrowserMod extends CameraMixin(MediaPlayerMixin(ScreenSaverMixin(RequireInteractMixin(ConnectionMixin(EventTarget))))) {
     constructor() {
         super();
         this.entity_id = deviceID.replace("-", "_");

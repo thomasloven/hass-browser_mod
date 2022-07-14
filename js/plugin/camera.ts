@@ -8,29 +8,36 @@ export const CameraMixin = (SuperClass) => {
       super();
       this._framerate = 2;
 
-      window.addEventListener(
-        "pointerdown",
-        () => {
-          this._setup_camera();
-        },
-        { once: true }
-      );
+      this._setup_camera();
     }
 
     async _setup_camera() {
       if (this._video) return;
       await this.connectionPromise;
+      await this.firstInteraction;
       if (!this.cameraEnabled) return;
+
+      const div = document.createElement("div");
+      document.body.append(div);
+      div.classList.add("browser-mod-camera");
+      div.attachShadow({ mode: "open" });
+
+      const styleEl = document.createElement("style");
+      div.shadowRoot.append(styleEl);
+      styleEl.innerHTML = `
+      :host {
+        display: none;
+      }`;
+
       const video = (this._video = document.createElement("video"));
+      div.shadowRoot.append(video);
       video.autoplay = true;
       video.playsInline = true;
       video.style.display = "none";
 
       const canvas = (this._canvas = document.createElement("canvas"));
+      div.shadowRoot.append(canvas);
       canvas.style.display = "none";
-
-      document.body.appendChild(video);
-      document.body.appendChild(canvas);
 
       if (!navigator.mediaDevices) return;
 

@@ -8,9 +8,12 @@ export const ScreenSaverMixin = (SuperClass) => {
       super();
 
       const panel = (this._panel = document.createElement("div"));
-      panel.setAttribute("browser-mod", "");
+      document.body.append(panel);
+      panel.classList.add("browser-mod-blackout");
       panel.attachShadow({ mode: "open" });
+
       const styleEl = document.createElement("style");
+      panel.shadowRoot.append(styleEl);
       styleEl.innerHTML = `
         :host {
           background: rgba(0,0,0, var(--darkness));
@@ -29,8 +32,6 @@ export const ScreenSaverMixin = (SuperClass) => {
           background: rgba(0,0,0,1);
         }
       `;
-      panel.shadowRoot.appendChild(styleEl);
-      document.body.appendChild(panel);
 
       this.addEventListener("command-screen_off", () => this._screen_off());
       this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));

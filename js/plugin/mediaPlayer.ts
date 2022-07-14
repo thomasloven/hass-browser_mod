@@ -13,14 +13,10 @@ export const MediaPlayerMixin = (SuperClass) => {
         this.player.addEventListener(ev, () => this._player_update());
       }
 
-      window.addEventListener(
-        "pointerdown",
-        () => {
-          this._player_enabled = true;
-          if (!this.player.ended) this.player.play();
-        },
-        { once: true }
-      );
+      this.firstInteraction.then(() => {
+        this._player_enabled = true;
+        if (!this.player.ended) this.player.play();
+      });
 
       this.addEventListener("command-player-play", (ev) => {
         if (ev.detail?.media_content_id)

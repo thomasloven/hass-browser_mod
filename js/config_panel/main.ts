@@ -134,9 +134,6 @@ loadDevTools().then(() => {
                     >
                       <ha-icon .icon=${"mdi:delete"}></ha-icon>
                     </ha-icon-button>
-                    <ha-icon-button>
-                      <ha-icon .icon=${"mdi:wrench"}></ha-icon>
-                    </ha-icon-button>
                   </ha-settings-row>`
                 )}
               </div>
@@ -144,10 +141,6 @@ loadDevTools().then(() => {
 
             <ha-card outlined header="Tweaks">
               <div class="card-content">
-                <ha-settings-row>
-                  <span slot="heading">Auto enable devices</span>
-                  <ha-switch></ha-switch>
-                </ha-settings-row>
                 <ha-settings-row>
                   <span slot="heading">User sidebar</span>
                   <span slot="description"
