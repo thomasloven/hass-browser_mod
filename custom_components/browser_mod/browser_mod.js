@@ -1186,6 +1186,13 @@ const RequireInteractMixin = (SuperClass) => {
         opacity: 0.5;
         --mdc-icon-size: 48px;
       }
+      ha-icon::before {
+        content: "browser_mod";
+        font-size: 0.75rem;
+        position: absolute;
+        right: 0;
+        bottom: 90%;
+      }
       video {
         display: none;
       }
