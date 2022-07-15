@@ -11,8 +11,7 @@ import { ScreenSaverMixin } from "./screensaver";
 import { MediaPlayerMixin } from "./mediaPlayer";
 import { CameraMixin } from "./camera";
 import { RequireInteractMixin } from "./require-interact";
-import { FullyKioskMixin } from "./fullyKiosk";
-import { BrowserModScreensaverMixin } from "./screensaver";
+import { FullyMixin } from "./fullyKiosk";
 import { BrowserModPopupsMixin } from "./popups";
 import { BrowserStateMixin } from "./browser";
 import pjson from "../../package.json";
@@ -31,7 +30,9 @@ const ext = (baseClass, mixins) =>
 export class BrowserMod extends BrowserStateMixin(
   CameraMixin(
     MediaPlayerMixin(
-      ScreenSaverMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+      ScreenSaverMixin(
+        FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+      )
     )
   )
 ) {

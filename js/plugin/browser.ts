@@ -12,6 +12,8 @@ export const BrowserStateMixin = (SuperClass) => {
         this._browser_state_update()
       );
 
+      this.addEventListener("fully-update", () => this._browser_state_update());
+
       this.connectionPromise.then(() => this._browser_state_update());
     }
 
@@ -24,7 +26,7 @@ export const BrowserStateMixin = (SuperClass) => {
             visibility: document.visibilityState,
             userAgent: navigator.userAgent,
             currentUser: this.hass?.user?.name,
-            fullyKiosk: this.isFully || false,
+            fullyKiosk: this.fully || false,
             width: window.innerWidth,
             height: window.innerHeight,
             battery_level:

@@ -837,14 +837,26 @@ const ScreenSaverMixin = (SuperClass) => {
       `;
             this.addEventListener("command-screen_off", () => this._screen_off());
             this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
+            this.addEventListener("fully-update", () => this.send_screen_status());
             this.connectionPromise.then(() => this._screen_on());
         }
+        send_screen_status() {
+            let screen_on = !this._panel.hasAttribute("dark");
+            let screen_brightness = this._brightness;
+            if (this.fully) {
+                screen_on = this.fully_screen;
+                screen_brightness = this.fully_brightness;
+            }
+            this.sendUpdate({ screen_on, screen_brightness });
+        }
         _screen_off() {
-            this._panel.setAttribute("dark", "");
-            this.sendUpdate({
-                screen_on: false,
-                screen_brightness: 0,
-            });
+            if (this.fully) {
+                this.fully_screen = false;
+            }
+            else {
+                this._panel.setAttribute("dark", "");
+            }
+            this.send_screen_status();
             const l = () => this._screen_on();
             for (const ev of ["pointerdown", "pointermove", "keydown"]) {
                 this._listeners[ev] = l;
@@ -852,16 +864,21 @@ const ScreenSaverMixin = (SuperClass) => {
             }
         }
         _screen_on(ev = undefined) {
-            var _a;
-            if ((_a = ev === null || ev === void 0 ? void 0 : ev.detail) === null || _a === void 0 ? void 0 : _a.brightness) {
-                this._brightness = ev.detail.brightness;
-                this._panel.style.setProperty("--darkness", 1 - ev.detail.brightness / 255);
+            var _a, _b;
+            if (this.fully) {
+                this.fully_screen = true;
+                if ((_a = ev === null || ev === void 0 ? void 0 : ev.detail) === null || _a === void 0 ? void 0 : _a.brightness) {
+                    this.fully_brightness = ev.detail.brightness;
+                }
             }
-            this._panel.removeAttribute("dark");
-            this.sendUpdate({
-                screen_on: true,
-                screen_brightness: this._brightness,
-            });
+            else {
+                if ((_b = ev === null || ev === void 0 ? void 0 : ev.detail) === null || _b === void 0 ? void 0 : _b.brightness) {
+                    this._brightness = ev.detail.brightness;
+                    this._panel.style.setProperty("--darkness", 1 - ev.detail.brightness / 255);
+                }
+                this._panel.removeAttribute("dark");
+            }
+            this.send_screen_status();
             for (const ev of ["pointerdown", "pointermove", "keydown"]) {
                 if (this._listeners[ev]) {
                     window.removeEventListener(ev, this._listeners[ev]);
@@ -872,6 +889,133 @@ const ScreenSaverMixin = (SuperClass) => {
     }
     return ScreenSaverMixinClass;
 };
+// export const BrowserModScreensaverMixin = (C) =>
+//   class extends C {
+//     constructor() {
+//       super();
+//       this._blackout_panel = document.createElement("div");
+//       this._screenSaver = undefined;
+//       this._screenSaverTimer = undefined;
+//       this._screenSaverTimeOut = 0;
+//       this._screenSaver = {
+//         fn: undefined,
+//         clearfn: undefined,
+//         timer: undefined,
+//         timeout: undefined,
+//         listeners: {},
+//         active: false,
+//       };
+//       this._blackout_panel.style.cssText = `
+//             position: fixed;
+//             left: 0;
+//             top: 0;
+//             padding: 0;
+//             margin: 0;
+//             width: 100%;
+//             height: 100%;
+//             background: black;
+//             display: none;
+//         `;
+//       document.body.appendChild(this._blackout_panel);
+//     }
+//     screensaver_set(fn, clearfn, time) {
+//       this._ss_clear();
+//       this._screenSaver = {
+//         fn,
+//         clearfn,
+//         timer: undefined,
+//         timeout: time,
+//         listeners: {},
+//         active: false,
+//       };
+//       const l = () => this.screensaver_update();
+//       for (const event of ["mousemove", "mousedown", "keydown", "touchstart"]) {
+//         window.addEventListener(event, l);
+//         this._screenSaver.listeners[event] = l;
+//       }
+//       this._screenSaver.timer = window.setTimeout(
+//         () => this._ss_run(),
+//         time * 1000
+//       );
+//     }
+//     screensaver_update() {
+//       if (this._screenSaver.active) {
+//         this.screensaver_stop();
+//       } else {
+//         window.clearTimeout(this._screenSaver.timer);
+//         this._screenSaver.timer = window.setTimeout(
+//           () => this._ss_run(),
+//           this._screenSaver.timeout * 1000
+//         );
+//       }
+//     }
+//     screensaver_stop() {
+//       this._ss_clear();
+//       this._screenSaver.active = false;
+//       if (this._screenSaver.clearfn) this._screenSaver.clearfn();
+//       if (this._screenSaver.timeout) {
+//         this.screensaver_set(
+//           this._screenSaver.fn,
+//           this._screenSaver.clearfn,
+//           this._screenSaver.timeout
+//         );
+//       }
+//     }
+//     _ss_clear() {
+//       window.clearTimeout(this._screenSaverTimer);
+//       for (const [k, v] of Object.entries(this._screenSaver.listeners)) {
+//         window.removeEventListener(k as any, v as any);
+//       }
+//     }
+//     _ss_run() {
+//       this._screenSaver.active = true;
+//       this._screenSaver.fn();
+//     }
+//     do_blackout(timeout) {
+//       this.screensaver_set(
+//         () => {
+//           if (this.isFully) {
+//             if (this.config.screensaver) window.fully.startScreensaver();
+//             else window.fully.turnScreenOff(true);
+//           } else {
+//             this._blackout_panel.style.display = "block";
+//           }
+//           this.screen_update();
+//         },
+//         () => {
+//           if ((this._blackout_panel.style.display = "block"))
+//             this._blackout_panel.style.display = "none";
+//           if (this.isFully) {
+//             if (!window.fully.getScreenOn()) window.fully.turnScreenOn();
+//             window.fully.stopScreensaver();
+//           }
+//           this.screen_update();
+//         },
+//         timeout || 0
+//       );
+//     }
+//     no_blackout() {
+//       if (this.isFully) {
+//         window.fully.turnScreenOn();
+//         window.fully.stopScreensaver();
+//       }
+//       this.screensaver_stop();
+//     }
+//     screen_update() {
+//       this.sendUpdate({
+//         screen: {
+//           blackout: this.isFully
+//             ? this.fully_screensaver !== undefined
+//               ? this.fully_screensaver
+//               : !window.fully.getScreenOn()
+//             : Boolean(this._blackout_panel.style.display === "block"),
+//           brightness: this.isFully
+//             ? window.fully.getScreenBrightness()
+//             : undefined,
+//         },
+//       });
+//     }
+//   };
 
 const MediaPlayerMixin = (SuperClass) => {
     return class MediaPlayerMixinClass extends SuperClass {
@@ -951,6 +1095,8 @@ const CameraMixin = (SuperClass) => {
             await this.firstInteraction;
             if (!this.cameraEnabled)
                 return;
+            if (this.fully)
+                return this.update_camera();
             const div = document.createElement("div");
             document.body.append(div);
             div.classList.add("browser-mod-camera");
@@ -989,16 +1135,23 @@ const CameraMixin = (SuperClass) => {
                 }
                 return;
             }
-            const video = this._video;
-            const width = video.videoWidth;
-            const height = video.videoHeight;
-            this._canvas.width = width;
-            this._canvas.height = height;
-            const context = this._canvas.getContext("2d");
-            context.drawImage(video, 0, 0, width, height);
-            this.sendUpdate({
-                camera: this._canvas.toDataURL("image/jpeg"),
-            });
+            if (this.fully) {
+                this.sendUpdate({
+                    camera: this.fully_camera,
+                });
+            }
+            else {
+                const video = this._video;
+                const width = video.videoWidth;
+                const height = video.videoHeight;
+                this._canvas.width = width;
+                this._canvas.height = height;
+                const context = this._canvas.getContext("2d");
+                context.drawImage(video, 0, 0, width, height);
+                this.sendUpdate({
+                    camera: this._canvas.toDataURL("image/jpeg"),
+                });
+            }
             const interval = Math.round(1000 / this._framerate);
             setTimeout(() => this.update_camera(), interval);
         }
@@ -1012,7 +1165,6 @@ const RequireInteractMixin = (SuperClass) => {
             this.firstInteraction = new Promise((resolve) => {
                 this._interactionResolve = resolve;
             });
-            window.addEventListener("pointerdown", this._interactionResolve);
             this.show_indicator();
         }
         async show_indicator() {
@@ -1033,12 +1185,93 @@ const RequireInteractMixin = (SuperClass) => {
         color: var(--warning-color, red);
         opacity: 0.5;
         --mdc-icon-size: 48px;
-      }`;
+      }
+      video {
+        display: none;
+      }
+      `;
             const icon = document.createElement("ha-icon");
             interactSymbol.shadowRoot.append(icon);
             icon.icon = "mdi:gesture-tap";
+            // If we are allowed to play a video, we can assume no interaction is needed
+            const video = (this._video = document.createElement("video"));
+            interactSymbol.shadowRoot.append(video);
+            const vPlay = video.play();
+            if (vPlay) {
+                vPlay
+                    .then(() => {
+                    this._interactionResolve();
+                })
+                    .catch((e) => {
+                    if (e.name === "AbortError")
+                        this._interactionResolve();
+                });
+                video.pause();
+            }
+            window.addEventListener("pointerdown", this._interactionResolve);
+            // if (this.fully) this._interactionResolve();
             await this.firstInteraction;
             interactSymbol.remove();
+        }
+    };
+};
+
+const FullyMixin = (C) => {
+    return class FullyMixinClass extends C {
+        constructor() {
+            super();
+            this._fully_screensaver = false;
+            if (!this.fully)
+                return;
+            for (const ev of [
+                "screenOn",
+                "screenOff",
+                "pluggedAC",
+                "pluggedUSB",
+                "onBatteryLevelChanged",
+                "unplugged",
+                "networkReconnect",
+                "onMotion",
+                "onDaydreamStart",
+                "onDaydreamStop",
+            ]) {
+                window.fully.bind(ev, `window.browser_mod.fullyEvent("${ev}");`);
+            }
+            window.fully.bind("onScreensaverStart", `window.browser_mod._fully_screensaver = true; window.browser_mod.fullyEvent();`);
+            window.fully.bind("onScreensaverStop", `window.browser_mod._fully_screensaver = false; window.browser_mod.fullyEvent();`);
+            return;
+        }
+        get fully() {
+            return window.fully !== undefined;
+        }
+        get fully_screen() {
+            var _a;
+            return this._fully_screensaver === false && ((_a = window.fully) === null || _a === void 0 ? void 0 : _a.getScreenOn());
+        }
+        set fully_screen(state) {
+            var _a, _b, _c;
+            if (state) {
+                (_a = window.fully) === null || _a === void 0 ? void 0 : _a.turnScreenOn();
+                (_b = window.fully) === null || _b === void 0 ? void 0 : _b.stopScreensaver();
+            }
+            else {
+                (_c = window.fully) === null || _c === void 0 ? void 0 : _c.turnScreenOff();
+            }
+        }
+        get fully_brightness() {
+            var _a;
+            return (_a = window.fully) === null || _a === void 0 ? void 0 : _a.getScreenBrightness();
+        }
+        set fully_brightness(br) {
+            var _a;
+            (_a = window.fully) === null || _a === void 0 ? void 0 : _a.setScreenBrightness(br);
+        }
+        get fully_camera() {
+            var _a;
+            return (_a = window.fully) === null || _a === void 0 ? void 0 : _a.getCamshotJpgBase64();
+        }
+        fullyEvent(event = undefined) {
+            this.fireEvent("fully-update", { event });
         }
     };
 };
@@ -1049,6 +1282,7 @@ const BrowserStateMixin = (SuperClass) => {
             super();
             document.addEventListener("visibilitychange", () => this._browser_state_update());
             window.addEventListener("location-changed", () => this._browser_state_update());
+            this.addEventListener("fully-update", () => this._browser_state_update());
             this.connectionPromise.then(() => this._browser_state_update());
         }
         _browser_state_update() {
@@ -1061,7 +1295,7 @@ const BrowserStateMixin = (SuperClass) => {
                         visibility: document.visibilityState,
                         userAgent: navigator.userAgent,
                         currentUser: (_d = (_c = this.hass) === null || _c === void 0 ? void 0 : _c.user) === null || _d === void 0 ? void 0 : _d.name,
-                        fullyKiosk: this.isFully || false,
+                        fullyKiosk: this.fully || false,
                         width: window.innerWidth,
                         height: window.innerHeight,
                         battery_level: (_f = (_e = window.fully) === null || _e === void 0 ? void 0 : _e.getBatteryLevel()) !== null && _f !== void 0 ? _f : (battery === null || battery === void 0 ? void 0 : battery.level) * 100,
@@ -1130,7 +1364,7 @@ var pjson = {
 //   FullyKioskMixin,
 //   BrowserModMediaPlayerMixin,
 // ]) {
-class BrowserMod extends BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))))) {
+class BrowserMod extends BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget))))))) {
     constructor() {
         super();
         this.entity_id = deviceID.replace("-", "_");

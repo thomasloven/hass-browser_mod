@@ -19,6 +19,7 @@ export const CameraMixin = (SuperClass) => {
       await this.connectionPromise;
       await this.firstInteraction;
       if (!this.cameraEnabled) return;
+      if (this.fully) return this.update_camera();
 
       const div = document.createElement("div");
       document.body.append(div);
@@ -63,17 +64,23 @@ export const CameraMixin = (SuperClass) => {
         }
         return;
       }
-      const video = this._video;
-      const width = video.videoWidth;
-      const height = video.videoHeight;
-      this._canvas.width = width;
-      this._canvas.height = height;
-      const context = this._canvas.getContext("2d");
-      context.drawImage(video, 0, 0, width, height);
+      if (this.fully) {
+        this.sendUpdate({
+          camera: this.fully_camera,
+        });
+      } else {
+        const video = this._video;
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        this._canvas.width = width;
+        this._canvas.height = height;
+        const context = this._canvas.getContext("2d");
+        context.drawImage(video, 0, 0, width, height);
 
-      this.sendUpdate({
-        camera: this._canvas.toDataURL("image/jpeg"),
-      });
+        this.sendUpdate({
+          camera: this._canvas.toDataURL("image/jpeg"),
+        });
+      }
 
       const interval = Math.round(1000 / this._framerate);
       setTimeout(() => this.update_camera(), interval);

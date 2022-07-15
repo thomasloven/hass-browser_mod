@@ -14,6 +14,7 @@ interface FullyKiosk {
   // Controll device, show notifications, send network data etc.
   turnScreenOn: { () };
   turnScreenOff: { (keepAlive?: Boolean) };
+  setScreenBrightness: { (lewvel: Number) };
 
   // Control fully and browsing
   startScreensaver: { () };
