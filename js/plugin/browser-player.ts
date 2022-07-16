@@ -1,16 +1,14 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 
-import { deviceID, setDeviceID } from "card-tools/src/deviceID";
-import { fireEvent } from "card-tools/src/event";
-import { hass_loaded } from "card-tools/src/hass";
-
 import "./browser-player-editor.ts";
 
 import "./types";
 
 class BrowserPlayer extends LitElement {
   @property() hass;
+
+  player;
 
   static getConfigElement() {
     return document.createElement("browser-player-editor");
@@ -23,6 +21,8 @@ class BrowserPlayer extends LitElement {
     while (!window.browser_mod) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
+    this.player = window.browser_mod.player;
+
     for (const event of [
       "play",
       "pause",
@@ -31,34 +31,31 @@ class BrowserPlayer extends LitElement {
       "canplay",
       "loadeddata",
     ])
-      window.browser_mod.player.addEventListener(event, () =>
-        this.requestUpdate()
-      );
+      this.player.addEventListener(event, () => this.requestUpdate());
   }
   handleMute(ev) {
-    window.browser_mod.player_mute();
+    this.player.muted = !this.player.muted;
   }
   handleVolumeChange(ev) {
-    const vol = parseFloat(ev.target.value);
-    window.browser_mod.player_set_volume(vol);
+    const volume_level = parseFloat(ev.target.value);
+    this.player.volume = volume_level;
   }
   handleMoreInfo(ev) {
-    fireEvent(
-      "hass-more-info",
-      { entityId: `media_player.${window.browser_mod.entity_id}` },
-      this
+    this.dispatchEvent(
+      new CustomEvent("hass-more-info", {
+        bubbles: true,
+        composed: true,
+        cancelable: false,
+        detail: {
+          entityId: window.browser_mod.deviceEntities?.player,
+        },
+      })
     );
   }
   handlePlayPause(ev) {
-    if (window.browser_mod.player.paused) window.browser_mod.player_play();
-    else window.browser_mod.player_pause();
-  }
-  setDeviceID() {
-    const newID = prompt("Set deviceID", deviceID);
-    if (newID !== deviceID) {
-      setDeviceID(newID);
-      this.requestUpdate();
-    }
+    if (!this.player.src || this.player.paused || this.player.ended)
+      this.player.play();
+    else this.player.pause();
   }
 
   render() {
@@ -66,21 +63,20 @@ class BrowserPlayer extends LitElement {
       window.setTimeout(() => this.requestUpdate(), 100);
       return html``;
     }
-    const player = window.browser_mod.player;
     return html`
       <ha-card>
         <div class="card-content">
           <ha-icon-button @click=${this.handleMute}>
             <ha-icon
-              .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}
+              .icon=${this.player.muted ? "mdi:volume-off" : "mdi:volume-high"}
             ></ha-icon>
           </ha-icon-button>
           <ha-slider
             min="0"
             max="1"
             step="0.01"
-            ?disabled=${player.muted}
-            value=${player.volume}
+            ?disabled=${this.player.muted}
+            value=${this.player.volume}
             @change=${this.handleVolumeChange}
           ></ha-slider>
 
@@ -89,7 +85,11 @@ class BrowserPlayer extends LitElement {
             : html`
                 <ha-icon-button @click=${this.handlePlayPause} highlight>
                   <ha-icon
-                    .icon=${player.paused ? "mdi:play" : "mdi:pause"}
+                    .icon=${!this.player.src ||
+                    this.player.ended ||
+                    this.player.paused
+                      ? "mdi:play"
+                      : "mdi:pause"}
                   ></ha-icon>
                 </ha-icon-button>
               `}
@@ -98,7 +98,7 @@ class BrowserPlayer extends LitElement {
           </ha-icon-button>
         </div>
 
-        <div class="device-id" @click=${this.setDeviceID}>${deviceID}</div>
+        <div class="device-id">${window.browser_mod.deviceID}</div>
       </ha-card>
     `;
   }
@@ -133,7 +133,10 @@ class BrowserPlayer extends LitElement {
 }
 
 (async () => {
-  await hass_loaded();
+  while (!window.browser_mod) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  await window.browser_mod.connectionPromise;
 
   if (!customElements.get("browser-player"))
     customElements.define("browser-player", BrowserPlayer);

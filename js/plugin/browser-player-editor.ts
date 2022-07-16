@@ -1,5 +1,4 @@
 import { LitElement, html } from "lit";
-import { hass_loaded } from "card-tools/src/hass";
 
 class BrowserPlayerEditor extends LitElement {
   setConfig(config) {}
@@ -9,7 +8,10 @@ class BrowserPlayerEditor extends LitElement {
 }
 
 (async () => {
-  await hass_loaded();
+  while (!window.browser_mod) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  await window.browser_mod.connectionPromise;
 
   if (!customElements.get("browser-player-editor")) {
     customElements.define("browser-player-editor", BrowserPlayerEditor);

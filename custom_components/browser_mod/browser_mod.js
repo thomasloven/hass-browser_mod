@@ -59,85 +59,6 @@ const i$1=(i,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...
  * SPDX-License-Identifier: BSD-3-Clause
  */var n;null!=(null===(n=window.HTMLSlotElement)||void 0===n?void 0:n.prototype.assignedElements)?(o,n)=>o.assignedElements(n):(o,n)=>o.assignedNodes(n).filter((o=>o.nodeType===Node.ELEMENT_NODE));
 
-const ID_STORAGE_KEY$1 = 'lovelace-player-device-id';
-function _deviceID() {
-  if(!localStorage[ID_STORAGE_KEY$1])
-  {
-    const s4 = () => {
-      return Math.floor((1+Math.random())*100000).toString(16).substring(1);
-    };
-    if(window['fully'] && typeof fully.getDeviceId === "function")
-      localStorage[ID_STORAGE_KEY$1] = fully.getDeviceId();
-    else
-      localStorage[ID_STORAGE_KEY$1] = `${s4()}${s4()}-${s4()}${s4()}`;
-  }
-  return localStorage[ID_STORAGE_KEY$1];
-}
-let deviceID = _deviceID();
-
-const setDeviceID = (id) => {
-  if(id === null) return;
-  if(id === "clear") {
-    localStorage.removeItem(ID_STORAGE_KEY$1);
-  } else {
-    localStorage[ID_STORAGE_KEY$1] = id;
-  }
-  deviceID = _deviceID();
-};
-
-const params = new URLSearchParams(window.location.search);
-if(params.get('deviceID')) {
-  setDeviceID(params.get('deviceID'));
-}
-
-async function hass_loaded() {
-  await Promise.race([
-    customElements.whenDefined("home-assistant"),
-    customElements.whenDefined("hc-main")
-  ]);
-  return true;
-}
-function lovelace_view() {
-  var root = document.querySelector("hc-main");
-  if(root) {
-    root = root && root.shadowRoot;
-    root = root && root.querySelector("hc-lovelace");
-    root = root && root.shadowRoot;
-    root = root && root.querySelector("hui-view") || root.querySelector("hui-panel-view");
-    return root;
-  }
-
-  root = document.querySelector("home-assistant");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("home-assistant-main");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("app-drawer-layout partial-panel-resolver");
-  root = root && root.shadowRoot || root;
-  root = root && root.querySelector("ha-panel-lovelace");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("hui-root");
-  root = root && root.shadowRoot;
-  root = root && root.querySelector("ha-app-layout");
-  root = root && root.querySelector("#view");
-  root = root && root.firstElementChild;
-  return root;
-}
-
-function fireEvent(ev, detail, entity=null) {
-  ev = new Event(ev, {
-    bubbles: true,
-    cancelable: false,
-    composed: true,
-  });
-  ev.detail = detail || {};
-  if(entity) {
-    entity.dispatchEvent(ev);
-  } else {
-    var root = lovelace_view();
-    if (root) root.dispatchEvent(ev);
-  }
-}
-
 class BrowserPlayerEditor extends s {
     setConfig(config) { }
     render() {
@@ -145,7 +66,10 @@ class BrowserPlayerEditor extends s {
     }
 }
 (async () => {
-    await hass_loaded();
+    while (!window.browser_mod) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    await window.browser_mod.connectionPromise;
     if (!customElements.get("browser-player-editor")) {
         customElements.define("browser-player-editor", BrowserPlayerEditor);
         window.customCards = window.customCards || [];
@@ -168,6 +92,7 @@ class BrowserPlayer extends s {
         while (!window.browser_mod) {
             await new Promise((resolve) => setTimeout(resolve, 1000));
         }
+        this.player = window.browser_mod.player;
         for (const event of [
             "play",
             "pause",
@@ -176,51 +101,51 @@ class BrowserPlayer extends s {
             "canplay",
             "loadeddata",
         ])
-            window.browser_mod.player.addEventListener(event, () => this.requestUpdate());
+            this.player.addEventListener(event, () => this.requestUpdate());
     }
     handleMute(ev) {
-        window.browser_mod.player_mute();
+        this.player.muted = !this.player.muted;
     }
     handleVolumeChange(ev) {
-        const vol = parseFloat(ev.target.value);
-        window.browser_mod.player_set_volume(vol);
+        const volume_level = parseFloat(ev.target.value);
+        this.player.volume = volume_level;
     }
     handleMoreInfo(ev) {
-        fireEvent("hass-more-info", { entityId: `media_player.${window.browser_mod.entity_id}` }, this);
+        var _a;
+        this.dispatchEvent(new CustomEvent("hass-more-info", {
+            bubbles: true,
+            composed: true,
+            cancelable: false,
+            detail: {
+                entityId: (_a = window.browser_mod.deviceEntities) === null || _a === void 0 ? void 0 : _a.player,
+            },
+        }));
     }
     handlePlayPause(ev) {
-        if (window.browser_mod.player.paused)
-            window.browser_mod.player_play();
+        if (!this.player.src || this.player.paused || this.player.ended)
+            this.player.play();
         else
-            window.browser_mod.player_pause();
-    }
-    setDeviceID() {
-        const newID = prompt("Set deviceID", deviceID);
-        if (newID !== deviceID) {
-            setDeviceID(newID);
-            this.requestUpdate();
-        }
+            this.player.pause();
     }
     render() {
         if (!window.browser_mod) {
             window.setTimeout(() => this.requestUpdate(), 100);
             return $ ``;
         }
-        const player = window.browser_mod.player;
         return $ `
       <ha-card>
         <div class="card-content">
           <ha-icon-button @click=${this.handleMute}>
             <ha-icon
-              .icon=${player.muted ? "mdi:volume-off" : "mdi:volume-high"}
+              .icon=${this.player.muted ? "mdi:volume-off" : "mdi:volume-high"}
             ></ha-icon>
           </ha-icon-button>
           <ha-slider
             min="0"
             max="1"
             step="0.01"
-            ?disabled=${player.muted}
-            value=${player.volume}
+            ?disabled=${this.player.muted}
+            value=${this.player.volume}
             @change=${this.handleVolumeChange}
           ></ha-slider>
 
@@ -229,7 +154,11 @@ class BrowserPlayer extends s {
             : $ `
                 <ha-icon-button @click=${this.handlePlayPause} highlight>
                   <ha-icon
-                    .icon=${player.paused ? "mdi:play" : "mdi:pause"}
+                    .icon=${!this.player.src ||
+                this.player.ended ||
+                this.player.paused
+                ? "mdi:play"
+                : "mdi:pause"}
                   ></ha-icon>
                 </ha-icon-button>
               `}
@@ -238,7 +167,7 @@ class BrowserPlayer extends s {
           </ha-icon-button>
         </div>
 
-        <div class="device-id" @click=${this.setDeviceID}>${deviceID}</div>
+        <div class="device-id">${window.browser_mod.deviceID}</div>
       </ha-card>
     `;
     }
@@ -274,7 +203,10 @@ __decorate([
     e$2()
 ], BrowserPlayer.prototype, "hass", void 0);
 (async () => {
-    await hass_loaded();
+    while (!window.browser_mod) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    await window.browser_mod.connectionPromise;
     if (!customElements.get("browser-player"))
         customElements.define("browser-player", BrowserPlayer);
 })();
@@ -325,6 +257,7 @@ const ConnectionMixin = (SuperClass) => {
             this.connectionPromise = new Promise((resolve) => {
                 this._connectionResolve = resolve;
             });
+            this.deviceEntities = {};
         }
         LOG(...args) {
             const dt = new Date();
@@ -338,6 +271,9 @@ const ConnectionMixin = (SuperClass) => {
             if (msg.command) {
                 this.LOG("Command:", msg);
                 this.fireEvent(`command-${msg.command}`, msg);
+            }
+            else if (msg.deviceEntities) {
+                this.deviceEntities = msg.deviceEntities;
             }
             else if (msg.result) {
                 this.update_config(msg.result);

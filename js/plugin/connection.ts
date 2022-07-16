@@ -12,6 +12,7 @@ export const ConnectionMixin = (SuperClass) => {
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
     });
+    public deviceEntities = {};
 
     LOG(...args) {
       const dt = new Date();
@@ -26,6 +27,8 @@ export const ConnectionMixin = (SuperClass) => {
       if (msg.command) {
         this.LOG("Command:", msg);
         this.fireEvent(`command-${msg.command}`, msg);
+      } else if (msg.deviceEntities) {
+        this.deviceEntities = msg.deviceEntities;
       } else if (msg.result) {
         this.update_config(msg.result);
       }

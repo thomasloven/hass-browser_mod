@@ -90,6 +90,10 @@ class BrowserModDevice:
             er.async_remove(self.entities["camera"].entity_id)
             del self.entities["camera"]
 
+        self.send(
+            None, deviceEntities={k: v.entity_id for k, v in self.entities.items()}
+        )
+
     def send(self, command, **kwargs):
         """Send a command to this device."""
         if self.connection is None:
