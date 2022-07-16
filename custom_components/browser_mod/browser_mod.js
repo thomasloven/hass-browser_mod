@@ -13,6 +13,18 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+
 function __decorate(decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -805,6 +817,77 @@ const BrowserStateMixin = (SuperClass) => {
     };
 };
 
+const ServicesMixin = (SuperClass) => {
+    return class ServicesMixinClass extends SuperClass {
+        /*
+          Structure of service call:
+            service: <service>
+            [data: <data>]
+    
+          Sequence:
+            service: browser_mod.sequence
+            data:
+              sequence:
+                - <service call>
+                - <service call>
+                - ...
+    
+          Delay
+            service: browser_mod.delay
+            data:
+              time: <number>
+    
+          Popup:
+            service: browser_mod.popup
+            data:
+              [title: <string>]
+              [content: <string | Lovelace Card Configuration>]
+              [primary_action: <string>]
+              [secondary_action: <string>]
+              [dismissable: <TRUE/false>]
+              [timeout: <number>]
+              [callbacks:
+                [primary_action: <service call>]
+                [secondary_action: <service call>]
+                [timeout: <service call>]
+                [dismissed: <service call>]
+              ]
+    
+            Close popup
+              service: browser_mod.close_popup
+    
+            Javascript console print
+              service: browser_mod.console
+              data:
+                message: <string>
+        */
+        _service_action({ service, data }) {
+            let _service = service;
+            if (!_service.startsWith("browser_mod.") && _service.includes(".")) ;
+            if (_service.startsWith("browser_mod.")) {
+                _service = _service.substring(12);
+            }
+            switch (_service) {
+                case "popup":
+                    const { title, content } = data, d = __rest(data, ["title", "content"]);
+                    if (d.callbacks) {
+                        for (const [k, v] of Object.entries(data.callbacks)) {
+                            d.callbacks[k] = () => this._service_action(v);
+                        }
+                    }
+                    this.showPopup(title, content, d);
+                    break;
+                case "close_popup":
+                    this.closePopup();
+                    break;
+                case "console":
+                    console.log(data.message);
+                    break;
+            }
+        }
+    };
+};
+
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -826,9 +909,9 @@ class BrowserModPopup extends s {
     openDialog() {
         this.open = true;
         if (this.timeout) {
-            this.timeoutStart = new Date().getTime();
+            this._timeoutStart = new Date().getTime();
             this._timeoutTimer = setInterval(() => {
-                const ellapsed = new Date().getTime() - this.timeoutStart;
+                const ellapsed = new Date().getTime() - this._timeoutStart;
                 const progress = (ellapsed / this.timeout) * 100;
                 this.style.setProperty("--progress", `${progress}%`);
                 if (ellapsed >= this.timeout)
@@ -1160,13 +1243,15 @@ var pjson = {
     - Framework
     - ll-custom handling
     - Commands
-      - popup
-      - close_popup
+      x popup
+      x close_popup
       - more-info
       - navigate
       - lovelace-reload
       - window-reload
       - screensaver
+      - sequence
+      - delay
       - toast?
     - Redesign services to target devices
   - frontend editor for popup cards
@@ -1183,7 +1268,7 @@ var pjson = {
   - Media_seek
   - Screensavers
   */
-class BrowserMod extends PopupMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))))))) {
+class BrowserMod extends ServicesMixin(PopupMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget))))))))) {
     constructor() {
         super();
         this.connect();

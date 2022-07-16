@@ -14,7 +14,7 @@ class BrowserModPopup extends LitElement {
   @property() dismissable;
   callbacks;
   timeout;
-  timeoutStart;
+  _timeoutStart;
   _timeoutTimer;
 
   closeDialog() {
@@ -25,9 +25,9 @@ class BrowserModPopup extends LitElement {
   openDialog() {
     this.open = true;
     if (this.timeout) {
-      this.timeoutStart = new Date().getTime();
+      this._timeoutStart = new Date().getTime();
       this._timeoutTimer = setInterval(() => {
-        const ellapsed = new Date().getTime() - this.timeoutStart;
+        const ellapsed = new Date().getTime() - this._timeoutStart;
         const progress = (ellapsed / this.timeout) * 100;
         this.style.setProperty("--progress", `${progress}%`);
         if (ellapsed >= this.timeout) this._timeout();

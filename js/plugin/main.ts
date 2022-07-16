@@ -8,6 +8,7 @@ import { CameraMixin } from "./camera";
 import { RequireInteractMixin } from "./require-interact";
 import { FullyMixin } from "./fullyKiosk";
 import { BrowserStateMixin } from "./browser";
+import { ServicesMixin } from "./services";
 import "./popups";
 import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
@@ -25,13 +26,15 @@ import pjson from "../../package.json";
     - Framework
     - ll-custom handling
     - Commands
-      - popup
-      - close_popup
+      x popup
+      x close_popup
       - more-info
       - navigate
       - lovelace-reload
       - window-reload
       - screensaver
+      - sequence
+      - delay
       - toast?
     - Redesign services to target devices
   - frontend editor for popup cards
@@ -48,12 +51,14 @@ import pjson from "../../package.json";
   - Media_seek
   - Screensavers
   */
-export class BrowserMod extends PopupMixin(
-  BrowserStateMixin(
-    CameraMixin(
-      MediaPlayerMixin(
-        ScreenSaverMixin(
-          FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+export class BrowserMod extends ServicesMixin(
+  PopupMixin(
+    BrowserStateMixin(
+      CameraMixin(
+        MediaPlayerMixin(
+          ScreenSaverMixin(
+            FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+          )
         )
       )
     )
