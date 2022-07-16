@@ -821,12 +821,22 @@ const t={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},e
 class BrowserModPopup extends s {
     closeDialog() {
         this.open = false;
+        clearInterval(this._timeoutTimer);
     }
     openDialog() {
         this.open = true;
+        if (this.timeout) {
+            this.timeoutStart = new Date().getTime();
+            this._timeoutTimer = setInterval(() => {
+                const ellapsed = new Date().getTime() - this.timeoutStart;
+                const progress = (ellapsed / this.timeout) * 100;
+                this.style.setProperty("--progress", `${progress}%`);
+                if (ellapsed >= this.timeout)
+                    this._timeout();
+            }, 10);
+        }
     }
-    async setupDialog(title, content, { primary_action = undefined, secondary_action = undefined, dismissable = true, }) {
-        this.dismissable = dismissable;
+    async setupDialog(title, content, { primary_action = undefined, secondary_action = undefined, dismissable = true, timeout = undefined, callbacks = undefined, } = {}) {
         this.title = title;
         if (content && typeof content === "object") {
             // Create a card from config in content
@@ -841,26 +851,38 @@ class BrowserModPopup extends s {
             // Basic HTML content
             this.content = o(content);
         }
-        if (primary_action) {
-            this.primary_action = primary_action;
-            this.secondary_action = secondary_action;
-            this.actions = "";
-        }
-        else {
-            this.primary_action = undefined;
-            this.secondary_action = undefined;
-            this.actions = undefined;
-        }
+        this.primary_action = primary_action;
+        this.secondary_action = secondary_action;
+        this.actions = primary_action === undefined ? undefined : "";
+        this.dismissable = dismissable;
+        this.timeout = timeout;
+        this.callbacks = callbacks;
     }
-    _primary_clicked() {
+    _primary() {
+        var _a, _b, _c;
+        if ((_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss)
+            this.callbacks.dismiss = undefined;
+        this.closeDialog();
+        (_c = (_b = this.callbacks) === null || _b === void 0 ? void 0 : _b.primary_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+    }
+    _secondary() {
+        var _a, _b, _c;
+        if ((_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss)
+            this.callbacks.dismiss = undefined;
+        this.closeDialog();
+        (_c = (_b = this.callbacks) === null || _b === void 0 ? void 0 : _b.secondary_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+    }
+    _dismiss() {
         var _a, _b;
         this.closeDialog();
-        (_b = (_a = this.primary_action) === null || _a === void 0 ? void 0 : _a.callback) === null || _b === void 0 ? void 0 : _b.call(_a);
+        (_b = (_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss) === null || _b === void 0 ? void 0 : _b.call(_a);
     }
-    _secondary_clicked() {
-        var _a, _b;
+    _timeout() {
+        var _a, _b, _c;
+        if ((_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss)
+            this.callbacks.dismiss = undefined;
         this.closeDialog();
-        (_b = (_a = this.secondary_action) === null || _a === void 0 ? void 0 : _a.callback) === null || _b === void 0 ? void 0 : _b.call(_a);
+        (_c = (_b = this.callbacks) === null || _b === void 0 ? void 0 : _b.timeout) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
     render() {
         if (!this.open)
@@ -868,12 +890,15 @@ class BrowserModPopup extends s {
         return $ `
       <ha-dialog
         open
-        @closed=${this.closeDialog}
+        @closed=${this._dismiss}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
-        .scrimClickAction=${this.dismissable ? undefined : ""}
-        .escapeKeyAction=${this.dismissable ? undefined : ""}
+        .scrimClickAction=${this.dismissable ? this._dismiss : ""}
+        .escapeKeyAction=${this.dismissable ? this._dismiss : ""}
       >
+        ${this.timeout
+            ? $ ` <div slot="heading" class="progress"></div> `
+            : ""}
         ${this.title
             ? $ `
               <app-toolbar slot="heading">
@@ -895,8 +920,8 @@ class BrowserModPopup extends s {
             ? $ `
               <mwc-button
                 slot="primaryAction"
-                .label=${this.primary_action.label}
-                @click=${this._primary_clicked}
+                .label=${this.primary_action}
+                @click=${this._primary}
               ></mwc-button>
             `
             : ""}
@@ -904,8 +929,8 @@ class BrowserModPopup extends s {
             ? $ `
               <mwc-button
                 slot="secondaryAction"
-                .label=${this.secondary_action.label}
-                @click=${this._secondary_clicked}
+                .label=${this.secondary_action}
+                @click=${this._secondary}
               ></mwc-button>
             `
             : ""}
@@ -929,6 +954,27 @@ class BrowserModPopup extends s {
           var(--card-background-color, white)
         );
       }
+      :host([wide]) ha-dialog {
+        --mdc-dialog-max-width: 90vw;
+      }
+      :host([fullscreen]) ha-dialog {
+        --mdc-dialog-min-width: 100vw;
+        --mdc-dialog-max-width: 100vw;
+        --mdc-dialog-min-height: 100%;
+        --mdc-dialog-max-height: 100%;
+        --mdc-shape-medium: 0px;
+        --vertial-align-dialog: flex-end;
+      }
+      .progress::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: calc(100% - var(--progress, 60%));
+        top: 0;
+        height: 2px;
+        background: var(--primary-color);
+        z-index: 10;
+      }
 
       app-toolbar {
         flex-shrink: 0;
@@ -946,15 +992,33 @@ class BrowserModPopup extends s {
         text-overflow: ellipsis;
       }
       .content {
+        --padding-x: 24px;
+        --padding-y: 20px;
         margin: -20px -24px;
-        padding: 20px 24px;
+        padding: var(--padding-y) var(--padding-y);
+        --header-height: 64px;
+        --footer-height: 0px;
+      }
+      .content:first-child {
+        --header-height: 0px;
       }
 
       :host([card]) .content {
-        padding: 0;
+        --padding-x: 0px;
+        --padding-y: 0px;
       }
       :host([actions]) .content {
         border-bottom: 1px solid var(--divider-color);
+        --footer-height: 54px;
+      }
+      :host([wide]) .content {
+        width: calc(90vw - 2 * var(--padding-x));
+      }
+      :host([fullscreen]) .content {
+        height: calc(
+          100vh - var(--header-height) - var(--footer-height) - 2 *
+            var(--padding-y)
+        );
       }
 
       @media all and (max-width: 450px), all and (max-height: 500px) {
@@ -1086,8 +1150,38 @@ var pjson = {
 /*
   TODO:
   - Popups
+    X Basic popups
+    - Card-mod integration
+    X Timeout
+    X Fullscreen
+  - Information about interaction requirement
+  - Information about fullykiosk
   - Commands
+    - Framework
+    - ll-custom handling
+    - Commands
+      - popup
+      - close_popup
+      - more-info
+      - navigate
+      - lovelace-reload
+      - window-reload
+      - screensaver
+      - toast?
+    - Redesign services to target devices
+  - frontend editor for popup cards
+    - also screensavers
   - Tweaks
+    - Save sidebar
+    - Save sidebar per user
+    - Kiosk mode
+    - Kiosk mode per user
+    - Favicon templates
+    - Title templates
+    - Quickbar tweaks (ctrl+enter)?
+  - Video player?
+  - Media_seek
+  - Screensavers
   */
 class BrowserMod extends PopupMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))))))) {
     constructor() {

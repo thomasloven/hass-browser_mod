@@ -12,13 +12,27 @@ class BrowserModPopup extends LitElement {
   @property() primary_action;
   @property() secondary_action;
   @property() dismissable;
+  callbacks;
+  timeout;
+  timeoutStart;
+  _timeoutTimer;
 
   closeDialog() {
     this.open = false;
+    clearInterval(this._timeoutTimer);
   }
 
   openDialog() {
     this.open = true;
+    if (this.timeout) {
+      this.timeoutStart = new Date().getTime();
+      this._timeoutTimer = setInterval(() => {
+        const ellapsed = new Date().getTime() - this.timeoutStart;
+        const progress = (ellapsed / this.timeout) * 100;
+        this.style.setProperty("--progress", `${progress}%`);
+        if (ellapsed >= this.timeout) this._timeout();
+      }, 10);
+    }
   }
 
   async setupDialog(
@@ -28,9 +42,10 @@ class BrowserModPopup extends LitElement {
       primary_action = undefined,
       secondary_action = undefined,
       dismissable = true,
-    }
+      timeout = undefined,
+      callbacks = undefined,
+    } = {}
   ) {
-    this.dismissable = dismissable;
     this.title = title;
     if (content && typeof content === "object") {
       // Create a card from config in content
@@ -44,26 +59,34 @@ class BrowserModPopup extends LitElement {
       // Basic HTML content
       this.content = unsafeHTML(content);
     }
-    if (primary_action) {
-      this.primary_action = primary_action;
-      this.secondary_action = secondary_action;
-      this.actions = "";
-    } else {
-      this.primary_action = undefined;
-      this.secondary_action = undefined;
-      this.actions = undefined;
-    }
+
+    this.primary_action = primary_action;
+    this.secondary_action = secondary_action;
+    this.actions = primary_action === undefined ? undefined : "";
+
+    this.dismissable = dismissable;
+    this.timeout = timeout;
+    this.callbacks = callbacks;
   }
 
-  _primary_clicked() {
+  _primary() {
+    if (this.callbacks?.dismiss) this.callbacks.dismiss = undefined;
     this.closeDialog();
-    const eval2 = eval;
-    this.primary_action?.callback?.();
+    this.callbacks?.primary_action?.();
   }
-  _secondary_clicked() {
+  _secondary() {
+    if (this.callbacks?.dismiss) this.callbacks.dismiss = undefined;
     this.closeDialog();
-    const eval2 = eval;
-    this.secondary_action?.callback?.();
+    this.callbacks?.secondary_action?.();
+  }
+  _dismiss() {
+    this.closeDialog();
+    this.callbacks?.dismiss?.();
+  }
+  _timeout() {
+    if (this.callbacks?.dismiss) this.callbacks.dismiss = undefined;
+    this.closeDialog();
+    this.callbacks?.timeout?.();
   }
 
   render() {
@@ -72,12 +95,15 @@ class BrowserModPopup extends LitElement {
     return html`
       <ha-dialog
         open
-        @closed=${this.closeDialog}
+        @closed=${this._dismiss}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
-        .scrimClickAction=${this.dismissable ? undefined : ""}
-        .escapeKeyAction=${this.dismissable ? undefined : ""}
+        .scrimClickAction=${this.dismissable ? this._dismiss : ""}
+        .escapeKeyAction=${this.dismissable ? this._dismiss : ""}
       >
+        ${this.timeout
+          ? html` <div slot="heading" class="progress"></div> `
+          : ""}
         ${this.title
           ? html`
               <app-toolbar slot="heading">
@@ -99,8 +125,8 @@ class BrowserModPopup extends LitElement {
           ? html`
               <mwc-button
                 slot="primaryAction"
-                .label=${this.primary_action.label}
-                @click=${this._primary_clicked}
+                .label=${this.primary_action}
+                @click=${this._primary}
               ></mwc-button>
             `
           : ""}
@@ -108,8 +134,8 @@ class BrowserModPopup extends LitElement {
           ? html`
               <mwc-button
                 slot="secondaryAction"
-                .label=${this.secondary_action.label}
-                @click=${this._secondary_clicked}
+                .label=${this.secondary_action}
+                @click=${this._secondary}
               ></mwc-button>
             `
           : ""}
@@ -134,6 +160,27 @@ class BrowserModPopup extends LitElement {
           var(--card-background-color, white)
         );
       }
+      :host([wide]) ha-dialog {
+        --mdc-dialog-max-width: 90vw;
+      }
+      :host([fullscreen]) ha-dialog {
+        --mdc-dialog-min-width: 100vw;
+        --mdc-dialog-max-width: 100vw;
+        --mdc-dialog-min-height: 100%;
+        --mdc-dialog-max-height: 100%;
+        --mdc-shape-medium: 0px;
+        --vertial-align-dialog: flex-end;
+      }
+      .progress::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: calc(100% - var(--progress, 60%));
+        top: 0;
+        height: 2px;
+        background: var(--primary-color);
+        z-index: 10;
+      }
 
       app-toolbar {
         flex-shrink: 0;
@@ -151,15 +198,33 @@ class BrowserModPopup extends LitElement {
         text-overflow: ellipsis;
       }
       .content {
+        --padding-x: 24px;
+        --padding-y: 20px;
         margin: -20px -24px;
-        padding: 20px 24px;
+        padding: var(--padding-y) var(--padding-y);
+        --header-height: 64px;
+        --footer-height: 0px;
+      }
+      .content:first-child {
+        --header-height: 0px;
       }
 
       :host([card]) .content {
-        padding: 0;
+        --padding-x: 0px;
+        --padding-y: 0px;
       }
       :host([actions]) .content {
         border-bottom: 1px solid var(--divider-color);
+        --footer-height: 54px;
+      }
+      :host([wide]) .content {
+        width: calc(90vw - 2 * var(--padding-x));
+      }
+      :host([fullscreen]) .content {
+        height: calc(
+          100vh - var(--header-height) - var(--footer-height) - 2 *
+            var(--padding-y)
+        );
       }
 
       @media all and (max-width: 450px), all and (max-height: 500px) {

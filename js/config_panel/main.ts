@@ -41,13 +41,10 @@ loadDevTools().then(() => {
         "Unregister device",
         `Are you sure you want to unregister device ${deviceID}?`,
         {
-          dismissable: false,
-          primary_action: {
-            label: "Yes",
-            callback: unregisterCallback,
-          },
-          secondary_action: {
-            label: "No",
+          primary_action: "Yes",
+          secondary_action: "No",
+          callbacks: {
+            primary_action: unregisterCallback,
           },
         }
       );

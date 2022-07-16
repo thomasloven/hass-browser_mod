@@ -15,8 +15,38 @@ import pjson from "../../package.json";
 /*
   TODO:
   - Popups
+    X Basic popups
+    - Card-mod integration
+    X Timeout
+    X Fullscreen
+  - Information about interaction requirement
+  - Information about fullykiosk
   - Commands
+    - Framework
+    - ll-custom handling
+    - Commands
+      - popup
+      - close_popup
+      - more-info
+      - navigate
+      - lovelace-reload
+      - window-reload
+      - screensaver
+      - toast?
+    - Redesign services to target devices
+  - frontend editor for popup cards
+    - also screensavers
   - Tweaks
+    - Save sidebar
+    - Save sidebar per user
+    - Kiosk mode
+    - Kiosk mode per user
+    - Favicon templates
+    - Title templates
+    - Quickbar tweaks (ctrl+enter)?
+  - Video player?
+  - Media_seek
+  - Screensavers
   */
 export class BrowserMod extends PopupMixin(
   BrowserStateMixin(
