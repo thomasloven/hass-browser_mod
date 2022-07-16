@@ -1,6 +1,3 @@
-import { fireEvent } from "card-tools/src/event";
-import { ha_element } from "card-tools/src/hass";
-
 export const BrowserStateMixin = (SuperClass) => {
   return class BrowserStateMixinClass extends SuperClass {
     constructor() {
@@ -41,10 +38,10 @@ export const BrowserStateMixin = (SuperClass) => {
       update();
     }
 
-    do_navigate(path) {
-      if (!path) return;
-      history.pushState(null, "", path);
-      fireEvent("location-changed", {}, ha_element());
-    }
+    // do_navigate(path) {
+    //   if (!path) return;
+    //   history.pushState(null, "", path);
+    //   fireEvent("location-changed", {}, ha_element());
+    // }
   };
 };

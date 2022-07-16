@@ -33,5 +33,6 @@ declare global {
     fully?: FullyKiosk;
     hassConnection?: Promise<any>;
     customCards?: [{}?];
+    loadCardHelpers?: { () };
   }
 }

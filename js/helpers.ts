@@ -1,4 +1,4 @@
-const TIMEOUT_ERROR = "SLECTTREE-TIMEOUT";
+const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
 
 async function _await_el(el) {
   if (el.localName?.includes("-"))
@@ -36,7 +36,7 @@ export async function selectTree(root, path, all = false, timeout = 10000) {
   });
 }
 
-async function _hass_base_el() {
+export async function hass_base_el() {
   await Promise.race([
     customElements.whenDefined("home-assistant"),
     customElements.whenDefined("hc-main"),
@@ -52,12 +52,26 @@ async function _hass_base_el() {
 }
 
 export async function hass() {
-  const base: any = await _hass_base_el();
+  const base: any = await hass_base_el();
   while (!base.hass) await new Promise((r) => window.setTimeout(r, 100));
   return base.hass;
 }
 
 export async function provideHass(el) {
-  const base: any = await _hass_base_el();
+  const base: any = await hass_base_el();
   base.provideHass(el);
 }
+
+export const loadLoadCardHelpers = async () => {
+  if (window.loadCardHelpers !== undefined) return;
+
+  await customElements.whenDefined("partial-panel-resolver");
+  const ppResolver = document.createElement("partial-panel-resolver");
+  const routes = (ppResolver as any).getRoutes([
+    {
+      component_name: "lovelace",
+      url_path: "a",
+    },
+  ]);
+  await routes?.routes?.a?.load?.();
+};

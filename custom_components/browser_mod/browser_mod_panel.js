@@ -65,6 +65,7 @@ const loadDevTools = async () => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     if (customElements.get("ha-config-dashboard"))
         return;
+    await customElements.whenDefined("partial-panel-resolver");
     const ppResolver = document.createElement("partial-panel-resolver");
     const routes = ppResolver.getRoutes([
         {
@@ -73,6 +74,7 @@ const loadDevTools = async () => {
         },
     ]);
     await ((_c = (_b = (_a = routes === null || routes === void 0 ? void 0 : routes.routes) === null || _a === void 0 ? void 0 : _a.a) === null || _b === void 0 ? void 0 : _b.load) === null || _c === void 0 ? void 0 : _c.call(_b));
+    await customElements.whenDefined("ha-panel-config");
     const configRouter = document.createElement("ha-panel-config");
     await ((_g = (_f = (_e = (_d = configRouter === null || configRouter === void 0 ? void 0 : configRouter.routerOptions) === null || _d === void 0 ? void 0 : _d.routes) === null || _e === void 0 ? void 0 : _e.dashboard) === null || _f === void 0 ? void 0 : _f.load) === null || _g === void 0 ? void 0 : _g.call(_f)); // Load ha-config-dashboard
     await ((_l = (_k = (_j = (_h = configRouter === null || configRouter === void 0 ? void 0 : configRouter.routerOptions) === null || _h === void 0 ? void 0 : _h.routes) === null || _j === void 0 ? void 0 : _j.cloud) === null || _k === void 0 ? void 0 : _k.load) === null || _l === void 0 ? void 0 : _l.call(_k)); // Load ha-settings-row
@@ -96,13 +98,29 @@ loadDevTools().then(() => {
         }
         unregister_device(ev) {
             const deviceID = ev.currentTarget.deviceID;
-            if (deviceID === window.browser_mod.deviceID)
-                window.browser_mod.registered = false;
-            else
-                window.browser_mod.connection.sendMessage({
-                    type: "browser_mod/unregister",
-                    deviceID,
-                });
+            const unregisterCallback = () => {
+                console.log(deviceID, window.browser_mod.deviceID);
+                if (deviceID === window.browser_mod.deviceID) {
+                    console.log("Unregister self");
+                    window.browser_mod.registered = false;
+                }
+                else {
+                    window.browser_mod.connection.sendMessage({
+                        type: "browser_mod/unregister",
+                        deviceID,
+                    });
+                }
+            };
+            window.browser_mod.showPopup("Unregister device", `Are you sure you want to unregister device ${deviceID}?`, {
+                dismissable: false,
+                primary_action: {
+                    label: "Yes",
+                    callback: unregisterCallback,
+                },
+                secondary_action: {
+                    label: "No",
+                },
+            });
         }
         firstUpdated() {
             window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());

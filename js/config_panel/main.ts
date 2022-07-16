@@ -23,13 +23,34 @@ loadDevTools().then(() => {
 
     unregister_device(ev) {
       const deviceID = ev.currentTarget.deviceID;
-      if (deviceID === window.browser_mod.deviceID)
-        window.browser_mod.registered = false;
-      else
-        window.browser_mod.connection.sendMessage({
-          type: "browser_mod/unregister",
-          deviceID,
-        });
+
+      const unregisterCallback = () => {
+        console.log(deviceID, window.browser_mod.deviceID);
+        if (deviceID === window.browser_mod.deviceID) {
+          console.log("Unregister self");
+          window.browser_mod.registered = false;
+        } else {
+          window.browser_mod.connection.sendMessage({
+            type: "browser_mod/unregister",
+            deviceID,
+          });
+        }
+      };
+
+      window.browser_mod.showPopup(
+        "Unregister device",
+        `Are you sure you want to unregister device ${deviceID}?`,
+        {
+          dismissable: false,
+          primary_action: {
+            label: "Yes",
+            callback: unregisterCallback,
+          },
+          secondary_action: {
+            label: "No",
+          },
+        }
+      );
     }
 
     firstUpdated() {

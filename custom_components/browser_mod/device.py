@@ -112,7 +112,7 @@ class BrowserModDevice:
         dr = device_registry.async_get(hass)
         er = entity_registry.async_get(hass)
 
-        for e in self.entities.items():
+        for e in self.entities.values():
             er.async_remove(e.entity_id)
 
         self.entities = {}
@@ -137,5 +137,5 @@ def getDevice(hass, deviceID, *, create=True):
 def deleteDevice(hass, deviceID):
     devices = hass.data[DOMAIN]["devices"]
     if deviceID in devices:
-        devices["deviceID"].delete()
-        del devices["deviceID"]
+        devices[deviceID].delete(hass)
+        del devices[deviceID]

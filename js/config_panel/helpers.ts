@@ -2,6 +2,8 @@
 // Also provides ha-settings-row
 export const loadDevTools = async () => {
   if (customElements.get("ha-config-dashboard")) return;
+
+  await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
   const routes = (ppResolver as any).getRoutes([
     {
@@ -10,6 +12,7 @@ export const loadDevTools = async () => {
     },
   ]);
   await routes?.routes?.a?.load?.();
+  await customElements.whenDefined("ha-panel-config");
   const configRouter = document.createElement("ha-panel-config");
   await (configRouter as any)?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
   await (configRouter as any)?.routerOptions?.routes?.cloud?.load?.(); // Load ha-settings-row
