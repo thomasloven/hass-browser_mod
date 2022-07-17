@@ -9,10 +9,10 @@ class BrowserModPopup extends LitElement {
   @property() title;
   @property({ reflect: true }) actions;
   @property({ reflect: true }) card;
-  @property() primary_action;
-  @property() secondary_action;
+  @property() right_button;
+  @property() left_button;
   @property() dismissable;
-  callbacks;
+  _actions;
   timeout;
   _timeoutStart;
   _timeoutTimer;
@@ -39,11 +39,14 @@ class BrowserModPopup extends LitElement {
     title,
     content,
     {
-      primary_action = undefined,
-      secondary_action = undefined,
+      right_button = undefined,
+      right_button_action = undefined,
+      left_button = undefined,
+      left_button_action = undefined,
       dismissable = true,
+      dismiss_action = undefined,
       timeout = undefined,
-      callbacks = undefined,
+      timeout_action = undefined,
     } = {}
   ) {
     this.title = title;
@@ -57,36 +60,42 @@ class BrowserModPopup extends LitElement {
       this.content = card;
     } else {
       // Basic HTML content
+      this.card = undefined;
       this.content = unsafeHTML(content);
     }
 
-    this.primary_action = primary_action;
-    this.secondary_action = secondary_action;
-    this.actions = primary_action === undefined ? undefined : "";
+    this.right_button = right_button;
+    this.left_button = left_button;
+    this.actions = right_button === undefined ? undefined : "";
 
     this.dismissable = dismissable;
     this.timeout = timeout;
-    this.callbacks = callbacks;
+    this._actions = {
+      right_button_action,
+      left_button_action,
+      dismiss_action,
+      timeout_action,
+    };
   }
 
   _primary() {
-    if (this.callbacks?.dismiss) this.callbacks.dismiss = undefined;
+    if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     this.closeDialog();
-    this.callbacks?.primary_action?.();
+    this._actions?.right_button_action?.();
   }
   _secondary() {
-    if (this.callbacks?.dismiss) this.callbacks.dismiss = undefined;
+    if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     this.closeDialog();
-    this.callbacks?.secondary_action?.();
+    this._actions?.left_button_action?.();
   }
   _dismiss() {
     this.closeDialog();
-    this.callbacks?.dismiss?.();
+    this._actions?.dismiss_action?.();
   }
   _timeout() {
-    if (this.callbacks?.dismiss) this.callbacks.dismiss = undefined;
+    if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     this.closeDialog();
-    this.callbacks?.timeout?.();
+    this._actions?.timeout_action?.();
   }
 
   render() {
@@ -121,20 +130,20 @@ class BrowserModPopup extends LitElement {
 
         <div class="content">${this.content}</div>
 
-        ${this.primary_action !== undefined
+        ${this.right_button !== undefined
           ? html`
               <mwc-button
                 slot="primaryAction"
-                .label=${this.primary_action}
+                .label=${this.right_button}
                 @click=${this._primary}
               ></mwc-button>
             `
           : ""}
-        ${this.secondary_action !== undefined
+        ${this.left_button !== undefined
           ? html`
               <mwc-button
                 slot="secondaryAction"
-                .label=${this.secondary_action}
+                .label=${this.left_button}
                 @click=${this._secondary}
               ></mwc-button>
             `

@@ -15,15 +15,20 @@ import pjson from "../../package.json";
 
 /*
   TODO:
+  - Fix nomenclature
+    - Command -> Service
+    - Device -> Browser
   - Popups
     X Basic popups
     - Card-mod integration
     X Timeout
     X Fullscreen
+  - Motion/occupancy tracker
   - Information about interaction requirement
   - Information about fullykiosk
   - Commands
-    - Framework
+    - Rename browser_mod commands to browser_mod services
+    x Framework
     - ll-custom handling
     - Commands
       x popup
@@ -33,8 +38,8 @@ import pjson from "../../package.json";
       - lovelace-reload
       - window-reload
       - screensaver
-      - sequence
-      - delay
+      x sequence
+      x delay
       - toast?
     - Redesign services to target devices
   - frontend editor for popup cards

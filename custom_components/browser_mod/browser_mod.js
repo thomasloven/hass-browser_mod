@@ -842,16 +842,14 @@ const ServicesMixin = (SuperClass) => {
             data:
               [title: <string>]
               [content: <string | Lovelace Card Configuration>]
-              [primary_action: <string>]
-              [secondary_action: <string>]
+              [right_button: <string>]
+              [right_button_action: <service call>]
+              [left_button: <string>]
+              [left_button_action: <service call>]
               [dismissable: <TRUE/false>]
+              [dismiss_action: <service call>]
               [timeout: <number>]
-              [callbacks:
-                [primary_action: <service call>]
-                [secondary_action: <service call>]
-                [timeout: <service call>]
-                [dismissed: <service call>]
-              ]
+              [timeout_action: <service call>]
     
             Close popup
               service: browser_mod.close_popup
@@ -861,18 +859,37 @@ const ServicesMixin = (SuperClass) => {
               data:
                 message: <string>
         */
-        _service_action({ service, data }) {
+        constructor() {
+            super();
+            const cmds = ["sequence", "delay", "popup", "close_popup"];
+            for (const service of cmds) {
+                this.addEventListener(`command-${service}`, (ev) => {
+                    this._service_action({
+                        service,
+                        data: ev.detail,
+                    });
+                });
+            }
+        }
+        async _service_action({ service, data }) {
             let _service = service;
             if (!_service.startsWith("browser_mod.") && _service.includes(".")) ;
             if (_service.startsWith("browser_mod.")) {
                 _service = _service.substring(12);
             }
             switch (_service) {
+                case "sequence":
+                    for (const a of data.sequence)
+                        await this._service_action(a);
+                    break;
+                case "delay":
+                    await new Promise((resolve) => setTimeout(resolve, data.time));
+                    break;
                 case "popup":
                     const { title, content } = data, d = __rest(data, ["title", "content"]);
-                    if (d.callbacks) {
-                        for (const [k, v] of Object.entries(data.callbacks)) {
-                            d.callbacks[k] = () => this._service_action(v);
+                    for (const [k, v] of Object.entries(d)) {
+                        if (k.endsWith("_action")) {
+                            d[k] = () => this._service_action(v);
                         }
                     }
                     this.showPopup(title, content, d);
@@ -919,7 +936,7 @@ class BrowserModPopup extends s {
             }, 10);
         }
     }
-    async setupDialog(title, content, { primary_action = undefined, secondary_action = undefined, dismissable = true, timeout = undefined, callbacks = undefined, } = {}) {
+    async setupDialog(title, content, { right_button = undefined, right_button_action = undefined, left_button = undefined, left_button_action = undefined, dismissable = true, dismiss_action = undefined, timeout = undefined, timeout_action = undefined, } = {}) {
         this.title = title;
         if (content && typeof content === "object") {
             // Create a card from config in content
@@ -932,40 +949,46 @@ class BrowserModPopup extends s {
         }
         else {
             // Basic HTML content
+            this.card = undefined;
             this.content = o(content);
         }
-        this.primary_action = primary_action;
-        this.secondary_action = secondary_action;
-        this.actions = primary_action === undefined ? undefined : "";
+        this.right_button = right_button;
+        this.left_button = left_button;
+        this.actions = right_button === undefined ? undefined : "";
         this.dismissable = dismissable;
         this.timeout = timeout;
-        this.callbacks = callbacks;
+        this._actions = {
+            right_button_action,
+            left_button_action,
+            dismiss_action,
+            timeout_action,
+        };
     }
     _primary() {
         var _a, _b, _c;
-        if ((_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss)
-            this.callbacks.dismiss = undefined;
+        if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
+            this._actions.dismiss_action = undefined;
         this.closeDialog();
-        (_c = (_b = this.callbacks) === null || _b === void 0 ? void 0 : _b.primary_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.right_button_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
     _secondary() {
         var _a, _b, _c;
-        if ((_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss)
-            this.callbacks.dismiss = undefined;
+        if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
+            this._actions.dismiss_action = undefined;
         this.closeDialog();
-        (_c = (_b = this.callbacks) === null || _b === void 0 ? void 0 : _b.secondary_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.left_button_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
     _dismiss() {
         var _a, _b;
         this.closeDialog();
-        (_b = (_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss) === null || _b === void 0 ? void 0 : _b.call(_a);
+        (_b = (_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action) === null || _b === void 0 ? void 0 : _b.call(_a);
     }
     _timeout() {
         var _a, _b, _c;
-        if ((_a = this.callbacks) === null || _a === void 0 ? void 0 : _a.dismiss)
-            this.callbacks.dismiss = undefined;
+        if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
+            this._actions.dismiss_action = undefined;
         this.closeDialog();
-        (_c = (_b = this.callbacks) === null || _b === void 0 ? void 0 : _b.timeout) === null || _c === void 0 ? void 0 : _c.call(_b);
+        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.timeout_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
     render() {
         if (!this.open)
@@ -999,20 +1022,20 @@ class BrowserModPopup extends s {
 
         <div class="content">${this.content}</div>
 
-        ${this.primary_action !== undefined
+        ${this.right_button !== undefined
             ? $ `
               <mwc-button
                 slot="primaryAction"
-                .label=${this.primary_action}
+                .label=${this.right_button}
                 @click=${this._primary}
               ></mwc-button>
             `
             : ""}
-        ${this.secondary_action !== undefined
+        ${this.left_button !== undefined
             ? $ `
               <mwc-button
                 slot="secondaryAction"
-                .label=${this.secondary_action}
+                .label=${this.left_button}
                 @click=${this._secondary}
               ></mwc-button>
             `
@@ -1134,10 +1157,10 @@ __decorate([
 ], BrowserModPopup.prototype, "card", void 0);
 __decorate([
     e$2()
-], BrowserModPopup.prototype, "primary_action", void 0);
+], BrowserModPopup.prototype, "right_button", void 0);
 __decorate([
     e$2()
-], BrowserModPopup.prototype, "secondary_action", void 0);
+], BrowserModPopup.prototype, "left_button", void 0);
 __decorate([
     e$2()
 ], BrowserModPopup.prototype, "dismissable", void 0);
@@ -1232,15 +1255,20 @@ var pjson = {
 
 /*
   TODO:
+  - Fix nomenclature
+    - Command -> Service
+    - Device -> Browser
   - Popups
     X Basic popups
     - Card-mod integration
     X Timeout
     X Fullscreen
+  - Motion/occupancy tracker
   - Information about interaction requirement
   - Information about fullykiosk
   - Commands
-    - Framework
+    - Rename browser_mod commands to browser_mod services
+    x Framework
     - ll-custom handling
     - Commands
       x popup
@@ -1250,8 +1278,8 @@ var pjson = {
       - lovelace-reload
       - window-reload
       - screensaver
-      - sequence
-      - delay
+      x sequence
+      x delay
       - toast?
     - Redesign services to target devices
   - frontend editor for popup cards

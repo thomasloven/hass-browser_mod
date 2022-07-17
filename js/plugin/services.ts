@@ -23,16 +23,14 @@ export const ServicesMixin = (SuperClass) => {
         data:
           [title: <string>]
           [content: <string | Lovelace Card Configuration>]
-          [primary_action: <string>]
-          [secondary_action: <string>]
+          [right_button: <string>]
+          [right_button_action: <service call>]
+          [left_button: <string>]
+          [left_button_action: <service call>]
           [dismissable: <TRUE/false>]
+          [dismiss_action: <service call>]
           [timeout: <number>]
-          [callbacks:
-            [primary_action: <service call>]
-            [secondary_action: <service call>]
-            [timeout: <service call>]
-            [dismissed: <service call>]
-          ]
+          [timeout_action: <service call>]
 
         Close popup
           service: browser_mod.close_popup
@@ -43,7 +41,20 @@ export const ServicesMixin = (SuperClass) => {
             message: <string>
     */
 
-    _service_action({ service, data }) {
+    constructor() {
+      super();
+      const cmds = ["sequence", "delay", "popup", "close_popup"];
+      for (const service of cmds) {
+        this.addEventListener(`command-${service}`, (ev) => {
+          this._service_action({
+            service,
+            data: ev.detail,
+          });
+        });
+      }
+    }
+
+    async _service_action({ service, data }) {
       let _service: String = service;
       if (!_service.startsWith("browser_mod.") && _service.includes(".")) {
         // CALL HOME ASSISTANT SERVICE
@@ -54,11 +65,18 @@ export const ServicesMixin = (SuperClass) => {
       }
 
       switch (_service) {
+        case "sequence":
+          for (const a of data.sequence) await this._service_action(a);
+          break;
+        case "delay":
+          await new Promise((resolve) => setTimeout(resolve, data.time));
+          break;
+
         case "popup":
           const { title, content, ...d } = data;
-          if (d.callbacks) {
-            for (const [k, v] of Object.entries(data.callbacks)) {
-              d.callbacks[k] = () => this._service_action(v as any);
+          for (const [k, v] of Object.entries(d)) {
+            if (k.endsWith("_action")) {
+              d[k] = () => this._service_action(v as any);
             }
           }
           this.showPopup(title, content, d);
