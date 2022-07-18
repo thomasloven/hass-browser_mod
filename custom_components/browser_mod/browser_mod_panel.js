@@ -127,8 +127,76 @@ loadDevTools().then(() => {
         firstUpdated() {
             window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
         }
+        getFullySettings() {
+            if (!window.browser_mod.fully)
+                return null;
+            const retval = [];
+            const wcs = [];
+            // Web Content Settings
+            // Autoplay Videos
+            if (window.fully.getBooleanSetting("autoplayVideos") !== "true")
+                wcs.push($ `<li>Autoplay Videos</li>`);
+            // Autoplay Audio
+            if (window.fully.getBooleanSetting("autoplayAudio") !== "true")
+                wcs.push($ `<li>Autoplay Audio</li>`);
+            // Enable Webcam Access (PLUS)
+            if (window.fully.getBooleanSetting("webcamAccess") !== "true")
+                wcs.push($ `<li>Enable Webcam Access (PLUS)</li>`);
+            if (wcs.length !== 0) {
+                retval.push($ `<li>Web Content Settings</li>
+          <ul>
+            ${wcs}
+          </ul>`);
+            }
+            // Advanced Web Settings
+            // Enable JavaScript Interface (PLUS)
+            if (window.fully.getBooleanSetting("websiteIntegration") !== "true")
+                retval.push($ `<li>Advanced Web Settings</li>
+          <ul>
+            <li>Enable JavaScript Interface (PLUS)</li>
+          </ul>`);
+            // Device Management
+            // Keep Screen On
+            if (window.fully.getBooleanSetting("keepScreenOn") !== "true")
+                retval.push($ `<li>Device Management</li>
+          <ul>
+            <li>Keep Screen On</li>
+          </ul>`);
+            // Power Settings
+            // Prevent from Sleep while Screen Off
+            if (window.fully.getBooleanSetting("preventSleepWhileScreenOff") !== "true")
+                retval.push($ `<li>Power Settings</li>
+          <ul>
+            <li>Prevent from Sleep while Screen Off</li>
+          </ul>`);
+            const md = [];
+            // Motion Detection (PLUS)
+            // Enable Visual Motion Detection
+            if (window.fully.getBooleanSetting("motionDetection") !== "true")
+                md.push($ `<li>Enable Visual Motion Detection</li>`);
+            // Turn Screen On on Motion
+            if (window.fully.getBooleanSetting("screenOnOnMotion") !== "true")
+                md.push($ `<li>Turn Screen On on Motion</li>`);
+            // Exit Screensaver on Motion
+            if (window.fully.getBooleanSetting("stopScreensaverOnMotion") !== "true")
+                md.push($ `<li>Exit Screensaver on Motion</li>`);
+            if (md.length !== 0) {
+                retval.push($ `<li>Motion Detection (PLUS)</li>
+          <ul>
+            ${md}
+          </ul>`);
+            }
+            // Remote Administration (PLUS)
+            // Enable Remote Administration
+            if (window.fully.getBooleanSetting("remoteAdmin") !== "true")
+                retval.push($ `<li>Remote Administration (PLUS)</li>
+          <ul>
+            <li>Enable Remote Administration</li>
+          </ul>`);
+            return retval.length ? retval : null;
+        }
         render() {
-            var _a, _b, _c, _d, _e;
+            var _a, _b, _c, _d, _e, _f;
             return $ `
         <ha-app-layout>
           <app-header slot="header" fixed>
@@ -245,6 +313,15 @@ loadDevTools().then(() => {
                         anywhere on the page. This should allow Browser Mod to
                         work again.
                       </ha-alert>
+                      ${((_f = window.browser_mod) === null || _f === void 0 ? void 0 : _f.fully) && this.getFullySettings()
+                    ? $ ` <ha-alert title="FullyKiosk Browser">
+                            You are using FullyKiosk Browser. It is recommended
+                            to enable the following settings:
+                            <ul>
+                              ${this.getFullySettings()}
+                            </ul>
+                          </ha-alert>`
+                    : ""}
                     `
                 : ""}
               </div>

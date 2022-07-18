@@ -58,6 +58,84 @@ loadDevTools().then(() => {
       );
     }
 
+    getFullySettings() {
+      if (!window.browser_mod.fully) return null;
+      const retval = [];
+      const wcs = [];
+      // Web Content Settings
+      // Autoplay Videos
+      if (window.fully.getBooleanSetting("autoplayVideos") !== "true")
+        wcs.push(html`<li>Autoplay Videos</li>`);
+      // Autoplay Audio
+      if (window.fully.getBooleanSetting("autoplayAudio") !== "true")
+        wcs.push(html`<li>Autoplay Audio</li>`);
+      // Enable Webcam Access (PLUS)
+      if (window.fully.getBooleanSetting("webcamAccess") !== "true")
+        wcs.push(html`<li>Enable Webcam Access (PLUS)</li>`);
+
+      if (wcs.length !== 0) {
+        retval.push(html`<li>Web Content Settings</li>
+          <ul>
+            ${wcs}
+          </ul>`);
+      }
+
+      // Advanced Web Settings
+      // Enable JavaScript Interface (PLUS)
+      if (window.fully.getBooleanSetting("websiteIntegration") !== "true")
+        retval.push(html`<li>Advanced Web Settings</li>
+          <ul>
+            <li>Enable JavaScript Interface (PLUS)</li>
+          </ul>`);
+
+      // Device Management
+      // Keep Screen On
+      if (window.fully.getBooleanSetting("keepScreenOn") !== "true")
+        retval.push(html`<li>Device Management</li>
+          <ul>
+            <li>Keep Screen On</li>
+          </ul>`);
+
+      // Power Settings
+      // Prevent from Sleep while Screen Off
+      if (
+        window.fully.getBooleanSetting("preventSleepWhileScreenOff") !== "true"
+      )
+        retval.push(html`<li>Power Settings</li>
+          <ul>
+            <li>Prevent from Sleep while Screen Off</li>
+          </ul>`);
+
+      const md = [];
+      // Motion Detection (PLUS)
+      // Enable Visual Motion Detection
+      if (window.fully.getBooleanSetting("motionDetection") !== "true")
+        md.push(html`<li>Enable Visual Motion Detection</li>`);
+      // Turn Screen On on Motion
+      if (window.fully.getBooleanSetting("screenOnOnMotion") !== "true")
+        md.push(html`<li>Turn Screen On on Motion</li>`);
+      // Exit Screensaver on Motion
+      if (window.fully.getBooleanSetting("stopScreensaverOnMotion") !== "true")
+        md.push(html`<li>Exit Screensaver on Motion</li>`);
+
+      if (md.length !== 0) {
+        retval.push(html`<li>Motion Detection (PLUS)</li>
+          <ul>
+            ${md}
+          </ul>`);
+      }
+
+      // Remote Administration (PLUS)
+      // Enable Remote Administration
+      if (window.fully.getBooleanSetting("remoteAdmin") !== "true")
+        retval.push(html`<li>Remote Administration (PLUS)</li>
+          <ul>
+            <li>Enable Remote Administration</li>
+          </ul>`);
+
+      return retval.length ? retval : null;
+    }
+
     render() {
       return html`
         <ha-app-layout>
@@ -177,6 +255,15 @@ loadDevTools().then(() => {
                         anywhere on the page. This should allow Browser Mod to
                         work again.
                       </ha-alert>
+                      ${window.browser_mod?.fully && this.getFullySettings()
+                        ? html` <ha-alert title="FullyKiosk Browser">
+                            You are using FullyKiosk Browser. It is recommended
+                            to enable the following settings:
+                            <ul>
+                              ${this.getFullySettings()}
+                            </ul>
+                          </ha-alert>`
+                        : ""}
                     `
                   : ""}
               </div>

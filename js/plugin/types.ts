@@ -25,6 +25,8 @@ interface FullyKiosk {
 
   // Motion detection
   getCamshotJpgBase64: { (): String };
+
+  getBooleanSetting: { (key: String): String };
 }
 
 declare global {

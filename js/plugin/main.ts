@@ -25,7 +25,7 @@ import pjson from "../../package.json";
     X Fullscreen
   - Motion/occupancy tracker
   x Information about interaction requirement
-  - Information about fullykiosk
+  x Information about fullykiosk
   - Commands
     x Rename browser_mod commands to browser_mod services
     x Framework
