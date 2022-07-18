@@ -161,7 +161,7 @@ class BrowserModPopup extends LitElement {
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --justify-action-buttons: space-between;
 
-        --mdc-dialog-box-shadow: 0px 0px 0px var(--ha-card-border-width, 1px)
+        --mdc-dialog-box-shadow: 0px 0px 0px var(--ha-card-border-width, 2px)
           var(--ha-card-border-color, var(--divider-color, #e0e0e0));
         --ha-dialog-border-radius: 8px;
         --mdc-theme-surface: var(

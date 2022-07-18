@@ -15,8 +15,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class BrowserBinarySensor(BrowserModEntity, BinarySensorEntity):
-    def __init__(self, coordinator, deviceID, parameter, name):
-        super().__init__(coordinator, deviceID, name)
+    def __init__(self, coordinator, browserID, parameter, name):
+        super().__init__(coordinator, browserID, name)
         self.parameter = parameter
 
     @property

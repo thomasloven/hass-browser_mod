@@ -869,6 +869,11 @@ const ServicesMixin = (SuperClass) => {
                     });
                 });
             }
+            document.body.addEventListener("ll-custom", (ev) => {
+                if (ev.detail.browser_mod) {
+                    this._service_action(ev.detail.browser_mod);
+                }
+            });
         }
         async _service_action({ service, data }) {
             let _service = service;
@@ -1051,7 +1056,7 @@ class BrowserModPopup extends s {
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --justify-action-buttons: space-between;
 
-        --mdc-dialog-box-shadow: 0px 0px 0px var(--ha-card-border-width, 1px)
+        --mdc-dialog-box-shadow: 0px 0px 0px var(--ha-card-border-width, 2px)
           var(--ha-card-border-color, var(--divider-color, #e0e0e0));
         --ha-dialog-border-radius: 8px;
         --mdc-theme-surface: var(
@@ -1268,7 +1273,7 @@ var pjson = {
   - Commands
     x Rename browser_mod commands to browser_mod services
     x Framework
-    - ll-custom handling
+    x ll-custom handling
     - Commands
       x popup
       x close_popup
@@ -1279,8 +1284,9 @@ var pjson = {
       - screensaver
       x sequence
       x delay
+      - javascript eval
       - toast?
-    - Redesign services to target devices
+    x Redesign services to target devices
   - frontend editor for popup cards
     - also screensavers
   - Tweaks
@@ -1299,11 +1305,6 @@ class BrowserMod extends ServicesMixin(PopupMixin(BrowserStateMixin(CameraMixin(
     constructor() {
         super();
         this.connect();
-        // document.body.addEventListener("ll-custom", (ev) => {
-        //   if ((ev as CustomEvent).detail.browser_mod) {
-        //     this.msg_callback((ev as CustomEvent).detail.browser_mod);
-        //   }
-        // });
         console.info(`%cBROWSER_MOD ${pjson.version} IS INSTALLED
     %cBrowserID: ${this.browserID}`, "color: green; font-weight: bold", "");
     }

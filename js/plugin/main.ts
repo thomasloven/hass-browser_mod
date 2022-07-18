@@ -29,7 +29,7 @@ import pjson from "../../package.json";
   - Commands
     x Rename browser_mod commands to browser_mod services
     x Framework
-    - ll-custom handling
+    x ll-custom handling
     - Commands
       x popup
       x close_popup
@@ -40,8 +40,9 @@ import pjson from "../../package.json";
       - screensaver
       x sequence
       x delay
+      - javascript eval
       - toast?
-    - Redesign services to target devices
+    x Redesign services to target devices
   - frontend editor for popup cards
     - also screensavers
   - Tweaks
@@ -72,12 +73,6 @@ export class BrowserMod extends ServicesMixin(
   constructor() {
     super();
     this.connect();
-
-    // document.body.addEventListener("ll-custom", (ev) => {
-    //   if ((ev as CustomEvent).detail.browser_mod) {
-    //     this.msg_callback((ev as CustomEvent).detail.browser_mod);
-    //   }
-    // });
 
     console.info(
       `%cBROWSER_MOD ${pjson.version} IS INSTALLED

@@ -52,6 +52,12 @@ export const ServicesMixin = (SuperClass) => {
           });
         });
       }
+
+      document.body.addEventListener("ll-custom", (ev: CustomEvent) => {
+        if (ev.detail.browser_mod) {
+          this._service_action(ev.detail.browser_mod);
+        }
+      });
     }
 
     async _service_action({ service, data }) {
