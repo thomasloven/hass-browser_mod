@@ -24,10 +24,10 @@ import pjson from "../../package.json";
     X Timeout
     X Fullscreen
   - Motion/occupancy tracker
-  - Information about interaction requirement
+  x Information about interaction requirement
   - Information about fullykiosk
   - Commands
-    - Rename browser_mod commands to browser_mod services
+    x Rename browser_mod commands to browser_mod services
     x Framework
     - ll-custom handling
     - Commands

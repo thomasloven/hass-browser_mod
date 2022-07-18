@@ -9,16 +9,20 @@ loadDevTools().then(() => {
     @property() hass;
     @property() narrow;
     @property() connection;
+    @property() dirty = false;
 
     toggleRegister() {
       if (!window.browser_mod?.connected) return;
       window.browser_mod.registered = !window.browser_mod.registered;
+      this.dirty = true;
     }
     changeBrowserID(ev) {
       window.browser_mod.browserID = ev.target.value;
+      this.dirty = true;
     }
     toggleCameraEnabled() {
       window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
+      this.dirty = true;
     }
 
     unregister_browser(ev) {
@@ -41,11 +45,9 @@ loadDevTools().then(() => {
         "Unregister browser",
         `Are you sure you want to unregister browser ${browserID}?`,
         {
-          primary_action: "Yes",
-          secondary_action: "No",
-          callbacks: {
-            primary_action: unregisterCallback,
-          },
+          right_button: "Yes",
+          right_button_action: unregisterCallback,
+          left_button: "No",
         }
       );
     }
@@ -91,10 +93,14 @@ loadDevTools().then(() => {
               </h1>
               <div class="card-content">
                 <p>Settings that apply to this browser.</p>
-                <p>
-                  It is strongly recommended to refresh your browser window
-                  after any change to those settings.
-                </p>
+                ${this.dirty
+                  ? html`
+                      <ha-alert alert-type="warning">
+                        It is strongly recommended to refresh your browser
+                        window after changing any of the settings in this box.
+                      </ha-alert>
+                    `
+                  : ""}
               </div>
               <div class="card-content">
                 <ha-settings-row>
@@ -120,21 +126,63 @@ loadDevTools().then(() => {
                   ></ha-textfield>
                 </ha-settings-row>
 
-                <ha-settings-row>
-                  <span slot="heading">Enable camera</span>
-                  <span slot="description"
-                    >Get camera input from this browser (hardware
-                    dependent)</span
-                  >
-                  <ha-switch
-                    .checked=${window.browser_mod?.cameraEnabled}
-                    @change=${this.toggleCameraEnabled}
-                  ></ha-switch>
-                </ha-settings-row>
+                ${window.browser_mod?.registered
+                  ? html`
+                      ${this.hass.suspendWhenHidden
+                        ? html`<ha-alert
+                            alert-type="warning"
+                            title="Auto closing connection"
+                          >
+                            Home Assistant will close the websocket connection
+                            to the server automatically after 5 minutes of
+                            inactivity.<br /><br />
+                            While decreasing network trafic and memory usage,
+                            this may cause problems for browser_mod operation.
+                            <br /><br />
+                            If you find that some things stop working for this
+                            Browser after a time, try going to your
+                            <a
+                              href="/profile"
+                              style="text-decoration: underline; color: var(--primary-color);"
+                              >Profile Settings</a
+                            >
+                            and disabling the option
+                            "${this.hass.localize(
+                              "ui.panel.profile.suspend.header"
+                            ) || "Automatically close connection"}".
+                          </ha-alert>`
+                        : ""}
+                      <ha-settings-row>
+                        <span slot="heading">Enable camera</span>
+                        <span slot="description"
+                          >Get camera input from this browser (hardware
+                          dependent)</span
+                        >
+                        <ha-switch
+                          .checked=${window.browser_mod?.cameraEnabled}
+                          @change=${this.toggleCameraEnabled}
+                        ></ha-switch>
+                      </ha-settings-row>
+                      <ha-alert title="Interaction requirement">
+                        For security reasons many browsers require the user to
+                        interact with a webpage before allowing audio playback
+                        or video capture. This may affect the
+                        <code>media_player</code> and
+                        <code>camera</code> components of Browser Mod.
+                        <br /><br />
+
+                        If you ever see a
+                        <ha-icon icon="mdi:gesture-tap"></ha-icon> symbol at the
+                        bottom right corner of the screen, please tap or click
+                        anywhere on the page. This should allow Browser Mod to
+                        work again.
+                      </ha-alert>
+                    `
+                  : ""}
               </div>
             </ha-card>
 
-            <ha-card header="Registered browsers" outlined>
+            <ha-card header="Registered Browsers" outlined>
               <div class="card-content">
                 ${Object.keys(window.browser_mod.browsers).map(
                   (d) => html` <ha-settings-row>
