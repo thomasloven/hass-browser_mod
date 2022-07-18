@@ -90,28 +90,28 @@ loadDevTools().then(() => {
                 return;
             window.browser_mod.registered = !window.browser_mod.registered;
         }
-        changeDeviceID(ev) {
-            window.browser_mod.deviceID = ev.target.value;
+        changeBrowserID(ev) {
+            window.browser_mod.browserID = ev.target.value;
         }
         toggleCameraEnabled() {
             window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
         }
-        unregister_device(ev) {
-            const deviceID = ev.currentTarget.deviceID;
+        unregister_browser(ev) {
+            const browserID = ev.currentTarget.browserID;
             const unregisterCallback = () => {
-                console.log(deviceID, window.browser_mod.deviceID);
-                if (deviceID === window.browser_mod.deviceID) {
+                console.log(browserID, window.browser_mod.browserID);
+                if (browserID === window.browser_mod.browserID) {
                     console.log("Unregister self");
                     window.browser_mod.registered = false;
                 }
                 else {
                     window.browser_mod.connection.sendMessage({
                         type: "browser_mod/unregister",
-                        deviceID,
+                        browserID,
                     });
                 }
             };
-            window.browser_mod.showPopup("Unregister device", `Are you sure you want to unregister device ${deviceID}?`, {
+            window.browser_mod.showPopup("Unregister browser", `Are you sure you want to unregister browser ${browserID}?`, {
                 primary_action: "Yes",
                 secondary_action: "No",
                 callbacks: {
@@ -176,21 +176,21 @@ loadDevTools().then(() => {
                 </ha-settings-row>
 
                 <ha-settings-row>
-                  <span slot="heading">DeviceID</span>
+                  <span slot="heading">BrowserID</span>
                   <span slot="description"
                     >A unique identifier for this browser-device
                     combination.</span
                   >
                   <ha-textfield
-                    .value=${(_c = window.browser_mod) === null || _c === void 0 ? void 0 : _c.deviceID}
-                    @change=${this.changeDeviceID}
+                    .value=${(_c = window.browser_mod) === null || _c === void 0 ? void 0 : _c.browserID}
+                    @change=${this.changeBrowserID}
                   ></ha-textfield>
                 </ha-settings-row>
 
                 <ha-settings-row>
                   <span slot="heading">Enable camera</span>
                   <span slot="description"
-                    >Get camera input from this device (hardware
+                    >Get camera input from this browser (hardware
                     dependent)</span
                   >
                   <ha-switch
@@ -201,20 +201,20 @@ loadDevTools().then(() => {
               </div>
             </ha-card>
 
-            <ha-card header="Registered devices" outlined>
+            <ha-card header="Registered browsers" outlined>
               <div class="card-content">
-                ${Object.keys(window.browser_mod.devices).map((d) => $ ` <ha-settings-row>
+                ${Object.keys(window.browser_mod.browsers).map((d) => $ ` <ha-settings-row>
                     <span slot="heading"> ${d} </span>
                     <span slot="description">
                       Last connected:
                       <ha-relative-time
                         .hass=${this.hass}
-                        .datetime=${window.browser_mod.devices[d].last_seen}
+                        .datetime=${window.browser_mod.browsers[d].last_seen}
                       ></ha-relative-time>
                     </span>
                     <ha-icon-button
-                      .deviceID=${d}
-                      @click=${this.unregister_device}
+                      .browserID=${d}
+                      @click=${this.unregister_browser}
                     >
                       <ha-icon .icon=${"mdi:delete"}></ha-icon>
                     </ha-icon-button>

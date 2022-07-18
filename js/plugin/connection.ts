@@ -1,6 +1,6 @@
 import { hass, provideHass } from "../helpers";
 
-const ID_STORAGE_KEY = "browser_mod-device-id";
+const ID_STORAGE_KEY = "browser_mod-browser-id";
 
 export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
@@ -12,7 +12,7 @@ export const ConnectionMixin = (SuperClass) => {
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
     });
-    public deviceEntities = {};
+    public browserEntities = {};
 
     LOG(...args) {
       const dt = new Date();
@@ -27,8 +27,8 @@ export const ConnectionMixin = (SuperClass) => {
       if (msg.command) {
         this.LOG("Command:", msg);
         this.fireEvent(`command-${msg.command}`, msg);
-      } else if (msg.deviceEntities) {
-        this.deviceEntities = msg.deviceEntities;
+      } else if (msg.browserEntities) {
+        this.browserEntities = msg.browserEntities;
       } else if (msg.result) {
         this.update_config(msg.result);
       }
@@ -39,7 +39,7 @@ export const ConnectionMixin = (SuperClass) => {
       this.LOG("Receive:", cfg);
 
       let update = false;
-      if (!this.registered && cfg.devices?.[this.deviceID]) {
+      if (!this.registered && cfg.browsers?.[this.browserID]) {
         update = true;
       }
       this._data = cfg;
@@ -61,7 +61,7 @@ export const ConnectionMixin = (SuperClass) => {
       // Subscribe to configuration updates
       conn.subscribeMessage((msg) => this.incoming_message(msg), {
         type: "browser_mod/connect",
-        deviceID: this.deviceID,
+        browserID: this.browserID,
       });
 
       // Keep connection status up to date
@@ -82,12 +82,12 @@ export const ConnectionMixin = (SuperClass) => {
       return this._data?.config ?? {};
     }
 
-    get devices() {
-      return this._data?.devices ?? [];
+    get browsers() {
+      return this._data?.browsers ?? [];
     }
 
     get registered() {
-      return this.devices?.[this.deviceID] !== undefined;
+      return this.browsers?.[this.browserID] !== undefined;
     }
 
     set registered(reg) {
@@ -96,13 +96,13 @@ export const ConnectionMixin = (SuperClass) => {
           if (this.registered) return;
           await this.connection.sendMessage({
             type: "browser_mod/register",
-            deviceID: this.deviceID,
+            browserID: this.browserID,
           });
         } else {
           if (!this.registered) return;
           await this.connection.sendMessage({
             type: "browser_mod/unregister",
-            deviceID: this.deviceID,
+            browserID: this.browserID,
           });
         }
       })();
@@ -111,9 +111,9 @@ export const ConnectionMixin = (SuperClass) => {
     private async _reregister(newData = {}) {
       await this.connection.sendMessage({
         type: "browser_mod/reregister",
-        deviceID: this.deviceID,
+        browserID: this.browserID,
         data: {
-          ...this.devices[this.deviceID],
+          ...this.browsers[this.browserID],
           ...newData,
         },
       });
@@ -121,7 +121,7 @@ export const ConnectionMixin = (SuperClass) => {
 
     get meta() {
       if (!this.registered) return null;
-      return this.devices[this.deviceID].meta;
+      return this.browsers[this.browserID].meta;
     }
     set meta(value) {
       this._reregister({ meta: value });
@@ -129,7 +129,7 @@ export const ConnectionMixin = (SuperClass) => {
 
     get cameraEnabled() {
       if (!this.registered) return null;
-      return this.devices[this.deviceID].camera;
+      return this.browsers[this.browserID].camera;
     }
     set cameraEnabled(value) {
       this._reregister({ camera: value });
@@ -143,18 +143,18 @@ export const ConnectionMixin = (SuperClass) => {
 
       this.connection.sendMessage({
         type: "browser_mod/update",
-        deviceID: this.deviceID,
+        browserID: this.browserID,
         data,
       });
     }
 
-    get deviceID() {
+    get browserID() {
       if (localStorage[ID_STORAGE_KEY]) return localStorage[ID_STORAGE_KEY];
-      this.deviceID = "";
-      return this.deviceID;
+      this.browserID = "";
+      return this.browserID;
     }
-    set deviceID(id) {
-      function _createDeviceID() {
+    set browserID(id) {
+      function _createBrowserID() {
         const s4 = () => {
           return Math.floor((1 + Math.random()) * 100000)
             .toString(16)
@@ -163,29 +163,27 @@ export const ConnectionMixin = (SuperClass) => {
         return window.fully?.getDeviceId() ?? `${s4()}${s4()}-${s4()}${s4()}`;
       }
 
-      if (id === "") id = _createDeviceID();
+      if (id === "") id = _createBrowserID();
       const oldID = localStorage[ID_STORAGE_KEY];
       localStorage[ID_STORAGE_KEY] = id;
 
       this.fireEvent("browser-mod-config-update");
 
       if (
-        this.devices?.[oldID] !== undefined &&
-        this.devices?.[this.deviceID] === undefined
+        this.browsers?.[oldID] !== undefined &&
+        this.browsers?.[this.browserID] === undefined
       ) {
         (async () => {
           await this.connection.sendMessage({
             type: "browser_mod/reregister",
-            deviceID: oldID,
+            browserID: oldID,
             data: {
-              ...this.devices[oldID],
-              deviceID: this.deviceID,
+              ...this.browsers[oldID],
+              browserID: this.browserID,
             },
           });
         })();
       }
-
-      // TODO: Send update to backend to update device
     }
   }
 

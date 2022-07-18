@@ -21,13 +21,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class BrowserModCamera(BrowserModEntity, Camera):
-    def __init__(self, coordinator, deviceID):
-        BrowserModEntity.__init__(self, coordinator, deviceID, None)
+    def __init__(self, coordinator, browserID):
+        BrowserModEntity.__init__(self, coordinator, browserID, None)
         Camera.__init__(self)
 
     @property
     def unique_id(self):
-        return f"{self.deviceID}-camera"
+        return f"{self.browserID}-camera"
 
     @property
     def entity_registry_visible_default(self):

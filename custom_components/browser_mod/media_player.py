@@ -39,14 +39,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
-    def __init__(self, coordinator, deviceID, device):
-        BrowserModEntity.__init__(self, coordinator, deviceID, None)
+    def __init__(self, coordinator, browserID, browser):
+        BrowserModEntity.__init__(self, coordinator, browserID, None)
         MediaPlayerEntity.__init__(self)
-        self.device = device
+        self.browser = browser
 
     @property
     def unique_id(self):
-        return f"{self.deviceID}-player"
+        return f"{self.browserID}-player"
 
     @property
     def entity_registry_visible_default(self):
@@ -83,10 +83,10 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         return self._data.get("player", {}).get("muted", False)
 
     def set_volume_level(self, volume):
-        self.device.send("player-set-volume", volume_level=volume)
+        self.browser.send("player-set-volume", volume_level=volume)
 
     def mute_volume(self, mute):
-        self.device.send("player-mute", mute=mute)
+        self.browser.send("player-mute", mute=mute)
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         if media_source.is_media_source_id(media_id):
@@ -97,7 +97,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             media_id = play_item.url
         if media_type in (MEDIA_TYPE_URL, MEDIA_TYPE_MUSIC):
             media_id = async_process_play_media_url(self.hass, media_id)
-        self.device.send("player-play", media_content_id=media_id)
+        self.browser.send("player-play", media_content_id=media_id)
 
     async def async_browse_media(self, media_content_type=None, media_content_id=None):
         """Implement the websocket media browsing helper."""
@@ -108,10 +108,10 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         )
 
     def media_play(self):
-        self.device.send("player-play")
+        self.browser.send("player-play")
 
     def media_pause(self):
-        self.device.send("player-pause")
+        self.browser.send("player-pause")
 
     def media_stop(self):
-        self.device.send("player-stop")
+        self.browser.send("player-stop")

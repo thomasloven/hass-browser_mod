@@ -11,9 +11,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class BrowserModEntity(CoordinatorEntity):
-    def __init__(self, coordinator, deviceID, name):
+    def __init__(self, coordinator, browserID, name):
         super().__init__(coordinator)
-        self.deviceID = deviceID
+        self.browserID = browserID
         self._name = name
 
     @property
@@ -26,8 +26,8 @@ class BrowserModEntity(CoordinatorEntity):
         if ip := self._data.get("browser", {}).get("ip_address"):
             config_url = {"configuration_url": f"http://{ip}:2323"}
         return {
-            "identifiers": {(DOMAIN, self.deviceID)},
-            "name": self.deviceID,
+            "identifiers": {(DOMAIN, self.browserID)},
+            "name": self.browserID,
             "manufacturer": "Browser Mod",
             **config_url,
         }
@@ -36,7 +36,7 @@ class BrowserModEntity(CoordinatorEntity):
     def extra_state_attributes(self):
         return {
             "type": "browser_mod",
-            "deviceID": self.deviceID,
+            "browserID": self.browserID,
         }
 
     @property
@@ -53,4 +53,4 @@ class BrowserModEntity(CoordinatorEntity):
 
     @property
     def unique_id(self):
-        return f"{self.deviceID}-{self._name.replace(' ','_')}"
+        return f"{self.browserID}-{self._name.replace(' ','_')}"

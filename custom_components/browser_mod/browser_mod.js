@@ -129,7 +129,7 @@ class BrowserPlayer extends s {
             composed: true,
             cancelable: false,
             detail: {
-                entityId: (_a = window.browser_mod.deviceEntities) === null || _a === void 0 ? void 0 : _a.player,
+                entityId: (_a = window.browser_mod.browserEntities) === null || _a === void 0 ? void 0 : _a.player,
             },
         }));
     }
@@ -179,7 +179,7 @@ class BrowserPlayer extends s {
           </ha-icon-button>
         </div>
 
-        <div class="device-id">${window.browser_mod.deviceID}</div>
+        <div class="browser-id">${window.browser_mod.browserID}</div>
       </ha-card>
     `;
     }
@@ -196,7 +196,7 @@ class BrowserPlayer extends s {
         width: 24px;
         padding: 8px;
       }
-      .device-id {
+      .browser-id {
         opacity: 0.7;
         font-size: xx-small;
         margin-top: -10px;
@@ -260,7 +260,7 @@ const loadLoadCardHelpers = async () => {
     await ((_c = (_b = (_a = routes === null || routes === void 0 ? void 0 : routes.routes) === null || _a === void 0 ? void 0 : _a.a) === null || _b === void 0 ? void 0 : _b.load) === null || _c === void 0 ? void 0 : _c.call(_b));
 };
 
-const ID_STORAGE_KEY = "browser_mod-device-id";
+const ID_STORAGE_KEY = "browser_mod-browser-id";
 const ConnectionMixin = (SuperClass) => {
     class BrowserModConnection extends SuperClass {
         constructor() {
@@ -269,7 +269,7 @@ const ConnectionMixin = (SuperClass) => {
             this.connectionPromise = new Promise((resolve) => {
                 this._connectionResolve = resolve;
             });
-            this.deviceEntities = {};
+            this.browserEntities = {};
         }
         LOG(...args) {
             const dt = new Date();
@@ -284,8 +284,8 @@ const ConnectionMixin = (SuperClass) => {
                 this.LOG("Command:", msg);
                 this.fireEvent(`command-${msg.command}`, msg);
             }
-            else if (msg.deviceEntities) {
-                this.deviceEntities = msg.deviceEntities;
+            else if (msg.browserEntities) {
+                this.browserEntities = msg.browserEntities;
             }
             else if (msg.result) {
                 this.update_config(msg.result);
@@ -296,7 +296,7 @@ const ConnectionMixin = (SuperClass) => {
             var _a;
             this.LOG("Receive:", cfg);
             let update = false;
-            if (!this.registered && ((_a = cfg.devices) === null || _a === void 0 ? void 0 : _a[this.deviceID])) {
+            if (!this.registered && ((_a = cfg.browsers) === null || _a === void 0 ? void 0 : _a[this.browserID])) {
                 update = true;
             }
             this._data = cfg;
@@ -314,7 +314,7 @@ const ConnectionMixin = (SuperClass) => {
             // Subscribe to configuration updates
             conn.subscribeMessage((msg) => this.incoming_message(msg), {
                 type: "browser_mod/connect",
-                deviceID: this.deviceID,
+                browserID: this.browserID,
             });
             // Keep connection status up to date
             conn.addEventListener("disconnected", () => {
@@ -332,13 +332,13 @@ const ConnectionMixin = (SuperClass) => {
             var _a, _b;
             return (_b = (_a = this._data) === null || _a === void 0 ? void 0 : _a.config) !== null && _b !== void 0 ? _b : {};
         }
-        get devices() {
+        get browsers() {
             var _a, _b;
-            return (_b = (_a = this._data) === null || _a === void 0 ? void 0 : _a.devices) !== null && _b !== void 0 ? _b : [];
+            return (_b = (_a = this._data) === null || _a === void 0 ? void 0 : _a.browsers) !== null && _b !== void 0 ? _b : [];
         }
         get registered() {
             var _a;
-            return ((_a = this.devices) === null || _a === void 0 ? void 0 : _a[this.deviceID]) !== undefined;
+            return ((_a = this.browsers) === null || _a === void 0 ? void 0 : _a[this.browserID]) !== undefined;
         }
         set registered(reg) {
             (async () => {
@@ -347,7 +347,7 @@ const ConnectionMixin = (SuperClass) => {
                         return;
                     await this.connection.sendMessage({
                         type: "browser_mod/register",
-                        deviceID: this.deviceID,
+                        browserID: this.browserID,
                     });
                 }
                 else {
@@ -355,7 +355,7 @@ const ConnectionMixin = (SuperClass) => {
                         return;
                     await this.connection.sendMessage({
                         type: "browser_mod/unregister",
-                        deviceID: this.deviceID,
+                        browserID: this.browserID,
                     });
                 }
             })();
@@ -363,14 +363,14 @@ const ConnectionMixin = (SuperClass) => {
         async _reregister(newData = {}) {
             await this.connection.sendMessage({
                 type: "browser_mod/reregister",
-                deviceID: this.deviceID,
-                data: Object.assign(Object.assign({}, this.devices[this.deviceID]), newData),
+                browserID: this.browserID,
+                data: Object.assign(Object.assign({}, this.browsers[this.browserID]), newData),
             });
         }
         get meta() {
             if (!this.registered)
                 return null;
-            return this.devices[this.deviceID].meta;
+            return this.browsers[this.browserID].meta;
         }
         set meta(value) {
             this._reregister({ meta: value });
@@ -378,7 +378,7 @@ const ConnectionMixin = (SuperClass) => {
         get cameraEnabled() {
             if (!this.registered)
                 return null;
-            return this.devices[this.deviceID].camera;
+            return this.browsers[this.browserID].camera;
         }
         set cameraEnabled(value) {
             this._reregister({ camera: value });
@@ -389,19 +389,19 @@ const ConnectionMixin = (SuperClass) => {
             this.LOG("Send:", data);
             this.connection.sendMessage({
                 type: "browser_mod/update",
-                deviceID: this.deviceID,
+                browserID: this.browserID,
                 data,
             });
         }
-        get deviceID() {
+        get browserID() {
             if (localStorage[ID_STORAGE_KEY])
                 return localStorage[ID_STORAGE_KEY];
-            this.deviceID = "";
-            return this.deviceID;
+            this.browserID = "";
+            return this.browserID;
         }
-        set deviceID(id) {
+        set browserID(id) {
             var _a, _b;
-            function _createDeviceID() {
+            function _createBrowserID() {
                 var _a, _b;
                 const s4 = () => {
                     return Math.floor((1 + Math.random()) * 100000)
@@ -411,21 +411,20 @@ const ConnectionMixin = (SuperClass) => {
                 return (_b = (_a = window.fully) === null || _a === void 0 ? void 0 : _a.getDeviceId()) !== null && _b !== void 0 ? _b : `${s4()}${s4()}-${s4()}${s4()}`;
             }
             if (id === "")
-                id = _createDeviceID();
+                id = _createBrowserID();
             const oldID = localStorage[ID_STORAGE_KEY];
             localStorage[ID_STORAGE_KEY] = id;
             this.fireEvent("browser-mod-config-update");
-            if (((_a = this.devices) === null || _a === void 0 ? void 0 : _a[oldID]) !== undefined &&
-                ((_b = this.devices) === null || _b === void 0 ? void 0 : _b[this.deviceID]) === undefined) {
+            if (((_a = this.browsers) === null || _a === void 0 ? void 0 : _a[oldID]) !== undefined &&
+                ((_b = this.browsers) === null || _b === void 0 ? void 0 : _b[this.browserID]) === undefined) {
                 (async () => {
                     await this.connection.sendMessage({
                         type: "browser_mod/reregister",
-                        deviceID: oldID,
-                        data: Object.assign(Object.assign({}, this.devices[oldID]), { deviceID: this.deviceID }),
+                        browserID: oldID,
+                        data: Object.assign(Object.assign({}, this.browsers[oldID]), { browserID: this.browserID }),
                     });
                 })();
             }
-            // TODO: Send update to backend to update device
         }
     }
     return BrowserModConnection;
@@ -1256,8 +1255,8 @@ var pjson = {
 /*
   TODO:
   - Fix nomenclature
-    - Command -> Service
-    - Device -> Browser
+    x Command -> Service
+    x Device -> Browser
   - Popups
     X Basic popups
     - Card-mod integration
@@ -1306,13 +1305,10 @@ class BrowserMod extends ServicesMixin(PopupMixin(BrowserStateMixin(CameraMixin(
         //   }
         // });
         console.info(`%cBROWSER_MOD ${pjson.version} IS INSTALLED
-    %cDeviceID: ${this.deviceID}`, "color: green; font-weight: bold", "");
+    %cBrowserID: ${this.browserID}`, "color: green; font-weight: bold", "");
     }
 }
-// (async () => {
-//   await hass_loaded();
 if (!window.browser_mod)
     window.browser_mod = new BrowserMod();
-// })();
 
 export { BrowserMod };

@@ -18,7 +18,7 @@ from .const import (
     DOMAIN,
 )
 
-from .device import getDevice, deleteDevice
+from .browser import getBrowser, deleteBrowser
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -27,12 +27,12 @@ async def async_setup_connection(hass):
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_CONNECT,
-            vol.Required("deviceID"): str,
+            vol.Required("browserID"): str,
         }
     )
     @websocket_api.async_response
     async def handle_connect(hass, connection, msg):
-        deviceID = msg["deviceID"]
+        browserID = msg["browserID"]
         store = hass.data[DOMAIN]["store"]
 
         def listener(data):
@@ -41,93 +41,93 @@ async def async_setup_connection(hass):
         connection.subscriptions[msg["id"]] = store.add_listener(listener)
         connection.send_result(msg["id"])
 
-        if store.get_device(deviceID).enabled:
-            dev = getDevice(hass, deviceID)
-            dev.update_settings(hass, store.get_device(deviceID).asdict())
+        if store.get_browser(browserID).enabled:
+            dev = getBrowser(hass, browserID)
+            dev.update_settings(hass, store.get_browser(browserID).asdict())
             dev.connection = (connection, msg["id"])
-            await store.set_device(
-                deviceID, last_seen=datetime.now(tz=timezone.utc).isoformat()
+            await store.set_browser(
+                browserID, last_seen=datetime.now(tz=timezone.utc).isoformat()
             )
         listener(store.asdict())
 
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_REGISTER,
-            vol.Required("deviceID"): str,
+            vol.Required("browserID"): str,
         }
     )
     @websocket_api.async_response
     async def handle_register(hass, connection, msg):
-        deviceID = msg["deviceID"]
+        browserID = msg["browserID"]
         store = hass.data[DOMAIN]["store"]
-        await store.set_device(deviceID, enabled=True)
+        await store.set_browser(browserID, enabled=True)
         connection.send_result(msg["id"])
 
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_UNREGISTER,
-            vol.Required("deviceID"): str,
+            vol.Required("browserID"): str,
         }
     )
     @websocket_api.async_response
     async def handle_unregister(hass, connection, msg):
-        deviceID = msg["deviceID"]
+        browserID = msg["browserID"]
         store = hass.data[DOMAIN]["store"]
 
-        deleteDevice(hass, deviceID)
-        await store.delete_device(deviceID)
+        deleteBrowser(hass, browserID)
+        await store.delete_browser(browserID)
 
         connection.send_result(msg["id"])
 
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_REREGISTER,
-            vol.Required("deviceID"): str,
+            vol.Required("browserID"): str,
             vol.Required("data"): dict,
         }
     )
     @websocket_api.async_response
     async def handle_reregister(hass, connection, msg):
-        deviceID = msg["deviceID"]
+        browserID = msg["browserID"]
         store = hass.data[DOMAIN]["store"]
 
         data = msg["data"]
         del data["last_seen"]
-        deviceSettings = {}
+        browserSettings = {}
 
-        if "deviceID" in data:
-            newDeviceID = data["deviceID"]
-            del data["deviceID"]
+        if "browserID" in data:
+            newBrowserID = data["browserID"]
+            del data["browserID"]
 
-            oldDeviceSettings = store.get_device(deviceID)
-            if oldDeviceSettings:
-                deviceSettings = oldDeviceSettings.asdict()
-            await store.delete_device(deviceID)
+            oldBrowserSetting = store.get_browser(browserID)
+            if oldBrowserSetting:
+                browserSettings = oldBrowserSetting.asdict()
+            await store.delete_browser(browserID)
 
-            deleteDevice(hass, deviceID)
+            deleteBrowser(hass, browserID)
 
-            deviceID = newDeviceID
+            browserID = newBrowserID
 
-        if (dev := getDevice(hass, deviceID, create=False)) is not None:
+        if (dev := getBrowser(hass, browserID, create=False)) is not None:
             dev.update_settings(hass, data)
 
-        deviceSettings.update(data)
-        await store.set_device(deviceID, **deviceSettings)
+        browserSettings.update(data)
+        await store.set_browser(browserID, **browserSettings)
 
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_UPDATE,
-            vol.Required("deviceID"): str,
+            vol.Required("browserID"): str,
             vol.Optional("data"): dict,
         }
     )
     @websocket_api.async_response
     async def handle_update(hass, connection, msg):
-        deviceID = msg["deviceID"]
+        browserID = msg["browserID"]
         store = hass.data[DOMAIN]["store"]
 
-        if store.get_device(deviceID).enabled:
-            dev = getDevice(hass, deviceID)
+        if store.get_browser(browserID).enabled:
+            dev = getBrowser(hass, browserID)
             dev.update(hass, msg.get("data", {}))
 
     async_register_command(hass, handle_connect)

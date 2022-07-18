@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
-class DeviceStoreData:
+class BrowserStoreData:
     last_seen = attr.ib(type=int, default=0)
     enabled = attr.ib(type=bool, default=False)
     camera = attr.ib(type=bool, default=False)
@@ -26,17 +26,19 @@ class DeviceStoreData:
 
 @attr.s
 class ConfigStoreData:
-    devices = attr.ib(type=dict[str:DeviceStoreData], factory=dict)
+    browsers = attr.ib(type=dict[str:BrowserStoreData], factory=dict)
     version = attr.ib(type=str, default="2.0")
 
     @classmethod
     def from_dict(cls, data={}):
-        devices = {k: DeviceStoreData.from_dict(v) for k, v in data["devices"].items()}
+        browsers = {
+            k: BrowserStoreData.from_dict(v) for k, v in data["browsers"].items()
+        }
         return cls(
             **(
                 data
                 | {
-                    "devices": devices,
+                    "browsers": browsers,
                 }
             )
         )
@@ -83,15 +85,15 @@ class BrowserModStore:
 
         return remove_listener
 
-    def get_device(self, deviceID):
-        return self.data.devices.get(deviceID, DeviceStoreData())
+    def get_browser(self, browserID):
+        return self.data.browsers.get(browserID, BrowserStoreData())
 
-    async def set_device(self, deviceID, **data):
-        device = self.data.devices.get(deviceID, DeviceStoreData())
-        device.__dict__.update(data)
-        self.data.devices[deviceID] = device
+    async def set_browser(self, browserID, **data):
+        browser = self.data.browsers.get(browserID, BrowserStoreData())
+        browser.__dict__.update(data)
+        self.data.browsers[browserID] = browser
         await self.updated()
 
-    async def delete_device(self, deviceID):
-        del self.data.devices[deviceID]
+    async def delete_browser(self, browserID):
+        del self.data.browsers[browserID]
         await self.updated()

@@ -3,7 +3,7 @@ import logging
 from homeassistant.components.websocket_api import event_message
 from homeassistant.helpers import device_registry, entity_registry
 
-from .const import DOMAIN, DATA_ADDERS
+from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS
 from .coordinator import Coordinator
 from .sensor import BrowserSensor
 from .light import BrowserModLight
@@ -14,13 +14,13 @@ from .camera import BrowserModCamera
 _LOGGER = logging.getLogger(__name__)
 
 
-class BrowserModDevice:
-    """A Browser_mod device."""
+class BrowserModBrowser:
+    """A Browser_mod browser."""
 
-    def __init__(self, hass, deviceID):
+    def __init__(self, hass, browserID):
         """ """
-        self.deviceID = deviceID
-        self.coordinator = Coordinator(hass, deviceID)
+        self.browserID = browserID
+        self.coordinator = Coordinator(hass, browserID)
         self.entities = {}
         self.data = {}
         self.settings = {}
@@ -38,17 +38,17 @@ class BrowserModDevice:
         self.update_entities(hass)
 
     def update_entities(self, hass):
-        """Create all entities associated with the device."""
+        """Create all entities associated with the browser."""
 
         coordinator = self.coordinator
-        deviceID = self.deviceID
+        browserID = self.browserID
 
         def _assert_browser_sensor(type, name, *properties):
             if name in self.entities:
                 return
             adder = hass.data[DOMAIN][DATA_ADDERS][type]
             cls = {"sensor": BrowserSensor, "binary_sensor": BrowserBinarySensor}[type]
-            new = cls(coordinator, deviceID, name, *properties)
+            new = cls(coordinator, browserID, name, *properties)
             adder([new])
             self.entities[name] = new
 
@@ -70,19 +70,19 @@ class BrowserModDevice:
 
         if "screen" not in self.entities:
             adder = hass.data[DOMAIN][DATA_ADDERS]["light"]
-            new = BrowserModLight(coordinator, deviceID, self)
+            new = BrowserModLight(coordinator, browserID, self)
             adder([new])
             self.entities["screen"] = new
 
         if "player" not in self.entities:
             adder = hass.data[DOMAIN][DATA_ADDERS]["media_player"]
-            new = BrowserModPlayer(coordinator, deviceID, self)
+            new = BrowserModPlayer(coordinator, browserID, self)
             adder([new])
             self.entities["player"] = new
 
         if "camera" not in self.entities and self.settings.get("camera"):
             adder = hass.data[DOMAIN][DATA_ADDERS]["camera"]
-            new = BrowserModCamera(coordinator, deviceID)
+            new = BrowserModCamera(coordinator, browserID)
             adder([new])
             self.entities["camera"] = new
         if "camera" in self.entities and not self.settings.get("camera"):
@@ -95,7 +95,7 @@ class BrowserModDevice:
         )
 
     def send(self, command, **kwargs):
-        """Send a command to this device."""
+        """Send a command to this browser."""
         if self.connection is None:
             return
 
@@ -112,7 +112,7 @@ class BrowserModDevice:
         )
 
     def delete(self, hass):
-        """Delete device and associated entities."""
+        """Delete browser and associated entities."""
         dr = device_registry.async_get(hass)
         er = entity_registry.async_get(hass)
 
@@ -121,25 +121,25 @@ class BrowserModDevice:
 
         self.entities = {}
 
-        device = dr.async_get_device({(DOMAIN, self.deviceID)})
+        device = dr.async_get_device({(DOMAIN, self.browserID)})
         dr.async_remove_device(device.id)
 
 
-def getDevice(hass, deviceID, *, create=True):
-    """Get or create device by deviceID."""
-    devices = hass.data[DOMAIN]["devices"]
-    if deviceID in devices:
-        return devices[deviceID]
+def getBrowser(hass, browserID, *, create=True):
+    """Get or create browser by browserID."""
+    browsers = hass.data[DOMAIN][DATA_BROWSERS]
+    if browserID in browsers:
+        return browsers[browserID]
 
     if not create:
         return None
 
-    devices[deviceID] = BrowserModDevice(hass, deviceID)
-    return devices[deviceID]
+    browsers[browserID] = BrowserModBrowser(hass, browserID)
+    return browsers[browserID]
 
 
-def deleteDevice(hass, deviceID):
-    devices = hass.data[DOMAIN]["devices"]
-    if deviceID in devices:
-        devices[deviceID].delete(hass)
-        del devices[deviceID]
+def deleteBrowser(hass, browserID):
+    browsers = hass.data[DOMAIN][DATA_BROWSERS]
+    if browserID in browsers:
+        browsers[browserID].delete(hass)
+        del browsers[browserID]

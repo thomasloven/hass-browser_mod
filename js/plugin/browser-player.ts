@@ -47,7 +47,7 @@ class BrowserPlayer extends LitElement {
         composed: true,
         cancelable: false,
         detail: {
-          entityId: window.browser_mod.deviceEntities?.player,
+          entityId: window.browser_mod.browserEntities?.player,
         },
       })
     );
@@ -98,7 +98,7 @@ class BrowserPlayer extends LitElement {
           </ha-icon-button>
         </div>
 
-        <div class="device-id">${window.browser_mod.deviceID}</div>
+        <div class="browser-id">${window.browser_mod.browserID}</div>
       </ha-card>
     `;
   }
@@ -116,7 +116,7 @@ class BrowserPlayer extends LitElement {
         width: 24px;
         padding: 8px;
       }
-      .device-id {
+      .browser-id {
         opacity: 0.7;
         font-size: xx-small;
         margin-top: -10px;

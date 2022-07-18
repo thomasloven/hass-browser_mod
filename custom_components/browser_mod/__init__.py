@@ -3,7 +3,7 @@ import logging
 from .store import BrowserModStore
 from .mod_view import async_setup_view
 from .connection import async_setup_connection
-from .const import DOMAIN, DATA_DEVICES, DATA_ADDERS, DATA_STORE
+from .const import DOMAIN, DATA_BROWSERS, DATA_ADDERS, DATA_STORE
 from .service import async_setup_services
 
 _LOGGER = logging.getLogger(__name__)
@@ -15,7 +15,7 @@ async def async_setup(hass, config):
     await store.load()
 
     hass.data[DOMAIN] = {
-        DATA_DEVICES: {},
+        DATA_BROWSERS: {},
         DATA_ADDERS: {},
         DATA_STORE: store,
     }

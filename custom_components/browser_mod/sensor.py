@@ -18,13 +18,13 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
     def __init__(
         self,
         coordinator,
-        deviceID,
+        browserID,
         parameter,
         name,
         unit_of_measurement=None,
         device_class=None,
     ):
-        super().__init__(coordinator, deviceID, name)
+        super().__init__(coordinator, browserID, name)
         self.parameter = parameter
         self._device_class = device_class
         self._unit_of_measurement = unit_of_measurement

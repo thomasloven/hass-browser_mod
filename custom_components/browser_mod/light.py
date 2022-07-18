@@ -15,10 +15,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class BrowserModLight(BrowserModEntity, LightEntity):
-    def __init__(self, coordinator, deviceID, device):
-        BrowserModEntity.__init__(self, coordinator, deviceID, "Screen")
+    def __init__(self, coordinator, browserID, browser):
+        BrowserModEntity.__init__(self, coordinator, browserID, "Screen")
         LightEntity.__init__(self)
-        self.device = device
+        self.browser = browser
 
     @property
     def entity_registry_visible_default(self):
@@ -41,7 +41,7 @@ class BrowserModLight(BrowserModEntity, LightEntity):
         return self._data.get("screen_brightness", 1)
 
     def turn_on(self, **kwargs):
-        self.device.send("screen_on", **kwargs)
+        self.browser.send("screen_on", **kwargs)
 
     def turn_off(self, **kwargs):
-        self.device.send("screen_off")
+        self.browser.send("screen_off")
