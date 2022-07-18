@@ -7,7 +7,7 @@ from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS
 from .coordinator import Coordinator
 from .sensor import BrowserSensor
 from .light import BrowserModLight
-from .binary_sensor import BrowserBinarySensor
+from .binary_sensor import BrowserBinarySensor, ActivityBinarySensor
 from .media_player import BrowserModPlayer
 from .camera import BrowserModCamera
 
@@ -67,6 +67,12 @@ class BrowserModBrowser:
         _assert_browser_sensor("binary_sensor", "fullyKiosk", "Browser FullyKiosk")
         if self.data.get("browser", {}).get("charging", None) is not None:
             _assert_browser_sensor("binary_sensor", "charging", "Browser charging")
+
+        if "activity" not in self.entities:
+            adder = hass.data[DOMAIN][DATA_ADDERS]["binary_sensor"]
+            new = ActivityBinarySensor(coordinator, browserID)
+            adder([new])
+            self.entities["activity"] = new
 
         if "screen" not in self.entities:
             adder = hass.data[DOMAIN][DATA_ADDERS]["light"]

@@ -16,7 +16,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class BrowserBinarySensor(BrowserModEntity, BinarySensorEntity):
     def __init__(self, coordinator, browserID, parameter, name):
-        super().__init__(coordinator, browserID, name)
+        BrowserModEntity.__init__(self, coordinator, browserID, name)
+        BinarySensorEntity.__init__(self)
         self.parameter = parameter
 
     @property
@@ -24,4 +25,28 @@ class BrowserBinarySensor(BrowserModEntity, BinarySensorEntity):
         data = self._data
         data = data.get("browser", {})
         data = data.get(self.parameter, None)
+        return data
+
+
+class ActivityBinarySensor(BrowserModEntity, BinarySensorEntity):
+    def __init__(self, coordinator, browserID):
+        BrowserModEntity.__init__(self, coordinator, browserID, None)
+        BinarySensorEntity.__init__(self)
+
+    @property
+    def unique_id(self):
+        return f"{self.browserID}-activity"
+
+    @property
+    def entity_registry_visible_default(self):
+        return True
+
+    @property
+    def device_class(self):
+        return "motion"
+
+    @property
+    def is_on(self):
+        data = self._data
+        data = data.get("activity", False)
         return data

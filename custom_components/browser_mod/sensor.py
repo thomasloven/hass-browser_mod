@@ -24,7 +24,8 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
         unit_of_measurement=None,
         device_class=None,
     ):
-        super().__init__(coordinator, browserID, name)
+        BrowserModEntity.__init__(self, coordinator, browserID, name)
+        SensorEntity.__init__(self)
         self.parameter = parameter
         self._device_class = device_class
         self._unit_of_measurement = unit_of_measurement

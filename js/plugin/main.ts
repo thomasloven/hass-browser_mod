@@ -9,6 +9,7 @@ import { RequireInteractMixin } from "./require-interact";
 import { FullyMixin } from "./fullyKiosk";
 import { BrowserStateMixin } from "./browser";
 import { ServicesMixin } from "./services";
+import { ActivityMixin } from "./activity";
 import "./popups";
 import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
@@ -59,11 +60,13 @@ import pjson from "../../package.json";
   */
 export class BrowserMod extends ServicesMixin(
   PopupMixin(
-    BrowserStateMixin(
-      CameraMixin(
-        MediaPlayerMixin(
-          ScreenSaverMixin(
-            FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+    ActivityMixin(
+      BrowserStateMixin(
+        CameraMixin(
+          MediaPlayerMixin(
+            ScreenSaverMixin(
+              FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+            )
           )
         )
       )

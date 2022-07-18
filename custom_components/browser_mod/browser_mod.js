@@ -909,6 +909,41 @@ const ServicesMixin = (SuperClass) => {
     };
 };
 
+const ActivityMixin = (SuperClass) => {
+    return class ActivityMixinClass extends SuperClass {
+        constructor() {
+            super();
+            this.activityTriggered = false;
+            this._activityCooldown = 15000;
+            for (const ev of ["pointerdown", "pointermove", "keydown"]) {
+                window.addEventListener(ev, () => this.activityTrigger());
+            }
+            this.addEventListener("fully-update", () => {
+                this.activityTrigger();
+            });
+        }
+        activityTrigger() {
+            if (!this.activityTriggered) {
+                this.sendUpdate({
+                    activity: true,
+                });
+            }
+            this.activityTriggered = true;
+            clearTimeout(this._activityTimeout);
+            this._activityTimeout = setTimeout(() => this.activityReset(), this._activityCooldown);
+        }
+        activityReset() {
+            clearTimeout(this._activityTimeout);
+            if (this.activityTriggered) {
+                this.sendUpdate({
+                    activity: false,
+                });
+            }
+            this.activityTriggered = false;
+        }
+    };
+};
+
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -1301,7 +1336,7 @@ var pjson = {
   - Media_seek
   - Screensavers
   */
-class BrowserMod extends ServicesMixin(PopupMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget))))))))) {
+class BrowserMod extends ServicesMixin(PopupMixin(ActivityMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))))))))) {
     constructor() {
         super();
         this.connect();
