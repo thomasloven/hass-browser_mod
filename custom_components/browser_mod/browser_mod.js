@@ -685,7 +685,7 @@ const RequireInteractMixin = (SuperClass) => {
         --mdc-icon-size: 48px;
       }
       ha-icon::before {
-        content: "browser_mod";
+        content: "Browser\\00a0Mod";
         font-size: 0.75rem;
         position: absolute;
         right: 0;
@@ -813,6 +813,12 @@ const BrowserStateMixin = (SuperClass) => {
             };
             update();
         }
+        async browser_navigate(path) {
+            if (!path)
+                return;
+            history.pushState(null, "", path);
+            window.dispatchEvent(new CustomEvent("location-changed"));
+        }
     };
 };
 
@@ -850,17 +856,39 @@ const ServicesMixin = (SuperClass) => {
               [timeout: <number>]
               [timeout_action: <service call>]
     
-            Close popup
-              service: browser_mod.close_popup
+          Close popup:
+            service: browser_mod.close_popup
     
-            Javascript console print
-              service: browser_mod.console
-              data:
-                message: <string>
+          Navigate to path:
+            service: browser_mod.navigate
+            data:
+              path: <string>
+    
+          Refresh browser:
+            service: browser_mod.refresh
+    
+          Browser console print:
+            service: browser_mod.console
+            data:
+              message: <string>
+    
+          Run javascript:
+            service: browser_mod.javascript
+            data:
+              code: <string>
         */
         constructor() {
             super();
-            const cmds = ["sequence", "delay", "popup", "close_popup"];
+            const cmds = [
+                "sequence",
+                "delay",
+                "popup",
+                "close_popup",
+                "navigate",
+                "refresh",
+                "console",
+                "javascript",
+            ];
             for (const service of cmds) {
                 this.addEventListener(`command-${service}`, (ev) => {
                     this._service_action({
@@ -901,8 +929,24 @@ const ServicesMixin = (SuperClass) => {
                 case "close_popup":
                     this.closePopup();
                     break;
+                case "navigate":
+                    this.browser_navigate(data.path);
+                    break;
+                case "refresh":
+                    window.location.href = window.location.href;
+                    break;
                 case "console":
                     console.log(data.message);
+                    break;
+                case "javascript":
+                    const code = `
+          "use strict";
+          // Insert global definitions here
+          const hass = (document.querySelector("home-assistant") || document.querySelector("hc-main")).hass;
+          ${data.code}
+          `;
+                    const fn = new Function(code);
+                    fn();
                     break;
             }
         }
@@ -1302,7 +1346,7 @@ var pjson = {
     - Card-mod integration
     X Timeout
     X Fullscreen
-  - Motion/occupancy tracker
+  x Motion/occupancy tracker
   x Information about interaction requirement
   x Information about fullykiosk
   - Commands
@@ -1313,13 +1357,13 @@ var pjson = {
       x popup
       x close_popup
       - more-info
-      - navigate
-      - lovelace-reload
-      - window-reload
+      x navigate
+      - lovelace-reload?
+      x window-reload
       - screensaver
       x sequence
       x delay
-      - javascript eval
+      x javascript eval
       - toast?
     x Redesign services to target devices
   - frontend editor for popup cards

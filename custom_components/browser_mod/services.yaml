@@ -1,5 +1,5 @@
-test:
-  description: "A debugging service"
+sequence:
+  description: "Run a sequence of services"
   target:
     device:
       integration: "browser_mod"
@@ -10,7 +10,32 @@ test:
       device:
         integration: "browser_mod"
       multiple: true
-  fields: {}
+  fields:
+    sequence:
+      name: Actions
+      description: List of services to run
+      selector:
+        object:
+
+delay:
+  description: "Wait for a time"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    time:
+      name: Time
+      description: Time to wait (ms)
+      selector:
+        number:
+          mode: box
 
 popup:
   description: "Display a popup"
@@ -91,3 +116,73 @@ close_popup:
       device:
         integration: "browser_mod"
       multiple: true
+
+navigate:
+  description: "Navigate browser to a different page"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    path:
+      name: Path
+      description: "Target path"
+      selector:
+        text:
+
+refresh:
+  description: "Refresh page"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+
+console:
+  description: "Print text to browser console"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    message:
+      name: Message
+      description: "Text to print"
+      selector:
+        text:
+
+javascript:
+  description: "Run arbitrary JavaScript code"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    code:
+      name: Code
+      description: "JavaScript code to run"
+      selector:
+        object:

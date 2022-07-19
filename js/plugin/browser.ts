@@ -1,3 +1,5 @@
+import { hass_base_el } from "../helpers";
+
 export const BrowserStateMixin = (SuperClass) => {
   return class BrowserStateMixinClass extends SuperClass {
     constructor() {
@@ -38,10 +40,10 @@ export const BrowserStateMixin = (SuperClass) => {
       update();
     }
 
-    // do_navigate(path) {
-    //   if (!path) return;
-    //   history.pushState(null, "", path);
-    //   fireEvent("location-changed", {}, ha_element());
-    // }
+    async browser_navigate(path) {
+      if (!path) return;
+      history.pushState(null, "", path);
+      window.dispatchEvent(new CustomEvent("location-changed"));
+    }
   };
 };

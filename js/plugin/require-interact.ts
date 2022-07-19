@@ -34,7 +34,7 @@ export const RequireInteractMixin = (SuperClass) => {
         --mdc-icon-size: 48px;
       }
       ha-icon::before {
-        content: "browser_mod";
+        content: "Browser\\00a0Mod";
         font-size: 0.75rem;
         position: absolute;
         right: 0;

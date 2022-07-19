@@ -24,7 +24,7 @@ import pjson from "../../package.json";
     - Card-mod integration
     X Timeout
     X Fullscreen
-  - Motion/occupancy tracker
+  x Motion/occupancy tracker
   x Information about interaction requirement
   x Information about fullykiosk
   - Commands
@@ -35,13 +35,13 @@ import pjson from "../../package.json";
       x popup
       x close_popup
       - more-info
-      - navigate
-      - lovelace-reload
-      - window-reload
+      x navigate
+      - lovelace-reload?
+      x window-reload
       - screensaver
       x sequence
       x delay
-      - javascript eval
+      x javascript eval
       - toast?
     x Redesign services to target devices
   - frontend editor for popup cards

@@ -32,18 +32,40 @@ export const ServicesMixin = (SuperClass) => {
           [timeout: <number>]
           [timeout_action: <service call>]
 
-        Close popup
-          service: browser_mod.close_popup
+      Close popup:
+        service: browser_mod.close_popup
 
-        Javascript console print
-          service: browser_mod.console
-          data:
-            message: <string>
+      Navigate to path:
+        service: browser_mod.navigate
+        data:
+          path: <string>
+
+      Refresh browser:
+        service: browser_mod.refresh
+
+      Browser console print:
+        service: browser_mod.console
+        data:
+          message: <string>
+
+      Run javascript:
+        service: browser_mod.javascript
+        data:
+          code: <string>
     */
 
     constructor() {
       super();
-      const cmds = ["sequence", "delay", "popup", "close_popup"];
+      const cmds = [
+        "sequence",
+        "delay",
+        "popup",
+        "close_popup",
+        "navigate",
+        "refresh",
+        "console",
+        "javascript",
+      ];
       for (const service of cmds) {
         this.addEventListener(`command-${service}`, (ev) => {
           this._service_action({
@@ -92,8 +114,27 @@ export const ServicesMixin = (SuperClass) => {
           this.closePopup();
           break;
 
+        case "navigate":
+          this.browser_navigate(data.path);
+          break;
+
+        case "refresh":
+          window.location.href = window.location.href;
+          break;
+
         case "console":
           console.log(data.message);
+          break;
+
+        case "javascript":
+          const code = `
+          "use strict";
+          // Insert global definitions here
+          const hass = (document.querySelector("home-assistant") || document.querySelector("hc-main")).hass;
+          ${data.code}
+          `;
+          const fn = new Function(code);
+          fn();
           break;
       }
     }
