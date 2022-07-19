@@ -68,10 +68,7 @@ export const ServicesMixin = (SuperClass) => {
       ];
       for (const service of cmds) {
         this.addEventListener(`command-${service}`, (ev) => {
-          this._service_action({
-            service,
-            data: ev.detail,
-          });
+          this.service(service, ev.detail);
         });
       }
 
@@ -80,6 +77,10 @@ export const ServicesMixin = (SuperClass) => {
           this._service_action(ev.detail.browser_mod);
         }
       });
+    }
+
+    async service(service, data) {
+      this._service_action({ service, data });
     }
 
     async _service_action({ service, data }) {

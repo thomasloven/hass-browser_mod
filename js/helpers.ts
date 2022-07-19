@@ -75,3 +75,13 @@ export const loadLoadCardHelpers = async () => {
   ]);
   await routes?.routes?.a?.load?.();
 };
+
+export const loadHaForm = async () => {
+  if (customElements.get("ha-form")) return;
+  await loadLoadCardHelpers();
+  const helpers = await window.loadCardHelpers();
+  if (!helpers) return;
+  const card = await helpers.createCardElement({ type: "entity" });
+  if (!card) return;
+  await card.getConfigElement();
+};

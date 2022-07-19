@@ -61,6 +61,15 @@ popup:
       description: "Popup content (Test or lovelace card configuration)"
       selector:
         object:
+    size:
+      name: Size
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - normal
+            - wide
+            - fullscreen
     right_button:
       name: Right button
       description: Text of the right button
@@ -99,7 +108,7 @@ popup:
         number:
           mode: box
     timeout_action:
-      name: Timeout
+      name: Timeout action
       description: Action to perform when popup is closed by timeout
       selector:
         object:

@@ -12,6 +12,8 @@ class BrowserModPopup extends LitElement {
   @property() right_button;
   @property() left_button;
   @property() dismissable;
+  @property({ reflect: true }) wide;
+  @property({ reflect: true }) fullscreen;
   _actions;
   timeout;
   _timeoutStart;
@@ -47,6 +49,7 @@ class BrowserModPopup extends LitElement {
       dismiss_action = undefined,
       timeout = undefined,
       timeout_action = undefined,
+      size = undefined,
     } = {}
   ) {
     this.title = title;
@@ -76,6 +79,8 @@ class BrowserModPopup extends LitElement {
       dismiss_action,
       timeout_action,
     };
+    this.wide = size === "wide" ? "" : undefined;
+    this.fullscreen = size === "fullscreen" ? "" : undefined;
   }
 
   _primary() {

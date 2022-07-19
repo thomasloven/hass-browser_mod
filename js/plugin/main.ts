@@ -13,6 +13,7 @@ import { ActivityMixin } from "./activity";
 import "./popups";
 import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
+import "./popup-card";
 
 /*
   TODO:
@@ -24,6 +25,7 @@ import pjson from "../../package.json";
     - Card-mod integration
     X Timeout
     X Fullscreen
+    x Popup-card
   x Motion/occupancy tracker
   x Information about interaction requirement
   x Information about fullykiosk
