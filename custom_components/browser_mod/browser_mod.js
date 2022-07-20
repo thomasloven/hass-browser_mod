@@ -887,6 +887,13 @@ const ServicesMixin = (SuperClass) => {
               [timeout: <number>]
               [timeout_action: <service call>]
     
+          More-info:
+            service: browser_mod.more_info
+            data:
+              entity: <string>
+              [large: <true/FALSE>]
+              [ignore_popup_card: <true/FALSE>]
+    
           Close popup:
             service: browser_mod.close_popup
     
@@ -914,6 +921,7 @@ const ServicesMixin = (SuperClass) => {
                 "sequence",
                 "delay",
                 "popup",
+                "more_info",
                 "close_popup",
                 "navigate",
                 "refresh",
@@ -947,6 +955,10 @@ const ServicesMixin = (SuperClass) => {
                     break;
                 case "delay":
                     await new Promise((resolve) => setTimeout(resolve, data.time));
+                    break;
+                case "more_info":
+                    const { entity, large, ignore_popup_card } = data;
+                    this.showMoreInfo(entity, large, ignore_popup_card);
                     break;
                 case "popup":
                     const { title, content } = data, d = __rest(data, ["title", "content"]);
@@ -1332,6 +1344,22 @@ const PopupMixin = (SuperClass) => {
         }
         closePopup(...args) {
             this._popupEl.closeDialog();
+            this.showMoreInfo("");
+        }
+        async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {
+            const base = await hass_base_el();
+            base.dispatchEvent(new CustomEvent("hass-more-info", {
+                bubbles: true,
+                composed: true,
+                cancelable: false,
+                detail: { entityId, ignore_popup_card },
+            }));
+            if (large) {
+                await new Promise((resolve) => setTimeout(resolve, 50));
+                const dialog = base.shadowRoot.querySelector("ha-more-info-dialog");
+                if (dialog)
+                    dialog.large = true;
+            }
         }
     };
 };
@@ -1670,18 +1698,19 @@ class PopupCard extends s {
         window.removeEventListener("hass-more-info", this.popup);
     }
     popup(ev) {
-        var _a, _b;
-        if (((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.entityId) === this._config.entity) {
+        var _a, _b, _c;
+        if (((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.entityId) === this._config.entity &&
+            !((_b = ev.detail) === null || _b === void 0 ? void 0 : _b.ignore_popup_card)) {
             ev.stopPropagation();
             ev.preventDefault();
             const config = Object.assign({}, this._config);
             delete config.card;
-            (_b = window.browser_mod) === null || _b === void 0 ? void 0 : _b.service("popup", Object.assign({ content: this._config.card }, this._config));
+            (_c = window.browser_mod) === null || _c === void 0 ? void 0 : _c.service("popup", Object.assign({ content: this._config.card }, this._config));
             setTimeout(() => this.dispatchEvent(new CustomEvent("hass-more-info", {
                 bubbles: true,
                 composed: true,
                 cancelable: false,
-                detail: { entityID: "." },
+                detail: { entityId: "." },
             })), 50);
         }
     }
@@ -1761,7 +1790,7 @@ __decorate([
     - Commands
       x popup
       x close_popup
-      - more-info
+      x more-info
       x navigate
       - lovelace-reload?
       x window-reload

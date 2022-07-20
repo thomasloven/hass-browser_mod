@@ -32,6 +32,13 @@ export const ServicesMixin = (SuperClass) => {
           [timeout: <number>]
           [timeout_action: <service call>]
 
+      More-info:
+        service: browser_mod.more_info
+        data:
+          entity: <string>
+          [large: <true/FALSE>]
+          [ignore_popup_card: <true/FALSE>]
+
       Close popup:
         service: browser_mod.close_popup
 
@@ -60,6 +67,7 @@ export const ServicesMixin = (SuperClass) => {
         "sequence",
         "delay",
         "popup",
+        "more_info",
         "close_popup",
         "navigate",
         "refresh",
@@ -99,6 +107,11 @@ export const ServicesMixin = (SuperClass) => {
           break;
         case "delay":
           await new Promise((resolve) => setTimeout(resolve, data.time));
+          break;
+
+        case "more_info":
+          const { entity, large, ignore_popup_card } = data;
+          this.showMoreInfo(entity, large, ignore_popup_card);
           break;
 
         case "popup":

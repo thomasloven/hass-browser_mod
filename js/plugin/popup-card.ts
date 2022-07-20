@@ -52,7 +52,10 @@ class PopupCard extends LitElement {
   }
 
   popup(ev: CustomEvent) {
-    if (ev.detail?.entityId === this._config.entity) {
+    if (
+      ev.detail?.entityId === this._config.entity &&
+      !ev.detail?.ignore_popup_card
+    ) {
       ev.stopPropagation();
       ev.preventDefault();
       const config = { ...this._config };
@@ -69,7 +72,7 @@ class PopupCard extends LitElement {
               bubbles: true,
               composed: true,
               cancelable: false,
-              detail: { entityID: "." },
+              detail: { entityId: "." },
             })
           ),
         50

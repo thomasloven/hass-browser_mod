@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { provideHass, loadLoadCardHelpers } from "../helpers";
+import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
 
 class BrowserModPopup extends LitElement {
   @property() open;
@@ -309,6 +309,26 @@ export const PopupMixin = (SuperClass) => {
 
     closePopup(...args) {
       this._popupEl.closeDialog();
+      this.showMoreInfo("");
+    }
+
+    async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {
+      const base = await hass_base_el();
+      base.dispatchEvent(
+        new CustomEvent("hass-more-info", {
+          bubbles: true,
+          composed: true,
+          cancelable: false,
+          detail: { entityId, ignore_popup_card },
+        })
+      );
+      if (large) {
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        const dialog: any = base.shadowRoot.querySelector(
+          "ha-more-info-dialog"
+        );
+        if (dialog) dialog.large = true;
+      }
     }
   };
 };

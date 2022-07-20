@@ -36,7 +36,7 @@ import "./popup-card";
     - Commands
       x popup
       x close_popup
-      - more-info
+      x more-info
       x navigate
       - lovelace-reload?
       x window-reload

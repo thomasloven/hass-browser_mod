@@ -113,6 +113,35 @@ popup:
       selector:
         object:
 
+more_info:
+  description: "Show more-info dialog"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    entity:
+      name: Entity ID
+      required: true
+      selector:
+        text:
+    large:
+      name: Large size
+      default: false
+      selector:
+        boolean:
+    ignore_popup_card:
+      name: Ignore any active popup-card overrides
+      default: false
+      selector:
+        boolean:
+
 close_popup:
   description: "Close a popup"
   target:

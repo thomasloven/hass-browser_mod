@@ -62,6 +62,7 @@ async def async_setup_services(hass):
     hass.services.async_register(DOMAIN, "sequence", handle_service)
     hass.services.async_register(DOMAIN, "delay", handle_service)
     hass.services.async_register(DOMAIN, "popup", handle_service)
+    hass.services.async_register(DOMAIN, "more_info", handle_service)
     hass.services.async_register(DOMAIN, "close_popup", handle_service)
     hass.services.async_register(DOMAIN, "navigate", handle_service)
     hass.services.async_register(DOMAIN, "refresh", handle_service)
