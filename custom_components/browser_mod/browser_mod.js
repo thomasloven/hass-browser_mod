@@ -398,13 +398,67 @@ const ConnectionMixin = (SuperClass) => {
                 data: Object.assign(Object.assign({}, this.browsers[this.browserID]), newData),
             });
         }
-        get meta() {
-            if (!this.registered)
-                return null;
-            return this.browsers[this.browserID].meta;
+        get global_settings() {
+            var _a;
+            const settings = {};
+            const global = (_a = this._data.settings) !== null && _a !== void 0 ? _a : {};
+            for (const [k, v] of Object.entries(global)) {
+                if (v !== null)
+                    settings[k] = v;
+            }
+            return settings;
         }
-        set meta(value) {
-            this._reregister({ meta: value });
+        get user_settings() {
+            var _a;
+            const settings = {};
+            const user = (_a = this._data.user_settings[this.hass.user.id]) !== null && _a !== void 0 ? _a : {};
+            for (const [k, v] of Object.entries(user)) {
+                if (v !== null)
+                    settings[k] = v;
+            }
+            return settings;
+        }
+        get browser_settings() {
+            var _a, _b;
+            const settings = {};
+            const browser = (_b = (_a = this.browsers[this.browserID]) === null || _a === void 0 ? void 0 : _a.settings) !== null && _b !== void 0 ? _b : {};
+            for (const [k, v] of Object.entries(browser)) {
+                if (v !== null)
+                    settings[k] = v;
+            }
+            return settings;
+        }
+        get settings() {
+            return Object.assign(Object.assign(Object.assign({}, this.global_settings), this.user_settings), this.browser_settings);
+        }
+        set_setting(key, value, level) {
+            var _a;
+            switch (level) {
+                case "global": {
+                    this.connection.sendMessage({
+                        type: "browser_mod/settings",
+                        key,
+                        value,
+                    });
+                    break;
+                }
+                case "user": {
+                    const user = this.hass.user.id;
+                    this.connection.sendMessage({
+                        type: "browser_mod/settings",
+                        user,
+                        key,
+                        value,
+                    });
+                    break;
+                }
+                case "browser": {
+                    const settings = (_a = this.browsers[this.browserID]) === null || _a === void 0 ? void 0 : _a.settings;
+                    settings[key] = value;
+                    this._reregister({ settings });
+                    break;
+                }
+            }
         }
         get cameraEnabled() {
             if (!this.registered)
@@ -1769,6 +1823,25 @@ __decorate([
         customElements.define("popup-card", PopupCard);
 })();
 
+const AutoSettingsMixin = (SuperClass) => {
+    return class AutoSettingsMixinClass extends SuperClass {
+        constructor() {
+            super();
+            this._auto_settings_setup();
+        }
+        async _auto_settings_setup() {
+            await this.connectionPromise;
+            const settings = this.settings;
+            if (settings.sidebarPanelOrder) {
+                localStorage.setItem("sidebarPanelOrder", settings.sidebarPanelOrder);
+            }
+            if (settings.sidebarHiddenPanels) {
+                localStorage.setItem("sidebarHiddenPanels", settings.sidebarHiddenPanels);
+            }
+        }
+    };
+};
+
 /*
   TODO:
   - Fix nomenclature
@@ -1802,11 +1875,13 @@ __decorate([
     x Redesign services to target devices
   - frontend editor for popup cards
     - also screensavers
-  - Tweaks
-    - Save sidebar
-    - Save sidebar per user
+  - Saved frontend settings
+    X Framework
+    x Save sidebar
     - Kiosk mode
-    - Kiosk mode per user
+    - Default panel?
+    - Screensaver?
+  - Tweaks
     - Favicon templates
     - Title templates
     - Quickbar tweaks (ctrl+enter)?
@@ -1814,7 +1889,7 @@ __decorate([
   - Media_seek
   - Screensavers
   */
-class BrowserMod extends ServicesMixin(PopupMixin(ActivityMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))))))))) {
+class BrowserMod extends ServicesMixin(PopupMixin(ActivityMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(AutoSettingsMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget))))))))))) {
     constructor() {
         super();
         this.connect();

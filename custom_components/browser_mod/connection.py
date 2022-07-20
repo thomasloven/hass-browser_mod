@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 import voluptuous as vol
 from datetime import datetime, timezone
 
@@ -130,8 +131,30 @@ async def async_setup_connection(hass):
             dev = getBrowser(hass, browserID)
             dev.update(hass, msg.get("data", {}))
 
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): "browser_mod/settings",
+            vol.Required("key"): str,
+            vol.Optional("value"): vol.Any(int, str, bool, list, object, None),
+            vol.Optional("user"): str,
+        }
+    )
+    @websocket_api.async_response
+    async def handle_settings(hass, connection, msg):
+        store = hass.data[DOMAIN]["store"]
+        if "user" in msg:
+            # Set user setting
+            await store.set_user_settings(
+                msg["user"], **{msg["key"]: msg.get("value", None)}
+            )
+        else:
+            # Set global setting
+            await store.set_global_settings(**{msg["key"]: msg.get("value", None)})
+        pass
+
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_register)
     async_register_command(hass, handle_unregister)
     async_register_command(hass, handle_reregister)
     async_register_command(hass, handle_update)
+    async_register_command(hass, handle_settings)

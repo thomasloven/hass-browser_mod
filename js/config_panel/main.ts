@@ -1,6 +1,9 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
-import { loadDevTools } from "./helpers";
+import { loadDevTools } from "../helpers";
+import { loadHaForm } from "../helpers";
+
+import "./settings-card";
 
 const bmWindow = window as any;
 
@@ -292,25 +295,9 @@ loadDevTools().then(() => {
               </div>
             </ha-card>
 
-            <ha-card outlined header="Tweaks">
-              <div class="card-content">
-                <ha-settings-row>
-                  <span slot="heading">User sidebar</span>
-                  <span slot="description"
-                    >Save sidebar as default for current user
-                    (${this.hass.user.name})</span
-                  >
-                  <mwc-button>Save</mwc-button>
-                </ha-settings-row>
-                <ha-settings-row>
-                  <span slot="heading">Global sidebar</span>
-                  <span slot="description"
-                    >Save sidebar as default for all users</span
-                  >
-                  <mwc-button>Save</mwc-button>
-                </ha-settings-row>
-              </div>
-            </ha-card>
+            <browser-mod-settings-card
+              .hass=${this.hass}
+            ></browser-mod-settings-card>
           </ha-config-section>
         </ha-app-layout>
       `;

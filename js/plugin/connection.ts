@@ -119,12 +119,66 @@ export const ConnectionMixin = (SuperClass) => {
       });
     }
 
-    get meta() {
-      if (!this.registered) return null;
-      return this.browsers[this.browserID].meta;
+    get global_settings() {
+      const settings = {};
+      const global = this._data.settings ?? {};
+      for (const [k, v] of Object.entries(global)) {
+        if (v !== null) settings[k] = v;
+      }
+      return settings;
     }
-    set meta(value) {
-      this._reregister({ meta: value });
+    get user_settings() {
+      const settings = {};
+      const user = this._data.user_settings[this.hass.user.id] ?? {};
+      for (const [k, v] of Object.entries(user)) {
+        if (v !== null) settings[k] = v;
+      }
+      return settings;
+    }
+    get browser_settings() {
+      const settings = {};
+      const browser = this.browsers[this.browserID]?.settings ?? {};
+      for (const [k, v] of Object.entries(browser)) {
+        if (v !== null) settings[k] = v;
+      }
+      return settings;
+    }
+
+    get settings() {
+      return {
+        ...this.global_settings,
+        ...this.user_settings,
+        ...this.browser_settings,
+      };
+    }
+
+    set_setting(key, value, level) {
+      switch (level) {
+        case "global": {
+          this.connection.sendMessage({
+            type: "browser_mod/settings",
+            key,
+            value,
+          });
+          break;
+        }
+        case "user": {
+          const user = this.hass.user.id;
+          this.connection.sendMessage({
+            type: "browser_mod/settings",
+            user,
+            key,
+            value,
+          });
+          break;
+        }
+        case "browser": {
+          const settings = this.browsers[this.browserID]?.settings;
+          settings[key] = value;
+          this._reregister({ settings });
+          break;
+        }
+      }
     }
 
     get cameraEnabled() {

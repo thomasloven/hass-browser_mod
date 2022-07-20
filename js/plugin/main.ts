@@ -14,6 +14,7 @@ import "./popups";
 import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
 import "./popup-card";
+import { AutoSettingsMixin } from "./auto-settings";
 
 /*
   TODO:
@@ -48,11 +49,13 @@ import "./popup-card";
     x Redesign services to target devices
   - frontend editor for popup cards
     - also screensavers
-  - Tweaks
-    - Save sidebar
-    - Save sidebar per user
+  - Saved frontend settings
+    X Framework
+    x Save sidebar
     - Kiosk mode
-    - Kiosk mode per user
+    - Default panel?
+    - Screensaver?
+  - Tweaks
     - Favicon templates
     - Title templates
     - Quickbar tweaks (ctrl+enter)?
@@ -67,7 +70,9 @@ export class BrowserMod extends ServicesMixin(
         CameraMixin(
           MediaPlayerMixin(
             ScreenSaverMixin(
-              FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+              AutoSettingsMixin(
+                FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+              )
             )
           )
         )

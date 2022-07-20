@@ -10,11 +10,11 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
-class BrowserStoreData:
-    last_seen = attr.ib(type=int, default=0)
-    enabled = attr.ib(type=bool, default=False)
-    camera = attr.ib(type=bool, default=False)
-    meta = attr.ib(type=str, default="default")
+class Settings:
+    kiosk = attr.ib(type=bool, default=None)
+    defaultPanel = attr.ib(type=str, default=None)
+    sidebarPanelOrder = attr.ib(type=list, default=None)
+    sidebarHiddenPanels = attr.ib(type=list, default=None)
 
     @classmethod
     def from_dict(cls, data):
@@ -25,20 +25,53 @@ class BrowserStoreData:
 
 
 @attr.s
+class BrowserStoreData:
+    last_seen = attr.ib(type=int, default=0)
+    enabled = attr.ib(type=bool, default=False)
+    camera = attr.ib(type=bool, default=False)
+    settings = attr.ib(type=Settings, factory=Settings)
+    meta = attr.ib(type=str, default="default")
+
+    @classmethod
+    def from_dict(cls, data):
+        settings = Settings.from_dict(data.get("settings", {}))
+        return cls(
+            **(
+                data
+                | {
+                    "settings": settings,
+                }
+            )
+        )
+
+    def asdict(self):
+        return attr.asdict(self)
+
+
+@attr.s
 class ConfigStoreData:
     browsers = attr.ib(type=dict[str:BrowserStoreData], factory=dict)
     version = attr.ib(type=str, default="2.0")
+    settings = attr.ib(type=Settings, factory=Settings)
+    user_settings = attr.ib(type=dict[str:Settings], factory=dict)
 
     @classmethod
     def from_dict(cls, data={}):
         browsers = {
-            k: BrowserStoreData.from_dict(v) for k, v in data["browsers"].items()
+            k: BrowserStoreData.from_dict(v)
+            for k, v in data.get("browsers", {}).items()
         }
+        user_settings = {
+            k: Settings.from_dict(v) for k, v in data.get("user_settings", {}).items()
+        }
+        settings = Settings.from_dict(data.get("settings", {}))
         return cls(
             **(
                 data
                 | {
                     "browsers": browsers,
+                    "settings": settings,
+                    "user_settings": user_settings,
                 }
             )
         )
@@ -96,4 +129,20 @@ class BrowserModStore:
 
     async def delete_browser(self, browserID):
         del self.data.browsers[browserID]
+        await self.updated()
+
+    def get_user_settings(self, name):
+        return self.data.user_settings.get(name, Settings())
+
+    async def set_user_settings(self, name, **data):
+        settings = self.data.user_settings.get(name, Settings())
+        settings.__dict__.update(data)
+        self.data.user_settings[name] = settings
+        await self.updated()
+
+    def get_global_settings(self):
+        return self.data.settings
+
+    async def set_global_settings(self, **data):
+        self.data.settings.__dict__.update(data)
         await self.updated()
