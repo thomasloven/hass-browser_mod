@@ -1991,7 +1991,7 @@ const AutoSettingsMixin = (SuperClass) => {
       x javascript eval
       - toast?
     x Redesign services to target devices
-  - frontend editor for popup cards
+  x frontend editor for popup cards
     - also screensavers
   - Saved frontend settings
     X Framework

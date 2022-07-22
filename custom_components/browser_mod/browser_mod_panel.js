@@ -101,8 +101,312 @@ const loadDeveloperToolsTemplate = async () => {
     await customElements.whenDefined("developer-tools-template");
 };
 
+class BrowserModRegisteredBrowsersCard$1 extends s {
+    constructor() {
+        super(...arguments);
+        this.dirty = false;
+    }
+    toggleRegister() {
+        var _a;
+        if (!((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.connected))
+            return;
+        window.browser_mod.registered = !window.browser_mod.registered;
+        this.dirty = true;
+    }
+    changeBrowserID(ev) {
+        window.browser_mod.browserID = ev.target.value;
+        this.dirty = true;
+    }
+    toggleCameraEnabled() {
+        window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
+        this.dirty = true;
+    }
+    firstUpdated() {
+        window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+    }
+    render() {
+        var _a, _b, _c, _d, _e;
+        return $ `
+      <ha-card outlined>
+        <h1 class="card-header">
+          <div class="name">This Browser</div>
+          ${((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.connected)
+            ? $ `
+                <ha-icon
+                  class="icon"
+                  .icon=${"mdi:check-circle-outline"}
+                  style="color: var(--success-color, green);"
+                ></ha-icon>
+              `
+            : $ `
+                <ha-icon
+                  class="icon"
+                  .icon=${"mdi:circle-outline"}
+                  style="color: var(--error-color, red);"
+                ></ha-icon>
+              `}
+        </h1>
+        <div class="card-content">
+          ${this.dirty
+            ? $ `
+                <ha-alert alert-type="warning">
+                  It is strongly recommended to refresh your browser window
+                  after changing any of the settings in this box.
+                </ha-alert>
+              `
+            : ""}
+        </div>
+        <div class="card-content">
+          <ha-settings-row>
+            <span slot="heading">Enable</span>
+            <span slot="description"
+              >Enable this browser as a Device in Home Assistant</span
+            >
+            <ha-switch
+              .checked=${(_b = window.browser_mod) === null || _b === void 0 ? void 0 : _b.registered}
+              @change=${this.toggleRegister}
+            ></ha-switch>
+          </ha-settings-row>
+
+          <ha-settings-row>
+            <span slot="heading">BrowserID</span>
+            <span slot="description"
+              >A unique identifier for this browser-device combination.</span
+            >
+            <ha-textfield
+              .value=${(_c = window.browser_mod) === null || _c === void 0 ? void 0 : _c.browserID}
+              @change=${this.changeBrowserID}
+            ></ha-textfield>
+          </ha-settings-row>
+
+          ${((_d = window.browser_mod) === null || _d === void 0 ? void 0 : _d.registered)
+            ? $ `
+                ${this._renderSuspensionAlert()}
+                <ha-settings-row>
+                  <span slot="heading">Enable camera</span>
+                  <span slot="description"
+                    >Get camera input from this browser (hardware
+                    dependent)</span
+                  >
+                  <ha-switch
+                    .checked=${(_e = window.browser_mod) === null || _e === void 0 ? void 0 : _e.cameraEnabled}
+                    @change=${this.toggleCameraEnabled}
+                  ></ha-switch>
+                </ha-settings-row>
+                ${this._renderInteractionAlert()}
+                ${this._renderFKBSettingsInfo()}
+              `
+            : ""}
+        </div>
+      </ha-card>
+    `;
+    }
+    _renderSuspensionAlert() {
+        if (!this.hass.suspendWhenHidden)
+            return $ ``;
+        return $ `
+      <ha-alert alert-type="warning" title="Auto closing connection">
+        Home Assistant will close the websocket connection to the server
+        automatically after 5 minutes of inactivity.<br /><br />
+        While decreasing network trafic and memory usage, this may cause
+        problems for browser_mod operation.
+        <br /><br />
+        If you find that some things stop working for this Browser after a time,
+        try going to your
+        <a
+          href="/profile"
+          style="text-decoration: underline; color: var(--primary-color);"
+          >Profile Settings</a
+        >
+        and disabling the option
+        "${this.hass.localize("ui.panel.profile.suspend.header") ||
+            "Automatically close connection"}".
+      </ha-alert>
+    `;
+    }
+    _renderInteractionAlert() {
+        return $ `
+      <ha-alert title="Interaction requirement">
+        For security reasons many browsers require the user to interact with a
+        webpage before allowing audio playback or video capture. This may affect
+        the
+        <code>media_player</code> and <code>camera</code> components of Browser
+        Mod. <br /><br />
+
+        If you ever see a
+        <ha-icon icon="mdi:gesture-tap"></ha-icon> symbol at the bottom right
+        corner of the screen, please tap or click anywhere on the page. This
+        should allow Browser Mod to work again.
+      </ha-alert>
+    `;
+    }
+    _renderFKBSettingsInfo() {
+        var _a, _b;
+        if (!((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.fully) || !this.getFullySettings())
+            return $ ``;
+        return $ `
+      ${((_b = window.browser_mod) === null || _b === void 0 ? void 0 : _b.fully) && this.getFullySettings()
+            ? $ ` <ha-alert title="FullyKiosk Browser">
+            You are using FullyKiosk Browser. It is recommended to enable the
+            following settings:
+            <ul>
+              ${this.getFullySettings()}
+            </ul>
+          </ha-alert>`
+            : ""}
+    `;
+    }
+    getFullySettings() {
+        if (!window.browser_mod.fully)
+            return null;
+        const retval = [];
+        const wcs = [];
+        // Web Content Settings
+        // Autoplay Videos
+        if (window.fully.getBooleanSetting("autoplayVideos") !== "true")
+            wcs.push($ `<li>Autoplay Videos</li>`);
+        // Autoplay Audio
+        if (window.fully.getBooleanSetting("autoplayAudio") !== "true")
+            wcs.push($ `<li>Autoplay Audio</li>`);
+        // Enable Webcam Access (PLUS)
+        if (window.fully.getBooleanSetting("webcamAccess") !== "true")
+            wcs.push($ `<li>Enable Webcam Access (PLUS)</li>`);
+        if (wcs.length !== 0) {
+            retval.push($ `<li>Web Content Settings</li>
+        <ul>
+          ${wcs}
+        </ul>`);
+        }
+        // Advanced Web Settings
+        // Enable JavaScript Interface (PLUS)
+        if (window.fully.getBooleanSetting("websiteIntegration") !== "true")
+            retval.push($ `<li>Advanced Web Settings</li>
+        <ul>
+          <li>Enable JavaScript Interface (PLUS)</li>
+        </ul>`);
+        // Device Management
+        // Keep Screen On
+        if (window.fully.getBooleanSetting("keepScreenOn") !== "true")
+            retval.push($ `<li>Device Management</li>
+        <ul>
+          <li>Keep Screen On</li>
+        </ul>`);
+        // Power Settings
+        // Prevent from Sleep while Screen Off
+        if (window.fully.getBooleanSetting("preventSleepWhileScreenOff") !== "true")
+            retval.push($ `<li>Power Settings</li>
+        <ul>
+          <li>Prevent from Sleep while Screen Off</li>
+        </ul>`);
+        const md = [];
+        // Motion Detection (PLUS)
+        // Enable Visual Motion Detection
+        if (window.fully.getBooleanSetting("motionDetection") !== "true")
+            md.push($ `<li>Enable Visual Motion Detection</li>`);
+        // Turn Screen On on Motion
+        if (window.fully.getBooleanSetting("screenOnOnMotion") !== "true")
+            md.push($ `<li>Turn Screen On on Motion</li>`);
+        // Exit Screensaver on Motion
+        if (window.fully.getBooleanSetting("stopScreensaverOnMotion") !== "true")
+            md.push($ `<li>Exit Screensaver on Motion</li>`);
+        if (md.length !== 0) {
+            retval.push($ `<li>Motion Detection (PLUS)</li>
+        <ul>
+          ${md}
+        </ul>`);
+        }
+        // Remote Administration (PLUS)
+        // Enable Remote Administration
+        if (window.fully.getBooleanSetting("remoteAdmin") !== "true")
+            retval.push($ `<li>Remote Administration (PLUS)</li>
+        <ul>
+          <li>Enable Remote Administration</li>
+        </ul>`);
+        return retval.length ? retval : null;
+    }
+    static get styles() {
+        return r$2 `
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+      }
+      ha-textfield {
+        width: 250px;
+        display: block;
+        margin-top: 8px;
+      }
+    `;
+    }
+}
+__decorate([
+    e()
+], BrowserModRegisteredBrowsersCard$1.prototype, "hass", void 0);
+__decorate([
+    e()
+], BrowserModRegisteredBrowsersCard$1.prototype, "dirty", void 0);
+customElements.define("browser-mod-browser-settings-card", BrowserModRegisteredBrowsersCard$1);
+
+class BrowserModRegisteredBrowsersCard extends s {
+    firstUpdated() {
+        window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+    }
+    unregister_browser(ev) {
+        const browserID = ev.currentTarget.browserID;
+        const unregisterCallback = () => {
+            console.log(browserID, window.browser_mod.browserID);
+            if (browserID === window.browser_mod.browserID) {
+                console.log("Unregister self");
+                window.browser_mod.registered = false;
+            }
+            else {
+                window.browser_mod.connection.sendMessage({
+                    type: "browser_mod/unregister",
+                    browserID,
+                });
+            }
+        };
+        window.browser_mod.showPopup("Unregister browser", `Are you sure you want to unregister browser ${browserID}?`, {
+            right_button: "Yes",
+            right_button_action: unregisterCallback,
+            left_button: "No",
+        });
+    }
+    render() {
+        return $ `
+      <ha-card header="Registered Browsers" outlined>
+        <div class="card-content">
+          ${Object.keys(window.browser_mod.browsers).map((d) => $ ` <ha-settings-row>
+              <span slot="heading"> ${d} </span>
+              <span slot="description">
+                Last connected:
+                <ha-relative-time
+                  .hass=${this.hass}
+                  .datetime=${window.browser_mod.browsers[d].last_seen}
+                ></ha-relative-time>
+              </span>
+              <ha-icon-button .browserID=${d} @click=${this.unregister_browser}>
+                <ha-icon .icon=${"mdi:delete"}></ha-icon>
+              </ha-icon-button>
+            </ha-settings-row>`)}
+        </div>
+      </ha-card>
+    `;
+    }
+    static get styles() {
+        return r$2 `
+      ha-icon-button > * {
+        display: flex;
+      }
+    `;
+    }
+}
+__decorate([
+    e()
+], BrowserModRegisteredBrowsersCard.prototype, "hass", void 0);
+customElements.define("browser-mod-registered-browsers-card", BrowserModRegisteredBrowsersCard);
+
 loadDeveloperToolsTemplate();
-class BrowserModSettingsCard extends s {
+class BrowserModFrontendSettingsCard extends s {
     constructor() {
         super(...arguments);
         this._selectedTab = 0;
@@ -321,128 +625,18 @@ class BrowserModSettingsCard extends s {
 }
 __decorate([
     e()
-], BrowserModSettingsCard.prototype, "hass", void 0);
+], BrowserModFrontendSettingsCard.prototype, "hass", void 0);
 __decorate([
     t()
-], BrowserModSettingsCard.prototype, "_selectedTab", void 0);
-customElements.define("browser-mod-settings-card", BrowserModSettingsCard);
+], BrowserModFrontendSettingsCard.prototype, "_selectedTab", void 0);
+customElements.define("browser-mod-frontend-settings-card", BrowserModFrontendSettingsCard);
 
-const bmWindow = window;
 loadConfigDashboard().then(() => {
     class BrowserModPanel extends s {
-        constructor() {
-            super(...arguments);
-            this.dirty = false;
-        }
-        toggleRegister() {
-            var _a;
-            if (!((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.connected))
-                return;
-            window.browser_mod.registered = !window.browser_mod.registered;
-            this.dirty = true;
-        }
-        changeBrowserID(ev) {
-            window.browser_mod.browserID = ev.target.value;
-            this.dirty = true;
-        }
-        toggleCameraEnabled() {
-            window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
-            this.dirty = true;
-        }
-        unregister_browser(ev) {
-            const browserID = ev.currentTarget.browserID;
-            const unregisterCallback = () => {
-                console.log(browserID, window.browser_mod.browserID);
-                if (browserID === window.browser_mod.browserID) {
-                    console.log("Unregister self");
-                    window.browser_mod.registered = false;
-                }
-                else {
-                    window.browser_mod.connection.sendMessage({
-                        type: "browser_mod/unregister",
-                        browserID,
-                    });
-                }
-            };
-            window.browser_mod.showPopup("Unregister browser", `Are you sure you want to unregister browser ${browserID}?`, {
-                right_button: "Yes",
-                right_button_action: unregisterCallback,
-                left_button: "No",
-            });
-        }
         firstUpdated() {
             window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
         }
-        getFullySettings() {
-            if (!window.browser_mod.fully)
-                return null;
-            const retval = [];
-            const wcs = [];
-            // Web Content Settings
-            // Autoplay Videos
-            if (window.fully.getBooleanSetting("autoplayVideos") !== "true")
-                wcs.push($ `<li>Autoplay Videos</li>`);
-            // Autoplay Audio
-            if (window.fully.getBooleanSetting("autoplayAudio") !== "true")
-                wcs.push($ `<li>Autoplay Audio</li>`);
-            // Enable Webcam Access (PLUS)
-            if (window.fully.getBooleanSetting("webcamAccess") !== "true")
-                wcs.push($ `<li>Enable Webcam Access (PLUS)</li>`);
-            if (wcs.length !== 0) {
-                retval.push($ `<li>Web Content Settings</li>
-          <ul>
-            ${wcs}
-          </ul>`);
-            }
-            // Advanced Web Settings
-            // Enable JavaScript Interface (PLUS)
-            if (window.fully.getBooleanSetting("websiteIntegration") !== "true")
-                retval.push($ `<li>Advanced Web Settings</li>
-          <ul>
-            <li>Enable JavaScript Interface (PLUS)</li>
-          </ul>`);
-            // Device Management
-            // Keep Screen On
-            if (window.fully.getBooleanSetting("keepScreenOn") !== "true")
-                retval.push($ `<li>Device Management</li>
-          <ul>
-            <li>Keep Screen On</li>
-          </ul>`);
-            // Power Settings
-            // Prevent from Sleep while Screen Off
-            if (window.fully.getBooleanSetting("preventSleepWhileScreenOff") !== "true")
-                retval.push($ `<li>Power Settings</li>
-          <ul>
-            <li>Prevent from Sleep while Screen Off</li>
-          </ul>`);
-            const md = [];
-            // Motion Detection (PLUS)
-            // Enable Visual Motion Detection
-            if (window.fully.getBooleanSetting("motionDetection") !== "true")
-                md.push($ `<li>Enable Visual Motion Detection</li>`);
-            // Turn Screen On on Motion
-            if (window.fully.getBooleanSetting("screenOnOnMotion") !== "true")
-                md.push($ `<li>Turn Screen On on Motion</li>`);
-            // Exit Screensaver on Motion
-            if (window.fully.getBooleanSetting("stopScreensaverOnMotion") !== "true")
-                md.push($ `<li>Exit Screensaver on Motion</li>`);
-            if (md.length !== 0) {
-                retval.push($ `<li>Motion Detection (PLUS)</li>
-          <ul>
-            ${md}
-          </ul>`);
-            }
-            // Remote Administration (PLUS)
-            // Enable Remote Administration
-            if (window.fully.getBooleanSetting("remoteAdmin") !== "true")
-                retval.push($ `<li>Remote Administration (PLUS)</li>
-          <ul>
-            <li>Enable Remote Administration</li>
-          </ul>`);
-            return retval.length ? retval : null;
-        }
         render() {
-            var _a, _b, _c, _d, _e, _f;
             return $ `
         <ha-app-layout>
           <app-header slot="header" fixed>
@@ -456,147 +650,17 @@ loadConfigDashboard().then(() => {
           </app-header>
 
           <ha-config-section .narrow=${this.narrow} full-width>
-            <ha-card outlined>
-              <h1 class="card-header">
-                <div class="name">This Browser</div>
-                ${((_a = bmWindow.browser_mod) === null || _a === void 0 ? void 0 : _a.connected)
-                ? $ `
-                      <ha-icon
-                        class="icon"
-                        .icon=${"mdi:check-circle-outline"}
-                        style="color: var(--success-color, green);"
-                      ></ha-icon>
-                    `
-                : $ `
-                      <ha-icon
-                        class="icon"
-                        .icon=${"mdi:circle-outline"}
-                        style="color: var(--error-color, red);"
-                      ></ha-icon>
-                    `}
-              </h1>
-              <div class="card-content">
-                <p>Settings that apply to this browser.</p>
-                ${this.dirty
-                ? $ `
-                      <ha-alert alert-type="warning">
-                        It is strongly recommended to refresh your browser
-                        window after changing any of the settings in this box.
-                      </ha-alert>
-                    `
-                : ""}
-              </div>
-              <div class="card-content">
-                <ha-settings-row>
-                  <span slot="heading">Enable</span>
-                  <span slot="description"
-                    >Enable this browser as a Device in Home Assistant</span
-                  >
-                  <ha-switch
-                    .checked=${(_b = window.browser_mod) === null || _b === void 0 ? void 0 : _b.registered}
-                    @change=${this.toggleRegister}
-                  ></ha-switch>
-                </ha-settings-row>
-
-                <ha-settings-row>
-                  <span slot="heading">BrowserID</span>
-                  <span slot="description"
-                    >A unique identifier for this browser-device
-                    combination.</span
-                  >
-                  <ha-textfield
-                    .value=${(_c = window.browser_mod) === null || _c === void 0 ? void 0 : _c.browserID}
-                    @change=${this.changeBrowserID}
-                  ></ha-textfield>
-                </ha-settings-row>
-
-                ${((_d = window.browser_mod) === null || _d === void 0 ? void 0 : _d.registered)
-                ? $ `
-                      ${this.hass.suspendWhenHidden
-                    ? $ `<ha-alert
-                            alert-type="warning"
-                            title="Auto closing connection"
-                          >
-                            Home Assistant will close the websocket connection
-                            to the server automatically after 5 minutes of
-                            inactivity.<br /><br />
-                            While decreasing network trafic and memory usage,
-                            this may cause problems for browser_mod operation.
-                            <br /><br />
-                            If you find that some things stop working for this
-                            Browser after a time, try going to your
-                            <a
-                              href="/profile"
-                              style="text-decoration: underline; color: var(--primary-color);"
-                              >Profile Settings</a
-                            >
-                            and disabling the option
-                            "${this.hass.localize("ui.panel.profile.suspend.header") || "Automatically close connection"}".
-                          </ha-alert>`
-                    : ""}
-                      <ha-settings-row>
-                        <span slot="heading">Enable camera</span>
-                        <span slot="description"
-                          >Get camera input from this browser (hardware
-                          dependent)</span
-                        >
-                        <ha-switch
-                          .checked=${(_e = window.browser_mod) === null || _e === void 0 ? void 0 : _e.cameraEnabled}
-                          @change=${this.toggleCameraEnabled}
-                        ></ha-switch>
-                      </ha-settings-row>
-                      <ha-alert title="Interaction requirement">
-                        For security reasons many browsers require the user to
-                        interact with a webpage before allowing audio playback
-                        or video capture. This may affect the
-                        <code>media_player</code> and
-                        <code>camera</code> components of Browser Mod.
-                        <br /><br />
-
-                        If you ever see a
-                        <ha-icon icon="mdi:gesture-tap"></ha-icon> symbol at the
-                        bottom right corner of the screen, please tap or click
-                        anywhere on the page. This should allow Browser Mod to
-                        work again.
-                      </ha-alert>
-                      ${((_f = window.browser_mod) === null || _f === void 0 ? void 0 : _f.fully) && this.getFullySettings()
-                    ? $ ` <ha-alert title="FullyKiosk Browser">
-                            You are using FullyKiosk Browser. It is recommended
-                            to enable the following settings:
-                            <ul>
-                              ${this.getFullySettings()}
-                            </ul>
-                          </ha-alert>`
-                    : ""}
-                    `
-                : ""}
-              </div>
-            </ha-card>
-
-            <ha-card header="Registered Browsers" outlined>
-              <div class="card-content">
-                ${Object.keys(window.browser_mod.browsers).map((d) => $ ` <ha-settings-row>
-                    <span slot="heading"> ${d} </span>
-                    <span slot="description">
-                      Last connected:
-                      <ha-relative-time
-                        .hass=${this.hass}
-                        .datetime=${window.browser_mod.browsers[d].last_seen}
-                      ></ha-relative-time>
-                    </span>
-                    <ha-icon-button
-                      .browserID=${d}
-                      @click=${this.unregister_browser}
-                    >
-                      <ha-icon .icon=${"mdi:delete"}></ha-icon>
-                    </ha-icon-button>
-                  </ha-settings-row>`)}
-              </div>
-            </ha-card>
-
-            <browser-mod-settings-card
+            <browser-mod-browser-settings-card
               .hass=${this.hass}
-            ></browser-mod-settings-card>
+            ></browser-mod-browser-settings-card>
+
+            <browser-mod-registered-browsers-card
+              .hass=${this.hass}
+            ></browser-mod-registered-browsers-card>
+
+            <browser-mod-frontend-settings-card
+              .hass=${this.hass}
+            ></browser-mod-frontend-settings-card>
           </ha-config-section>
         </ha-app-layout>
       `;
@@ -615,18 +679,6 @@ loadConfigDashboard().then(() => {
           ha-config-section {
             padding: 16px 0;
           }
-          .card-header {
-            display: flex;
-            justify-content: space-between;
-          }
-          ha-textfield {
-            width: 250px;
-            display: block;
-            margin-top: 8px;
-          }
-          ha-icon-button > * {
-            display: flex;
-          }
         `,
             ];
         }
@@ -640,8 +692,5 @@ loadConfigDashboard().then(() => {
     __decorate([
         e()
     ], BrowserModPanel.prototype, "connection", void 0);
-    __decorate([
-        e()
-    ], BrowserModPanel.prototype, "dirty", void 0);
     customElements.define("browser-mod-panel", BrowserModPanel);
 });

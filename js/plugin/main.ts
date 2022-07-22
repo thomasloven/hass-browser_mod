@@ -14,7 +14,7 @@ import "./popups";
 import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
 import "./popup-card";
-import { AutoSettingsMixin } from "./auto-settings";
+import { AutoSettingsMixin } from "./frontend-settings";
 
 /*
   TODO:
@@ -47,7 +47,7 @@ import { AutoSettingsMixin } from "./auto-settings";
       x javascript eval
       - toast?
     x Redesign services to target devices
-  - frontend editor for popup cards
+  x frontend editor for popup cards
     - also screensavers
   - Saved frontend settings
     X Framework

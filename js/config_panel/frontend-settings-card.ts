@@ -4,7 +4,7 @@ import { loadDeveloperToolsTemplate } from "../helpers";
 
 loadDeveloperToolsTemplate();
 
-class BrowserModSettingsCard extends LitElement {
+class BrowserModFrontendSettingsCard extends LitElement {
   @property() hass;
 
   @state() _selectedTab = 0;
@@ -261,4 +261,7 @@ class BrowserModSettingsCard extends LitElement {
   }
 }
 
-customElements.define("browser-mod-settings-card", BrowserModSettingsCard);
+customElements.define(
+  "browser-mod-frontend-settings-card",
+  BrowserModFrontendSettingsCard
+);
