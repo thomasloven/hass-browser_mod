@@ -38,6 +38,11 @@ export const AutoSettingsMixin = (SuperClass) => {
         );
       }
 
+      // Default panel
+      if (settings.defaultPanel) {
+        localStorage.setItem("defaultPanel", settings.defaultPanel);
+      }
+
       // Hide sidebar
       if (settings.hideSidebar === true) {
         selectTree(

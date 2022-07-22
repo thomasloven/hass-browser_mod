@@ -571,15 +571,15 @@ class BrowserModFrontendSettingsCard extends s {
 
         <ha-settings-row>
           <span slot="heading">Sidebar order</span>
-          <span slot="description"
-            >Order and visibility of sidebar buttons</span
-          >
+          <span slot="description">
+            Order and visibility of sidebar buttons
+          </span>
           Currently: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
           ${OVERRIDDEN("sidebarPanelOrder")}
         </ha-settings-row>
         <ha-settings-row>
           <span slot="description">
-            Clearing this does NOT restore the original button order.
+            Clearing this does NOT restore the original default order.
           </span>
           <mwc-button
             @click=${() => {
@@ -593,6 +593,36 @@ class BrowserModFrontendSettingsCard extends s {
             @click=${() => {
             window.browser_mod.set_setting("sidebarPanelOrder", undefined, level);
             window.browser_mod.set_setting("sidebarHiddenPanels", undefined, level);
+        }}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
+          <span slot="heading">Default dashboard</span>
+          <span slot="description"
+            >The dashboard that's displayed by default</span
+          >
+          Currently: ${DESC_SET_UNSET(current.defaultPanel)}
+          ${OVERRIDDEN("defaultPanel")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <span slot="description">
+            Clearing this does NOT restore the original default dashboard.
+          </span>
+          <mwc-button
+            @click=${() => {
+            window.browser_mod.set_setting("defaultPanel", localStorage.getItem("defaultPanel"), level);
+        }}
+          >
+            Set
+          </mwc-button>
+          <mwc-button
+            @click=${() => {
+            window.browser_mod.set_setting("defaultPanel", undefined, level);
         }}
           >
             Clear

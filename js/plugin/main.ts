@@ -53,7 +53,7 @@ import { AutoSettingsMixin } from "./frontend-settings";
     X Framework
     x Save sidebar
     x Kiosk mode
-    - Default panel
+    x Default dashboard
     - Screensaver?
     x Favicon templates
     x Title templates

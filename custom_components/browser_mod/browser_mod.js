@@ -1883,6 +1883,10 @@ const AutoSettingsMixin = (SuperClass) => {
             if (settings.sidebarHiddenPanels) {
                 localStorage.setItem("sidebarHiddenPanels", settings.sidebarHiddenPanels);
             }
+            // Default panel
+            if (settings.defaultPanel) {
+                localStorage.setItem("defaultPanel", settings.defaultPanel);
+            }
             // Hide sidebar
             if (settings.hideSidebar === true) {
                 selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout").then((el) => el.style.setProperty("--app-drawer-width", "0px"));
@@ -1997,7 +2001,7 @@ const AutoSettingsMixin = (SuperClass) => {
     X Framework
     x Save sidebar
     x Kiosk mode
-    - Default panel
+    x Default dashboard
     - Screensaver?
     x Favicon templates
     x Title templates
