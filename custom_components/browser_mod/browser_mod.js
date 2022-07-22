@@ -1863,8 +1863,15 @@ const AutoSettingsMixin = (SuperClass) => {
     return class AutoSettingsMixinClass extends SuperClass {
         constructor() {
             super();
+            this.__currentTitle = undefined;
             this._auto_settings_setup();
             this.addEventListener("browser-mod-config-update", () => this._auto_settings_setup());
+            window.addEventListener("location-changed", () => {
+                this._updateTitle();
+                setTimeout(() => this._updateTitle(), 500);
+                setTimeout(() => this._updateTitle(), 1000);
+                setTimeout(() => this._updateTitle(), 5000);
+            });
         }
         async _auto_settings_setup() {
             await this.connectionPromise;
@@ -1908,7 +1915,20 @@ const AutoSettingsMixin = (SuperClass) => {
                 })();
             }
             // Title template
-            if (settings.titleTemplate !== undefined) ;
+            if (settings.titleTemplate !== undefined) {
+                (async () => {
+                    if (this._titleTemplateSubscription) {
+                        this._titleTemplateSubscription();
+                    }
+                    this._titleTemplateSubscription = undefined;
+                    this._titleTemplateSubscription =
+                        await this.connection.subscribeMessage(this._updateTitle.bind(this), {
+                            type: "render_template",
+                            template: settings.titleTemplate,
+                            variables: {},
+                        });
+                })();
+            }
         }
         get _currentFavicon() {
             const link = document.head.querySelector("link[rel~='icon']");
@@ -1925,6 +1945,16 @@ const AutoSettingsMixin = (SuperClass) => {
             */
             const link = document.head.querySelector("link[rel~='icon']");
             link.href = result;
+            window.browser_mod.fireEvent("browser-mod-favicon-update");
+        }
+        get _currentTitle() {
+            return this.__currentTitle;
+        }
+        _updateTitle(data = undefined) {
+            if (data)
+                this.__currentTitle = data.result;
+            if (this.__currentTitle)
+                document.title = this.__currentTitle;
             window.browser_mod.fireEvent("browser-mod-favicon-update");
         }
     };
@@ -1967,12 +1997,13 @@ const AutoSettingsMixin = (SuperClass) => {
     X Framework
     x Save sidebar
     x Kiosk mode
-    - Default panel?
+    - Default panel
     - Screensaver?
     x Favicon templates
-    - Title templates
+    x Title templates
   - Tweaks
     - Quickbar tweaks (ctrl+enter)?
+    - Card-mod preload
   - Video player?
   - Media_seek
   - Screensavers

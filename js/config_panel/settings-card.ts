@@ -27,8 +27,9 @@ class BrowserModSettingsCard extends LitElement {
     return html`
       <ha-card header="Frontend settings" outlined>
         <div class="card-content">
+        <ha-alert alert-type="warning">
           <p>
-            Please note: Those settings severely change the way the Home
+            Please note: The settings in this section severely change the way the Home
             Assistant frontend works and looks. It is very easy to forget that
             you made a setting here when you switch devices or user.
           </p>
@@ -38,6 +39,7 @@ class BrowserModSettingsCard extends LitElement {
             caches. Failure to do so means you risk wasting a lot of peoples
             time, and you will be severly and rightfully ridiculed.
           </p>
+          </ha-alert>
           <p>
           Global settings are applied for all users and browsers.</br>
           User settings are applied to the current user and overrides any Global settings.</br>
@@ -107,9 +109,32 @@ class BrowserModSettingsCard extends LitElement {
         <div class="separator"></div>
 
         <ha-settings-row>
+          <span slot="heading">Title template</span>
+          ${OVERRIDDEN("titleTemplate")}
+        </ha-settings-row>
+        <ha-code-editor
+          .hass=${this.hass}
+          .value=${current.titleTemplate}
+          @value-changed=${(ev) => {
+            const tpl = ev.detail.value || undefined;
+            window.browser_mod.set_setting("titleTemplate", tpl, level);
+          }}
+        ></ha-code-editor>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("titleTemplate", undefined, level)}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
           <span slot="heading">Hide Sidebar</span>
           <span slot="description">Hide the sidebar and hamburger menu</span>
-          Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
+          Currently: ${DESC_BOOLEAN(current.hideSidebar)}
           ${OVERRIDDEN("hideSidebar")}
         </ha-settings-row>
         <ha-settings-row>
@@ -138,7 +163,7 @@ class BrowserModSettingsCard extends LitElement {
         <ha-settings-row>
           <span slot="heading">Hide Header</span>
           <span slot="description">Hide the header on all pages</span>
-          Currenty: ${DESC_BOOLEAN(current.hideHeader)}
+          Currently: ${DESC_BOOLEAN(current.hideHeader)}
           ${OVERRIDDEN("hideHeader")}
         </ha-settings-row>
         <ha-settings-row>
@@ -169,7 +194,7 @@ class BrowserModSettingsCard extends LitElement {
           <span slot="description"
             >Order and visibility of sidebar buttons</span
           >
-          Currenty: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
+          Currently: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
           ${OVERRIDDEN("sidebarPanelOrder")}
         </ha-settings-row>
         <ha-settings-row>

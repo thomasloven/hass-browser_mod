@@ -53,12 +53,13 @@ import { AutoSettingsMixin } from "./auto-settings";
     X Framework
     x Save sidebar
     x Kiosk mode
-    - Default panel?
+    - Default panel
     - Screensaver?
     x Favicon templates
-    - Title templates
+    x Title templates
   - Tweaks
     - Quickbar tweaks (ctrl+enter)?
+    - Card-mod preload
   - Video player?
   - Media_seek
   - Screensavers
