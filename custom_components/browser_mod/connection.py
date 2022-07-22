@@ -1,5 +1,4 @@
 import logging
-from typing import Any
 import voluptuous as vol
 from datetime import datetime, timezone
 

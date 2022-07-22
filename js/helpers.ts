@@ -89,8 +89,6 @@ export const loadHaForm = async () => {
 // Loads in ha-config-dashboard which is used to copy styling
 // Also provides ha-settings-row
 export const loadDevTools = async () => {
-  if (customElements.get("ha-config-dashboard")) return;
-
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
   const routes = (ppResolver as any).getRoutes([

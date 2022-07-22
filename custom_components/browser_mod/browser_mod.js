@@ -242,6 +242,42 @@ __decorate([
         customElements.define("browser-player", BrowserPlayer);
 })();
 
+const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
+async function _await_el(el) {
+    var _a;
+    if ((_a = el.localName) === null || _a === void 0 ? void 0 : _a.includes("-"))
+        await customElements.whenDefined(el.localName);
+    if (el.updateComplete)
+        await el.updateComplete;
+}
+async function _selectTree(root, path, all = false) {
+    let el = [root];
+    if (typeof path === "string") {
+        path = path.split(/(\$| )/);
+    }
+    while (path[path.length - 1] === "")
+        path.pop();
+    for (const [i, p] of path.entries()) {
+        const e = el[0];
+        if (!e)
+            return null;
+        if (!p.trim().length)
+            continue;
+        _await_el(e);
+        el = p === "$" ? [e.shadowRoot] : e.querySelectorAll(p);
+    }
+    return all ? el : el[0];
+}
+async function selectTree(root, path, all = false, timeout = 10000) {
+    return Promise.race([
+        _selectTree(root, path, all),
+        new Promise((_, reject) => setTimeout(() => reject(new Error(TIMEOUT_ERROR)), timeout)),
+    ]).catch((err) => {
+        if (!err.message || err.message !== TIMEOUT_ERROR)
+            throw err;
+        return null;
+    });
+}
 async function hass_base_el() {
     await Promise.race([
         customElements.whenDefined("home-assistant"),
@@ -1838,6 +1874,20 @@ const AutoSettingsMixin = (SuperClass) => {
             if (settings.sidebarHiddenPanels) {
                 localStorage.setItem("sidebarHiddenPanels", settings.sidebarHiddenPanels);
             }
+            if (settings.hideSidebar === true) {
+                selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout").then((el) => el.style.setProperty("--app-drawer-width", "0px"));
+                selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout app-drawer").then((el) => el.remove());
+            }
+            if (settings.hideHeader === true) {
+                customElements.whenDefined("app-header-layout").then(() => {
+                    const appHeader = customElements.get("app-header").prototype;
+                    const _attached = appHeader.attached;
+                    appHeader.attached = function () {
+                        _attached.bind(this)();
+                        this.style.setProperty("display", "none");
+                    };
+                });
+            }
         }
     };
 };
@@ -1878,7 +1928,7 @@ const AutoSettingsMixin = (SuperClass) => {
   - Saved frontend settings
     X Framework
     x Save sidebar
-    - Kiosk mode
+    x Kiosk mode
     - Default panel?
     - Screensaver?
   - Tweaks

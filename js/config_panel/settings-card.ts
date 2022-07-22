@@ -19,7 +19,7 @@ class BrowserModSettingsCard extends LitElement {
   render() {
     const level = ["browser", "user", "global"][this._selectedTab];
     return html`
-      <ha-card header="Auto settings" outlined>
+      <ha-card header="Frontend settings" outlined>
         <div class="card-content">
           <mwc-tab-bar
             .activeIndex=${this._selectedTab}
@@ -54,24 +54,54 @@ class BrowserModSettingsCard extends LitElement {
 
     return html`
       <ha-settings-row>
-        <span slot="heading">Kiosk mode</span>
-        <span slot="description"> Hide sidebar and header </span>
-        Currenty: ${DESC_BOOLEAN(current.kiosk)} ${OVERRIDDEN("kiosk")}
+        <span slot="heading">Hide Sidebar</span>
+        <span slot="description">Hide the sidebar and hamburger menu</span>
+        Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
+        ${OVERRIDDEN("hideSidebar")}
       </ha-settings-row>
       <ha-settings-row>
         <mwc-button
-          @click=${() => window.browser_mod.set_setting("kiosk", true, level)}
+          @click=${() =>
+            window.browser_mod.set_setting("hideSidebar", true, level)}
         >
           Enable
         </mwc-button>
         <mwc-button
-          @click=${() => window.browser_mod.set_setting("kiosk", false, level)}
+          @click=${() =>
+            window.browser_mod.set_setting("hideSidebar", false, level)}
         >
           Disable
         </mwc-button>
         <mwc-button
           @click=${() =>
-            window.browser_mod.set_setting("kiosk", undefined, level)}
+            window.browser_mod.set_setting("hideSidebar", undefined, level)}
+        >
+          Clear
+        </mwc-button>
+      </ha-settings-row>
+
+      <ha-settings-row>
+        <span slot="heading">Hide Header</span>
+        <span slot="description">Hide the header on all pages</span>
+        Currenty: ${DESC_BOOLEAN(current.hideHeader)}
+        ${OVERRIDDEN("hideHeader")}
+      </ha-settings-row>
+      <ha-settings-row>
+        <mwc-button
+          @click=${() =>
+            window.browser_mod.set_setting("hideHeader", true, level)}
+        >
+          Enable
+        </mwc-button>
+        <mwc-button
+          @click=${() =>
+            window.browser_mod.set_setting("hideHeader", false, level)}
+        >
+          Disable
+        </mwc-button>
+        <mwc-button
+          @click=${() =>
+            window.browser_mod.set_setting("hideHeader", undefined, level)}
         >
           Clear
         </mwc-button>

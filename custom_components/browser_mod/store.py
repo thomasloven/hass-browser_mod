@@ -11,7 +11,8 @@ _LOGGER = logging.getLogger(__name__)
 
 @attr.s
 class Settings:
-    kiosk = attr.ib(type=bool, default=None)
+    hideSidebar = attr.ib(type=bool, default=None)
+    hideHeader = attr.ib(type=bool, default=None)
     defaultPanel = attr.ib(type=str, default=None)
     sidebarPanelOrder = attr.ib(type=list, default=None)
     sidebarHiddenPanels = attr.ib(type=list, default=None)

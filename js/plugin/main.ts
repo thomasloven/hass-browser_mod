@@ -52,7 +52,7 @@ import { AutoSettingsMixin } from "./auto-settings";
   - Saved frontend settings
     X Framework
     x Save sidebar
-    - Kiosk mode
+    x Kiosk mode
     - Default panel?
     - Screensaver?
   - Tweaks

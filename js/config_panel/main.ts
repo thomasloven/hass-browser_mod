@@ -313,33 +313,17 @@ loadDevTools().then(() => {
             --app-header-border-bottom: 1px solid var(--divider-color);
             --ha-card-border-radius: var(--ha-config-card-border-radius, 8px);
           }
+          ha-config-section {
+            padding: 16px 0;
+          }
           .card-header {
             display: flex;
             justify-content: space-between;
-          }
-          .card-actions {
-            display: flex;
-          }
-          .spacer {
-            flex-grow: 1;
           }
           ha-textfield {
             width: 250px;
             display: block;
             margin-top: 8px;
-          }
-          .option {
-            display: flex;
-            margin-top: 16px;
-          }
-          .option h3 {
-            flex-grow: 1;
-            margin: 0;
-          }
-          .option ha-switch {
-            margin-top: 0.25em;
-            margin-right: 7px;
-            margin-left: 0.5em;
           }
           ha-icon-button > * {
             display: flex;

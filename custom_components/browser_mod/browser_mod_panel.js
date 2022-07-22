@@ -69,8 +69,6 @@ const i=(i,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,
 // Also provides ha-settings-row
 const loadDevTools = async () => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
-    if (customElements.get("ha-config-dashboard"))
-        return;
     await customElements.whenDefined("partial-panel-resolver");
     const ppResolver = document.createElement("partial-panel-resolver");
     const routes = ppResolver.getRoutes([
@@ -101,7 +99,7 @@ class BrowserModSettingsCard extends s {
     render() {
         const level = ["browser", "user", "global"][this._selectedTab];
         return $ `
-      <ha-card header="Auto settings" outlined>
+      <ha-card header="Frontend settings" outlined>
         <div class="card-content">
           <mwc-tab-bar
             .activeIndex=${this._selectedTab}
@@ -132,23 +130,48 @@ class BrowserModSettingsCard extends s {
         };
         return $ `
       <ha-settings-row>
-        <span slot="heading">Kiosk mode</span>
-        <span slot="description"> Hide sidebar and header </span>
-        Currenty: ${DESC_BOOLEAN(current.kiosk)} ${OVERRIDDEN("kiosk")}
+        <span slot="heading">Hide Sidebar</span>
+        <span slot="description">Hide the sidebar and hamburger menu</span>
+        Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
+        ${OVERRIDDEN("hideSidebar")}
       </ha-settings-row>
       <ha-settings-row>
         <mwc-button
-          @click=${() => window.browser_mod.set_setting("kiosk", true, level)}
+          @click=${() => window.browser_mod.set_setting("hideSidebar", true, level)}
         >
           Enable
         </mwc-button>
         <mwc-button
-          @click=${() => window.browser_mod.set_setting("kiosk", false, level)}
+          @click=${() => window.browser_mod.set_setting("hideSidebar", false, level)}
         >
           Disable
         </mwc-button>
         <mwc-button
-          @click=${() => window.browser_mod.set_setting("kiosk", undefined, level)}
+          @click=${() => window.browser_mod.set_setting("hideSidebar", undefined, level)}
+        >
+          Clear
+        </mwc-button>
+      </ha-settings-row>
+
+      <ha-settings-row>
+        <span slot="heading">Hide Header</span>
+        <span slot="description">Hide the header on all pages</span>
+        Currenty: ${DESC_BOOLEAN(current.hideHeader)}
+        ${OVERRIDDEN("hideHeader")}
+      </ha-settings-row>
+      <ha-settings-row>
+        <mwc-button
+          @click=${() => window.browser_mod.set_setting("hideHeader", true, level)}
+        >
+          Enable
+        </mwc-button>
+        <mwc-button
+          @click=${() => window.browser_mod.set_setting("hideHeader", false, level)}
+        >
+          Disable
+        </mwc-button>
+        <mwc-button
+          @click=${() => window.browser_mod.set_setting("hideHeader", undefined, level)}
         >
           Clear
         </mwc-button>
@@ -508,33 +531,17 @@ loadDevTools().then(() => {
             --app-header-border-bottom: 1px solid var(--divider-color);
             --ha-card-border-radius: var(--ha-config-card-border-radius, 8px);
           }
+          ha-config-section {
+            padding: 16px 0;
+          }
           .card-header {
             display: flex;
             justify-content: space-between;
-          }
-          .card-actions {
-            display: flex;
-          }
-          .spacer {
-            flex-grow: 1;
           }
           ha-textfield {
             width: 250px;
             display: block;
             margin-top: 8px;
-          }
-          .option {
-            display: flex;
-            margin-top: 16px;
-          }
-          .option h3 {
-            flex-grow: 1;
-            margin: 0;
-          }
-          .option ha-switch {
-            margin-top: 0.25em;
-            margin-right: 7px;
-            margin-left: 0.5em;
           }
           ha-icon-button > * {
             display: flex;
