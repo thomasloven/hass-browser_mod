@@ -1,5 +1,8 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
+import { loadDeveloperToolsTemplate } from "../helpers";
+
+loadDeveloperToolsTemplate();
 
 class BrowserModSettingsCard extends LitElement {
   @property() hass;
@@ -8,6 +11,9 @@ class BrowserModSettingsCard extends LitElement {
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
+      this.requestUpdate()
+    );
+    window.browser_mod.addEventListener("browser-mod-favicon-update", () =>
       this.requestUpdate()
     );
   }
@@ -21,12 +27,30 @@ class BrowserModSettingsCard extends LitElement {
     return html`
       <ha-card header="Frontend settings" outlined>
         <div class="card-content">
+          <p>
+            Please note: Those settings severely change the way the Home
+            Assistant frontend works and looks. It is very easy to forget that
+            you made a setting here when you switch devices or user.
+          </p>
+          <p>
+            Do not report any issues to Home Assistant before clearing
+            <b>EVERY</b> setting here and thouroghly clearing all your browser
+            caches. Failure to do so means you risk wasting a lot of peoples
+            time, and you will be severly and rightfully ridiculed.
+          </p>
+          <p>
+          Global settings are applied for all users and browsers.</br>
+          User settings are applied to the current user and overrides any Global settings.</br>
+          Browser settings are applied for the current browser and overrides any User or Global settings.
+          </p>
           <mwc-tab-bar
             .activeIndex=${this._selectedTab}
             @MDCTabBar:activated=${this._handleSwitchTab}
           >
             <mwc-tab .label=${"Browser"}></mwc-tab>
+            <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
             <mwc-tab .label=${"User (" + this.hass.user.name + ")"}></mwc-tab>
+            <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
             <mwc-tab .label=${"Global"}></mwc-tab>
           </mwc-tab-bar>
 
@@ -43,7 +67,7 @@ class BrowserModSettingsCard extends LitElement {
     const current = { global, user, browser }[level];
 
     const DESC_BOOLEAN = (val) =>
-      ({ true: "Enabled", false: "Disabled", undefined: "unset" }[String(val)]);
+      ({ true: "Enabled", false: "Disabled", undefined: "Unset" }[String(val)]);
     const DESC_SET_UNSET = (val) => (val === undefined ? "Unset" : "Set");
     const OVERRIDDEN = (key) => {
       if (level !== "browser" && browser[key] !== undefined)
@@ -53,136 +77,161 @@ class BrowserModSettingsCard extends LitElement {
     };
 
     return html`
-      <ha-settings-row>
-        <span slot="heading">Hide Sidebar</span>
-        <span slot="description">Hide the sidebar and hamburger menu</span>
-        Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
-        ${OVERRIDDEN("hideSidebar")}
-      </ha-settings-row>
-      <ha-settings-row>
-        <mwc-button
-          @click=${() =>
-            window.browser_mod.set_setting("hideSidebar", true, level)}
-        >
-          Enable
-        </mwc-button>
-        <mwc-button
-          @click=${() =>
-            window.browser_mod.set_setting("hideSidebar", false, level)}
-        >
-          Disable
-        </mwc-button>
-        <mwc-button
-          @click=${() =>
-            window.browser_mod.set_setting("hideSidebar", undefined, level)}
-        >
-          Clear
-        </mwc-button>
-      </ha-settings-row>
-
-      <ha-settings-row>
-        <span slot="heading">Hide Header</span>
-        <span slot="description">Hide the header on all pages</span>
-        Currenty: ${DESC_BOOLEAN(current.hideHeader)}
-        ${OVERRIDDEN("hideHeader")}
-      </ha-settings-row>
-      <ha-settings-row>
-        <mwc-button
-          @click=${() =>
-            window.browser_mod.set_setting("hideHeader", true, level)}
-        >
-          Enable
-        </mwc-button>
-        <mwc-button
-          @click=${() =>
-            window.browser_mod.set_setting("hideHeader", false, level)}
-        >
-          Disable
-        </mwc-button>
-        <mwc-button
-          @click=${() =>
-            window.browser_mod.set_setting("hideHeader", undefined, level)}
-        >
-          Clear
-        </mwc-button>
-      </ha-settings-row>
-
-      <ha-settings-row>
-        <span slot="heading">Sidebar order</span>
-        <span slot="description">Order and visibility of sidebar buttons</span>
-        Currenty: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
-        ${OVERRIDDEN("sidebarPanelOrder")}
-      </ha-settings-row>
-      <ha-settings-row>
-        <mwc-button
-          @click=${() => {
-            window.browser_mod.set_setting(
-              "sidebarPanelOrder",
-              localStorage.getItem("sidebarPanelOrder"),
-              level
-            );
-            window.browser_mod.set_setting(
-              "sidebarHiddenPanels",
-              localStorage.getItem("sidebarHiddenPanels"),
-              level
-            );
+      <div class="box">
+        <ha-settings-row>
+          <span slot="heading">Favicon template</span>
+          ${OVERRIDDEN("faviconTemplate")}
+          <img src="${window.browser_mod._currentFavicon}" class="favicon" />
+        </ha-settings-row>
+        <ha-code-editor
+          .hass=${this.hass}
+          .value=${current.faviconTemplate}
+          @value-changed=${(ev) => {
+            const tpl = ev.detail.value || undefined;
+            window.browser_mod.set_setting("faviconTemplate", tpl, level);
           }}
-        >
-          Set
-        </mwc-button>
-        <mwc-button
-          @click=${() => {
-            window.browser_mod.set_setting(
-              "sidebarPanelOrder",
-              undefined,
-              level
-            );
-            window.browser_mod.set_setting(
-              "sidebarHiddenPanels",
-              undefined,
-              level
-            );
-          }}
-        >
-          Clear
-        </mwc-button>
-      </ha-settings-row>
+        ></ha-code-editor>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting(
+                "faviconTemplate",
+                undefined,
+                level
+              )}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
+          <span slot="heading">Hide Sidebar</span>
+          <span slot="description">Hide the sidebar and hamburger menu</span>
+          Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
+          ${OVERRIDDEN("hideSidebar")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("hideSidebar", true, level)}
+          >
+            Enable
+          </mwc-button>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("hideSidebar", false, level)}
+          >
+            Disable
+          </mwc-button>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("hideSidebar", undefined, level)}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
+          <span slot="heading">Hide Header</span>
+          <span slot="description">Hide the header on all pages</span>
+          Currenty: ${DESC_BOOLEAN(current.hideHeader)}
+          ${OVERRIDDEN("hideHeader")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("hideHeader", true, level)}
+          >
+            Enable
+          </mwc-button>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("hideHeader", false, level)}
+          >
+            Disable
+          </mwc-button>
+          <mwc-button
+            @click=${() =>
+              window.browser_mod.set_setting("hideHeader", undefined, level)}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
+          <span slot="heading">Sidebar order</span>
+          <span slot="description"
+            >Order and visibility of sidebar buttons</span
+          >
+          Currenty: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
+          ${OVERRIDDEN("sidebarPanelOrder")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <span slot="description">
+            Clearing this does NOT restore the original button order.
+          </span>
+          <mwc-button
+            @click=${() => {
+              window.browser_mod.set_setting(
+                "sidebarPanelOrder",
+                localStorage.getItem("sidebarPanelOrder"),
+                level
+              );
+              window.browser_mod.set_setting(
+                "sidebarHiddenPanels",
+                localStorage.getItem("sidebarHiddenPanels"),
+                level
+              );
+            }}
+          >
+            Set
+          </mwc-button>
+          <mwc-button
+            @click=${() => {
+              window.browser_mod.set_setting(
+                "sidebarPanelOrder",
+                undefined,
+                level
+              );
+              window.browser_mod.set_setting(
+                "sidebarHiddenPanels",
+                undefined,
+                level
+              );
+            }}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+      </div>
     `;
   }
 
-  _render_user() {
-    return html`
-      User
-      <ha-settings-row>
-        <span slot="heading">Kiosk mode</span>
-        <span slot="description"> Hide sidebar and header </span>
-        Currenty: Overridden
-      </ha-settings-row>
-      <ha-settings-row>
-        <span slot="heading">Set screensaver</span>
-        <span slot="description"> Set screensaver card </span>
-        <mwc-button>Enable</mwc-button>
-        <mwc-button>Disable</mwc-button>
-        <mwc-button>Clear</mwc-button>
-      </ha-settings-row>
-    `;
-  }
-
-  _render_browser() {
-    return html`
-      Browser
-      <ha-settings-row>
-        <span slot="heading">Kiosk mode</span>
-        <span slot="description"> Hide sidebar and header </span>
-        Currenty: Overridden
-      </ha-settings-row>
-      <ha-settings-row>
-        <span slot="heading">Set screensaver</span>
-        <span slot="description"> Set screensaver card </span>
-        <mwc-button>Enable</mwc-button>
-        <mwc-button>Disable</mwc-button>
-        <mwc-button>Clear</mwc-button>
-      </ha-settings-row>
+  static get styles() {
+    return css`
+      .box {
+        border: 1px solid var(--divider-color);
+        padding: 8px;
+      }
+      .separator {
+        border-bottom: 1px solid var(--divider-color);
+        margin: 0 -8px;
+      }
+      img.favicon {
+        width: 64px;
+        height: 64px;
+        margin-left: 16px;
+      }
+      mwc-tab-bar ha-icon {
+        display: flex;
+        align-items: center;
+      }
     `;
   }
 }

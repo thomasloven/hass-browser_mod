@@ -88,7 +88,7 @@ export const loadHaForm = async () => {
 
 // Loads in ha-config-dashboard which is used to copy styling
 // Also provides ha-settings-row
-export const loadDevTools = async () => {
+export const loadConfigDashboard = async () => {
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
   const routes = (ppResolver as any).getRoutes([
@@ -99,8 +99,24 @@ export const loadDevTools = async () => {
   ]);
   await routes?.routes?.a?.load?.();
   await customElements.whenDefined("ha-panel-config");
-  const configRouter = document.createElement("ha-panel-config");
-  await (configRouter as any)?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
-  await (configRouter as any)?.routerOptions?.routes?.cloud?.load?.(); // Load ha-settings-row
+  const configRouter: any = document.createElement("ha-panel-config");
+  await configRouter?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
+  await configRouter?.routerOptions?.routes?.cloud?.load?.(); // Load ha-settings-row
   await customElements.whenDefined("ha-config-dashboard");
+};
+
+export const loadDeveloperToolsTemplate = async () => {
+  await customElements.whenDefined("partial-panel-resolver");
+  await customElements.whenDefined("partial-panel-resolver");
+  const ppResolver = document.createElement("partial-panel-resolver");
+  const routes = (ppResolver as any).getRoutes([
+    {
+      component_name: "developer-tools",
+      url_path: "a",
+    },
+  ]);
+  await routes?.routes?.a?.load?.();
+  const dtRouter: any = document.createElement("developer-tools-router");
+  await dtRouter?.routerOptions?.routes?.template?.load?.();
+  await customElements.whenDefined("developer-tools-template");
 };

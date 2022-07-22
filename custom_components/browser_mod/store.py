@@ -16,6 +16,8 @@ class Settings:
     defaultPanel = attr.ib(type=str, default=None)
     sidebarPanelOrder = attr.ib(type=list, default=None)
     sidebarHiddenPanels = attr.ib(type=list, default=None)
+    faviconTemplate = attr.ib(type=str, default=None)
+    titleTemplate = attr.ib(type=str, default=None)
 
     @classmethod
     def from_dict(cls, data):

@@ -55,9 +55,9 @@ import { AutoSettingsMixin } from "./auto-settings";
     x Kiosk mode
     - Default panel?
     - Screensaver?
-  - Tweaks
-    - Favicon templates
+    x Favicon templates
     - Title templates
+  - Tweaks
     - Quickbar tweaks (ctrl+enter)?
   - Video player?
   - Media_seek

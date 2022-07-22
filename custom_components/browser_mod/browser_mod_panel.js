@@ -67,7 +67,7 @@ const i=(i,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,
 
 // Loads in ha-config-dashboard which is used to copy styling
 // Also provides ha-settings-row
-const loadDevTools = async () => {
+const loadConfigDashboard = async () => {
     var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     await customElements.whenDefined("partial-panel-resolver");
     const ppResolver = document.createElement("partial-panel-resolver");
@@ -84,7 +84,24 @@ const loadDevTools = async () => {
     await ((_l = (_k = (_j = (_h = configRouter === null || configRouter === void 0 ? void 0 : configRouter.routerOptions) === null || _h === void 0 ? void 0 : _h.routes) === null || _j === void 0 ? void 0 : _j.cloud) === null || _k === void 0 ? void 0 : _k.load) === null || _l === void 0 ? void 0 : _l.call(_k)); // Load ha-settings-row
     await customElements.whenDefined("ha-config-dashboard");
 };
+const loadDeveloperToolsTemplate = async () => {
+    var _a, _b, _c, _d, _e, _f, _g;
+    await customElements.whenDefined("partial-panel-resolver");
+    await customElements.whenDefined("partial-panel-resolver");
+    const ppResolver = document.createElement("partial-panel-resolver");
+    const routes = ppResolver.getRoutes([
+        {
+            component_name: "developer-tools",
+            url_path: "a",
+        },
+    ]);
+    await ((_c = (_b = (_a = routes === null || routes === void 0 ? void 0 : routes.routes) === null || _a === void 0 ? void 0 : _a.a) === null || _b === void 0 ? void 0 : _b.load) === null || _c === void 0 ? void 0 : _c.call(_b));
+    const dtRouter = document.createElement("developer-tools-router");
+    await ((_g = (_f = (_e = (_d = dtRouter === null || dtRouter === void 0 ? void 0 : dtRouter.routerOptions) === null || _d === void 0 ? void 0 : _d.routes) === null || _e === void 0 ? void 0 : _e.template) === null || _f === void 0 ? void 0 : _f.load) === null || _g === void 0 ? void 0 : _g.call(_f));
+    await customElements.whenDefined("developer-tools-template");
+};
 
+loadDeveloperToolsTemplate();
 class BrowserModSettingsCard extends s {
     constructor() {
         super(...arguments);
@@ -92,6 +109,7 @@ class BrowserModSettingsCard extends s {
     }
     firstUpdated() {
         window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+        window.browser_mod.addEventListener("browser-mod-favicon-update", () => this.requestUpdate());
     }
     _handleSwitchTab(ev) {
         this._selectedTab = parseInt(ev.detail.index, 10);
@@ -101,12 +119,30 @@ class BrowserModSettingsCard extends s {
         return $ `
       <ha-card header="Frontend settings" outlined>
         <div class="card-content">
+          <p>
+            Please note: Those settings severely change the way the Home
+            Assistant frontend works and looks. It is very easy to forget that
+            you made a setting here when you switch devices or user.
+          </p>
+          <p>
+            Do not report any issues to Home Assistant before clearing
+            <b>EVERY</b> setting here and thouroghly clearing all your browser
+            caches. Failure to do so means you risk wasting a lot of peoples
+            time, and you will be severly and rightfully ridiculed.
+          </p>
+          <p>
+          Global settings are applied for all users and browsers.</br>
+          User settings are applied to the current user and overrides any Global settings.</br>
+          Browser settings are applied for the current browser and overrides any User or Global settings.
+          </p>
           <mwc-tab-bar
             .activeIndex=${this._selectedTab}
             @MDCTabBar:activated=${this._handleSwitchTab}
           >
             <mwc-tab .label=${"Browser"}></mwc-tab>
+            <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
             <mwc-tab .label=${"User (" + this.hass.user.name + ")"}></mwc-tab>
+            <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
             <mwc-tab .label=${"Global"}></mwc-tab>
           </mwc-tab-bar>
 
@@ -120,7 +156,7 @@ class BrowserModSettingsCard extends s {
         const user = window.browser_mod.user_settings;
         const browser = window.browser_mod.browser_settings;
         const current = { global, user, browser }[level];
-        const DESC_BOOLEAN = (val) => ({ true: "Enabled", false: "Disabled", undefined: "unset" }[String(val)]);
+        const DESC_BOOLEAN = (val) => ({ true: "Enabled", false: "Disabled", undefined: "Unset" }[String(val)]);
         const DESC_SET_UNSET = (val) => (val === undefined ? "Unset" : "Set");
         const OVERRIDDEN = (key) => {
             if (level !== "browser" && browser[key] !== undefined)
@@ -129,112 +165,133 @@ class BrowserModSettingsCard extends s {
                 return $ `<br />Overridden by user setting`;
         };
         return $ `
-      <ha-settings-row>
-        <span slot="heading">Hide Sidebar</span>
-        <span slot="description">Hide the sidebar and hamburger menu</span>
-        Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
-        ${OVERRIDDEN("hideSidebar")}
-      </ha-settings-row>
-      <ha-settings-row>
-        <mwc-button
-          @click=${() => window.browser_mod.set_setting("hideSidebar", true, level)}
-        >
-          Enable
-        </mwc-button>
-        <mwc-button
-          @click=${() => window.browser_mod.set_setting("hideSidebar", false, level)}
-        >
-          Disable
-        </mwc-button>
-        <mwc-button
-          @click=${() => window.browser_mod.set_setting("hideSidebar", undefined, level)}
-        >
-          Clear
-        </mwc-button>
-      </ha-settings-row>
+      <div class="box">
+        <ha-settings-row>
+          <span slot="heading">Favicon template</span>
+          ${OVERRIDDEN("faviconTemplate")}
+          <img src="${window.browser_mod._currentFavicon}" class="favicon" />
+        </ha-settings-row>
+        <ha-code-editor
+          .hass=${this.hass}
+          .value=${current.faviconTemplate}
+          @value-changed=${(ev) => {
+            const tpl = ev.detail.value || undefined;
+            window.browser_mod.set_setting("faviconTemplate", tpl, level);
+        }}
+        ></ha-code-editor>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("faviconTemplate", undefined, level)}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
 
-      <ha-settings-row>
-        <span slot="heading">Hide Header</span>
-        <span slot="description">Hide the header on all pages</span>
-        Currenty: ${DESC_BOOLEAN(current.hideHeader)}
-        ${OVERRIDDEN("hideHeader")}
-      </ha-settings-row>
-      <ha-settings-row>
-        <mwc-button
-          @click=${() => window.browser_mod.set_setting("hideHeader", true, level)}
-        >
-          Enable
-        </mwc-button>
-        <mwc-button
-          @click=${() => window.browser_mod.set_setting("hideHeader", false, level)}
-        >
-          Disable
-        </mwc-button>
-        <mwc-button
-          @click=${() => window.browser_mod.set_setting("hideHeader", undefined, level)}
-        >
-          Clear
-        </mwc-button>
-      </ha-settings-row>
+        <div class="separator"></div>
 
-      <ha-settings-row>
-        <span slot="heading">Sidebar order</span>
-        <span slot="description">Order and visibility of sidebar buttons</span>
-        Currenty: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
-        ${OVERRIDDEN("sidebarPanelOrder")}
-      </ha-settings-row>
-      <ha-settings-row>
-        <mwc-button
-          @click=${() => {
+        <ha-settings-row>
+          <span slot="heading">Hide Sidebar</span>
+          <span slot="description">Hide the sidebar and hamburger menu</span>
+          Currenty: ${DESC_BOOLEAN(current.hideSidebar)}
+          ${OVERRIDDEN("hideSidebar")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("hideSidebar", true, level)}
+          >
+            Enable
+          </mwc-button>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("hideSidebar", false, level)}
+          >
+            Disable
+          </mwc-button>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("hideSidebar", undefined, level)}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
+          <span slot="heading">Hide Header</span>
+          <span slot="description">Hide the header on all pages</span>
+          Currenty: ${DESC_BOOLEAN(current.hideHeader)}
+          ${OVERRIDDEN("hideHeader")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("hideHeader", true, level)}
+          >
+            Enable
+          </mwc-button>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("hideHeader", false, level)}
+          >
+            Disable
+          </mwc-button>
+          <mwc-button
+            @click=${() => window.browser_mod.set_setting("hideHeader", undefined, level)}
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+
+        <div class="separator"></div>
+
+        <ha-settings-row>
+          <span slot="heading">Sidebar order</span>
+          <span slot="description"
+            >Order and visibility of sidebar buttons</span
+          >
+          Currenty: ${DESC_SET_UNSET(current.sidebarPanelOrder)}
+          ${OVERRIDDEN("sidebarPanelOrder")}
+        </ha-settings-row>
+        <ha-settings-row>
+          <span slot="description">
+            Clearing this does NOT restore the original button order.
+          </span>
+          <mwc-button
+            @click=${() => {
             window.browser_mod.set_setting("sidebarPanelOrder", localStorage.getItem("sidebarPanelOrder"), level);
             window.browser_mod.set_setting("sidebarHiddenPanels", localStorage.getItem("sidebarHiddenPanels"), level);
         }}
-        >
-          Set
-        </mwc-button>
-        <mwc-button
-          @click=${() => {
+          >
+            Set
+          </mwc-button>
+          <mwc-button
+            @click=${() => {
             window.browser_mod.set_setting("sidebarPanelOrder", undefined, level);
             window.browser_mod.set_setting("sidebarHiddenPanels", undefined, level);
         }}
-        >
-          Clear
-        </mwc-button>
-      </ha-settings-row>
+          >
+            Clear
+          </mwc-button>
+        </ha-settings-row>
+      </div>
     `;
     }
-    _render_user() {
-        return $ `
-      User
-      <ha-settings-row>
-        <span slot="heading">Kiosk mode</span>
-        <span slot="description"> Hide sidebar and header </span>
-        Currenty: Overridden
-      </ha-settings-row>
-      <ha-settings-row>
-        <span slot="heading">Set screensaver</span>
-        <span slot="description"> Set screensaver card </span>
-        <mwc-button>Enable</mwc-button>
-        <mwc-button>Disable</mwc-button>
-        <mwc-button>Clear</mwc-button>
-      </ha-settings-row>
-    `;
-    }
-    _render_browser() {
-        return $ `
-      Browser
-      <ha-settings-row>
-        <span slot="heading">Kiosk mode</span>
-        <span slot="description"> Hide sidebar and header </span>
-        Currenty: Overridden
-      </ha-settings-row>
-      <ha-settings-row>
-        <span slot="heading">Set screensaver</span>
-        <span slot="description"> Set screensaver card </span>
-        <mwc-button>Enable</mwc-button>
-        <mwc-button>Disable</mwc-button>
-        <mwc-button>Clear</mwc-button>
-      </ha-settings-row>
+    static get styles() {
+        return r$2 `
+      .box {
+        border: 1px solid var(--divider-color);
+        padding: 8px;
+      }
+      .separator {
+        border-bottom: 1px solid var(--divider-color);
+        margin: 0 -8px;
+      }
+      img.favicon {
+        width: 64px;
+        height: 64px;
+        margin-left: 16px;
+      }
+      mwc-tab-bar ha-icon {
+        display: flex;
+        align-items: center;
+      }
     `;
     }
 }
@@ -247,7 +304,7 @@ __decorate([
 customElements.define("browser-mod-settings-card", BrowserModSettingsCard);
 
 const bmWindow = window;
-loadDevTools().then(() => {
+loadConfigDashboard().then(() => {
     class BrowserModPanel extends s {
         constructor() {
             super(...arguments);

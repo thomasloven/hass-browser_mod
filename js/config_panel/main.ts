@@ -1,13 +1,13 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
-import { loadDevTools } from "../helpers";
+import { loadConfigDashboard } from "../helpers";
 import { loadHaForm } from "../helpers";
 
 import "./settings-card";
 
 const bmWindow = window as any;
 
-loadDevTools().then(() => {
+loadConfigDashboard().then(() => {
   class BrowserModPanel extends LitElement {
     @property() hass;
     @property() narrow;
