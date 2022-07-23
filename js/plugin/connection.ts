@@ -1,7 +1,5 @@
 import { hass, provideHass } from "../helpers";
 
-const ID_STORAGE_KEY = "browser_mod-browser-id";
-
 export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
     public hass;
@@ -202,25 +200,7 @@ export const ConnectionMixin = (SuperClass) => {
       });
     }
 
-    get browserID() {
-      if (localStorage[ID_STORAGE_KEY]) return localStorage[ID_STORAGE_KEY];
-      this.browserID = "";
-      return this.browserID;
-    }
-    set browserID(id) {
-      function _createBrowserID() {
-        const s4 = () => {
-          return Math.floor((1 + Math.random()) * 100000)
-            .toString(16)
-            .substring(1);
-        };
-        return window.fully?.getDeviceId() ?? `${s4()}${s4()}-${s4()}${s4()}`;
-      }
-
-      if (id === "") id = _createBrowserID();
-      const oldID = localStorage[ID_STORAGE_KEY];
-      localStorage[ID_STORAGE_KEY] = id;
-
+    browserIDChanged(oldID, newID) {
       this.fireEvent("browser-mod-config-update");
 
       if (

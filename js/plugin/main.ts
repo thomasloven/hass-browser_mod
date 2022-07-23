@@ -15,6 +15,7 @@ import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
 import "./popup-card";
 import { AutoSettingsMixin } from "./frontend-settings";
+import { BrowserIDMixin } from "./browserID";
 
 /*
   TODO:
@@ -72,7 +73,11 @@ export class BrowserMod extends ServicesMixin(
           MediaPlayerMixin(
             ScreenSaverMixin(
               AutoSettingsMixin(
-                FullyMixin(RequireInteractMixin(ConnectionMixin(EventTarget)))
+                FullyMixin(
+                  RequireInteractMixin(
+                    ConnectionMixin(BrowserIDMixin(EventTarget))
+                  )
+                )
               )
             )
           )
