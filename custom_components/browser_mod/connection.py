@@ -38,13 +38,21 @@ async def async_setup_connection(hass):
         def listener(data):
             connection.send_message(event_message(msg["id"], {"result": data}))
 
-        connection.subscriptions[msg["id"]] = store.add_listener(listener)
+        store_listener = store.add_listener(listener)
+
+        def unsubscriber():
+            store_listener()
+            dev = getBrowser(hass, browserID, create=False)
+            if dev:
+                dev.close_connection(connection)
+
+        connection.subscriptions[msg["id"]] = unsubscriber
         connection.send_result(msg["id"])
 
         if store.get_browser(browserID).enabled:
             dev = getBrowser(hass, browserID)
             dev.update_settings(hass, store.get_browser(browserID).asdict())
-            dev.connection = (connection, msg["id"])
+            dev.open_connection(connection, msg["id"])
             await store.set_browser(
                 browserID, last_seen=datetime.now(tz=timezone.utc).isoformat()
             )

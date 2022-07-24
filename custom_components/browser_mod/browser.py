@@ -133,9 +133,13 @@ class BrowserModBrowser:
     def connection(self):
         return self._connections
 
-    @connection.setter
-    def connection(self, con):
-        self._connections.append(con)
+    def open_connection(self, connection, cid):
+        self._connections.append((connection, cid))
+
+    def close_connection(self, connection):
+        self._connections = list(
+            filter(lambda v: v[0] != connection, self._connections)
+        )
 
 
 def getBrowser(hass, browserID, *, create=True):
