@@ -947,6 +947,7 @@ const ServicesMixin = (SuperClass) => {
             data:
               [title: <string>]
               [content: <string | Lovelace Card Configuration>]
+              [size: <NORMAL/wide/fullscreen>]
               [right_button: <string>]
               [right_button_action: <service call>]
               [left_button: <string>]
@@ -955,6 +956,7 @@ const ServicesMixin = (SuperClass) => {
               [dismiss_action: <service call>]
               [timeout: <number>]
               [timeout_action: <service call>]
+              [style: <string>]
     
           More-info:
             service: browser_mod.more_info
@@ -1013,7 +1015,11 @@ const ServicesMixin = (SuperClass) => {
         }
         async _service_action({ service, data }) {
             let _service = service;
-            if (!_service.startsWith("browser_mod.") && _service.includes(".")) ;
+            if (!_service.startsWith("browser_mod.") && _service.includes(".")) {
+                // CALL HOME ASSISTANT SERVICE
+                const [domain, srv] = _service.split(".");
+                return this.hass.callService(domain, srv, data);
+            }
             if (_service.startsWith("browser_mod.")) {
                 _service = _service.substring(12);
             }
@@ -1114,8 +1120,14 @@ const t={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},e
  */class e extends i{constructor(i){if(super(i),this.it=w,i.type!==t.CHILD)throw Error(this.constructor.directiveName+"() can only be used in child bindings")}render(r){if(r===w||null==r)return this.ft=void 0,this.it=r;if(r===b)return r;if("string"!=typeof r)throw Error(this.constructor.directiveName+"() called with a non-string value");if(r===this.it)return this.ft;this.it=r;const s=[r];return s.raw=s,this.ft={_$litType$:this.constructor.resultType,strings:s,values:[]}}}e.directiveName="unsafeHTML",e.resultType=1;const o=e$1(e);
 
 class BrowserModPopup extends s {
-    closeDialog() {
+    closedCallback() {
+        var _a;
+        (_a = this._resolveClosed) === null || _a === void 0 ? void 0 : _a.call(this);
+        this._resolveClosed = undefined;
+    }
+    async closeDialog() {
         this.open = false;
+        await new Promise((resolve) => (this._resolveClosed = resolve));
         clearInterval(this._timeoutTimer);
     }
     openDialog() {
@@ -1162,30 +1174,30 @@ class BrowserModPopup extends s {
         this.fullscreen = size === "fullscreen" ? "" : undefined;
         this._style = style;
     }
-    _primary() {
+    async _primary() {
         var _a, _b, _c;
         if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
             this._actions.dismiss_action = undefined;
-        this.closeDialog();
+        await this.closeDialog();
         (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.right_button_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
-    _secondary() {
+    async _secondary() {
         var _a, _b, _c;
         if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
             this._actions.dismiss_action = undefined;
-        this.closeDialog();
+        await this.closeDialog();
         (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.left_button_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
-    _dismiss() {
+    async _dismiss() {
         var _a, _b;
-        this.closeDialog();
+        await this.closeDialog();
         (_b = (_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action) === null || _b === void 0 ? void 0 : _b.call(_a);
     }
-    _timeout() {
+    async _timeout() {
         var _a, _b, _c;
         if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
             this._actions.dismiss_action = undefined;
-        this.closeDialog();
+        await this.closeDialog();
         (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.timeout_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
     render() {
@@ -1194,7 +1206,7 @@ class BrowserModPopup extends s {
         return $ `
       <ha-dialog
         open
-        @closed=${this._dismiss}
+        @closed=${this.closedCallback}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
         .scrimClickAction=${this.dismissable ? this._dismiss : ""}
@@ -2089,6 +2101,8 @@ const BrowserIDMixin = (SuperClass) => {
   x Information about interaction requirement
   x Information about fullykiosk
   - Commands
+    - Change targets from the frontend
+    - Send browser ID to the backend in service calls?
     x Rename browser_mod commands to browser_mod services
     x Framework
     x ll-custom handling

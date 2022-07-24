@@ -3,6 +3,8 @@ import { property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
 
+let aaa = 0;
+
 class BrowserModPopup extends LitElement {
   @property() open;
   @property() content;
@@ -20,8 +22,16 @@ class BrowserModPopup extends LitElement {
   _timeoutTimer;
   @property() _style;
 
-  closeDialog() {
+  _resolveClosed;
+
+  closedCallback() {
+    this._resolveClosed?.();
+    this._resolveClosed = undefined;
+  }
+
+  async closeDialog() {
     this.open = false;
+    await new Promise((resolve) => (this._resolveClosed = resolve));
     clearInterval(this._timeoutTimer);
   }
 
@@ -86,23 +96,23 @@ class BrowserModPopup extends LitElement {
     this._style = style;
   }
 
-  _primary() {
+  async _primary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.closeDialog();
+    await this.closeDialog();
     this._actions?.right_button_action?.();
   }
-  _secondary() {
+  async _secondary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.closeDialog();
+    await this.closeDialog();
     this._actions?.left_button_action?.();
   }
-  _dismiss() {
-    this.closeDialog();
+  async _dismiss() {
+    await this.closeDialog();
     this._actions?.dismiss_action?.();
   }
-  _timeout() {
+  async _timeout() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.closeDialog();
+    await this.closeDialog();
     this._actions?.timeout_action?.();
   }
 
@@ -112,7 +122,7 @@ class BrowserModPopup extends LitElement {
     return html`
       <ha-dialog
         open
-        @closed=${this._dismiss}
+        @closed=${this.closedCallback}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
         .scrimClickAction=${this.dismissable ? this._dismiss : ""}

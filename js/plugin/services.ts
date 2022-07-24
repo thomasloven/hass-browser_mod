@@ -23,6 +23,7 @@ export const ServicesMixin = (SuperClass) => {
         data:
           [title: <string>]
           [content: <string | Lovelace Card Configuration>]
+          [size: <NORMAL/wide/fullscreen>]
           [right_button: <string>]
           [right_button_action: <service call>]
           [left_button: <string>]
@@ -31,6 +32,7 @@ export const ServicesMixin = (SuperClass) => {
           [dismiss_action: <service call>]
           [timeout: <number>]
           [timeout_action: <service call>]
+          [style: <string>]
 
       More-info:
         service: browser_mod.more_info
@@ -95,6 +97,8 @@ export const ServicesMixin = (SuperClass) => {
       let _service: String = service;
       if (!_service.startsWith("browser_mod.") && _service.includes(".")) {
         // CALL HOME ASSISTANT SERVICE
+        const [domain, srv] = _service.split(".");
+        return this.hass.callService(domain, srv, data);
       }
 
       if (_service.startsWith("browser_mod.")) {
