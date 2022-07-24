@@ -28,13 +28,20 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
 
     window.browser_mod.showPopup(
       "Unregister browser",
-      `Are you sure you want to unregister browser ${browserID}?`,
+      `Are you sure you want to unregister Browser ${browserID}?`,
       {
         right_button: "Yes",
         right_button_action: unregisterCallback,
         left_button: "No",
       }
     );
+  }
+
+  register_cast() {
+    window.browser_mod.connection.sendMessage({
+      type: "browser_mod/register",
+      browserID: "CAST",
+    });
   }
 
   render() {
@@ -57,6 +64,15 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             </ha-settings-row>`
           )}
         </div>
+        ${window.browser_mod.browsers["CAST"] === undefined
+          ? html`
+              <div class="card-actions">
+                <mwc-button @click=${this.register_cast}>
+                  Register CAST Browser
+                </mwc-button>
+              </div>
+            `
+          : ""}
       </ha-card>
     `;
   }

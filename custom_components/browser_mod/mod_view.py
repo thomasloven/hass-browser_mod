@@ -2,6 +2,10 @@ from homeassistant.components.frontend import add_extra_js_url
 
 from .const import FRONTEND_SCRIPT_URL, SETTINGS_PANEL_URL
 
+import logging
+
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_view(hass):
 
@@ -28,3 +32,25 @@ async def async_setup_view(hass):
         SETTINGS_PANEL_URL,
         hass.config.path("custom_components/browser_mod/browser_mod_panel.js"),
     )
+
+    # Also load Browser Mod as a lovelace resource so it's accessible to Cast
+    resources = hass.data["lovelace"]["resources"]
+    if resources:
+        if not resources.loaded:
+            await resources.async_load()
+            resources.loaded = True
+        frontend_added = False
+        for r in resources.async_items():
+            if r["url"].startswith(FRONTEND_SCRIPT_URL):
+                frontend_added = True
+                continue
+            # While going through the resources, also preload card-mod if it is found
+            if "card-mod.js" in r["url"]:
+                add_extra_js_url(hass, r["url"])
+        if not frontend_added:
+            await resources.async_create_item(
+                {
+                    "res_type": "module",
+                    "url": FRONTEND_SCRIPT_URL + "?automatically-added",
+                }
+            )

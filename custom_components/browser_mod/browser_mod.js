@@ -338,8 +338,7 @@ const ConnectionMixin = (SuperClass) => {
             this.browserEntities = {};
         }
         LOG(...args) {
-            const dt = new Date();
-            console.log(`${dt.toLocaleTimeString()}`, ...args);
+            return;
         }
         fireEvent(event, detail = undefined) {
             this.dispatchEvent(new CustomEvent(event, { detail }));
@@ -1964,6 +1963,8 @@ const BrowserIDMixin = (SuperClass) => {
             }
         }
         get browserID() {
+            if (document.querySelector("hc-main"))
+                return "CAST";
             if (localStorage[ID_STORAGE_KEY])
                 return localStorage[ID_STORAGE_KEY];
             this.browserID = "";
@@ -2032,12 +2033,12 @@ const BrowserIDMixin = (SuperClass) => {
     x Title templates
   - Tweaks
     - Quickbar tweaks (ctrl+enter)?
-    - Card-mod preload
+    x Card-mod preload
   - Video player?
   - Media_seek
   - Screensavers
   - IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
-  - Check functionality with CAST - may need to add frontend part as a lovelace resource
+  X Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 class BrowserMod extends ServicesMixin(PopupMixin(ActivityMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(AutoSettingsMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(BrowserIDMixin(EventTarget)))))))))))) {
     constructor() {

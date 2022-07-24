@@ -21,6 +21,7 @@ export const BrowserIDMixin = (SuperClass) => {
     }
 
     get browserID() {
+      if (document.querySelector("hc-main")) return "CAST";
       if (localStorage[ID_STORAGE_KEY]) return localStorage[ID_STORAGE_KEY];
       this.browserID = "";
       return this.browserID;

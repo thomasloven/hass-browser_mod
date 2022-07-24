@@ -60,12 +60,12 @@ import { BrowserIDMixin } from "./browserID";
     x Title templates
   - Tweaks
     - Quickbar tweaks (ctrl+enter)?
-    - Card-mod preload
+    x Card-mod preload
   - Video player?
   - Media_seek
   - Screensavers
   - IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
-  - Check functionality with CAST - may need to add frontend part as a lovelace resource
+  X Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 export class BrowserMod extends ServicesMixin(
   PopupMixin(

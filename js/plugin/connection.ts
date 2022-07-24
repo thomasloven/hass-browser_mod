@@ -13,6 +13,7 @@ export const ConnectionMixin = (SuperClass) => {
     public browserEntities = {};
 
     LOG(...args) {
+      return;
       const dt = new Date();
       console.log(`${dt.toLocaleTimeString()}`, ...args);
     }

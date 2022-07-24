@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @attr.s
-class Settings:
+class SettingsStoreData:
     hideSidebar = attr.ib(type=bool, default=None)
     hideHeader = attr.ib(type=bool, default=None)
     defaultPanel = attr.ib(type=str, default=None)
@@ -32,12 +32,12 @@ class BrowserStoreData:
     last_seen = attr.ib(type=int, default=0)
     enabled = attr.ib(type=bool, default=False)
     camera = attr.ib(type=bool, default=False)
-    settings = attr.ib(type=Settings, factory=Settings)
+    settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
     meta = attr.ib(type=str, default="default")
 
     @classmethod
     def from_dict(cls, data):
-        settings = Settings.from_dict(data.get("settings", {}))
+        settings = SettingsStoreData.from_dict(data.get("settings", {}))
         return cls(
             **(
                 data
@@ -55,8 +55,8 @@ class BrowserStoreData:
 class ConfigStoreData:
     browsers = attr.ib(type=dict[str:BrowserStoreData], factory=dict)
     version = attr.ib(type=str, default="2.0")
-    settings = attr.ib(type=Settings, factory=Settings)
-    user_settings = attr.ib(type=dict[str:Settings], factory=dict)
+    settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
+    user_settings = attr.ib(type=dict[str:SettingsStoreData], factory=dict)
 
     @classmethod
     def from_dict(cls, data={}):
@@ -65,9 +65,10 @@ class ConfigStoreData:
             for k, v in data.get("browsers", {}).items()
         }
         user_settings = {
-            k: Settings.from_dict(v) for k, v in data.get("user_settings", {}).items()
+            k: SettingsStoreData.from_dict(v)
+            for k, v in data.get("user_settings", {}).items()
         }
-        settings = Settings.from_dict(data.get("settings", {}))
+        settings = SettingsStoreData.from_dict(data.get("settings", {}))
         return cls(
             **(
                 data
@@ -135,10 +136,10 @@ class BrowserModStore:
         await self.updated()
 
     def get_user_settings(self, name):
-        return self.data.user_settings.get(name, Settings())
+        return self.data.user_settings.get(name, SettingsStoreData())
 
     async def set_user_settings(self, name, **data):
-        settings = self.data.user_settings.get(name, Settings())
+        settings = self.data.user_settings.get(name, SettingsStoreData())
         settings.__dict__.update(data)
         self.data.user_settings[name] = settings
         await self.updated()

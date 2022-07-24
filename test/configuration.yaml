@@ -2,6 +2,12 @@ default_config:
 
 demo:
 
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 172.17.0.4
+    # Update this as needed for testing with Cast
+
 logger:
   default: warning
   logs:

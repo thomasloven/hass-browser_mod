@@ -365,10 +365,16 @@ class BrowserModRegisteredBrowsersCard extends s {
                 });
             }
         };
-        window.browser_mod.showPopup("Unregister browser", `Are you sure you want to unregister browser ${browserID}?`, {
+        window.browser_mod.showPopup("Unregister browser", `Are you sure you want to unregister Browser ${browserID}?`, {
             right_button: "Yes",
             right_button_action: unregisterCallback,
             left_button: "No",
+        });
+    }
+    register_cast() {
+        window.browser_mod.connection.sendMessage({
+            type: "browser_mod/register",
+            browserID: "CAST",
         });
     }
     render() {
@@ -389,6 +395,15 @@ class BrowserModRegisteredBrowsersCard extends s {
               </ha-icon-button>
             </ha-settings-row>`)}
         </div>
+        ${window.browser_mod.browsers["CAST"] === undefined
+            ? $ `
+              <div class="card-actions">
+                <mwc-button @click=${this.register_cast}>
+                  Register CAST Browser
+                </mwc-button>
+              </div>
+            `
+            : ""}
       </ha-card>
     `;
     }
