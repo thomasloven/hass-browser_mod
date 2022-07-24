@@ -24,7 +24,7 @@ class BrowserModBrowser:
         self.entities = {}
         self.data = {}
         self.settings = {}
-        self.connection = None
+        self._connections = []
 
         self.update_entities(hass)
 
@@ -105,17 +105,16 @@ class BrowserModBrowser:
         if self.connection is None:
             return
 
-        connection, cid = self.connection
-
-        connection.send_message(
-            event_message(
-                cid,
-                {
-                    "command": command,
-                    **kwargs,
-                },
+        for (connection, cid) in self.connection:
+            connection.send_message(
+                event_message(
+                    cid,
+                    {
+                        "command": command,
+                        **kwargs,
+                    },
+                )
             )
-        )
 
     def delete(self, hass):
         """Delete browser and associated entities."""
@@ -129,6 +128,14 @@ class BrowserModBrowser:
 
         device = dr.async_get_device({(DOMAIN, self.browserID)})
         dr.async_remove_device(device.id)
+
+    @property
+    def connection(self):
+        return self._connections
+
+    @connection.setter
+    def connection(self, con):
+        self._connections.append(con)
 
 
 def getBrowser(hass, browserID, *, create=True):

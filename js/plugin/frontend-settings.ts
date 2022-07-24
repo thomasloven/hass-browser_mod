@@ -109,14 +109,6 @@ export const AutoSettingsMixin = (SuperClass) => {
     }
 
     _updateFavicon({ result }) {
-      // TEMP: Template for testing
-      /*
-        {% if is_state("light.bed_light", "on") %}
-        /local/workspace/test/icons/green.png
-        {% else %}
-        /local/workspace/test/icons/red.png
-        {% endif %}
-      */
       const link: any = document.head.querySelector("link[rel~='icon']");
       link.href = result;
       window.browser_mod.fireEvent("browser-mod-favicon-update");
