@@ -116,7 +116,8 @@ popup:
       name: Styles
       description: CSS code to apply to the popup window
       selector:
-        object:
+        text:
+          multiline: true
 
 more_info:
   description: "Show more-info dialog"

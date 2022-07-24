@@ -157,7 +157,9 @@ class BrowserModPopup extends LitElement {
             `
           : ""}
         <style>
-          ${this._style}
+          :host {
+            ${this._style}
+          }
         </style>
       </ha-dialog>
     `;
@@ -166,18 +168,22 @@ class BrowserModPopup extends LitElement {
   static get styles() {
     return css`
       ha-dialog {
-        --mdc-dialog-min-width: 400px;
-        --mdc-dialog-max-width: 600px;
+        --mdc-dialog-min-width: var(--popup-min-width, 400px);
+        --mdc-dialog-max-width: var(--popup-max-width, 600px);
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --justify-action-buttons: space-between;
 
-        --mdc-dialog-box-shadow: 0px 0px 0px var(--ha-card-border-width, 2px)
-          var(--ha-card-border-color, var(--divider-color, #e0e0e0));
-        --ha-dialog-border-radius: 8px;
+        --mdc-dialog-box-shadow: 0px 0px 0px
+          var(--popup-border-width, var(--ha-card-border-width, 2px))
+          var(
+            --popup-border-color,
+            var(--ha-card-border-color, var(--divider-color, #e0e0e0))
+          );
+        --ha-dialog-border-radius: var(--popup-border-radius, 8px);
         --mdc-theme-surface: var(
-          --ha-card-background,
-          var(--card-background-color, white)
+          --popup-background-color,
+          var(--ha-card-background, var(--card-background-color, white))
         );
       }
       :host([wide]) ha-dialog {
@@ -205,7 +211,10 @@ class BrowserModPopup extends LitElement {
       app-toolbar {
         flex-shrink: 0;
         color: var(--primary-text-color);
-        background-color: var(--sidebar-background-color);
+        background-color: var(
+          --popup-header-background-color,
+          var(--popup-background-color, --sidebar-background-color)
+        );
       }
       ha-icon-button > * {
         display: flex;
@@ -234,7 +243,7 @@ class BrowserModPopup extends LitElement {
         --padding-y: 0px;
       }
       :host([actions]) .content {
-        border-bottom: 1px solid var(--divider-color);
+        border-bottom: 1px solid var(--popup-border-color, var(--divider-color));
         --footer-height: 54px;
       }
       :host([wide]) .content {
@@ -261,7 +270,8 @@ class BrowserModPopup extends LitElement {
   }
 }
 
-customElements.define("browser-mod-popup", BrowserModPopup);
+if (!customElements.get("browser-mod-popup"))
+  customElements.define("browser-mod-popup", BrowserModPopup);
 
 export const PopupMixin = (SuperClass) => {
   return class PopupMixinClass extends SuperClass {

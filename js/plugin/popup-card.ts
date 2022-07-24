@@ -90,11 +90,48 @@ class PopupCard extends LitElement {
   render() {
     if (!this.editMode) return html``;
     return html` <ha-card>
-      <div>
-        <h2>${this._config.title}</h2>
+      <div class="app-toolbar">
+        ${this._config.dismissable
+          ? html`
+              <ha-icon-button>
+                <ha-icon .icon=${"mdi:close"}></ha-icon>
+              </ha-icon-button>
+            `
+          : ""}
+        <div class="main-title">${this._config.title}</div>
       </div>
-      ${this._element}</ha-card
-    >`;
+      ${this._element}
+      <style>
+        :host {
+        ${this._config.style}
+        }
+      </style>
+      ${this._config.right_button !== undefined ||
+      this._config.left_button !== undefined
+        ? html`
+            <footer class="mdc-dialog__actions">
+              <span>
+                ${this._config.left_button !== undefined
+                  ? html`
+                      <mwc-button
+                        .label=${this._config.left_button}
+                      ></mwc-button>
+                    `
+                  : ""}
+              </span>
+              <span>
+                ${this._config.right_button !== undefined
+                  ? html`
+                      <mwc-button
+                        .label=${this._config.right_button}
+                      ></mwc-button>
+                    `
+                  : ""}
+              </span>
+            </footer>
+          `
+        : ""}
+    </ha-card>`;
   }
 
   static get styles() {
@@ -106,10 +143,44 @@ class PopupCard extends LitElement {
         display: block !important;
         border: 1px solid var(--primary-color);
       }
-      h2 {
-        padding-left: 16px;
-        padding-top: 16px;
-        margin: 0;
+      ha-card {
+        background-color: var(
+          --popup-background-color,
+          var(--ha-card-background, var(--card-background-color, white))
+        );
+      }
+      .app-toolbar {
+        color: var(--primary-text-color);
+        background-color: var(
+          --popup-header-background-color,
+          var(--popup-background-color, --sidebar-background-color)
+        );
+        display: var(--layout-horizontal_-_display);
+        flex-direction: var(--layout-horizontal_-_flex-direction);
+        align-items: var(--layout-center_-_align-items);
+        height: 64px;
+        padding: 0 16px;
+        font-size: var(--app-toolbar-font-size, 20px);
+      }
+      ha-icon-button > * {
+        display: flex;
+      }
+      .main-title {
+        margin-left: 16px;
+        line-height: 1.3em;
+        max-height: 2.6em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mdc-dialog__actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 52px;
+        margin: 0px;
+        padding: 8px;
+        border-top: 1px solid transparent;
       }
     `;
   }

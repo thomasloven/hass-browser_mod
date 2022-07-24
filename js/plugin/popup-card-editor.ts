@@ -79,6 +79,11 @@ const configSchema = [
       },
     ],
   },
+  {
+    name: "style",
+    label: "CSS style",
+    selector: { text: { multiline: true } },
+  },
 ];
 
 class PopupCardEditor extends LitElement {

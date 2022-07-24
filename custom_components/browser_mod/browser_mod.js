@@ -1239,7 +1239,9 @@ class BrowserModPopup extends s {
             `
             : ""}
         <style>
-          ${this._style}
+          :host {
+            ${this._style}
+          }
         </style>
       </ha-dialog>
     `;
@@ -1247,18 +1249,22 @@ class BrowserModPopup extends s {
     static get styles() {
         return r$2 `
       ha-dialog {
-        --mdc-dialog-min-width: 400px;
-        --mdc-dialog-max-width: 600px;
+        --mdc-dialog-min-width: var(--popup-min-width, 400px);
+        --mdc-dialog-max-width: var(--popup-max-width, 600px);
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --justify-action-buttons: space-between;
 
-        --mdc-dialog-box-shadow: 0px 0px 0px var(--ha-card-border-width, 2px)
-          var(--ha-card-border-color, var(--divider-color, #e0e0e0));
-        --ha-dialog-border-radius: 8px;
+        --mdc-dialog-box-shadow: 0px 0px 0px
+          var(--popup-border-width, var(--ha-card-border-width, 2px))
+          var(
+            --popup-border-color,
+            var(--ha-card-border-color, var(--divider-color, #e0e0e0))
+          );
+        --ha-dialog-border-radius: var(--popup-border-radius, 8px);
         --mdc-theme-surface: var(
-          --ha-card-background,
-          var(--card-background-color, white)
+          --popup-background-color,
+          var(--ha-card-background, var(--card-background-color, white))
         );
       }
       :host([wide]) ha-dialog {
@@ -1286,7 +1292,10 @@ class BrowserModPopup extends s {
       app-toolbar {
         flex-shrink: 0;
         color: var(--primary-text-color);
-        background-color: var(--sidebar-background-color);
+        background-color: var(
+          --popup-header-background-color,
+          var(--popup-background-color, --sidebar-background-color)
+        );
       }
       ha-icon-button > * {
         display: flex;
@@ -1315,7 +1324,7 @@ class BrowserModPopup extends s {
         --padding-y: 0px;
       }
       :host([actions]) .content {
-        border-bottom: 1px solid var(--divider-color);
+        border-bottom: 1px solid var(--popup-border-color, var(--divider-color));
         --footer-height: 54px;
       }
       :host([wide]) .content {
@@ -1374,7 +1383,8 @@ __decorate([
 __decorate([
     e$2()
 ], BrowserModPopup.prototype, "_style", void 0);
-customElements.define("browser-mod-popup", BrowserModPopup);
+if (!customElements.get("browser-mod-popup"))
+    customElements.define("browser-mod-popup", BrowserModPopup);
 const PopupMixin = (SuperClass) => {
     return class PopupMixinClass extends SuperClass {
         constructor() {
@@ -1554,6 +1564,11 @@ const configSchema = [
                 selector: { object: {} },
             },
         ],
+    },
+    {
+        name: "style",
+        label: "CSS style",
+        selector: { text: { multiline: true } },
     },
 ];
 class PopupCardEditor extends s {
@@ -1800,11 +1815,48 @@ class PopupCard extends s {
         if (!this.editMode)
             return $ ``;
         return $ ` <ha-card>
-      <div>
-        <h2>${this._config.title}</h2>
+      <div class="app-toolbar">
+        ${this._config.dismissable
+            ? $ `
+              <ha-icon-button>
+                <ha-icon .icon=${"mdi:close"}></ha-icon>
+              </ha-icon-button>
+            `
+            : ""}
+        <div class="main-title">${this._config.title}</div>
       </div>
-      ${this._element}</ha-card
-    >`;
+      ${this._element}
+      <style>
+        :host {
+        ${this._config.style}
+        }
+      </style>
+      ${this._config.right_button !== undefined ||
+            this._config.left_button !== undefined
+            ? $ `
+            <footer class="mdc-dialog__actions">
+              <span>
+                ${this._config.left_button !== undefined
+                ? $ `
+                      <mwc-button
+                        .label=${this._config.left_button}
+                      ></mwc-button>
+                    `
+                : ""}
+              </span>
+              <span>
+                ${this._config.right_button !== undefined
+                ? $ `
+                      <mwc-button
+                        .label=${this._config.right_button}
+                      ></mwc-button>
+                    `
+                : ""}
+              </span>
+            </footer>
+          `
+            : ""}
+    </ha-card>`;
     }
     static get styles() {
         return r$2 `
@@ -1815,10 +1867,44 @@ class PopupCard extends s {
         display: block !important;
         border: 1px solid var(--primary-color);
       }
-      h2 {
-        padding-left: 16px;
-        padding-top: 16px;
-        margin: 0;
+      ha-card {
+        background-color: var(
+          --popup-background-color,
+          var(--ha-card-background, var(--card-background-color, white))
+        );
+      }
+      .app-toolbar {
+        color: var(--primary-text-color);
+        background-color: var(
+          --popup-header-background-color,
+          var(--popup-background-color, --sidebar-background-color)
+        );
+        display: var(--layout-horizontal_-_display);
+        flex-direction: var(--layout-horizontal_-_flex-direction);
+        align-items: var(--layout-center_-_align-items);
+        height: 64px;
+        padding: 0 16px;
+        font-size: var(--app-toolbar-font-size, 20px);
+      }
+      ha-icon-button > * {
+        display: flex;
+      }
+      .main-title {
+        margin-left: 16px;
+        line-height: 1.3em;
+        max-height: 2.6em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .mdc-dialog__actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 52px;
+        margin: 0px;
+        padding: 8px;
+        border-top: 1px solid transparent;
       }
     `;
     }
