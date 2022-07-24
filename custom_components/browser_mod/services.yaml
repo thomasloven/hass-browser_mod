@@ -112,6 +112,11 @@ popup:
       description: Action to perform when popup is closed by timeout
       selector:
         object:
+    style:
+      name: Styles
+      description: CSS code to apply to the popup window
+      selector:
+        object:
 
 more_info:
   description: "Show more-info dialog"

@@ -18,6 +18,7 @@ class BrowserModPopup extends LitElement {
   timeout;
   _timeoutStart;
   _timeoutTimer;
+  @property() _style;
 
   closeDialog() {
     this.open = false;
@@ -50,6 +51,7 @@ class BrowserModPopup extends LitElement {
       timeout = undefined,
       timeout_action = undefined,
       size = undefined,
+      style = undefined,
     } = {}
   ) {
     this.title = title;
@@ -81,6 +83,7 @@ class BrowserModPopup extends LitElement {
     };
     this.wide = size === "wide" ? "" : undefined;
     this.fullscreen = size === "fullscreen" ? "" : undefined;
+    this._style = style;
   }
 
   _primary() {
@@ -153,6 +156,9 @@ class BrowserModPopup extends LitElement {
               ></mwc-button>
             `
           : ""}
+        <style>
+          ${this._style}
+        </style>
       </ha-dialog>
     `;
   }
@@ -303,8 +309,7 @@ export const PopupMixin = (SuperClass) => {
       //   },
       //   ""
       // );
-      this._popupEl.setupDialog(...args);
-      this._popupEl.openDialog();
+      this._popupEl.setupDialog(...args).then(() => this._popupEl.openDialog());
     }
 
     closePopup(...args) {

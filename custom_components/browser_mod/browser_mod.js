@@ -1131,7 +1131,7 @@ class BrowserModPopup extends s {
             }, 10);
         }
     }
-    async setupDialog(title, content, { right_button = undefined, right_button_action = undefined, left_button = undefined, left_button_action = undefined, dismissable = true, dismiss_action = undefined, timeout = undefined, timeout_action = undefined, size = undefined, } = {}) {
+    async setupDialog(title, content, { right_button = undefined, right_button_action = undefined, left_button = undefined, left_button_action = undefined, dismissable = true, dismiss_action = undefined, timeout = undefined, timeout_action = undefined, size = undefined, style = undefined, } = {}) {
         this.title = title;
         if (content && typeof content === "object") {
             // Create a card from config in content
@@ -1160,6 +1160,7 @@ class BrowserModPopup extends s {
         };
         this.wide = size === "wide" ? "" : undefined;
         this.fullscreen = size === "fullscreen" ? "" : undefined;
+        this._style = style;
     }
     _primary() {
         var _a, _b, _c;
@@ -1237,6 +1238,9 @@ class BrowserModPopup extends s {
               ></mwc-button>
             `
             : ""}
+        <style>
+          ${this._style}
+        </style>
       </ha-dialog>
     `;
     }
@@ -1367,6 +1371,9 @@ __decorate([
 __decorate([
     e$2({ reflect: true })
 ], BrowserModPopup.prototype, "fullscreen", void 0);
+__decorate([
+    e$2()
+], BrowserModPopup.prototype, "_style", void 0);
 customElements.define("browser-mod-popup", BrowserModPopup);
 const PopupMixin = (SuperClass) => {
     return class PopupMixinClass extends SuperClass {
@@ -1408,8 +1415,7 @@ const PopupMixin = (SuperClass) => {
             //   },
             //   ""
             // );
-            this._popupEl.setupDialog(...args);
-            this._popupEl.openDialog();
+            this._popupEl.setupDialog(...args).then(() => this._popupEl.openDialog());
         }
         closePopup(...args) {
             this._popupEl.closeDialog();
@@ -1989,7 +1995,7 @@ const BrowserIDMixin = (SuperClass) => {
     x Device -> Browser
   - Popups
     X Basic popups
-    - Card-mod integration
+    x Styling
     X Timeout
     X Fullscreen
     x Popup-card

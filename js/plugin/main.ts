@@ -24,7 +24,7 @@ import { BrowserIDMixin } from "./browserID";
     x Device -> Browser
   - Popups
     X Basic popups
-    - Card-mod integration
+    x Styling
     X Timeout
     X Fullscreen
     x Popup-card
