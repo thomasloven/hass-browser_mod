@@ -48,11 +48,11 @@ export const AutoSettingsMixin = (SuperClass) => {
         selectTree(
           document.body,
           "home-assistant$home-assistant-main$app-drawer-layout"
-        ).then((el) => el.style.setProperty("--app-drawer-width", "0px"));
+        ).then((el) => el?.style?.setProperty("--app-drawer-width", "0px"));
         selectTree(
           document.body,
           "home-assistant$home-assistant-main$app-drawer-layout app-drawer"
-        ).then((el) => el.remove());
+        ).then((el) => el?.remove?.());
       }
 
       // Hide header

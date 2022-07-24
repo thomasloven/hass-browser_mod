@@ -145,8 +145,8 @@ export const ConnectionMixin = (SuperClass) => {
     get settings() {
       return {
         ...this.global_settings,
-        ...this.user_settings,
         ...this.browser_settings,
+        ...this.user_settings,
       };
     }
 

@@ -58,7 +58,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         </div>
         <div class="card-content">
           <ha-settings-row>
-            <span slot="heading">Enable</span>
+            <span slot="heading">Register</span>
             <span slot="description"
               >Enable this browser as a Device in Home Assistant</span
             >

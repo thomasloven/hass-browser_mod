@@ -42,7 +42,7 @@ import { BrowserIDMixin } from "./browserID";
       x navigate
       - lovelace-reload?
       x window-reload
-      - screensaver
+      - screensaver ?
       x sequence
       x delay
       x javascript eval
@@ -64,6 +64,8 @@ import { BrowserIDMixin } from "./browserID";
   - Video player?
   - Media_seek
   - Screensavers
+  - IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
+  - Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 export class BrowserMod extends ServicesMixin(
   PopupMixin(

@@ -464,7 +464,7 @@ const ConnectionMixin = (SuperClass) => {
             return settings;
         }
         get settings() {
-            return Object.assign(Object.assign(Object.assign({}, this.global_settings), this.user_settings), this.browser_settings);
+            return Object.assign(Object.assign(Object.assign({}, this.global_settings), this.browser_settings), this.user_settings);
         }
         set_setting(key, value, level) {
             var _a;
@@ -1869,8 +1869,8 @@ const AutoSettingsMixin = (SuperClass) => {
             }
             // Hide sidebar
             if (settings.hideSidebar === true) {
-                selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout").then((el) => el.style.setProperty("--app-drawer-width", "0px"));
-                selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout app-drawer").then((el) => el.remove());
+                selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout").then((el) => { var _a; return (_a = el === null || el === void 0 ? void 0 : el.style) === null || _a === void 0 ? void 0 : _a.setProperty("--app-drawer-width", "0px"); });
+                selectTree(document.body, "home-assistant$home-assistant-main$app-drawer-layout app-drawer").then((el) => { var _a; return (_a = el === null || el === void 0 ? void 0 : el.remove) === null || _a === void 0 ? void 0 : _a.call(el); });
             }
             // Hide header
             if (settings.hideHeader === true) {
@@ -2014,7 +2014,7 @@ const BrowserIDMixin = (SuperClass) => {
       x navigate
       - lovelace-reload?
       x window-reload
-      - screensaver
+      - screensaver ?
       x sequence
       x delay
       x javascript eval
@@ -2036,6 +2036,8 @@ const BrowserIDMixin = (SuperClass) => {
   - Video player?
   - Media_seek
   - Screensavers
+  - IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
+  - Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 class BrowserMod extends ServicesMixin(PopupMixin(ActivityMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(AutoSettingsMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(BrowserIDMixin(EventTarget)))))))))))) {
     constructor() {

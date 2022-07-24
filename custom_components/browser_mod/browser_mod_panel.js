@@ -158,7 +158,7 @@ class BrowserModRegisteredBrowsersCard$1 extends s {
         </div>
         <div class="card-content">
           <ha-settings-row>
-            <span slot="heading">Enable</span>
+            <span slot="heading">Register</span>
             <span slot="description"
               >Enable this browser as a Device in Home Assistant</span
             >
@@ -419,9 +419,9 @@ class BrowserModFrontendSettingsCard extends s {
         this._selectedTab = parseInt(ev.detail.index, 10);
     }
     render() {
-        const level = ["browser", "user", "global"][this._selectedTab];
+        const level = ["user", "browser", "global"][this._selectedTab];
         return $ `
-      <ha-card header="Frontend settings" outlined>
+      <ha-card header="Frontend Settings" outlined>
         <div class="card-content">
         <ha-alert alert-type="warning">
           <p>
@@ -445,9 +445,9 @@ class BrowserModFrontendSettingsCard extends s {
             .activeIndex=${this._selectedTab}
             @MDCTabBar:activated=${this._handleSwitchTab}
           >
-            <mwc-tab .label=${"Browser"}></mwc-tab>
-            <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
             <mwc-tab .label=${"User (" + this.hass.user.name + ")"}></mwc-tab>
+            <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
+            <mwc-tab .label=${"Browser"}></mwc-tab>
             <ha-icon .icon=${"mdi:chevron-double-right"}></ha-icon>
             <mwc-tab .label=${"Global"}></mwc-tab>
           </mwc-tab-bar>
@@ -459,9 +459,9 @@ class BrowserModFrontendSettingsCard extends s {
     }
     _render_settings(level) {
         const global = window.browser_mod.global_settings;
-        const user = window.browser_mod.user_settings;
         const browser = window.browser_mod.browser_settings;
-        const current = { global, user, browser }[level];
+        const user = window.browser_mod.user_settings;
+        const current = { global, browser, user }[level];
         const DESC_BOOLEAN = (val) => ({ true: "Enabled", false: "Disabled", undefined: "Unset" }[String(val)]);
         const DESC_SET_UNSET = (val) => (val === undefined ? "Unset" : "Set");
         const OVERRIDDEN = (key) => {
