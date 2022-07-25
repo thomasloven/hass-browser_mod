@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
 
@@ -16,27 +16,31 @@ class BrowserModPopup extends LitElement {
   @property() dismissable;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
+  @property() _style;
+  @query("ha-dialog") dialog: any;
+  _autoclose;
+  _autocloseListener;
   _actions;
   timeout;
   _timeoutStart;
   _timeoutTimer;
-  @property() _style;
-
   _resolveClosed;
-
-  closedCallback() {
-    this._resolveClosed?.();
-    this._resolveClosed = undefined;
-  }
 
   async closeDialog() {
     this.open = false;
-    await new Promise((resolve) => (this._resolveClosed = resolve));
     clearInterval(this._timeoutTimer);
+    if (this._autocloseListener) {
+      window.browser_mod.removeEventListener(
+        "browser-mod-activity",
+        this._autocloseListener
+      );
+      this._autocloseListener = undefined;
+    }
   }
 
   openDialog() {
     this.open = true;
+    this.dialog?.show();
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
       this._timeoutTimer = setInterval(() => {
@@ -45,6 +49,14 @@ class BrowserModPopup extends LitElement {
         this.style.setProperty("--progress", `${progress}%`);
         if (ellapsed >= this.timeout) this._timeout();
       }, 10);
+    }
+    this._autocloseListener = undefined;
+    if (this._autoclose) {
+      this._autocloseListener = this._dismiss.bind(this);
+      window.browser_mod.addEventListener(
+        "browser-mod-activity",
+        this._autocloseListener
+      );
     }
   }
 
@@ -62,6 +74,7 @@ class BrowserModPopup extends LitElement {
       timeout_action = undefined,
       size = undefined,
       style = undefined,
+      autoclose = false,
     } = {}
   ) {
     this.title = title;
@@ -94,6 +107,7 @@ class BrowserModPopup extends LitElement {
     this.wide = size === "wide" ? "" : undefined;
     this.fullscreen = size === "fullscreen" ? "" : undefined;
     this._style = style;
+    this._autoclose = autoclose;
   }
 
   async _primary() {
@@ -122,7 +136,6 @@ class BrowserModPopup extends LitElement {
     return html`
       <ha-dialog
         open
-        @closed=${this.closedCallback}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
         .scrimClickAction=${this.dismissable ? this._dismiss : ""}

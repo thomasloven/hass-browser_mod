@@ -39,16 +39,20 @@ import { BrowserIDMixin } from "./browserID";
     x ll-custom handling
     - Commands
       x popup
+        x Auto-close
       x close_popup
       x more-info
       x navigate
       - lovelace-reload?
+        - Not needed
       x window-reload
       - screensaver ?
+        - Refer to automations instead
       x sequence
       x delay
       x javascript eval
       - toast?
+        - Replaced with popups with timeout
     x Redesign services to target devices
   x frontend editor for popup cards
     - also screensavers
@@ -66,7 +70,8 @@ import { BrowserIDMixin } from "./browserID";
   - Video player?
   - Media_seek
   - Screensavers
-  - IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
+  x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
+    - NOFIX. Home Assistant bug
   X Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 export class BrowserMod extends ServicesMixin(

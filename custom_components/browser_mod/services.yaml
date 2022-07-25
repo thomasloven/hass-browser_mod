@@ -101,6 +101,12 @@ popup:
       description: Action to perform when popup is dismissed
       selector:
         object:
+    autoclose:
+      name: Auto close
+      description: Close the popup automatically on mouse, pointer or keyboard activity
+      default: false
+      selector:
+        boolean:
     timeout:
       name: Auto close timeout
       description: Time before closing (ms)

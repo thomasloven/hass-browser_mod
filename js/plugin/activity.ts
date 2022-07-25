@@ -6,20 +6,23 @@ export const ActivityMixin = (SuperClass) => {
     constructor() {
       super();
       for (const ev of ["pointerdown", "pointermove", "keydown"]) {
-        window.addEventListener(ev, () => this.activityTrigger());
+        window.addEventListener(ev, () => this.activityTrigger(true));
       }
       this.addEventListener("fully-update", () => {
         this.activityTrigger();
       });
     }
 
-    activityTrigger() {
+    activityTrigger(touched = false) {
       if (!this.activityTriggered) {
         this.sendUpdate({
           activity: true,
         });
       }
       this.activityTriggered = true;
+      if (touched) {
+        this.fireEvent("browser-mod-activity");
+      }
       clearTimeout(this._activityTimeout);
       this._activityTimeout = setTimeout(
         () => this.activityReset(),

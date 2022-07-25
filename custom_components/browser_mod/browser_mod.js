@@ -1082,19 +1082,22 @@ const ActivityMixin = (SuperClass) => {
             this.activityTriggered = false;
             this._activityCooldown = 15000;
             for (const ev of ["pointerdown", "pointermove", "keydown"]) {
-                window.addEventListener(ev, () => this.activityTrigger());
+                window.addEventListener(ev, () => this.activityTrigger(true));
             }
             this.addEventListener("fully-update", () => {
                 this.activityTrigger();
             });
         }
-        activityTrigger() {
+        activityTrigger(touched = false) {
             if (!this.activityTriggered) {
                 this.sendUpdate({
                     activity: true,
                 });
             }
             this.activityTriggered = true;
+            if (touched) {
+                this.fireEvent("browser-mod-activity");
+            }
             clearTimeout(this._activityTimeout);
             this._activityTimeout = setTimeout(() => this.activityReset(), this._activityCooldown);
         }
@@ -1124,18 +1127,18 @@ const t={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},e
  */class e extends i{constructor(i){if(super(i),this.it=w,i.type!==t.CHILD)throw Error(this.constructor.directiveName+"() can only be used in child bindings")}render(r){if(r===w||null==r)return this.ft=void 0,this.it=r;if(r===b)return r;if("string"!=typeof r)throw Error(this.constructor.directiveName+"() called with a non-string value");if(r===this.it)return this.ft;this.it=r;const s=[r];return s.raw=s,this.ft={_$litType$:this.constructor.resultType,strings:s,values:[]}}}e.directiveName="unsafeHTML",e.resultType=1;const o=e$1(e);
 
 class BrowserModPopup extends s {
-    closedCallback() {
-        var _a;
-        (_a = this._resolveClosed) === null || _a === void 0 ? void 0 : _a.call(this);
-        this._resolveClosed = undefined;
-    }
     async closeDialog() {
         this.open = false;
-        await new Promise((resolve) => (this._resolveClosed = resolve));
         clearInterval(this._timeoutTimer);
+        if (this._autocloseListener) {
+            window.browser_mod.removeEventListener("browser-mod-activity", this._autocloseListener);
+            this._autocloseListener = undefined;
+        }
     }
     openDialog() {
+        var _a;
         this.open = true;
+        (_a = this.dialog) === null || _a === void 0 ? void 0 : _a.show();
         if (this.timeout) {
             this._timeoutStart = new Date().getTime();
             this._timeoutTimer = setInterval(() => {
@@ -1146,8 +1149,13 @@ class BrowserModPopup extends s {
                     this._timeout();
             }, 10);
         }
+        this._autocloseListener = undefined;
+        if (this._autoclose) {
+            this._autocloseListener = this._dismiss.bind(this);
+            window.browser_mod.addEventListener("browser-mod-activity", this._autocloseListener);
+        }
     }
-    async setupDialog(title, content, { right_button = undefined, right_button_action = undefined, left_button = undefined, left_button_action = undefined, dismissable = true, dismiss_action = undefined, timeout = undefined, timeout_action = undefined, size = undefined, style = undefined, } = {}) {
+    async setupDialog(title, content, { right_button = undefined, right_button_action = undefined, left_button = undefined, left_button_action = undefined, dismissable = true, dismiss_action = undefined, timeout = undefined, timeout_action = undefined, size = undefined, style = undefined, autoclose = false, } = {}) {
         this.title = title;
         if (content && typeof content === "object") {
             // Create a card from config in content
@@ -1177,6 +1185,7 @@ class BrowserModPopup extends s {
         this.wide = size === "wide" ? "" : undefined;
         this.fullscreen = size === "fullscreen" ? "" : undefined;
         this._style = style;
+        this._autoclose = autoclose;
     }
     async _primary() {
         var _a, _b, _c;
@@ -1210,7 +1219,6 @@ class BrowserModPopup extends s {
         return $ `
       <ha-dialog
         open
-        @closed=${this.closedCallback}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
         .scrimClickAction=${this.dismissable ? this._dismiss : ""}
@@ -1399,6 +1407,9 @@ __decorate([
 __decorate([
     e$2()
 ], BrowserModPopup.prototype, "_style", void 0);
+__decorate([
+    i$1("ha-dialog")
+], BrowserModPopup.prototype, "dialog", void 0);
 if (!customElements.get("browser-mod-popup"))
     customElements.define("browser-mod-popup", BrowserModPopup);
 const PopupMixin = (SuperClass) => {
@@ -2125,16 +2136,20 @@ const BrowserIDMixin = (SuperClass) => {
     x ll-custom handling
     - Commands
       x popup
+        x Auto-close
       x close_popup
       x more-info
       x navigate
       - lovelace-reload?
+        - Not needed
       x window-reload
       - screensaver ?
+        - Refer to automations instead
       x sequence
       x delay
       x javascript eval
       - toast?
+        - Replaced with popups with timeout
     x Redesign services to target devices
   x frontend editor for popup cards
     - also screensavers
@@ -2152,7 +2167,8 @@ const BrowserIDMixin = (SuperClass) => {
   - Video player?
   - Media_seek
   - Screensavers
-  - IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
+  x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
+    - NOFIX. Home Assistant bug
   X Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 class BrowserMod extends ServicesMixin(PopupMixin(ActivityMixin(BrowserStateMixin(CameraMixin(MediaPlayerMixin(ScreenSaverMixin(AutoSettingsMixin(FullyMixin(RequireInteractMixin(ConnectionMixin(BrowserIDMixin(EventTarget)))))))))))) {
