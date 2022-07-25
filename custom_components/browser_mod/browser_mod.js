@@ -2062,12 +2062,25 @@ const BrowserIDMixin = (SuperClass) => {
                 }
             }
         }
+        async recall_id() {
+            // If the connection is still open, but the BrowserID has disappeared - recall it from the backend
+            // This happens e.g. when the frontend cache is reset in the Compainon app
+            if (!this.connection)
+                return;
+            const recalledID = await this.connection.sendMessagePromise({
+                type: "browser_mod/recall_id",
+            });
+            if (recalledID) {
+                localStorage[ID_STORAGE_KEY] = recalledID;
+            }
+        }
         get browserID() {
             if (document.querySelector("hc-main"))
                 return "CAST";
             if (localStorage[ID_STORAGE_KEY])
                 return localStorage[ID_STORAGE_KEY];
             this.browserID = "";
+            this.recall_id();
             return this.browserID;
         }
         set browserID(id) {

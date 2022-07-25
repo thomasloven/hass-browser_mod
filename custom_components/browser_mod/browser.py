@@ -156,7 +156,17 @@ def getBrowser(hass, browserID, *, create=True):
 
 
 def deleteBrowser(hass, browserID):
+    """Delete a browser by BrowserID."""
     browsers = hass.data[DOMAIN][DATA_BROWSERS]
     if browserID in browsers:
         browsers[browserID].delete(hass)
         del browsers[browserID]
+
+
+def getBrowserByConnection(hass, connection):
+    """Get the browser that has a given connection open."""
+    browsers = hass.data[DOMAIN][DATA_BROWSERS]
+
+    for k, v in browsers.items():
+        if any([c[0] == connection for c in v.connection]):
+            return v

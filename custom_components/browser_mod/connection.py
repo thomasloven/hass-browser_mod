@@ -18,7 +18,7 @@ from .const import (
     DOMAIN,
 )
 
-from .browser import getBrowser, deleteBrowser
+from .browser import getBrowser, deleteBrowser, getBrowserByConnection
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -159,9 +159,34 @@ async def async_setup_connection(hass):
             await store.set_global_settings(**{msg["key"]: msg.get("value", None)})
         pass
 
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): "browser_mod/recall_id",
+        }
+    )
+    def handle_recall_id(hass, connection, msg):
+        dev = getBrowserByConnection(hass, connection)
+        if dev:
+            connection.send_message(
+                websocket_api.result_message(msg["id"], dev.browserID)
+            )
+        connection.send_message(websocket_api.result_message(msg["id"], None))
+
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): "browser_mod/log",
+            vol.Required("message"): str,
+        }
+    )
+    def handle_log(hass, connection, msg):
+        _LOGGER.info("LOG MESSAGE")
+        _LOGGER.info(msg["message"])
+
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_register)
     async_register_command(hass, handle_unregister)
     async_register_command(hass, handle_reregister)
     async_register_command(hass, handle_update)
     async_register_command(hass, handle_settings)
+    async_register_command(hass, handle_recall_id)
+    async_register_command(hass, handle_log)

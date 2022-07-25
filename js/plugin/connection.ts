@@ -16,6 +16,11 @@ export const ConnectionMixin = (SuperClass) => {
       return;
       const dt = new Date();
       console.log(`${dt.toLocaleTimeString()}`, ...args);
+
+      this.connection.sendMessage({
+        type: "browser_mod/log",
+        message: args[0],
+      });
     }
 
     private fireEvent(event, detail = undefined) {
