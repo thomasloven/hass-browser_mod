@@ -427,7 +427,7 @@ const ConnectionMixin = (SuperClass) => {
         }
         async _reregister(newData = {}) {
             await this.connection.sendMessage({
-                type: "browser_mod/reregister",
+                type: "browser_mod/register",
                 browserID: this.browserID,
                 data: Object.assign(Object.assign({}, this.browsers[this.browserID]), newData),
             });
@@ -519,7 +519,7 @@ const ConnectionMixin = (SuperClass) => {
                 ((_b = this.browsers) === null || _b === void 0 ? void 0 : _b[this.browserID]) === undefined) {
                 (async () => {
                     await this.connection.sendMessage({
-                        type: "browser_mod/reregister",
+                        type: "browser_mod/register",
                         browserID: oldID,
                         data: Object.assign(Object.assign({}, this.browsers[oldID]), { browserID: this.browserID }),
                     });

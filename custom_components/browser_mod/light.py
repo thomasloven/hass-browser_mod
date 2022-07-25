@@ -1,6 +1,6 @@
 from homeassistant.components.light import LightEntity, ColorMode
 
-from .helpers import BrowserModEntity
+from .entities import BrowserModEntity
 from .const import DOMAIN, DATA_ADDERS
 
 

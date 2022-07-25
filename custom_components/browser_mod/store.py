@@ -30,7 +30,7 @@ class SettingsStoreData:
 @attr.s
 class BrowserStoreData:
     last_seen = attr.ib(type=int, default=0)
-    enabled = attr.ib(type=bool, default=False)
+    registered = attr.ib(type=bool, default=False)
     camera = attr.ib(type=bool, default=False)
     settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
     meta = attr.ib(type=str, default="default")

@@ -25,11 +25,8 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
 
-    await hass.config_entries.async_forward_entry_setup(config_entry, "sensor")
-    await hass.config_entries.async_forward_entry_setup(config_entry, "binary_sensor")
-    await hass.config_entries.async_forward_entry_setup(config_entry, "light")
-    await hass.config_entries.async_forward_entry_setup(config_entry, "media_player")
-    await hass.config_entries.async_forward_entry_setup(config_entry, "camera")
+    for domain in ["sensor", "binary_sensor", "light", "media_player", "camera"]:
+        await hass.config_entries.async_forward_entry_setup(config_entry, domain)
 
     await async_setup_connection(hass)
     await async_setup_view(hass)

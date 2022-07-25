@@ -114,7 +114,7 @@ export const ConnectionMixin = (SuperClass) => {
 
     private async _reregister(newData = {}) {
       await this.connection.sendMessage({
-        type: "browser_mod/reregister",
+        type: "browser_mod/register",
         browserID: this.browserID,
         data: {
           ...this.browsers[this.browserID],
@@ -215,7 +215,7 @@ export const ConnectionMixin = (SuperClass) => {
       ) {
         (async () => {
           await this.connection.sendMessage({
-            type: "browser_mod/reregister",
+            type: "browser_mod/register",
             browserID: oldID,
             data: {
               ...this.browsers[oldID],

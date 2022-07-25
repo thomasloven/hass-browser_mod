@@ -2,7 +2,7 @@ import base64
 
 from homeassistant.components.camera import Camera
 
-from .helpers import BrowserModEntity
+from .entities import BrowserModEntity
 from .const import DOMAIN, DATA_ADDERS
 
 import logging

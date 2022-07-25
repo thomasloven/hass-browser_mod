@@ -1,7 +1,7 @@
 from homeassistant.components.sensor import SensorEntity
 
 from .const import DOMAIN, DATA_ADDERS
-from .helpers import BrowserModEntity
+from .entities import BrowserModEntity
 
 
 async def async_setup_platform(
@@ -48,12 +48,15 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
     @property
     def extra_state_attributes(self):
         retval = super().extra_state_attributes
+
         if self.parameter == "currentUser":
             retval["userData"] = self._data.get("browser", {}).get("userData")
+
         if self.parameter == "path":
             retval["pathSegments"] = (
                 self._data.get("browser", {}).get("path", "").split("/")
             )
+
         if self.parameter == "userAgent":
             retval["userAgent"] = self._data.get("browser", {}).get("userAgent")
 

@@ -24,7 +24,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 
-from .helpers import BrowserModEntity
+from .entities import BrowserModEntity
 from .const import DOMAIN, DATA_ADDERS
 
 

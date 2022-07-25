@@ -2,9 +2,9 @@ import logging
 
 from homeassistant.components.websocket_api import event_message
 from homeassistant.helpers import device_registry, entity_registry
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS
-from .coordinator import Coordinator
 from .sensor import BrowserSensor
 from .light import BrowserModLight
 from .binary_sensor import BrowserBinarySensor, ActivityBinarySensor
@@ -14,11 +14,23 @@ from .camera import BrowserModCamera
 _LOGGER = logging.getLogger(__name__)
 
 
+class Coordinator(DataUpdateCoordinator):
+    def __init__(self, hass, browserID):
+        super().__init__(
+            hass,
+            _LOGGER,
+            name="Browser Mod Coordinator",
+        )
+        self.browserID = browserID
+
+
 class BrowserModBrowser:
-    """A Browser_mod browser."""
+    """A Browser_mod browser.
+    Handles the Home Assistant device corresponding to a registered Browser.
+    Creates and updates entities based on available data.
+    """
 
     def __init__(self, hass, browserID):
-        """ """
         self.browserID = browserID
         self.coordinator = Coordinator(hass, browserID)
         self.entities = {}
@@ -29,11 +41,13 @@ class BrowserModBrowser:
         self.update_entities(hass)
 
     def update(self, hass, newData):
+        """Update state of all related entities."""
         self.data.update(newData)
         self.update_entities(hass)
         self.coordinator.async_set_updated_data(self.data)
 
     def update_settings(self, hass, settings):
+        """Update Browser settings and entities if needed."""
         self.settings = settings
         self.update_entities(hass)
 
@@ -44,6 +58,7 @@ class BrowserModBrowser:
         browserID = self.browserID
 
         def _assert_browser_sensor(type, name, *properties):
+            """Create a browser state sensor if it does not already exist"""
             if name in self.entities:
                 return
             adder = hass.data[DOMAIN][DATA_ADDERS][type]
@@ -58,6 +73,7 @@ class BrowserModBrowser:
         _assert_browser_sensor("sensor", "currentUser", "Browser user")
         _assert_browser_sensor("sensor", "width", "Browser width", "px")
         _assert_browser_sensor("sensor", "height", "Browser height", "px")
+        # Don't create battery sensor unless battery level is reported
         if self.data.get("browser", {}).get("battery_level", None) is not None:
             _assert_browser_sensor(
                 "sensor", "battery_level", "Browser battery", "%", "battery"
@@ -65,6 +81,7 @@ class BrowserModBrowser:
 
         _assert_browser_sensor("binary_sensor", "darkMode", "Browser dark mode")
         _assert_browser_sensor("binary_sensor", "fullyKiosk", "Browser FullyKiosk")
+        # Don't create a charging sensor unless charging state is reported
         if self.data.get("browser", {}).get("charging", None) is not None:
             _assert_browser_sensor("binary_sensor", "charging", "Browser charging")
 
@@ -117,7 +134,7 @@ class BrowserModBrowser:
             )
 
     def delete(self, hass):
-        """Delete browser and associated entities."""
+        """Delete the device and associated entities."""
         dr = device_registry.async_get(hass)
         er = entity_registry.async_get(hass)
 
@@ -131,12 +148,15 @@ class BrowserModBrowser:
 
     @property
     def connection(self):
+        """The current websocket connections for this Browser."""
         return self._connections
 
     def open_connection(self, connection, cid):
+        """Add a websocket connection."""
         self._connections.append((connection, cid))
 
     def close_connection(self, connection):
+        """Close a websocket connection."""
         self._connections = list(
             filter(lambda v: v[0] != connection, self._connections)
         )

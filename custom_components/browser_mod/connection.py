@@ -10,10 +10,14 @@ from homeassistant.components.websocket_api import (
 from homeassistant.components import websocket_api
 
 from .const import (
+    BROWSER_ID,
+    DATA_STORE,
     WS_CONNECT,
+    WS_LOG,
+    WS_RECALL_ID,
     WS_REGISTER,
+    WS_SETTINGS,
     WS_UNREGISTER,
-    WS_REREGISTER,
     WS_UPDATE,
     DOMAIN,
 )
@@ -32,44 +36,74 @@ async def async_setup_connection(hass):
     )
     @websocket_api.async_response
     async def handle_connect(hass, connection, msg):
-        browserID = msg["browserID"]
-        store = hass.data[DOMAIN]["store"]
+        """Connect to Browser Mod and subscribe to settings updates."""
+        browserID = msg[BROWSER_ID]
+        store = hass.data[DOMAIN][DATA_STORE]
 
-        def listener(data):
+        def send_update(data):
             connection.send_message(event_message(msg["id"], {"result": data}))
 
-        store_listener = store.add_listener(listener)
+        store_listener = store.add_listener(send_update)
 
-        def unsubscriber():
+        def close_connection():
             store_listener()
             dev = getBrowser(hass, browserID, create=False)
             if dev:
                 dev.close_connection(connection)
 
-        connection.subscriptions[msg["id"]] = unsubscriber
+        connection.subscriptions[msg["id"]] = close_connection
         connection.send_result(msg["id"])
 
-        if store.get_browser(browserID).enabled:
+        if store.get_browser(browserID).registered:
             dev = getBrowser(hass, browserID)
             dev.update_settings(hass, store.get_browser(browserID).asdict())
             dev.open_connection(connection, msg["id"])
             await store.set_browser(
                 browserID, last_seen=datetime.now(tz=timezone.utc).isoformat()
             )
-        listener(store.asdict())
+        send_update(store.asdict())
 
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_REGISTER,
             vol.Required("browserID"): str,
+            vol.Optional("data"): dict,
         }
     )
     @websocket_api.async_response
     async def handle_register(hass, connection, msg):
-        browserID = msg["browserID"]
-        store = hass.data[DOMAIN]["store"]
-        await store.set_browser(browserID, enabled=True)
-        connection.send_result(msg["id"])
+        """Register a Browser."""
+        browserID = msg[BROWSER_ID]
+        store = hass.data[DOMAIN][DATA_STORE]
+
+        browserSettings = {"registered": True}
+        data = msg.get("data", {})
+        if "last_seen" in data:
+            del data["last_seen"]
+        if BROWSER_ID in data:
+            # Change ID of registered browser
+            newBrowserID = data[BROWSER_ID]
+            del data[BROWSER_ID]
+
+            # Copy data from old browser and delete it from store
+            if oldBrowserSettings := store.get_browser(browserID):
+                browserSettings = oldBrowserSettings.asdict()
+            await store.delete_browser(browserID)
+
+            # Delete the old Browser device
+            deleteBrowser(hass, browserID)
+
+            # Use the new browserID from now on
+            browserID = newBrowserID
+
+        # Create and/or update Browser device
+        dev = getBrowser(hass, browserID)
+        dev.update_settings(hass, data)
+
+        # Create or update store data
+        if data is not None:
+            browserSettings.update(data)
+        await store.set_browser(browserID, **browserSettings)
 
     @websocket_api.websocket_command(
         {
@@ -79,48 +113,14 @@ async def async_setup_connection(hass):
     )
     @websocket_api.async_response
     async def handle_unregister(hass, connection, msg):
-        browserID = msg["browserID"]
-        store = hass.data[DOMAIN]["store"]
+        """Unregister a Browser."""
+        browserID = msg[BROWSER_ID]
+        store = hass.data[DOMAIN][DATA_STORE]
 
         deleteBrowser(hass, browserID)
         await store.delete_browser(browserID)
 
         connection.send_result(msg["id"])
-
-    @websocket_api.websocket_command(
-        {
-            vol.Required("type"): WS_REREGISTER,
-            vol.Required("browserID"): str,
-            vol.Required("data"): dict,
-        }
-    )
-    @websocket_api.async_response
-    async def handle_reregister(hass, connection, msg):
-        browserID = msg["browserID"]
-        store = hass.data[DOMAIN]["store"]
-
-        data = msg["data"]
-        del data["last_seen"]
-        browserSettings = {}
-
-        if "browserID" in data:
-            newBrowserID = data["browserID"]
-            del data["browserID"]
-
-            oldBrowserSetting = store.get_browser(browserID)
-            if oldBrowserSetting:
-                browserSettings = oldBrowserSetting.asdict()
-            await store.delete_browser(browserID)
-
-            deleteBrowser(hass, browserID)
-
-            browserID = newBrowserID
-
-        if (dev := getBrowser(hass, browserID, create=False)) is not None:
-            dev.update_settings(hass, data)
-
-        browserSettings.update(data)
-        await store.set_browser(browserID, **browserSettings)
 
     @websocket_api.websocket_command(
         {
@@ -131,16 +131,17 @@ async def async_setup_connection(hass):
     )
     @websocket_api.async_response
     async def handle_update(hass, connection, msg):
-        browserID = msg["browserID"]
-        store = hass.data[DOMAIN]["store"]
+        """Receive state updates from a Browser."""
+        browserID = msg[BROWSER_ID]
+        store = hass.data[DOMAIN][DATA_STORE]
 
-        if store.get_browser(browserID).enabled:
+        if store.get_browser(browserID).registered:
             dev = getBrowser(hass, browserID)
             dev.update(hass, msg.get("data", {}))
 
     @websocket_api.websocket_command(
         {
-            vol.Required("type"): "browser_mod/settings",
+            vol.Required("type"): WS_SETTINGS,
             vol.Required("key"): str,
             vol.Optional("value"): vol.Any(int, str, bool, list, object, None),
             vol.Optional("user"): str,
@@ -148,7 +149,8 @@ async def async_setup_connection(hass):
     )
     @websocket_api.async_response
     async def handle_settings(hass, connection, msg):
-        store = hass.data[DOMAIN]["store"]
+        """Change user or global settings."""
+        store = hass.data[DOMAIN][DATA_STORE]
         if "user" in msg:
             # Set user setting
             await store.set_user_settings(
@@ -161,10 +163,11 @@ async def async_setup_connection(hass):
 
     @websocket_api.websocket_command(
         {
-            vol.Required("type"): "browser_mod/recall_id",
+            vol.Required("type"): WS_RECALL_ID,
         }
     )
     def handle_recall_id(hass, connection, msg):
+        """Recall browserID of Browser with the current connection."""
         dev = getBrowserByConnection(hass, connection)
         if dev:
             connection.send_message(
@@ -174,18 +177,17 @@ async def async_setup_connection(hass):
 
     @websocket_api.websocket_command(
         {
-            vol.Required("type"): "browser_mod/log",
+            vol.Required("type"): WS_LOG,
             vol.Required("message"): str,
         }
     )
     def handle_log(hass, connection, msg):
-        _LOGGER.info("LOG MESSAGE")
-        _LOGGER.info(msg["message"])
+        """Print a debug message."""
+        _LOGGER.info(f"LOG MESSAGE: {msg['message']}")
 
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_register)
     async_register_command(hass, handle_unregister)
-    async_register_command(hass, handle_reregister)
     async_register_command(hass, handle_update)
     async_register_command(hass, handle_settings)
     async_register_command(hass, handle_recall_id)
