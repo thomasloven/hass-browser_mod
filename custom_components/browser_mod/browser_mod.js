@@ -1015,10 +1015,14 @@ const ServicesMixin = (SuperClass) => {
         }
         async _service_action({ service, data }) {
             let _service = service;
-            if (!_service.startsWith("browser_mod.") && _service.includes(".")) {
+            if ((!_service.startsWith("browser_mod.") && _service.includes(".")) ||
+                data.browser_id !== undefined) {
+                const d = Object.assign({}, data);
+                if (d.browser_id === "THIS")
+                    d.browser_id = this.browserID;
                 // CALL HOME ASSISTANT SERVICE
                 const [domain, srv] = _service.split(".");
-                return this.hass.callService(domain, srv, data);
+                return this.hass.callService(domain, srv, d);
             }
             if (_service.startsWith("browser_mod.")) {
                 _service = _service.substring(12);
@@ -2101,8 +2105,8 @@ const BrowserIDMixin = (SuperClass) => {
   x Information about interaction requirement
   x Information about fullykiosk
   - Commands
-    - Change targets from the frontend
-    - Send browser ID to the backend in service calls?
+    x Change targets from the frontend
+    x Send browser ID to the backend in service calls?
     x Rename browser_mod commands to browser_mod services
     x Framework
     x ll-custom handling

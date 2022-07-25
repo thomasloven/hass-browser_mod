@@ -32,8 +32,8 @@ import { BrowserIDMixin } from "./browserID";
   x Information about interaction requirement
   x Information about fullykiosk
   - Commands
-    - Change targets from the frontend
-    - Send browser ID to the backend in service calls?
+    x Change targets from the frontend
+    x Send browser ID to the backend in service calls?
     x Rename browser_mod commands to browser_mod services
     x Framework
     x ll-custom handling

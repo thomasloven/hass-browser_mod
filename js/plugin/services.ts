@@ -95,10 +95,15 @@ export const ServicesMixin = (SuperClass) => {
 
     async _service_action({ service, data }) {
       let _service: String = service;
-      if (!_service.startsWith("browser_mod.") && _service.includes(".")) {
+      if (
+        (!_service.startsWith("browser_mod.") && _service.includes(".")) ||
+        data.browser_id !== undefined
+      ) {
+        const d = { ...data };
+        if (d.browser_id === "THIS") d.browser_id = this.browserID;
         // CALL HOME ASSISTANT SERVICE
         const [domain, srv] = _service.split(".");
-        return this.hass.callService(domain, srv, data);
+        return this.hass.callService(domain, srv, d);
       }
 
       if (_service.startsWith("browser_mod.")) {

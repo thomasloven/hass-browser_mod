@@ -52,3 +52,8 @@ script:
   cm_debug:
     sequence:
       - service: browser_mod.debug
+  print_id:
+    sequence:
+      - service: system_log.write
+        data:
+          message: "Button was clicked in {{browser_id}}."
