@@ -1,26 +1,12 @@
 # browser_mod 2.0
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
-
-A Home Assistant integration to turn your browser into a controllable entity - and also an audio player and a security camera (WIP).
-
-## Example uses
-
-- Make the camera feed from your front door pop up on the tablet in your kitchen when someone rings the doorbell.
-- Have a message pop up on every screen in the house when it's bedtime.
-- Make the browser on your workstation switch to a specific tab when the kitchen light is on after midnight
-- Play a TTS message on your work computer when the traffic sensor tells you it's time to go home.
-- Display a full screen clock on your screen if no one's touched it for five minutes
-
-For more usage examples, see the [cookbook](https://github.com/thomasloven/hass-browser_mod/wiki/Cookbook).
-
 # Installation instructions
 
 - **First make sure you have completely removed any installation of Browser Mod 1**
 
 - Either
 
-  - Find and install Browser Mod under `integrations`in [HACS](https://hacs.xyz)
+  - ~~Find and install Browser Mod under `integrations`in [HACS](https://hacs.xyz)~~
   - OR copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
 - Restart Home Assistant
