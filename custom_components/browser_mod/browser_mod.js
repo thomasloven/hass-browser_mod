@@ -624,6 +624,9 @@ const MediaPlayerMixin = (SuperClass) => {
             for (const ev of ["play", "pause", "ended", "volumechange"]) {
                 this.player.addEventListener(ev, () => this._player_update());
             }
+            for (const ev of ["timeupdate"]) {
+                this.player.addEventListener(ev, () => this._player_update_choked());
+            }
             this.firstInteraction.then(() => {
                 this._player_enabled = true;
                 if (!this.player.ended)
@@ -653,7 +656,17 @@ const MediaPlayerMixin = (SuperClass) => {
                 else
                     this.player.muted = !this.player.muted;
             });
+            this.addEventListener("command-player-seek", (ev) => {
+                this.player.currentTime = ev.detail.position;
+                setTimeout(() => this._player_update(), 10);
+            });
             this.connectionPromise.then(() => this._player_update());
+        }
+        _player_update_choked() {
+            if (this._player_update_cooldown)
+                return;
+            this._player_update_cooldown = window.setTimeout(() => (this._player_update_cooldown = undefined), 3000);
+            this._player_update();
         }
         _player_update() {
             const state = this._player_enabled
@@ -671,6 +684,8 @@ const MediaPlayerMixin = (SuperClass) => {
                     muted: this.player.muted,
                     src: this.player.src,
                     state,
+                    media_duration: this.player.duration,
+                    media_position: this.player.currentTime,
                 },
             });
         }
@@ -2166,7 +2181,7 @@ const BrowserIDMixin = (SuperClass) => {
     - Quickbar tweaks (ctrl+enter)?
     x Card-mod preload
   - Video player?
-  - Media_seek
+  x Media_seek
   - Screensavers
   x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
     - NOFIX. Home Assistant bug

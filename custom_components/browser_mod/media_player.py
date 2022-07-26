@@ -15,6 +15,7 @@ from homeassistant.components.media_player.const import (
     MEDIA_TYPE_MUSIC,
     MEDIA_TYPE_URL,
     SUPPORT_BROWSE_MEDIA,
+    SUPPORT_SEEK,
 )
 from homeassistant.const import (
     STATE_UNAVAILABLE,
@@ -23,6 +24,8 @@ from homeassistant.const import (
     STATE_IDLE,
     STATE_UNKNOWN,
 )
+
+from homeassistant.util import dt
 
 from .entities import BrowserModEntity
 from .const import DOMAIN, DATA_ADDERS
@@ -72,6 +75,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             | SUPPORT_VOLUME_SET
             | SUPPORT_VOLUME_MUTE
             | SUPPORT_BROWSE_MEDIA
+            | SUPPORT_SEEK
         )
 
     @property
@@ -81,6 +85,20 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     @property
     def is_volume_muted(self):
         return self._data.get("player", {}).get("muted", False)
+
+    @property
+    def media_duration(self):
+        duration = self._data.get("player", {}).get("media_duration", None)
+        return float(duration) if duration is not None else None
+
+    @property
+    def media_position(self):
+        position = self._data.get("player", {}).get("media_position", None)
+        return float(position) if position is not None else None
+
+    @property
+    def media_position_updated_at(self):
+        return dt.utcnow()
 
     def set_volume_level(self, volume):
         self.browser.send("player-set-volume", volume_level=volume)
@@ -115,3 +133,6 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
 
     def media_stop(self):
         self.browser.send("player-stop")
+
+    def media_seek(self, position):
+        self.browser.send("player-seek", position=position)

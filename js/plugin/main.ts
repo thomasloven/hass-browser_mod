@@ -68,7 +68,7 @@ import { BrowserIDMixin } from "./browserID";
     - Quickbar tweaks (ctrl+enter)?
     x Card-mod preload
   - Video player?
-  - Media_seek
+  x Media_seek
   - Screensavers
   x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
     - NOFIX. Home Assistant bug

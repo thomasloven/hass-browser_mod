@@ -2,6 +2,7 @@ export const MediaPlayerMixin = (SuperClass) => {
   return class MediaPlayerMixinClass extends SuperClass {
     public player;
     private _player_enabled;
+    private _player_update_cooldown;
 
     constructor() {
       super();
@@ -11,6 +12,9 @@ export const MediaPlayerMixin = (SuperClass) => {
 
       for (const ev of ["play", "pause", "ended", "volumechange"]) {
         this.player.addEventListener(ev, () => this._player_update());
+      }
+      for (const ev of ["timeupdate"]) {
+        this.player.addEventListener(ev, () => this._player_update_choked());
       }
 
       this.firstInteraction.then(() => {
@@ -39,8 +43,21 @@ export const MediaPlayerMixin = (SuperClass) => {
           this.player.muted = Boolean(ev.detail.mute);
         else this.player.muted = !this.player.muted;
       });
+      this.addEventListener("command-player-seek", (ev) => {
+        this.player.currentTime = ev.detail.position;
+        setTimeout(() => this._player_update(), 10);
+      });
 
       this.connectionPromise.then(() => this._player_update());
+    }
+
+    private _player_update_choked() {
+      if (this._player_update_cooldown) return;
+      this._player_update_cooldown = window.setTimeout(
+        () => (this._player_update_cooldown = undefined),
+        3000
+      );
+      this._player_update();
     }
 
     private _player_update() {
@@ -59,6 +76,8 @@ export const MediaPlayerMixin = (SuperClass) => {
           muted: this.player.muted,
           src: this.player.src,
           state,
+          media_duration: this.player.duration,
+          media_position: this.player.currentTime,
         },
       });
     }
