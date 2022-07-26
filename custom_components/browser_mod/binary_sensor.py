@@ -1,6 +1,6 @@
 from homeassistant.components.binary_sensor import BinarySensorEntity
 
-from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS
+from .const import DOMAIN, DATA_ADDERS
 from .entities import BrowserModEntity
 
 
@@ -15,14 +15,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 
 class BrowserBinarySensor(BrowserModEntity, BinarySensorEntity):
-    def __init__(self, coordinator, browserID, parameter, name):
-        BrowserModEntity.__init__(self, coordinator, browserID, name)
+    def __init__(self, coordinator, browserID, parameter, name, icon=None):
+        BrowserModEntity.__init__(self, coordinator, browserID, name, icon)
         BinarySensorEntity.__init__(self)
         self.parameter = parameter
 
     @property
     def is_on(self):
-        return self._data.get(DATA_BROWSERS, {}).get(self.parameter, None)
+        return self._data.get("browser", {}).get(self.parameter, None)
 
 
 class ActivityBinarySensor(BrowserModEntity, BinarySensorEntity):

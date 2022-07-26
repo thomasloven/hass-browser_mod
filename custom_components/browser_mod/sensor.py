@@ -23,8 +23,9 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
         name,
         unit_of_measurement=None,
         device_class=None,
+        icon=None,
     ):
-        BrowserModEntity.__init__(self, coordinator, browserID, name)
+        BrowserModEntity.__init__(self, coordinator, browserID, name, icon)
         SensorEntity.__init__(self)
         self.parameter = parameter
         self._device_class = device_class
@@ -32,10 +33,7 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
 
     @property
     def native_value(self):
-        data = self._data
-        data = data.get("browser", {})
-        data = data.get(self.parameter, None)
-        return data
+        return self._data.get("browser", {}).get(self.parameter, None)
 
     @property
     def device_class(self):

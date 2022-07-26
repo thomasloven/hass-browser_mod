@@ -11,10 +11,11 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class BrowserModEntity(CoordinatorEntity):
-    def __init__(self, coordinator, browserID, name):
+    def __init__(self, coordinator, browserID, name, icon=None):
         super().__init__(coordinator)
         self.browserID = browserID
         self._name = name
+        self._icon = icon
 
     @property
     def _data(self):
@@ -54,3 +55,7 @@ class BrowserModEntity(CoordinatorEntity):
     @property
     def unique_id(self):
         return f"{self.browserID}-{self._name.replace(' ','_')}"
+
+    @property
+    def icon(self):
+        return self._icon
