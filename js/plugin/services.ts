@@ -30,6 +30,7 @@ export const ServicesMixin = (SuperClass) => {
           [left_button_action: <service call>]
           [dismissable: <TRUE/false>]
           [dismiss_action: <service call>]
+          [autoclose: <true/FALSE>]
           [timeout: <number>]
           [timeout_action: <service call>]
           [style: <string>]

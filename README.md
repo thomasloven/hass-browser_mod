@@ -260,6 +260,7 @@ data:
   [left_button_action: <service call>]
   [dismissable: <TRUE/false>]
   [dismiss_action: <service call>]
+  [autoclose: <true/FALSE>]
   [timeout: <number>]
   [timeout_action: <service call>]
   [style: <string>]
@@ -272,6 +273,7 @@ If `size` is `wide` or `fullscreen` the card will be displayed wider or covering
 `right_button` and `left_button` specify the text of two action buttons. \
 When either action button is clicked, the dialog is closed and the service specified as `right_button_action` or `left_button_action` is called. \
 If `dismissable` is false, the dialog cannot be closed by the user without clicking either action button. If it is true and the dialog is dismissed, `dismiss_action` is called. \
+If `autoclose` is true the dialog will close automatically when the mouse, screen or keyboard is touched, at which point `dismiss_action` will be called. \
 If `timeout` is specified the dialog will close automatically after `timeout` milliseconds, at which point `timeout_action` will be called. \
 Finally, `style` lets you specify some CSS styles to apply to the dialog itself (to style a card in the dialog check out [card-mod](https://github.com/thomasloven/lovelace-card-mod))
 
