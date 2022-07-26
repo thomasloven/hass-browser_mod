@@ -619,13 +619,19 @@ const MediaPlayerMixin = (SuperClass) => {
     return class MediaPlayerMixinClass extends SuperClass {
         constructor() {
             super();
-            this.player = new Audio();
+            this._audio_player = new Audio();
+            this._video_player = document.createElement("video");
+            this._video_player.controls = true;
+            this._video_player.style.setProperty("width", "100%");
+            this.player = this._audio_player;
             this._player_enabled = false;
             for (const ev of ["play", "pause", "ended", "volumechange"]) {
-                this.player.addEventListener(ev, () => this._player_update());
+                this._audio_player.addEventListener(ev, () => this._player_update());
+                this._video_player.addEventListener(ev, () => this._player_update());
             }
             for (const ev of ["timeupdate"]) {
-                this.player.addEventListener(ev, () => this._player_update_choked());
+                this._audio_player.addEventListener(ev, () => this._player_update_choked());
+                this._video_player.addEventListener(ev, () => this._player_update_choked());
             }
             this.firstInteraction.then(() => {
                 this._player_enabled = true;
@@ -633,10 +639,18 @@ const MediaPlayerMixin = (SuperClass) => {
                     this.player.play();
             });
             this.addEventListener("command-player-play", (ev) => {
-                var _a;
-                if ((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.media_content_id)
+                var _a, _b, _c;
+                if (this.player.src)
+                    this.player.pause();
+                if ((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.media_type)
+                    if ((_b = ev.detail) === null || _b === void 0 ? void 0 : _b.media_type.startsWith("video"))
+                        this.player = this._video_player;
+                    else
+                        this.player = this._audio_player;
+                if ((_c = ev.detail) === null || _c === void 0 ? void 0 : _c.media_content_id)
                     this.player.src = ev.detail.media_content_id;
                 this.player.play();
+                this._show_video_player();
             });
             this.addEventListener("command-player-pause", (ev) => this.player.pause());
             this.addEventListener("command-player-stop", (ev) => {
@@ -660,7 +674,29 @@ const MediaPlayerMixin = (SuperClass) => {
                 this.player.currentTime = ev.detail.position;
                 setTimeout(() => this._player_update(), 10);
             });
+            this.addEventListener("command-player-turn-off", (ev) => {
+                if (this.player === this._video_player &&
+                    this._video_player.isConnected)
+                    this.closePopup();
+                else if (this.player.src)
+                    this.player.pause();
+                this.player.src = "";
+                this._player_update();
+            });
             this.connectionPromise.then(() => this._player_update());
+        }
+        _show_video_player() {
+            if (this.player === this._video_player && this.player.src) {
+                selectTree(document, "home-assistant $ dialog-media-player-browse").then((el) => el === null || el === void 0 ? void 0 : el.closeDialog());
+                this.showPopup(undefined, this._video_player, {
+                    dismiss_action: () => this._video_player.pause(),
+                    size: "wide",
+                });
+            }
+            else if (this.player !== this._video_player &&
+                this._video_player.isConnected) {
+                this.closePopup();
+            }
         }
         _player_update_choked() {
             if (this._player_update_cooldown)
@@ -670,13 +706,13 @@ const MediaPlayerMixin = (SuperClass) => {
         }
         _player_update() {
             const state = this._player_enabled
-                ? this.player.src
-                    ? this.player.ended
+                ? !this.player.src || this.player.src === window.location.href
+                    ? "off"
+                    : this.player.ended
                         ? "stopped"
                         : this.player.paused
                             ? "paused"
                             : "playing"
-                    : "stopped"
                 : "unavailable";
             this.sendUpdate({
                 player: {
@@ -1167,13 +1203,17 @@ class BrowserModPopup extends s {
         }
         this._autocloseListener = undefined;
         if (this._autoclose) {
-            this._autocloseListener = this._dismiss.bind(this);
-            window.browser_mod.addEventListener("browser-mod-activity", this._autocloseListener);
+            this._autocloseListener = () => this.dialog.close();
+            window.browser_mod.addEventListener("browser-mod-activity", this._autocloseListener, { once: true });
         }
     }
     async setupDialog(title, content, { right_button = undefined, right_button_action = undefined, left_button = undefined, left_button_action = undefined, dismissable = true, dismiss_action = undefined, timeout = undefined, timeout_action = undefined, size = undefined, style = undefined, autoclose = false, } = {}) {
         this.title = title;
-        if (content && typeof content === "object") {
+        if (content && content instanceof HTMLElement) {
+            this.card = undefined;
+            this.content = content;
+        }
+        else if (content && typeof content === "object") {
             // Create a card from config in content
             this.card = true;
             const helpers = await window.loadCardHelpers();
@@ -1204,30 +1244,30 @@ class BrowserModPopup extends s {
         this._autoclose = autoclose;
     }
     async _primary() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
             this._actions.dismiss_action = undefined;
-        await this.closeDialog();
-        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.right_button_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+        (_b = this.dialog) === null || _b === void 0 ? void 0 : _b.close();
+        (_d = (_c = this._actions) === null || _c === void 0 ? void 0 : _c.right_button_action) === null || _d === void 0 ? void 0 : _d.call(_c);
     }
     async _secondary() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
             this._actions.dismiss_action = undefined;
-        await this.closeDialog();
-        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.left_button_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+        (_b = this.dialog) === null || _b === void 0 ? void 0 : _b.close();
+        (_d = (_c = this._actions) === null || _c === void 0 ? void 0 : _c.left_button_action) === null || _d === void 0 ? void 0 : _d.call(_c);
     }
-    async _dismiss() {
-        var _a, _b;
-        await this.closeDialog();
-        (_b = (_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action) === null || _b === void 0 ? void 0 : _b.call(_a);
+    async _dismiss(ev) {
+        var _a, _b, _c;
+        (_a = this.dialog) === null || _a === void 0 ? void 0 : _a.close();
+        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.dismiss_action) === null || _c === void 0 ? void 0 : _c.call(_b);
     }
     async _timeout() {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         if ((_a = this._actions) === null || _a === void 0 ? void 0 : _a.dismiss_action)
             this._actions.dismiss_action = undefined;
-        await this.closeDialog();
-        (_c = (_b = this._actions) === null || _b === void 0 ? void 0 : _b.timeout_action) === null || _c === void 0 ? void 0 : _c.call(_b);
+        (_b = this.dialog) === null || _b === void 0 ? void 0 : _b.close();
+        (_d = (_c = this._actions) === null || _c === void 0 ? void 0 : _c.timeout_action) === null || _d === void 0 ? void 0 : _d.call(_c);
     }
     render() {
         if (!this.open)
@@ -1235,10 +1275,12 @@ class BrowserModPopup extends s {
         return $ `
       <ha-dialog
         open
+        @closed=${this.closeDialog}
+        @closing=${this._dismiss}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
-        .scrimClickAction=${this.dismissable ? this._dismiss : ""}
-        .escapeKeyAction=${this.dismissable ? this._dismiss : ""}
+        .scrimClickAction=${this.dismissable ? "close" : ""}
+        .escapeKeyAction=${this.dismissable ? "close" : ""}
       >
         ${this.timeout
             ? $ ` <div slot="heading" class="progress"></div> `
@@ -1289,6 +1331,7 @@ class BrowserModPopup extends s {
     static get styles() {
         return r$2 `
       ha-dialog {
+        z-index: 10;
         --mdc-dialog-min-width: var(--popup-min-width, 400px);
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
@@ -2180,7 +2223,7 @@ const BrowserIDMixin = (SuperClass) => {
   - Tweaks
     - Quickbar tweaks (ctrl+enter)?
     x Card-mod preload
-  - Video player?
+  x Video player?
   x Media_seek
   - Screensavers
   x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES

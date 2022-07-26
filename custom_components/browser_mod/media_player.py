@@ -16,6 +16,8 @@ from homeassistant.components.media_player.const import (
     MEDIA_TYPE_URL,
     SUPPORT_BROWSE_MEDIA,
     SUPPORT_SEEK,
+    SUPPORT_TURN_OFF,
+    SUPPORT_TURN_ON,
 )
 from homeassistant.const import (
     STATE_UNAVAILABLE,
@@ -23,6 +25,8 @@ from homeassistant.const import (
     STATE_PLAYING,
     STATE_IDLE,
     STATE_UNKNOWN,
+    STATE_ON,
+    STATE_OFF,
 )
 
 from homeassistant.util import dt
@@ -63,6 +67,8 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             "paused": STATE_PAUSED,
             "stopped": STATE_IDLE,
             "unavailable": STATE_UNAVAILABLE,
+            "on": STATE_ON,
+            "off": STATE_OFF,
         }.get(state, STATE_UNKNOWN)
 
     @property
@@ -76,6 +82,8 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             | SUPPORT_VOLUME_MUTE
             | SUPPORT_BROWSE_MEDIA
             | SUPPORT_SEEK
+            | SUPPORT_TURN_OFF
+            | SUPPORT_TURN_ON
         )
 
     @property
@@ -108,21 +116,24 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         if media_source.is_media_source_id(media_id):
-            media_type = MEDIA_TYPE_URL
             play_item = await media_source.async_resolve_media(
                 self.hass, media_id, self.entity_id
             )
+            media_type = play_item.mime_type
             media_id = play_item.url
+            media_id = async_process_play_media_url(self.hass, media_id)
         if media_type in (MEDIA_TYPE_URL, MEDIA_TYPE_MUSIC):
             media_id = async_process_play_media_url(self.hass, media_id)
-        self.browser.send("player-play", media_content_id=media_id)
+        self.browser.send(
+            "player-play", media_content_id=media_id, media_type=media_type, **kwargs
+        )
 
     async def async_browse_media(self, media_content_type=None, media_content_id=None):
         """Implement the websocket media browsing helper."""
         return await media_source.async_browse_media(
             self.hass,
             media_content_id,
-            content_filter=lambda item: item.media_content_type.startswith("audio/"),
+            # content_filter=lambda item: item.media_content_type.startswith("audio/"),
         )
 
     def media_play(self):
@@ -136,3 +147,9 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
 
     def media_seek(self, position):
         self.browser.send("player-seek", position=position)
+
+    def turn_off(self):
+        self.browser.send("player-turn-off")
+
+    def turn_on(self, **kwargs):
+        self.browser.send("player-turn-on", **kwargs)

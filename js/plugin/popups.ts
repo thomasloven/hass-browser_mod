@@ -114,21 +114,21 @@ class BrowserModPopup extends LitElement {
 
   async _primary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.dialog.close();
+    this.dialog?.close();
     this._actions?.right_button_action?.();
   }
   async _secondary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.dialog.close();
+    this.dialog?.close();
     this._actions?.left_button_action?.();
   }
   async _dismiss(ev?) {
-    this.dialog.close();
+    this.dialog?.close();
     this._actions?.dismiss_action?.();
   }
   async _timeout() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.dialog.close();
+    this.dialog?.close();
     this._actions?.timeout_action?.();
   }
 
@@ -195,6 +195,7 @@ class BrowserModPopup extends LitElement {
   static get styles() {
     return css`
       ha-dialog {
+        z-index: 10;
         --mdc-dialog-min-width: var(--popup-min-width, 400px);
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
         --mdc-dialog-heading-ink-color: var(--primary-text-color);

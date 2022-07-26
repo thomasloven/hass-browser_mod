@@ -67,7 +67,7 @@ import { BrowserIDMixin } from "./browserID";
   - Tweaks
     - Quickbar tweaks (ctrl+enter)?
     x Card-mod preload
-  - Video player?
+  x Video player?
   x Media_seek
   - Screensavers
   x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES

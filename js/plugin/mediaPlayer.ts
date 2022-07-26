@@ -1,20 +1,34 @@
+import { selectTree } from "../helpers";
+
 export const MediaPlayerMixin = (SuperClass) => {
   return class MediaPlayerMixinClass extends SuperClass {
     public player;
+    private _audio_player;
+    private _video_player;
     private _player_enabled;
     private _player_update_cooldown;
 
     constructor() {
       super();
 
-      this.player = new Audio();
+      this._audio_player = new Audio();
+      this._video_player = document.createElement("video");
+      this._video_player.controls = true;
+      this._video_player.style.setProperty("width", "100%");
+      this.player = this._audio_player;
       this._player_enabled = false;
 
       for (const ev of ["play", "pause", "ended", "volumechange"]) {
-        this.player.addEventListener(ev, () => this._player_update());
+        this._audio_player.addEventListener(ev, () => this._player_update());
+        this._video_player.addEventListener(ev, () => this._player_update());
       }
       for (const ev of ["timeupdate"]) {
-        this.player.addEventListener(ev, () => this._player_update_choked());
+        this._audio_player.addEventListener(ev, () =>
+          this._player_update_choked()
+        );
+        this._video_player.addEventListener(ev, () =>
+          this._player_update_choked()
+        );
       }
 
       this.firstInteraction.then(() => {
@@ -23,9 +37,15 @@ export const MediaPlayerMixin = (SuperClass) => {
       });
 
       this.addEventListener("command-player-play", (ev) => {
+        if (this.player.src) this.player.pause();
+        if (ev.detail?.media_type)
+          if (ev.detail?.media_type.startsWith("video"))
+            this.player = this._video_player;
+          else this.player = this._audio_player;
         if (ev.detail?.media_content_id)
           this.player.src = ev.detail.media_content_id;
         this.player.play();
+        this._show_video_player();
       });
       this.addEventListener("command-player-pause", (ev) =>
         this.player.pause()
@@ -47,8 +67,36 @@ export const MediaPlayerMixin = (SuperClass) => {
         this.player.currentTime = ev.detail.position;
         setTimeout(() => this._player_update(), 10);
       });
+      this.addEventListener("command-player-turn-off", (ev) => {
+        if (
+          this.player === this._video_player &&
+          this._video_player.isConnected
+        )
+          this.closePopup();
+        else if (this.player.src) this.player.pause();
+        this.player.src = "";
+        this._player_update();
+      });
 
       this.connectionPromise.then(() => this._player_update());
+    }
+
+    private _show_video_player() {
+      if (this.player === this._video_player && this.player.src) {
+        selectTree(
+          document,
+          "home-assistant $ dialog-media-player-browse"
+        ).then((el) => el?.closeDialog());
+        this.showPopup(undefined, this._video_player, {
+          dismiss_action: () => this._video_player.pause(),
+          size: "wide",
+        });
+      } else if (
+        this.player !== this._video_player &&
+        this._video_player.isConnected
+      ) {
+        this.closePopup();
+      }
     }
 
     private _player_update_choked() {
@@ -62,13 +110,13 @@ export const MediaPlayerMixin = (SuperClass) => {
 
     private _player_update() {
       const state = this._player_enabled
-        ? this.player.src
-          ? this.player.ended
-            ? "stopped"
-            : this.player.paused
-            ? "paused"
-            : "playing"
-          : "stopped"
+        ? !this.player.src || this.player.src === window.location.href
+          ? "off"
+          : this.player.ended
+          ? "stopped"
+          : this.player.paused
+          ? "paused"
+          : "playing"
         : "unavailable";
       this.sendUpdate({
         player: {
