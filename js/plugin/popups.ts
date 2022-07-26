@@ -3,8 +3,6 @@ import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
 
-let aaa = 0;
-
 class BrowserModPopup extends LitElement {
   @property() open;
   @property() content;
@@ -52,10 +50,11 @@ class BrowserModPopup extends LitElement {
     }
     this._autocloseListener = undefined;
     if (this._autoclose) {
-      this._autocloseListener = this._dismiss.bind(this);
+      this._autocloseListener = () => this.dialog.close();
       window.browser_mod.addEventListener(
         "browser-mod-activity",
-        this._autocloseListener
+        this._autocloseListener,
+        { once: true }
       );
     }
   }
@@ -78,7 +77,10 @@ class BrowserModPopup extends LitElement {
     } = {}
   ) {
     this.title = title;
-    if (content && typeof content === "object") {
+    if (content && content instanceof HTMLElement) {
+      this.card = undefined;
+      this.content = content;
+    } else if (content && typeof content === "object") {
       // Create a card from config in content
       this.card = true;
       const helpers = await window.loadCardHelpers();
@@ -112,21 +114,21 @@ class BrowserModPopup extends LitElement {
 
   async _primary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.closeDialog();
+    this.dialog.close();
     this._actions?.right_button_action?.();
   }
   async _secondary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.closeDialog();
+    this.dialog.close();
     this._actions?.left_button_action?.();
   }
-  async _dismiss() {
-    await this.closeDialog();
+  async _dismiss(ev?) {
+    this.dialog.close();
     this._actions?.dismiss_action?.();
   }
   async _timeout() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.closeDialog();
+    this.dialog.close();
     this._actions?.timeout_action?.();
   }
 
@@ -136,10 +138,12 @@ class BrowserModPopup extends LitElement {
     return html`
       <ha-dialog
         open
+        @closed=${this.closeDialog}
+        @closing=${this._dismiss}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
-        .scrimClickAction=${this.dismissable ? this._dismiss : ""}
-        .escapeKeyAction=${this.dismissable ? this._dismiss : ""}
+        .scrimClickAction=${this.dismissable ? "close" : ""}
+        .escapeKeyAction=${this.dismissable ? "close" : ""}
       >
         ${this.timeout
           ? html` <div slot="heading" class="progress"></div> `
