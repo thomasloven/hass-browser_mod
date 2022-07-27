@@ -67,7 +67,11 @@ script:
 
 Will print `"Button was clicked in 79be65e8-f06c78f" to the Home Assistant log.
 
+
+
 # Browser Mod Services
+
+> Note: Since `browser_id` is common for all services it is not explained further.
 
 ## `browser_mod.navigate`
 
@@ -77,9 +81,7 @@ Point the browser to the given Home Assistant path.
 service: browser_mod.navigate
 data:
   path: <string>
-  [browser_id:
-    - <Browser ID>
-    - <Browser ID>]
+  [browser_id: <Browser IDs>]
 ```
 
 | | |
