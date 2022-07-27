@@ -241,7 +241,7 @@ class BrowserModPopup extends LitElement {
         color: var(--primary-text-color);
         background-color: var(
           --popup-header-background-color,
-          var(--popup-background-color, --sidebar-background-color)
+          var(--popup-background-color, var(--sidebar-background-color))
         );
       }
       ha-icon-button > * {

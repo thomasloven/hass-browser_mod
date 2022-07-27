@@ -131,7 +131,7 @@ class BrowserModBrowser:
             del self.entities["camera"]
 
         self.send(
-            None, deviceEntities={k: v.entity_id for k, v in self.entities.items()}
+            None, browserEntities={k: v.entity_id for k, v in self.entities.items()}
         )
 
     def send(self, command, **kwargs):

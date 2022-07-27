@@ -43,6 +43,9 @@ class PopupCard extends LitElement {
 
     if (this.parentElement.localName === "hui-card-preview") {
       this.editMode = true;
+      this.removeAttribute("hidden");
+    } else {
+      this.setAttribute("hidden", "");
     }
   }
 

@@ -5,8 +5,7 @@ demo:
 http:
   use_x_forwarded_for: true
   trusted_proxies:
-    - 172.17.0.4
-    # Update this as needed for testing with Cast
+    - 172.17.0.0/24
 
 logger:
   default: warning

@@ -256,14 +256,15 @@ class PopupCardEditor extends LitElement {
   }
   await window.browser_mod.connectionPromise;
 
-  if (!customElements.get("popup-card-editor"))
+  if (!customElements.get("popup-card-editor")) {
     customElements.define("popup-card-editor", PopupCardEditor);
-  (window as any).customCards = (window as any).customCards || [];
-  (window as any).customCards.push({
-    type: "popup-card",
-    name: "Popup card",
-    preview: false,
-    description:
-      "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
-  });
+    (window as any).customCards = (window as any).customCards || [];
+    (window as any).customCards.push({
+      type: "popup-card",
+      name: "Popup card",
+      preview: false,
+      description:
+        "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
+    });
+  }
 })();

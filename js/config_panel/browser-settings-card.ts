@@ -69,7 +69,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
           </ha-settings-row>
 
           <ha-settings-row>
-            <span slot="heading">BrowserID</span>
+            <span slot="heading">Browser ID</span>
             <span slot="description"
               >A unique identifier for this browser-device combination.</span
             >

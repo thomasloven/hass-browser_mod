@@ -8,8 +8,6 @@ import "./types";
 class BrowserPlayer extends LitElement {
   @property() hass;
 
-  player;
-
   static getConfigElement() {
     return document.createElement("browser-player-editor");
   }
@@ -21,7 +19,6 @@ class BrowserPlayer extends LitElement {
     while (!window.browser_mod) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
-    this.player = window.browser_mod.player;
 
     for (const event of [
       "play",
@@ -31,14 +28,19 @@ class BrowserPlayer extends LitElement {
       "canplay",
       "loadeddata",
     ])
-      this.player.addEventListener(event, () => this.requestUpdate());
+      window.browser_mod._audio_player.addEventListener(event, () =>
+        this.requestUpdate()
+      );
+    window.browser_mod._video_player.addEventListener(event, () =>
+      this.requestUpdate()
+    );
   }
   handleMute(ev) {
-    this.player.muted = !this.player.muted;
+    window.browser_mod.player.muted = !window.browser_mod.player.muted;
   }
   handleVolumeChange(ev) {
     const volume_level = parseFloat(ev.target.value);
-    this.player.volume = volume_level;
+    window.browser_mod.player.volume = volume_level;
   }
   handleMoreInfo(ev) {
     this.dispatchEvent(
@@ -53,9 +55,16 @@ class BrowserPlayer extends LitElement {
     );
   }
   handlePlayPause(ev) {
-    if (!this.player.src || this.player.paused || this.player.ended)
-      this.player.play();
-    else this.player.pause();
+    if (
+      !window.browser_mod.player.src ||
+      window.browser_mod.player.paused ||
+      window.browser_mod.player.ended
+    ) {
+      window.browser_mod.player.play();
+      window.browser_mod._show_video_player();
+    } else {
+      window.browser_mod.player.pause();
+    }
   }
 
   render() {
@@ -68,15 +77,17 @@ class BrowserPlayer extends LitElement {
         <div class="card-content">
           <ha-icon-button @click=${this.handleMute}>
             <ha-icon
-              .icon=${this.player.muted ? "mdi:volume-off" : "mdi:volume-high"}
+              .icon=${window.browser_mod.player.muted
+                ? "mdi:volume-off"
+                : "mdi:volume-high"}
             ></ha-icon>
           </ha-icon-button>
           <ha-slider
             min="0"
             max="1"
             step="0.01"
-            ?disabled=${this.player.muted}
-            value=${this.player.volume}
+            ?disabled=${window.browser_mod.player.muted}
+            value=${window.browser_mod.player.volume}
             @change=${this.handleVolumeChange}
           ></ha-slider>
 
@@ -85,9 +96,9 @@ class BrowserPlayer extends LitElement {
             : html`
                 <ha-icon-button @click=${this.handlePlayPause} highlight>
                   <ha-icon
-                    .icon=${!this.player.src ||
-                    this.player.ended ||
-                    this.player.paused
+                    .icon=${!window.browser_mod.player.src ||
+                    window.browser_mod.player.ended ||
+                    window.browser_mod.player.paused
                       ? "mdi:play"
                       : "mdi:pause"}
                   ></ha-icon>
