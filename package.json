@@ -1,28 +1,25 @@
 {
   "name": "browser_mod",
   "private": true,
-  "version": "2.0.0b1",
+  "version": "2.0.0b2",
   "description": "",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -c --watch",
-    "update-card-tools": "npm uninstall card-tools && npm install thomasloven/lovelace-card-tools"
+    "watch": "rollup -c --watch"
   },
   "keywords": [],
   "author": "Thomas Lovén",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.17.9",
+    "@babel/core": "^7.18.9",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.2.1",
-    "lit": "^2.2.2",
-    "rollup": "^2.70.2",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "lit": "^2.2.8",
+    "rollup": "^2.77.2",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.31.2",
-    "typescript": "^4.6.3"
+    "rollup-plugin-typescript2": "^0.32.1",
+    "typescript": "^4.7.4"
   },
-  "dependencies": {
-    "card-tools": "github:thomasloven/lovelace-card-tools"
-  }
+  "dependencies": {}
 }

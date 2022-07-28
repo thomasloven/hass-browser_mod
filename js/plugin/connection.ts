@@ -125,7 +125,7 @@ export const ConnectionMixin = (SuperClass) => {
 
     get global_settings() {
       const settings = {};
-      const global = this._data.settings ?? {};
+      const global = this._data?.settings ?? {};
       for (const [k, v] of Object.entries(global)) {
         if (v !== null) settings[k] = v;
       }
@@ -133,7 +133,7 @@ export const ConnectionMixin = (SuperClass) => {
     }
     get user_settings() {
       const settings = {};
-      const user = this._data.user_settings[this.hass.user.id] ?? {};
+      const user = this._data?.user_settings?.[this.hass?.user?.id] ?? {};
       for (const [k, v] of Object.entries(user)) {
         if (v !== null) settings[k] = v;
       }
@@ -141,7 +141,7 @@ export const ConnectionMixin = (SuperClass) => {
     }
     get browser_settings() {
       const settings = {};
-      const browser = this.browsers[this.browserID]?.settings ?? {};
+      const browser = this.browsers?.[this.browserID]?.settings ?? {};
       for (const [k, v] of Object.entries(browser)) {
         if (v !== null) settings[k] = v;
       }

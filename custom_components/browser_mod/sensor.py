@@ -33,7 +33,10 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
 
     @property
     def native_value(self):
-        return self._data.get("browser", {}).get(self.parameter, None)
+        val = self._data.get("browser", {}).get(self.parameter, None)
+        if len(str(val)) > 255:
+            val = str(val)[:250] + "..."
+        return val
 
     @property
     def device_class(self):
