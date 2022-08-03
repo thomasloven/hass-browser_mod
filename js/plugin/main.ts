@@ -1,6 +1,5 @@
 import "./browser-player";
 
-// import { BrowserModConnection } from "./connection";
 import { ConnectionMixin } from "./connection";
 import { ScreenSaverMixin } from "./screensaver";
 import { MediaPlayerMixin } from "./mediaPlayer";
@@ -19,7 +18,8 @@ import { BrowserIDMixin } from "./browserID";
 
 /*
   TODO:
-  - Fix nomenclature
+  - More pictures for documentation
+  x Fix nomenclature
     x Command -> Service
     x Device -> Browser
   - Popups
@@ -28,6 +28,8 @@ import { BrowserIDMixin } from "./browserID";
     X Timeout
     X Fullscreen
     x Popup-card
+    x Auto-close
+    x Forms that are forwarded to service calls
   x Motion/occupancy tracker
   x Information about interaction requirement
   x Information about fullykiosk
@@ -39,29 +41,28 @@ import { BrowserIDMixin } from "./browserID";
     x ll-custom handling
     - Commands
       x popup
-        x Auto-close
       x close_popup
       x more-info
       x navigate
-      - lovelace-reload?
-        - Not needed
+      o lovelace-reload?
+        o Not needed
       x window-reload
-      - screensaver ?
-        - Refer to automations instead
+      o screensaver ?
+        o Refer to automations instead
       x sequence
       x delay
       x javascript eval
-      - toast?
-        - Replaced with popups with timeout
+      o toast?
+        o Replaced with popups with timeout
     x Redesign services to target devices
   x frontend editor for popup cards
-    - also screensavers
-  - Saved frontend settings
+    o also screensavers
+  x Saved frontend settings
     X Framework
     x Save sidebar
     x Kiosk mode
     x Default dashboard
-    - Screensaver?
+    o Screensaver?
     x Favicon templates
     x Title templates
   - Tweaks
@@ -69,9 +70,9 @@ import { BrowserIDMixin } from "./browserID";
     x Card-mod preload
   x Video player
   x Media_seek
-  - Screensavers
+  o Screensavers
   x IMPORTANT: FIX DEFAULT HIDING OF ENTITIES
-    - NOFIX. Home Assistant bug
+    o NOFIX. Home Assistant bug
   X Check functionality with CAST - may need to add frontend part as a lovelace resource
   */
 export class BrowserMod extends ServicesMixin(

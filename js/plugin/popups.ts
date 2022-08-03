@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
+import { loadHaForm } from "../helpers";
 
 class BrowserModPopup extends LitElement {
   @property() open;
@@ -23,6 +24,7 @@ class BrowserModPopup extends LitElement {
   _timeoutStart;
   _timeoutTimer;
   _resolveClosed;
+  _formdata;
 
   async closeDialog() {
     this.open = false;
@@ -76,10 +78,30 @@ class BrowserModPopup extends LitElement {
       autoclose = false,
     } = {}
   ) {
+    this._formdata = undefined;
     this.title = title;
+    this.card = undefined;
     if (content && content instanceof HTMLElement) {
-      this.card = undefined;
       this.content = content;
+    } else if (content && Array.isArray(content)) {
+      loadHaForm();
+      const form: any = document.createElement("ha-form");
+      form.schema = content;
+      form.computeLabel = (s) => s.label ?? s.name;
+      form.hass = window.browser_mod.hass;
+      this._formdata = {};
+      for (const i of content) {
+        if (i.name && i.default !== undefined) {
+          this._formdata[i.name] = i.default;
+        }
+      }
+      form.data = this._formdata;
+      provideHass(form);
+      form.addEventListener("value-changed", (ev) => {
+        this._formdata = { ...ev.detail.value };
+        form.data = this._formdata;
+      });
+      this.content = form;
     } else if (content && typeof content === "object") {
       // Create a card from config in content
       this.card = true;
@@ -90,7 +112,6 @@ class BrowserModPopup extends LitElement {
       this.content = card;
     } else {
       // Basic HTML content
-      this.card = undefined;
       this.content = unsafeHTML(content);
     }
 
@@ -115,12 +136,12 @@ class BrowserModPopup extends LitElement {
   async _primary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     this.dialog?.close();
-    this._actions?.right_button_action?.();
+    this._actions?.right_button_action?.(this._formdata);
   }
   async _secondary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     this.dialog?.close();
-    this._actions?.left_button_action?.();
+    this._actions?.left_button_action?.(this._formdata);
   }
   async _dismiss(ev?) {
     this.dialog?.close();
@@ -150,16 +171,21 @@ class BrowserModPopup extends LitElement {
           : ""}
         ${this.title
           ? html`
-              <app-toolbar slot="heading">
-                ${this.dismissable
-                  ? html`
-                      <ha-icon-button dialogAction="cancel">
-                        <ha-icon .icon=${"mdi:close"}></ha-icon>
-                      </ha-icon-button>
-                    `
-                  : ""}
-                <div class="main-title">${this.title}</div>
-              </app-toolbar>
+              <div slot="heading">
+                <ha-header-bar>
+                  ${this.dismissable
+                    ? html`
+                        <ha-icon-button
+                          dialogAction="cancel"
+                          slot="navigationIcon"
+                        >
+                          <ha-icon .icon=${"mdi:close"}></ha-icon>
+                        </ha-icon-button>
+                      `
+                    : ""}
+                  <div slot="title" class="main-title">${this.title}</div>
+                </ha-header-bar>
+              </div>
             `
           : html``}
 
@@ -171,6 +197,7 @@ class BrowserModPopup extends LitElement {
                 slot="primaryAction"
                 .label=${this.right_button}
                 @click=${this._primary}
+                class="action-button"
               ></mwc-button>
             `
           : ""}
@@ -180,6 +207,7 @@ class BrowserModPopup extends LitElement {
                 slot="secondaryAction"
                 .label=${this.left_button}
                 @click=${this._secondary}
+                class="action-button"
               ></mwc-button>
             `
           : ""}
@@ -195,6 +223,7 @@ class BrowserModPopup extends LitElement {
   static get styles() {
     return css`
       ha-dialog {
+        --dialog-backdrop-filter: blur(5px);
         z-index: 10;
         --mdc-dialog-min-width: var(--popup-min-width, 400px);
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
@@ -202,13 +231,12 @@ class BrowserModPopup extends LitElement {
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --justify-action-buttons: space-between;
 
-        --mdc-dialog-box-shadow: 0px 0px 0px
+        --dialog-box-shadow: 0px 0px 0px
           var(--popup-border-width, var(--ha-card-border-width, 2px))
           var(
             --popup-border-color,
             var(--ha-card-border-color, var(--divider-color, #e0e0e0))
           );
-        --ha-dialog-border-radius: var(--popup-border-radius, 8px);
         --mdc-theme-surface: var(
           --popup-background-color,
           var(--ha-card-background, var(--card-background-color, white))
@@ -224,6 +252,7 @@ class BrowserModPopup extends LitElement {
         --mdc-dialog-max-height: 100%;
         --mdc-shape-medium: 0px;
         --vertial-align-dialog: flex-end;
+        --ha-dialog-border-radius: 0px;
       }
       .progress::before {
         content: "";
@@ -236,23 +265,20 @@ class BrowserModPopup extends LitElement {
         z-index: 10;
       }
 
-      app-toolbar {
+      ha-header-bar {
+        --mdc-theme-on-primary: var(--primary-text-color);
+        --mdc-theme-primary: var(--mdc-theme-surface);
         flex-shrink: 0;
-        color: var(--primary-text-color);
-        background-color: var(
-          --popup-header-background-color,
-          var(--popup-background-color, var(--sidebar-background-color))
-        );
+        display: block;
       }
+
       ha-icon-button > * {
         display: flex;
       }
       .main-title {
-        margin-left: 16px;
-        line-height: 1.3em;
-        max-height: 2.6em;
         overflow: hidden;
         text-overflow: ellipsis;
+        cursor: default;
       }
       .content {
         --padding-x: 24px;
@@ -269,9 +295,11 @@ class BrowserModPopup extends LitElement {
       :host([card]) .content {
         --padding-x: 0px;
         --padding-y: 0px;
+        --ha-card-box-shadow: none;
       }
       :host([actions]) .content {
-        border-bottom: 1px solid var(--popup-border-color, var(--divider-color));
+        xborder-bottom: 2px solid
+          var(--popup-border-color, var(--divider-color));
         --footer-height: 54px;
       }
       :host([wide]) .content {
@@ -280,8 +308,12 @@ class BrowserModPopup extends LitElement {
       :host([fullscreen]) .content {
         height: calc(
           100vh - var(--header-height) - var(--footer-height) - 2 *
-            var(--padding-y)
+            var(--padding-y) - 16px
         );
+      }
+
+      .action-button {
+        margin-bottom: -24px;
       }
 
       @media all and (max-width: 450px), all and (max-height: 500px) {

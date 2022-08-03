@@ -128,7 +128,13 @@ export const ServicesMixin = (SuperClass) => {
           const { title, content, ...d } = data;
           for (const [k, v] of Object.entries(d)) {
             if (k.endsWith("_action")) {
-              d[k] = () => this._service_action(v as any);
+              d[k] = (ext_data?) => {
+                const { service, data } = v as any;
+                this._service_action({
+                  service,
+                  data: { ...data, ...ext_data },
+                });
+              };
             }
           }
           this.showPopup(title, content, d);
@@ -147,18 +153,21 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "console":
-          console.log(data.message);
+          if (
+            Object.keys(data).length > 1 ||
+            (data && data.message === undefined)
+          )
+            console.dir(data);
+          else console.log(data.message);
           break;
 
         case "javascript":
           const code = `
           "use strict";
-          // Insert global definitions here
-          const hass = (document.querySelector("home-assistant") || document.querySelector("hc-main")).hass;
           ${data.code}
           `;
-          const fn = new Function(code);
-          fn();
+          const fn = new Function("hass", "data", code);
+          fn(this.hass, data);
           break;
       }
     }

@@ -125,7 +125,7 @@ Display a popup dialog
 service: browser_mod.popup
 data:
   [title: <string>]
-  content: <string / Dashboard card configuration>
+  content: <string / Dashboard card configuration / ha-form schema>
   [size: <NORMAL/wide/fullscreen>]
   [right_button: <string>]
   [right_button_action: <service call>]
@@ -143,7 +143,7 @@ data:
 | | |
 |---|---|
 |`title` | The title of the popup window.|
-|`content`| HTML or a dashboard card configuration to display.|
+|`content`| HTML, a dashboard card configuration or ha-form schema to display.|
 | `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. |
 | `right_button`| The text of the right action button.|
 | `right_button_action`| Action to perform when the right action button is pressed. |
@@ -171,7 +171,9 @@ style:
 
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.
 
-For usage examples, see [popups.md](popups.md).
+If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
+
+See [popups.md](popups.md) for more information and usage examples.
 
 
 ## `browser_mod.close_popup`

@@ -1,12 +1,11 @@
-import { selectTree } from "../helpers";
+import { selectTree, throttle } from "../helpers";
 
 export const MediaPlayerMixin = (SuperClass) => {
-  return class MediaPlayerMixinClass extends SuperClass {
+  class MediaPlayerMixinClass extends SuperClass {
     public player;
     private _audio_player;
     private _video_player;
     private _player_enabled;
-    private _player_update_cooldown;
 
     constructor() {
       super();
@@ -24,10 +23,10 @@ export const MediaPlayerMixin = (SuperClass) => {
       }
       for (const ev of ["timeupdate"]) {
         this._audio_player.addEventListener(ev, () =>
-          this._player_update_choked()
+          this._player_update_throttled()
         );
         this._video_player.addEventListener(ev, () =>
-          this._player_update_choked()
+          this._player_update_throttled()
         );
       }
 
@@ -99,12 +98,8 @@ export const MediaPlayerMixin = (SuperClass) => {
       }
     }
 
-    private _player_update_choked() {
-      if (this._player_update_cooldown) return;
-      this._player_update_cooldown = window.setTimeout(
-        () => (this._player_update_cooldown = undefined),
-        3000
-      );
+    @throttle(3000)
+    _player_update_throttled() {
       this._player_update();
     }
 
@@ -129,5 +124,7 @@ export const MediaPlayerMixin = (SuperClass) => {
         },
       });
     }
-  };
+  }
+
+  return MediaPlayerMixinClass;
 };

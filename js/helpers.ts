@@ -81,9 +81,9 @@ export const loadHaForm = async () => {
   await loadLoadCardHelpers();
   const helpers = await window.loadCardHelpers();
   if (!helpers) return;
-  const card = await helpers.createCardElement({ type: "entity" });
+  const card = await helpers.createCardElement({ type: "button" });
   if (!card) return;
-  await card.getConfigElement();
+  await card.constructor.getConfigElement();
 };
 
 // Loads in ha-config-dashboard which is used to copy styling
@@ -120,3 +120,15 @@ export const loadDeveloperToolsTemplate = async () => {
   await dtRouter?.routerOptions?.routes?.template?.load?.();
   await customElements.whenDefined("developer-tools-template");
 };
+
+export function throttle(timeout) {
+  return function (target, propertyKey, descriptor) {
+    const fn = descriptor.value;
+    let cooldown = undefined;
+    descriptor.value = function (...rest) {
+      if (cooldown) return;
+      cooldown = setTimeout(() => (cooldown = undefined), timeout);
+      return fn.bind(this)(...rest);
+    };
+  };
+}

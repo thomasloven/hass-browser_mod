@@ -14,9 +14,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     const browserID = ev.currentTarget.browserID;
 
     const unregisterCallback = () => {
-      console.log(browserID, window.browser_mod.browserID);
       if (browserID === window.browser_mod.browserID) {
-        console.log("Unregister self");
         window.browser_mod.registered = false;
       } else {
         window.browser_mod.connection.sendMessage({
