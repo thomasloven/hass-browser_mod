@@ -57,14 +57,22 @@ export const RequireInteractMixin = (SuperClass) => {
         vPlay
           .then(() => {
             this._interactionResolve();
+            video.pause();
           })
           .catch((e) => {
-            if (e.name === "AbortError") this._interactionResolve();
+            if (e.name === "AbortError") {
+              this._interactionResolve();
+            }
           });
-        video.pause();
       }
 
-      window.addEventListener("pointerdown", this._interactionResolve);
+      window.addEventListener(
+        "pointerdown",
+        () => {
+          this._interactionResolve();
+        },
+        { once: true }
+      );
 
       // if (this.fully) this._interactionResolve();
 

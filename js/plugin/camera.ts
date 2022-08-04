@@ -3,6 +3,7 @@ export const CameraMixin = (SuperClass) => {
     private _video;
     private _canvas;
     private _framerate;
+    public cameraError;
 
     // TODO: Enable WebRTC?
     // https://levelup.gitconnected.com/establishing-the-webrtc-connection-videochat-with-javascript-step-3-48d4ae0e9ea4
@@ -10,6 +11,7 @@ export const CameraMixin = (SuperClass) => {
     constructor() {
       super();
       this._framerate = 2;
+      this.cameraError = false;
 
       this._setup_camera();
     }
@@ -45,14 +47,22 @@ export const CameraMixin = (SuperClass) => {
 
       if (!navigator.mediaDevices) return;
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: false,
-      });
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
 
-      video.srcObject = stream;
-      video.play();
-      this.update_camera();
+        video.srcObject = stream;
+        video.play();
+        this.update_camera();
+      } catch (e) {
+        if (e.name !== "NotAllowedError") throw e;
+        else {
+          this.cameraError = true;
+          this.fireEvent("browser-mod-config-update");
+        }
+      }
     }
 
     async update_camera() {

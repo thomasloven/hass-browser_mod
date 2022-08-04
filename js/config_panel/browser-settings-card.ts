@@ -93,6 +93,14 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                     @change=${this.toggleCameraEnabled}
                   ></ha-switch>
                 </ha-settings-row>
+                ${window.browser_mod?.cameraError
+                  ? html`
+                      <ha-alert alert-type="error">
+                        Setting up the device camera failed. Make sure you have
+                        allowed use of the camera in your browser.
+                      </ha-alert>
+                    `
+                  : ""}
                 ${this._renderInteractionAlert()}
                 ${this._renderFKBSettingsInfo()}
               `
