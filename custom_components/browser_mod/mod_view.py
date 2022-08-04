@@ -53,14 +53,16 @@ async def async_setup_view(hass):
                 add_extra_js_url(hass, r["url"])
 
         if not frontend_added:
-            if resources.async_create_item:
+            if getattr(resources, "async_create_item", None):
                 await resources.async_create_item(
                     {
                         "res_type": "module",
                         "url": FRONTEND_SCRIPT_URL + "?automatically-added",
                     }
                 )
-            elif resources.data and resources.data.append:
+            elif getattr(resources, "data", None) and getattr(
+                resources.data, "append", None
+            ):
                 resources.data.append(
                     {
                         "type": "module",
