@@ -7,12 +7,24 @@ import "./types";
 
 class BrowserPlayer extends LitElement {
   @property() hass;
+  @property({ attribute: "edit-mode", reflect: true }) editMode;
 
   static getConfigElement() {
     return document.createElement("browser-player-editor");
   }
   static getStubConfig() {
     return {};
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    if (!window.browser_mod?.registered) {
+      if (this.parentElement.localName === "hui-card-preview") {
+        this.removeAttribute("hidden");
+      } else {
+        this.setAttribute("hidden", "");
+      }
+    }
   }
 
   async setConfig(config) {
@@ -28,10 +40,10 @@ class BrowserPlayer extends LitElement {
       "canplay",
       "loadeddata",
     ])
-      window.browser_mod._audio_player.addEventListener(event, () =>
+      window.browser_mod?._audio_player?.addEventListener(event, () =>
         this.requestUpdate()
       );
-    window.browser_mod._video_player.addEventListener(event, () =>
+    window.browser_mod?._video_player?.addEventListener(event, () =>
       this.requestUpdate()
     );
   }
@@ -71,6 +83,13 @@ class BrowserPlayer extends LitElement {
     if (!window.browser_mod) {
       window.setTimeout(() => this.requestUpdate(), 100);
       return html``;
+    }
+    if (!window.browser_mod?.registered) {
+      return html`
+        <ha-card>
+          <ha-alert> This browser is not registered to Browser Mod. </ha-alert>
+        </ha-card>
+      `;
     }
     return html`
       <ha-card>
@@ -116,6 +135,12 @@ class BrowserPlayer extends LitElement {
 
   static get styles() {
     return css`
+      :host(["hidden"]) {
+        display: none;
+      }
+      :host([edit-mode="true"]) {
+        display: block !important;
+      }
       paper-icon-button[highlight] {
         color: var(--accent-color);
       }
@@ -143,12 +168,12 @@ class BrowserPlayer extends LitElement {
   }
 }
 
-(async () => {
-  while (!window.browser_mod) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  await window.browser_mod.connectionPromise;
+// (async () => {
+//   while (!window.browser_mod) {
+//     await new Promise((resolve) => setTimeout(resolve, 1000));
+//   }
+//   await window.browser_mod.connectionPromise;
 
-  if (!customElements.get("browser-player"))
-    customElements.define("browser-player", BrowserPlayer);
-})();
+if (!customElements.get("browser-player"))
+  customElements.define("browser-player", BrowserPlayer);
+// })();

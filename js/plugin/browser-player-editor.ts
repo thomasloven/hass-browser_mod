@@ -7,19 +7,19 @@ class BrowserPlayerEditor extends LitElement {
   }
 }
 
-(async () => {
-  while (!window.browser_mod) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  await window.browser_mod.connectionPromise;
+// (async () => {
+//   while (!window.browser_mod) {
+//     await new Promise((resolve) => setTimeout(resolve, 1000));
+//   }
+//   await window.browser_mod.connectionPromise;
 
-  if (!customElements.get("browser-player-editor")) {
-    customElements.define("browser-player-editor", BrowserPlayerEditor);
-    window.customCards = window.customCards || [];
-    window.customCards.push({
-      type: "browser-player",
-      name: "Browser Player",
-      preview: true,
-    });
-  }
-})();
+if (!customElements.get("browser-player-editor")) {
+  customElements.define("browser-player-editor", BrowserPlayerEditor);
+  window.customCards = window.customCards || [];
+  window.customCards.push({
+    type: "browser-player",
+    name: "Browser Player",
+    preview: true,
+  });
+}
+// })();
