@@ -223,7 +223,6 @@ class BrowserModPopup extends LitElement {
   static get styles() {
     return css`
       ha-dialog {
-        --dialog-backdrop-filter: blur(5px);
         z-index: 10;
         --mdc-dialog-min-width: var(--popup-min-width, 400px);
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
