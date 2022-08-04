@@ -53,9 +53,17 @@ async def async_setup_view(hass):
                 add_extra_js_url(hass, r["url"])
 
         if not frontend_added:
-            await resources.async_create_item(
-                {
-                    "res_type": "module",
-                    "url": FRONTEND_SCRIPT_URL + "?automatically-added",
-                }
-            )
+            if resources.async_create_item:
+                await resources.async_create_item(
+                    {
+                        "res_type": "module",
+                        "url": FRONTEND_SCRIPT_URL + "?automatically-added",
+                    }
+                )
+            elif resources.data and resources.data.append:
+                resources.data.append(
+                    {
+                        "type": "module",
+                        "url": FRONTEND_SCRIPT_URL + "?automatically-added",
+                    }
+                )
