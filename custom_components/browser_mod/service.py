@@ -27,7 +27,7 @@ async def async_setup_services(hass):
             if target not in browsers:
                 continue
             browser = browsers[target]
-            browser.send(service, **data)
+            hass.create_task(browser.send(service, **data))
 
     def handle_service(call):
         service = call.service

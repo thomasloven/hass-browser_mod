@@ -9,6 +9,8 @@ from homeassistant.components.websocket_api import (
 
 from homeassistant.components import websocket_api
 
+from homeassistant.core import callback
+
 from .const import (
     BROWSER_ID,
     DATA_STORE,
@@ -40,6 +42,7 @@ async def async_setup_connection(hass):
         browserID = msg[BROWSER_ID]
         store = hass.data[DOMAIN][DATA_STORE]
 
+        @callback
         def send_update(data):
             connection.send_message(event_message(msg["id"], {"result": data}))
 

@@ -1,0 +1,30 @@
+title: frontend vs backend
+
+cards:
+  - type: entities
+    entities:
+      - light.bed_light
+      - light.kitchen_lights
+
+  - type: button
+    name: fire-dom-event
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.popup
+        data:
+          title: fire-dom-event
+          content:
+            type: markdown
+            content: "{{states('light.bed_light')}}"
+
+  - type: button
+    name: call-service
+    tap_action:
+      action: call-service
+      service: browser_mod.popup
+      data:
+        title: call-service
+        content:
+          type: markdown
+          content: "{{states('light.bed_light')}}"

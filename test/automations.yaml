@@ -1,0 +1,31 @@
+- id: "1660669793583"
+  alias: Toggle bed light
+  description: ""
+  trigger:
+    - platform: time_pattern
+      seconds: /3
+  condition: []
+  action:
+    - type: toggle
+      device_id: 98861bdf58b3c79183c03be06da14f27
+      entity_id: light.bed_light
+      domain: light
+  mode: single
+
+- alias: Popup when kitchen light togggled
+  trigger:
+    - platform: state
+      entity_id: light.kitchen_lights
+  action:
+    - service: browser_mod.sequence
+      data:
+        sequence:
+          - service: delay
+            data:
+              time: 5000
+          - service: browser_mod.popup
+            data:
+              title: automation
+              content:
+                type: markdown
+                content: "{%raw%}{{states('light.bed_light')}}{%endraw%}"

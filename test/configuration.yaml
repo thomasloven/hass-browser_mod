@@ -1,5 +1,7 @@
 default_config:
 
+automation: !include test/automations.yaml
+
 demo:
 
 http:
@@ -11,6 +13,8 @@ logger:
   default: warning
   logs:
     custom_components.browser_mod: info
+
+# debugpy:
 
 # browser_mod:
 #   devices:

@@ -32,6 +32,7 @@ interface FullyKiosk {
 declare global {
   interface Window {
     browser_mod?: BrowserMod;
+    browser_mod_log?: any;
     fully?: FullyKiosk;
     hassConnection?: Promise<any>;
     customCards?: [{}?];

@@ -3,6 +3,7 @@ import logging
 from homeassistant.components.websocket_api import event_message
 from homeassistant.helpers import device_registry, entity_registry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import callback
 
 from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS
 from .sensor import BrowserSensor
@@ -130,11 +131,14 @@ class BrowserModBrowser:
             er.async_remove(self.entities["camera"].entity_id)
             del self.entities["camera"]
 
-        self.send(
-            None, browserEntities={k: v.entity_id for k, v in self.entities.items()}
+        hass.create_task(
+            self.send(
+                None, browserEntities={k: v.entity_id for k, v in self.entities.items()}
+            )
         )
 
-    def send(self, command, **kwargs):
+    @callback
+    async def send(self, command, **kwargs):
         """Send a command to this browser."""
         if self.connection is None:
             return

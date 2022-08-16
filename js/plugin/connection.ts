@@ -13,7 +13,7 @@ export const ConnectionMixin = (SuperClass) => {
     public browserEntities = {};
 
     LOG(...args) {
-      return;
+      if (window.browser_mod_log === undefined) return;
       const dt = new Date();
       console.log(`${dt.toLocaleTimeString()}`, ...args);
 
@@ -37,6 +37,7 @@ export const ConnectionMixin = (SuperClass) => {
         this.update_config(msg.result);
       }
       this._connectionResolve?.();
+      this._connectionResolve = undefined;
     }
 
     private update_config(cfg) {

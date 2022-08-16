@@ -32,6 +32,7 @@ views:
           action: more-info
 
   - !include views/popup.yaml
+  - !include views/frontend-backend.yaml
 
   - title: Popup card
     popup_cards:
