@@ -24,7 +24,7 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     private fireEvent(event, detail = undefined) {
-      this.dispatchEvent(new CustomEvent(event, { detail }));
+      this.dispatchEvent(new CustomEvent(event, { detail, bubbles: true }));
     }
 
     private incoming_message(msg) {

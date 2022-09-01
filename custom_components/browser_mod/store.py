@@ -16,6 +16,7 @@ class SettingsStoreData:
     defaultPanel = attr.ib(type=str, default=None)
     sidebarPanelOrder = attr.ib(type=list, default=None)
     sidebarHiddenPanels = attr.ib(type=list, default=None)
+    sidebarTitle = attr.ib(type=str, default=None)
     faviconTemplate = attr.ib(type=str, default=None)
     titleTemplate = attr.ib(type=str, default=None)
 

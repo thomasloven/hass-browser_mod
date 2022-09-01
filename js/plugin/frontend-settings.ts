@@ -1,25 +1,37 @@
-import { selectTree } from "../helpers";
+import { await_element, waitRepeat, runOnce, selectTree } from "../helpers";
 
 export const AutoSettingsMixin = (SuperClass) => {
-  return class AutoSettingsMixinClass extends SuperClass {
+  class AutoSettingsMixinClass extends SuperClass {
     _faviconTemplateSubscription;
     _titleTemplateSubscription;
     __currentTitle = undefined;
 
+    @runOnce()
+    async runHideHeader() {
+      while (!(await this._hideHeader()))
+        await new Promise((r) => setTimeout(r, 500));
+    }
+
+    @runOnce(true)
+    async runUpdateTitle() {
+      await waitRepeat(() => this._updateTitle(), 3, 500);
+    }
+
     constructor() {
       super();
 
-      this._auto_settings_setup();
-      this.addEventListener("browser-mod-config-update", () =>
-        this._auto_settings_setup()
-      );
+      const runUpdates = async () => {
+        this.runUpdateTitle();
+        this.runHideHeader();
+      };
 
-      window.addEventListener("location-changed", () => {
-        this._updateTitle();
-        setTimeout(() => this._updateTitle(), 500);
-        setTimeout(() => this._updateTitle(), 1000);
-        setTimeout(() => this._updateTitle(), 5000);
+      this._auto_settings_setup();
+      this.addEventListener("browser-mod-config-update", () => {
+        this._auto_settings_setup();
+        runUpdates();
       });
+
+      window.addEventListener("location-changed", runUpdates);
     }
 
     async _auto_settings_setup() {
@@ -40,7 +52,7 @@ export const AutoSettingsMixin = (SuperClass) => {
 
       // Default panel
       if (settings.defaultPanel) {
-        localStorage.setItem("defaultPanel", settings.defaultPanel);
+        localStorage.setItem("defaultPanel", `"${settings.defaultPanel}"`);
       }
 
       // Hide sidebar
@@ -55,17 +67,17 @@ export const AutoSettingsMixin = (SuperClass) => {
         ).then((el) => el?.remove?.());
       }
 
-      // Hide header
-      if (settings.hideHeader === true) {
-        customElements.whenDefined("app-header-layout").then(() => {
-          const appHeader = customElements.get("app-header").prototype;
-          const _attached = appHeader.attached;
-          appHeader.attached = function () {
-            _attached.bind(this)();
-            this.style.setProperty("display", "none");
-          };
+      // Sidebar title
+      if (settings.sidebarTitle) {
+        selectTree(
+          document,
+          "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar $ .title"
+        ).then((el) => {
+          if (el) (el as HTMLElement).innerHTML = settings.sidebarTitle;
         });
       }
+
+      // Hide header
 
       // Favicon template
       if (settings.faviconTemplate !== undefined) {
@@ -111,7 +123,6 @@ export const AutoSettingsMixin = (SuperClass) => {
     _updateFavicon({ result }) {
       const link: any = document.head.querySelector("link[rel~='icon']");
       link.href = result;
-      window.browser_mod.fireEvent("browser-mod-favicon-update");
     }
 
     get _currentTitle() {
@@ -121,7 +132,77 @@ export const AutoSettingsMixin = (SuperClass) => {
     _updateTitle(data = undefined) {
       if (data) this.__currentTitle = data.result;
       if (this.__currentTitle) document.title = this.__currentTitle;
-      window.browser_mod.fireEvent("browser-mod-favicon-update");
     }
-  };
+
+    async _hideHeader() {
+      if (this.settings.hideHeader !== true) return true;
+      let el = await selectTree(
+        document,
+        "home-assistant $ home-assistant-main $ app-drawer-layout partial-panel-resolver"
+      );
+      if (!el) return false;
+      let steps = 0;
+      while (el && el.localName !== "ha-app-layout" && steps++ < 5) {
+        await await_element(el, true);
+        const next =
+          el.querySelector("ha-app-layout") ??
+          el.firstElementChild ??
+          el.shadowRoot;
+        el = next;
+      }
+      if (el?.localName !== "ha-app-layout") return false;
+      if (el.header) {
+        el.header.style.setProperty("display", "none");
+        setTimeout(() => el._updateLayoutStates(), 0);
+        return true;
+      }
+      return false;
+    }
+
+    getSetting(key) {
+      const retval = { global: undefined, browser: {}, user: {} };
+      retval.global = this._data.settings?.[key];
+      for (const [k, v] of Object.entries(this._data.browsers ?? {})) {
+        if ((v as any).settings?.[key] != null)
+          retval.browser[k] = (v as any).settings[key];
+      }
+      for (const [k, v] of Object.entries(this._data.user_settings ?? {})) {
+        if (v[key] != null) retval.user[k] = v[key];
+      }
+      return retval;
+    }
+
+    setSetting(type, target, settings) {
+      if (type === "global") {
+        for (const [key, value] of Object.entries(settings))
+          this.connection.sendMessage({
+            type: "browser_mod/settings",
+            key,
+            value,
+          });
+      } else if (type === "browser") {
+        const browser = this._data.browsers[target];
+        const newsettings = { ...browser.settings, ...settings };
+        console.log(newsettings);
+        this.connection.sendMessage({
+          type: "browser_mod/register",
+          browserID: target,
+          data: {
+            ...browser,
+            settings: newsettings,
+          },
+        });
+      } else if (type === "user") {
+        const user = target;
+        for (const [key, value] of Object.entries(settings))
+          this.connection.sendMessage({
+            type: "browser_mod/settings",
+            user,
+            key,
+            value,
+          });
+      }
+    }
+  }
+  return AutoSettingsMixinClass;
 };

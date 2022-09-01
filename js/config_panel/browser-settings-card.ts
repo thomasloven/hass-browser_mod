@@ -136,7 +136,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
   private _renderInteractionAlert() {
     return html`
       <ha-alert title="Interaction requirement">
-        For security reasons many browsers require the user to interact with a
+        For privacy reasons many browsers require the user to interact with a
         webpage before allowing audio playback or video capture. This may affect
         the
         <code>media_player</code> and <code>camera</code> components of Browser

@@ -15,12 +15,13 @@ loadConfigDashboard().then(() => {
     @property() connection;
 
     firstUpdated() {
-      window.browser_mod.addEventListener("browser-mod-config-update", () =>
+      window.addEventListener("browser-mod-config-update", () =>
         this.requestUpdate()
       );
     }
 
     render() {
+      if (!window.browser_mod) return html``;
       return html`
         <ha-app-layout>
           <app-header slot="header" fixed>

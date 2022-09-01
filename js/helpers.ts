@@ -1,9 +1,17 @@
 const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
 
-async function _await_el(el) {
+export async function await_element(el, hard = false) {
   if (el.localName?.includes("-"))
     await customElements.whenDefined(el.localName);
   if (el.updateComplete) await el.updateComplete;
+  if (hard) {
+    if (el.pageRendered) await el.pageRendered;
+    if (el._panelState) {
+      let rounds = 0;
+      while (el._panelState !== "loaded" && rounds++ < 5)
+        await new Promise((r) => setTimeout(r, 100));
+    }
+  }
 }
 
 async function _selectTree(root, path, all = false) {
@@ -18,7 +26,7 @@ async function _selectTree(root, path, all = false) {
 
     if (!p.trim().length) continue;
 
-    _await_el(e);
+    await_element(e);
     el = p === "$" ? [e.shadowRoot] : e.querySelectorAll(p);
   }
   return all ? el : el[0];
@@ -102,6 +110,7 @@ export const loadConfigDashboard = async () => {
   const configRouter: any = document.createElement("ha-panel-config");
   await configRouter?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
   await configRouter?.routerOptions?.routes?.cloud?.load?.(); // Load ha-settings-row
+  await configRouter?.routerOptions?.routes?.entities?.load?.(); // Load ha-data-table
   await customElements.whenDefined("ha-config-dashboard");
 };
 
@@ -131,4 +140,33 @@ export function throttle(timeout) {
       return fn.bind(this)(...rest);
     };
   };
+}
+
+export function runOnce(restart = false) {
+  return function (target, propertyKey, descriptor) {
+    const fn = descriptor.value;
+    let running = undefined;
+    const newfn = function (...rest) {
+      if (restart && running === false) running = true;
+      if (running !== undefined) return;
+      running = false;
+
+      const retval = fn.bind(this)(...rest);
+      if (running) {
+        running = undefined;
+        return newfn.bind(this)(...rest);
+      } else {
+        running = undefined;
+        return retval;
+      }
+    };
+    descriptor.value = newfn;
+  };
+}
+
+export async function waitRepeat(fn, times, delay) {
+  while (times--) {
+    fn();
+    await new Promise((r) => setTimeout(r, delay));
+  }
 }

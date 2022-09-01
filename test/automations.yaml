@@ -17,15 +17,9 @@
     - platform: state
       entity_id: light.kitchen_lights
   action:
-    - service: browser_mod.sequence
+    - service: browser_mod.popup
       data:
-        sequence:
-          - service: delay
-            data:
-              time: 5000
-          - service: browser_mod.popup
-            data:
-              title: automation
-              content:
-                type: markdown
-                content: "{%raw%}{{states('light.bed_light')}}{%endraw%}"
+        title: automation
+        content:
+          type: markdown
+          content: "{%raw%}{{states('light.bed_light')}}{%endraw%}"
