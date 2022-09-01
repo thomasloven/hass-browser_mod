@@ -342,6 +342,13 @@ export const PopupMixin = (SuperClass) => {
       this._popupEl = document.createElement("browser-mod-popup");
       document.body.append(this._popupEl);
 
+      this._popupEl.addEventListener("hass-more-info", async (ev) => {
+        const base = await hass_base_el();
+        console.log("More info", ev, base);
+        this._popupEl.closeDialog();
+        base.dispatchEvent(ev);
+      });
+
       // const historyListener = async (ev) => {
       //   const popupState = ev.state?.browserModPopup;
       //   if (popupState) {
