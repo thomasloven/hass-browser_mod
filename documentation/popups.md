@@ -10,17 +10,17 @@ data:
   left_button: Left button
 ```
 
-![Dialog Anatomy](https://user-images.githubusercontent.com/1299821/182708739-f89e3b2b-199f-43e0-bf04-e1dfc7075b2a.png)
+![Screenshot illustrating the title, content and button placements of a popup](https://user-images.githubusercontent.com/1299821/182708739-f89e3b2b-199f-43e0-bf04-e1dfc7075b2a.png)
 
 ## Size
 
 The `size` parameter can be set to `normal`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity):
 
-![Normal Size](https://user-images.githubusercontent.com/1299821/182709146-439814f1-d479-4fc7-aab1-e28f5c9a13c7.png)
+![Screenshot of a normal size popup](https://user-images.githubusercontent.com/1299821/182709146-439814f1-d479-4fc7-aab1-e28f5c9a13c7.png)
 
-![Wide Size](https://user-images.githubusercontent.com/1299821/182709172-c98a9c23-5e58-4564-bcb7-1d187842948f.png)
+![Screenshot of a wide size popup](https://user-images.githubusercontent.com/1299821/182709172-c98a9c23-5e58-4564-bcb7-1d187842948f.png)
 
-![Fullscreen Size](https://user-images.githubusercontent.com/1299821/182709224-fb2e7b92-8a23-4422-95a0-f0f2835909e0.png)
+![Screenshot of a fullscreen size popup](https://user-images.githubusercontent.com/1299821/182709224-fb2e7b92-8a23-4422-95a0-f0f2835909e0.png)
 
 
 ## HTML content
@@ -34,7 +34,7 @@ data:
     <p> Pretty much any HTML works: <ha-icon icon="mdi:lamp" style="color: red;"></ha-icon>
 ```
 
-![HTML content](https://user-images.githubusercontent.com/1299821/182710044-6fea3ba3-5262-4361-a131-691770340518.png)
+![Screenshot of a popup rendering the HTML code above](https://user-images.githubusercontent.com/1299821/182710044-6fea3ba3-5262-4361-a131-691770340518.png)
 
 ## Dashboard card content
 
@@ -50,7 +50,7 @@ data:
       - light.kitchen_lights
 ```
 
-![Card content](https://user-images.githubusercontent.com/1299821/182710445-f09b74b8-dd53-4d65-8eba-0945fc1d418e.png)
+![Screenshot of a popup rendering the entities card described above](https://user-images.githubusercontent.com/1299821/182710445-f09b74b8-dd53-4d65-8eba-0945fc1d418e.png)
 
 ## Form content
 `content` can be a list of ha-form schemas and the popup will then contain a form for user input:
@@ -91,7 +91,7 @@ data:
           slider: true
 ```
 
-![Form content](https://user-images.githubusercontent.com/1299821/182712670-f3b4fdb7-84a9-49d1-a26f-2cdaa450fa0e.png)
+![Screenshot of a popup rendering the form described above](https://user-images.githubusercontent.com/1299821/182712670-f3b4fdb7-84a9-49d1-a26f-2cdaa450fa0e.png)
 
 ## Actionable popups
 
@@ -127,7 +127,7 @@ data:
           entity_id: light.bed_light
 ```
 
-![Multi-level popup](https://user-images.githubusercontent.com/1299821/182713421-708d0026-bcfa-4ba6-bbcd-3b85b584162d.gif)
+![Animated screenshot of a popup which opens other popups when one of the action buttons are pressed](https://user-images.githubusercontent.com/1299821/182713421-708d0026-bcfa-4ba6-bbcd-3b85b584162d.gif)
 
 ## Forward form data
 
@@ -158,4 +158,4 @@ data:
               value: 12
 ```
 
-![Vacuum popup](https://user-images.githubusercontent.com/1299821/182713714-ef4149b1-217a-4d41-9737-714f5320c25c.png)
+![Screenshot of a popup allowing the user to choose which rooms to vacuum](https://user-images.githubusercontent.com/1299821/182713714-ef4149b1-217a-4d41-9737-714f5320c25c.png)

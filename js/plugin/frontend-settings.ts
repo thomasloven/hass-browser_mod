@@ -4,6 +4,7 @@ export const AutoSettingsMixin = (SuperClass) => {
   class AutoSettingsMixinClass extends SuperClass {
     _faviconTemplateSubscription;
     _titleTemplateSubscription;
+    _sidebarTitleSubscription;
     __currentTitle = undefined;
 
     @runOnce()
@@ -69,12 +70,18 @@ export const AutoSettingsMixin = (SuperClass) => {
 
       // Sidebar title
       if (settings.sidebarTitle) {
-        selectTree(
-          document,
-          "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar $ .title"
-        ).then((el) => {
-          if (el) (el as HTMLElement).innerHTML = settings.sidebarTitle;
-        });
+        (async () => {
+          if (this._sidebarTitleSubscription) {
+            this._sidebarTitleSubscription();
+          }
+          this._sidebarTitleSubscription = undefined;
+          this._sidebarTitleSubscription =
+            await this.connection.subscribeMessage(this._updateSidebarTitle, {
+              type: "render_template",
+              template: settings.sidebarTitle,
+              variables: {},
+            });
+        })();
       }
 
       // Hide header
@@ -113,6 +120,15 @@ export const AutoSettingsMixin = (SuperClass) => {
             );
         })();
       }
+    }
+
+    _updateSidebarTitle({ result }) {
+      selectTree(
+        document,
+        "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar $ .title"
+      ).then((el) => {
+        if (el) (el as HTMLElement).innerHTML = result;
+      });
     }
 
     get _currentFavicon() {

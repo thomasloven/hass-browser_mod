@@ -30,7 +30,7 @@ Browser Mod has a number of services you can call to cause things to happen in t
 ### Calling services
 
 Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through their device:
-![GUI service call](https://user-images.githubusercontent.com/1299821/180668350-1cbe751d-615d-4102-b939-e49e9cd2ca74.png)
+![A picture exemplifying setting up a browser_mod.more_info service call in the GUI editor](https://user-images.githubusercontent.com/1299821/180668350-1cbe751d-615d-4102-b939-e49e9cd2ca74.png)
 
 In yaml, the BrowserID can be used for targeting a specific browser:
 
@@ -78,6 +78,7 @@ card:
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
+> *Note:* It's advisable to use a `fire-dom-event` tap action instead as far as possible. Popup card is for the few cases where that's not possible. See [`services`](documentation/services.md) for more info.
 
 # Browser Player
 
@@ -88,6 +89,18 @@ Add it to a dashboard via the GUI or through yaml:
 ```yaml
 type: custom:browser-player
 ```
+
+
+# FAQ
+
+### **Why doesn't ANYTHING that used to work with Browser Mod 1.0 work with Browser Mod 2.0?**
+
+Browser Mod 2.0 has been rewritten ENTIRELY from the ground up. This allows it to be more stable and less resource intensive. At the same time I took the opportunity to rename a lot of things in ways that are more consistent with Home Assistant nomenclature.
+
+In short, things are hopefully much easier now for new users of Browser Mod at the unfortunate cost of a one-time inconvenience for veteran expert users such as yourself.
+
+### **Why does my Browser ID keep changing?**
+There's just no way around this. I've used every trick in the book and invented a handful of new ones in order to save the Browser ID as far as possible. It should be much better in Browser Mod 2.0 than earlier, but it's still not perfect. At least it's easy to change it back now...
 
 ---
 

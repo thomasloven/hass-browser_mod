@@ -43,15 +43,20 @@ If you are using [Home Assistant Cast](https://www.home-assistant.io/integration
 
 This section is for settings that change the default behavior of the Home Assistant frontend.
 
-Each setting has three levels, _Global_, _Browser_ and _User_.
+For each option the first applicable value will be applied.
 
-- Changes made on the _Global_ tab will be applied for everyone on every browser.
-- Changes made on the _Browser_ tab will be applied for this _Browser_. The settings here override any _Global_ settings.
-- Changes made on the _User_ tab will be applied for the user you're currently logged in as - on any device. The settings here override any _Global_ or _Browser_ settings.
+In the screenshot below, for example, the sidebar title would be set to "My home" - the GLOBAL setting - for any user on any browser (even unregistered). For any user logged in on the "kitchen-dashboard" browser, the sidebar title would instead be set to "FOOD", except for the user "dev" for whom the sidebar title would always be "DEV MODE".
+![Example of a frontend setting being applied for a user, a browser and globally](https://user-images.githubusercontent.com/1299821/187984798-04e72fff-7cce-4394-ba69-42e62c5e0acb.png)
 
-Note that if a setting is set at a lower level but _cleared_ on a higher, it is not _undone_. It's just not overridden.
+### Title template
 
-Also note that _User_ level settings can only be made when logged in as the user in question, and that the Browser Mod configuration panel is only available to administrators. If you need to change a setting for a non-admin user, you will need to temporarily make them admin for the setup, and then un-admin them.
+This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/).
+
+> Ex:
+>
+> ```jinja
+> {{ states.persistent_notification | list | count}} - Home Assistant
+> ```
 
 ### Favicon template
 
@@ -67,17 +72,8 @@ This allows you to set and dynamically update the favicon of the browser tab/win
 > {% endif %}
 > ```
 
-Note that this _only_ applies to the current favicon of the page, not any manifest icons such as the loading icon or the icon you get if you save the page to your smartphones homescreen. For those, please see the [hass-favicon](https://github.com/thomasloven/hass-favicon) integration.
+Note that this _only_ applies to the current favicon of the page, not any manifest icons such as the loading icon or the icon you get if you save the page to your smartphones homescreen. For those, please see the [hass-favicon](https://github.com/thomasloven/hass-favicon) custom integration.
 
-### Title template
-
-This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/).
-
-> Ex:
->
-> ```jinja
-> {{ states.persistent_notification | list | count}} - Home Assistant
-> ```
 
 ### Hide Sidebar
 
@@ -91,12 +87,23 @@ This will hide the header bar. Completely. It does not care if there are useful 
 
 > Tip: See the big yellow warning box at the top of this card? For some reason, it seems to be really easy to forget you turned this on. Please do not bother the Home Assistant team about the header bar missing if you have hidden it yourself. Really, I've forgotten multiple times myself.
 
-### Sidebar order
-
-Did you know that you can change the order and hide items from the sidebar? To do so, either go into your profile settings at the bottom left and click "Change the order and hide items from the sidebar", or click and hold on the "Home Assistant" text at the top of the sidebar.
-
-Normally, the order and hidden items only applies to the current device, but this will make it persistent according to the levels described above.
-
 ### Default dashboard
 
-Like the Sidebar order, the default dashboard (the page shown when you simply access `https://<your home assistant url>/` with nothing after the `/`) can be set in your profile settings but only applies to the current device. This fixes that.
+Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
+
+> *Note:* This sort of works with other pages than lovelace dashboards, like e.g. `logbook` BUT there's currently a bug in Home Assistant which causes extra js modules (like browser_mod) to not load if you navigate to `https://<your home assistant url>/` and it does NOT redirect to a lovelace dashboard... Perhaps that will be fixed at some point. Perhaps you could live with it...
+
+### Sidebar order
+
+Set the order and hidden items of the sidebar. To change this setting:
+
+- Click the "EDIT" button
+- Change the sidebar to how you want it
+- DO NOT click "DONE"
+- Either add a new User or Browser setting or click one of the pencil icons to overwrite an old layout
+- Click the "RESTORE" button
+
+### Sidebar title
+
+This changes the "Home Assistant" text that is displayed at the top of the sidebar.
+Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/).
