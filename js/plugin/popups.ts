@@ -28,6 +28,7 @@ class BrowserModPopup extends LitElement {
 
   async closeDialog() {
     this.open = false;
+    this.card = undefined;
     clearInterval(this._timeoutTimer);
     if (this._autocloseListener) {
       window.browser_mod.removeEventListener(
@@ -319,10 +320,7 @@ class BrowserModPopup extends LitElement {
         ha-dialog {
           --mdc-dialog-min-width: 100vw;
           --mdc-dialog-max-width: 100vw;
-          --mdc-dialog-min-height: 100%;
-          --mdc-dialog-max-height: 100%;
           --mdc-shape-medium: 0px;
-          --vertial-align-dialog: flex-end;
         }
       }
     `;
