@@ -40,8 +40,8 @@ class BrowserModLight(BrowserModEntity, LightEntity):
     def brightness(self):
         return self._data.get("screen_brightness", 1)
 
-    def turn_on(self, **kwargs):
-        self.browser.send("screen_on", **kwargs)
+    async def async_turn_on(self, **kwargs):
+        await self.browser.send("screen_on", **kwargs)
 
-    def turn_off(self, **kwargs):
-        self.browser.send("screen_off")
+    async def async_turn_off(self, **kwargs):
+        await self.browser.send("screen_off")

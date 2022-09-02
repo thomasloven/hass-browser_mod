@@ -108,11 +108,11 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     def media_position_updated_at(self):
         return dt.utcnow()
 
-    def set_volume_level(self, volume):
-        self.browser.send("player-set-volume", volume_level=volume)
+    async def async_set_volume_level(self, volume):
+        await self.browser.send("player-set-volume", volume_level=volume)
 
-    def mute_volume(self, mute):
-        self.browser.send("player-mute", mute=mute)
+    async def async_mute_volume(self, mute):
+        await self.browser.send("player-mute", mute=mute)
 
     async def async_play_media(self, media_type, media_id, **kwargs):
         if media_source.is_media_source_id(media_id):
@@ -124,7 +124,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             media_id = async_process_play_media_url(self.hass, media_id)
         if media_type in (MEDIA_TYPE_URL, MEDIA_TYPE_MUSIC):
             media_id = async_process_play_media_url(self.hass, media_id)
-        self.browser.send(
+        await self.browser.send(
             "player-play", media_content_id=media_id, media_type=media_type, **kwargs
         )
 
@@ -136,20 +136,20 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             # content_filter=lambda item: item.media_content_type.startswith("audio/"),
         )
 
-    def media_play(self):
-        self.browser.send("player-play")
+    async def async_media_play(self):
+        await self.browser.send("player-play")
 
-    def media_pause(self):
-        self.browser.send("player-pause")
+    async def async_media_pause(self):
+        await self.browser.send("player-pause")
 
-    def media_stop(self):
-        self.browser.send("player-stop")
+    async def async_media_stop(self):
+        await self.browser.send("player-stop")
 
-    def media_seek(self, position):
-        self.browser.send("player-seek", position=position)
+    async def async_media_seek(self, position):
+        await self.browser.send("player-seek", position=position)
 
-    def turn_off(self):
-        self.browser.send("player-turn-off")
+    async def async_turn_off(self):
+        await self.browser.send("player-turn-off")
 
-    def turn_on(self, **kwargs):
-        self.browser.send("player-turn-on", **kwargs)
+    async def async_turn_on(self, **kwargs):
+        await self.browser.send("player-turn-on", **kwargs)
