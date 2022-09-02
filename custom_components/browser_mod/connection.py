@@ -62,7 +62,9 @@ async def async_setup_connection(hass):
             dev.update_settings(hass, store.get_browser(browserID).asdict())
             dev.open_connection(connection, msg["id"])
             await store.set_browser(
-                browserID, last_seen=datetime.now(tz=timezone.utc).isoformat()
+                browserID,
+                last_seen=datetime.now(tz=timezone.utc).isoformat(),
+                meta=dev.get_device_id(hass),
             )
         send_update(store.asdict())
 

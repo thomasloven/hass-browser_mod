@@ -46,21 +46,31 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     return html`
       <ha-card header="Registered Browsers" outlined>
         <div class="card-content">
-          ${Object.keys(window.browser_mod.browsers).map(
-            (d) => html` <ha-settings-row>
+          ${Object.keys(window.browser_mod.browsers).map((d) => {
+            const browser = window.browser_mod.browsers[d];
+            return html` <ha-settings-row>
               <span slot="heading"> ${d} </span>
               <span slot="description">
                 Last connected:
                 <ha-relative-time
                   .hass=${this.hass}
-                  .datetime=${window.browser_mod.browsers[d].last_seen}
+                  .datetime=${browser.last_seen}
                 ></ha-relative-time>
               </span>
+              ${browser.meta && browser.meta !== "default"
+                ? html`
+                    <a href="config/devices/device/${browser.meta}">
+                      <ha-icon-button>
+                        <ha-icon .icon=${"mdi:devices"}></ha-icon>
+                      </ha-icon-button>
+                    </a>
+                  `
+                : ""}
               <ha-icon-button .browserID=${d} @click=${this.unregister_browser}>
                 <ha-icon .icon=${"mdi:delete"}></ha-icon>
               </ha-icon-button>
-            </ha-settings-row>`
-          )}
+            </ha-settings-row>`;
+          })}
         </div>
         ${window.browser_mod.browsers["CAST"] === undefined
           ? html`
@@ -79,6 +89,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     return css`
       ha-icon-button > * {
         display: flex;
+        color: var(--primary-text-color);
       }
     `;
   }

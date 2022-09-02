@@ -167,6 +167,16 @@ class BrowserModBrowser:
         device = dr.async_get_device({(DOMAIN, self.browserID)})
         dr.async_remove_device(device.id)
 
+    def get_device_id(self, hass):
+        er = entity_registry.async_get(hass)
+        entities = list(self.entities.values())
+        if len(entities):
+            entity = entities[0]
+            entry = er.async_get(entity.entity_id)
+            if entry:
+                return entry.device_id
+        return "default"
+
     @property
     def connection(self):
         """The current websocket connections for this Browser."""
