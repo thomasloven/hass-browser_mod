@@ -67,6 +67,36 @@ script:
 
 Will print `"Button was clicked in 79be65e8-f06c78f" to the Home Assistant log.
 
+# Calling services
+
+Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through their device:
+![A picture exemplifying setting up a browser_mod.more_info service call in the GUI editor](https://user-images.githubusercontent.com/1299821/180668350-1cbe751d-615d-4102-b939-e49e9cd2ca74.png)
+
+In yaml, the BrowserID can be used for targeting a specific browser:
+
+```yaml
+service: browser_mod.more_info
+data:
+  entity: light.bed_light
+  browser_id:
+    - 79be65e8-f06c78f
+```
+
+If no target or `browser_id` is specified, the service will target all registerd Browsers.
+
+To call a service from a dashboard use the call-service [action](https://www.home-assistant.io/dashboards/actions/) or the special action `fire-dom-event`:
+
+```yaml
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.more_info
+    data:
+      entity: light.bed_light
+```
+
+Services called via `fire-dom-event` or called as a part of a different service call will (by default) _only_ target the current Browser (even if it's not registered).
+
 
 
 # Browser Mod Services

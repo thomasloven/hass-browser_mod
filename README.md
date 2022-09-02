@@ -1,12 +1,31 @@
 # browser_mod 2.0
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+
+What if that tablet you have on your wall could open up a live feed from your front door camera when someone rings the bell?
+
+And what if you could use it as an extra security camera?
+
+Or what if you could use it to play music and videos from your Home Assistant media library?
+
+What if you could permanently hide that sidebar from your kids and lock them into a single dashboard?
+
+What if you could change the icon of the Home Assistant tab so it doesn't look the same as the forum?
+
+What if you could change the more-info dialog for some entity to a dashboard card of your own design?
+
+What if you could tap a button and have Home Assistant ask you which rooms you want the roomba to vacuum?
+
+\
+&nbsp;
+
 # Installation instructions
 
 - **First make sure you have completely removed any installation of Browser Mod 1**
 
 - Either
 
-  - ~~Find and install Browser Mod under `integrations`in [HACS](https://hacs.xyz)~~
+  - Find and install Browser Mod under `integrations`in [HACS](https://hacs.xyz)
   - OR copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
 - Restart Home Assistant
@@ -15,49 +34,31 @@
 
 - Restart Home Assistant
 
+> Note: If you are upgrading from Browser Mod 1, it is likely that you will get some errors in your log during a transition period. They will say something along the lines of `Error handling message: extra keys not allowed @ data['deviceID']`.
+>
+> They appear when a browser which has an old version of Browser Mod cached tries to connect and should disappear once you have cleared all your caches properly.
+
+\
+&nbsp;
+
 # Browser Mod Configuration Panel
 
 When you're logged in as an administrator you should see a new panel called _Browser Mod_ in the sidebar. This is where you controll any Browser Mod settings.
 
-## See [Configuration Panel](documentation/configuration-panel.md) for more info
+### See [Configuration Panel](documentation/configuration-panel.md) for more info
+\
+&nbsp;
 
 # Browser Mod Services
 
-Browser Mod has a number of services you can call to cause things to happen in the target Browser.
+Browser Mod has a number of services you can call to cause things to happen in the target Browser, such as opening a popup or navigating to a certain dashboard.
 
-## See [Services](documentation/services.md) for more info
+### See [Services](documentation/services.md) for more info
+\
+&nbsp;
 
-### Calling services
 
-Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through their device:
-![A picture exemplifying setting up a browser_mod.more_info service call in the GUI editor](https://user-images.githubusercontent.com/1299821/180668350-1cbe751d-615d-4102-b939-e49e9cd2ca74.png)
-
-In yaml, the BrowserID can be used for targeting a specific browser:
-
-```yaml
-service: browser_mod.more_info
-data:
-  entity: light.bed_light
-  browser_id:
-    - 79be65e8-f06c78f
-```
-
-If no target or `browser_id` is specified, the service will target all registerd Browsers.
-
-To call a service from a dashboard use the call-service [action](https://www.home-assistant.io/dashboards/actions/) or the special action `fire-dom-event`:
-
-```yaml
-tap_action:
-  action: fire-dom-event
-  browser_mod:
-    service: browser_mod.more_info
-    data:
-      entity: light.bed_light
-```
-
-Services called via `fire-dom-event` or called as a part of a different service call will (by default) _only_ target the current Browser (even if it's not registered).
-
-# Popup card
+## Popup card
 
 A popup card can be used to replace the more-info dialog of an entity with something of your choosing.
 
@@ -80,7 +81,7 @@ card:
 
 > *Note:* It's advisable to use a `fire-dom-event` tap action instead as far as possible. Popup card is for the few cases where that's not possible. See [`services`](documentation/services.md) for more info.
 
-# Browser Player
+## Browser Player
 
 Browser player is a card that allows you to controll the volume and playback on the current Browsers media player.
 

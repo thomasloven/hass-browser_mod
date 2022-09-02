@@ -2,7 +2,7 @@
 
 ## This browser
 
-A basic concept for Browser Mod is the _Browser_. A _Browser_ is identified by a unique `BrowserID` stored in the browsers [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).
+The most important concept for Browser Mod is the _Browser_. A _Browser_ is identified by a unique `BrowserID` stored in the browsers [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).
 
 Browser Mod will initially assigning a random `BrowserID` to each _Browser_ that connects, but you can change this if you want.
 
