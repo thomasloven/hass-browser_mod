@@ -64,6 +64,7 @@ export const RequireInteractMixin = (SuperClass) => {
               this._interactionResolve();
             }
           });
+        video.pause();
       }
 
       window.addEventListener(

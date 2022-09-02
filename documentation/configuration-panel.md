@@ -91,7 +91,7 @@ This will hide the header bar. Completely. It does not care if there are useful 
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
 
-> *Note:* This sort of works with other pages than lovelace dashboards, like e.g. `logbook` BUT there's currently a bug in Home Assistant which causes extra js modules (like browser_mod) to not load if you navigate to `https://<your home assistant url>/` and it does NOT redirect to a lovelace dashboard... Perhaps that will be fixed at some point. Perhaps you could live with it...
+> *Note:* This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
 
 ### Sidebar order
 
