@@ -25,7 +25,7 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 
 - Either
 
-  - Find and install Browser Mod under `integrations`in [HACS](https://hacs.xyz)
+  - Find and download [Browser Mod under `integrations`](https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=hass-browser_mod) in [HACS](https://hacs.xyz)
   - OR copy the contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
 
 - Restart Home Assistant
