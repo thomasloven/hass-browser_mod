@@ -322,6 +322,9 @@ class BrowserModPopup extends LitElement {
           --mdc-dialog-max-width: 100vw;
           --mdc-shape-medium: 0px;
         }
+        :host([wide]) .content {
+          width: 100vw;
+        }
       }
     `;
   }
