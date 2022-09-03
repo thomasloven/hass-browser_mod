@@ -2,6 +2,8 @@ import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 import { selectTree } from "../helpers";
 
+let _users = undefined;
+
 class BrowserModSettingsTable extends LitElement {
   @property() settingKey;
   @property() settingSelector = {
@@ -12,8 +14,6 @@ class BrowserModSettingsTable extends LitElement {
   @property() default;
 
   @property() tableData = [];
-
-  _users = undefined;
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -31,9 +31,9 @@ class BrowserModSettingsTable extends LitElement {
   }
 
   async fetchUsers(): Promise<any[]> {
-    if (this._users === undefined)
-      this._users = await this.hass.callWS({ type: "config/auth/list" });
-    return this._users;
+    if (_users === undefined)
+      _users = await this.hass.callWS({ type: "config/auth/list" });
+    return _users;
   }
 
   clearSetting(type, target) {
@@ -195,6 +195,7 @@ class BrowserModSettingsTable extends LitElement {
     const data = [];
     for (const [k, v] of Object.entries(settings.user)) {
       const user = users.find((usr) => usr.id === k);
+      if (!user) continue;
       data.push({
         name: `User: ${user.name}`,
         value: String(v),
