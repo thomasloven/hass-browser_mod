@@ -143,9 +143,12 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         Mod. <br /><br />
 
         If you ever see a
-        <ha-icon icon="mdi:gesture-tap"></ha-icon> symbol at the bottom right
-        corner of the screen, please tap or click anywhere on the page. This
-        should allow Browser Mod to work again.
+        <ha-icon
+          icon="mdi:gesture-tap"
+          style="color: var(--warning-color);"
+        ></ha-icon>
+        symbol at the bottom right corner of the screen, please tap or click
+        anywhere on the page. This should allow Browser Mod to work again.
       </ha-alert>
     `;
   }

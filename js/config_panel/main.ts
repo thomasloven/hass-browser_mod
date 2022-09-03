@@ -31,6 +31,12 @@ loadConfigDashboard().then(() => {
                 .narrow=${this.narrow}
               ></ha-menu-button>
               <div main-title>Browser Mod Settings</div>
+              <a
+                href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
+                target="_blank"
+              >
+                <ha-icon class="icon" .icon=${"mdi:help"}></ha-icon>
+              </a>
             </app-toolbar>
           </app-header>
 
@@ -63,6 +69,10 @@ loadConfigDashboard().then(() => {
           }
           ha-config-section {
             padding: 16px 0;
+          }
+          a {
+            color: var(--primary-text-color);
+            text-decoration: none;
           }
         `,
       ];

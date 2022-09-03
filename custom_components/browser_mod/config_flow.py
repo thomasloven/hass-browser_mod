@@ -14,5 +14,4 @@ class BrowserModConfigFlow(config_entries.ConfigFlow):
     async def async_step_user(self, user_input=None):
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
-        _LOGGER.error("Running async_create_entry")
         return self.async_create_entry(title="Browser Mod", data={})

@@ -82,111 +82,103 @@ class BrowserModFrontendSettingsCard extends LitElement {
             DEFAULT.
           </p>
 
-          <div class="separator"></div>
+          <ha-expansion-panel
+            .header=${"Title template"}
+            .secondary=${"Jinja template for the browser window/tab title"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"titleTemplate"}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
 
-          <ha-settings-row>
-            <span slot="heading">Title template</span>
-            <span slot="description">
-              Jinja template for the browser window/tab title
-            </span>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"titleTemplate"}
-          ></browser-mod-settings-table>
+          <ha-expansion-panel
+            .header=${"Favicon template"}
+            .secondary=${"Jinja template for the browser favicon"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"faviconTemplate"}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
 
-          <div class="separator"></div>
+          <ha-expansion-panel
+            .header=${"Hide sidebar"}
+            .secondary=${"Completely remove the sidebar from all panels"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"hideSidebar"}
+              .settingSelector=${{ boolean: {}, label: "Hide sidebar" }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
 
-          <ha-settings-row>
-            <span slot="heading">Favicon template</span>
-            <span slot="description">
-              Jinja template for the browser favicon
-            </span>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"faviconTemplate"}
-          ></browser-mod-settings-table>
+          <ha-expansion-panel
+            .header=${"Hide header"}
+            .secondary=${"Completely remove the header from all panels"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"hideHeader"}
+              .settingSelector=${{ boolean: {}, label: "Hide header" }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
 
-          <div class="separator"></div>
+          <ha-expansion-panel
+            .header=${"Default dashboard"}
+            .secondary=${`The dashboard that is showed when navigating to ${location.origin}`}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"defaultPanel"}
+              .settingSelector=${dashboardSelector}
+              .default=${"lovelace"}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
 
-          <ha-settings-row>
-            <span slot="heading">Hide sidebar</span>
-            <span slot="description">
-              Completely remove the sidebar from all panels
-            </span>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"hideSidebar"}
-            .settingSelector=${{ boolean: {}, label: "Hide sidebar" }}
-          ></browser-mod-settings-table>
+          <ha-expansion-panel
+            .header=${"Sidebar order"}
+            .secondary=${"Order and visibility of sidebar items."}
+            leftChevron
+          >
+            <ha-settings-row>
+              <ol slot="heading">
+                <li>Click EDIT</li>
+                <li>Set up the sidebar as you want it</li>
+                <li>Do NOT click DONE</li>
+                <li>Add a new setting or edit an old one</li>
+                <li>Click RESTORE</li>
+              </ol>
+              <mwc-button @click=${() => this.toggleEditSidebar()}>
+                ${this._editSidebar ? "Restore" : "Edit"}
+              </mwc-button>
+            </ha-settings-row>
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"sidebarPanelOrder"}
+              .settingSelector=${{
+                plaintext: "Press OK to store the current sidebar order",
+              }}
+              .default=${"lovelace"}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
 
-          <div class="separator"></div>
-
-          <ha-settings-row>
-            <span slot="heading">Hide header</span>
-            <span slot="description">
-              Completely remove the header from all panels
-            </span>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"hideHeader"}
-            .settingSelector=${{ boolean: {}, label: "Hide header" }}
-          ></browser-mod-settings-table>
-
-          <div class="separator"></div>
-
-          <ha-settings-row>
-            <span slot="heading">Default dashboard</span>
-            <span slot="description">
-              The dashboard that is showed when navigating to
-              ${location.origin}/
-            </span>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"defaultPanel"}
-            .settingSelector=${dashboardSelector}
-            .default=${"lovelace"}
-          ></browser-mod-settings-table>
-
-          <div class="separator"></div>
-
-          <ha-settings-row>
-            <span slot="heading">Sidebar order</span>
-            <span slot="description">
-              Order and visibility of sidebar items. <br />Click EDIT and set
-              the sidebar up as you want. Then save the settings and finally
-              click RESTORE.
-            </span>
-            <mwc-button @click=${() => this.toggleEditSidebar()}>
-              ${this._editSidebar ? "Restore" : "Edit"}
-            </mwc-button>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"sidebarPanelOrder"}
-            .settingSelector=${{
-              plaintext: "Press OK to store the current sidebar order",
-            }}
-            .default=${"lovelace"}
-          ></browser-mod-settings-table>
-
-          <div class="separator"></div>
-
-          <ha-settings-row>
-            <span slot="heading">Sidebar title</span>
-            <span slot="description">
-              The title at the top of the sidebar
-            </span>
-          </ha-settings-row>
-          <browser-mod-settings-table
-            .hass=${this.hass}
-            .settingKey=${"sidebarTitle"}
-            .settingSelector=${{ text: {} }}
-          ></browser-mod-settings-table>
+          <ha-expansion-panel
+            .header=${"Sidebar title"}
+            .secondary=${"The title at the top of the sidebar"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"sidebarTitle"}
+              .settingSelector=${{ text: {} }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
         </div>
       </ha-card>
     `;
