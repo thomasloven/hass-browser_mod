@@ -21,7 +21,8 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 
 # Installation instructions
 
-- **First make sure you have completely removed any installation of Browser Mod 1**
+- **First make sure you have completely removed any installation of Browser Mod 1** \
+  I.e. remove `browser_mod:` from your configuration.yaml and delete the integration from the integrations page.
 
 - Either
 
@@ -94,14 +95,41 @@ type: custom:browser-player
 
 # FAQ
 
+
 ### **Why doesn't ANYTHING that used to work with Browser Mod 1.0 work with Browser Mod 2.0?**
 
 Browser Mod 2.0 has been rewritten ENTIRELY from the ground up. This allows it to be more stable and less resource intensive. At the same time I took the opportunity to rename a lot of things in ways that are more consistent with Home Assistant nomenclature.
 
 In short, things are hopefully much easier now for new users of Browser Mod at the unfortunate cost of a one-time inconvenience for veteran expert users such as yourself.
 
+
 ### **Why does my Browser ID keep changing?**
 There's just no way around this. I've used every trick in the book and invented a handful of new ones in order to save the Browser ID as far as possible. It should be much better in Browser Mod 2.0 than earlier, but it's still not perfect. At least it's easy to change it back now...
+
+
+### **How do I update a popup from the Browser mod 1.5?**
+If you have used `fire-dom-event` it's really simple. Just change
+
+```yaml
+action: fire-dom-event
+browser_mod:
+  command: popup
+  title: My title
+  card:
+    type: ...etc...
+```
+
+to
+
+```yaml
+action: fire-dom-event
+browser_mod:
+  service: browser_mod.popup
+  data:
+    title: My title
+    content:
+      type: ...etc...
+```
 
 ---
 
