@@ -95,6 +95,12 @@ export const ServicesMixin = (SuperClass) => {
     }
 
     async _service_action({ service, data }) {
+      if (!service) {
+        console.error(
+          "Browser Mod: Service parameter not specified in service call."
+        );
+        return;
+      }
       let _service: String = service;
       if (
         (!_service.startsWith("browser_mod.") && _service.includes(".")) ||
