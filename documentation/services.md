@@ -189,7 +189,7 @@ data:
 The default value for `style` is as follows:
 
 ```yaml
-style:
+style: |
   --popup-min-width: 400px;
   --popup-max-width: 600px;
   --popup-border-width: var(--ha-card-border-width, 2px);
