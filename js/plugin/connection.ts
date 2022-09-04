@@ -95,6 +95,10 @@ export const ConnectionMixin = (SuperClass) => {
       return this.browsers?.[this.browserID] !== undefined;
     }
 
+    get browser_locked() {
+      return this.browsers?.[this.browserID].locked;
+    }
+
     set registered(reg) {
       (async () => {
         if (reg) {

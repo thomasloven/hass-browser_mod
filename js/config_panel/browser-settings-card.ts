@@ -65,6 +65,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <ha-switch
               .checked=${window.browser_mod?.registered}
               @change=${this.toggleRegister}
+              .disabled=${window.browser_mod?.browser_locked}
             ></ha-switch>
           </ha-settings-row>
 
@@ -76,6 +77,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <ha-textfield
               .value=${window.browser_mod?.browserID}
               @change=${this.changeBrowserID}
+              .disabled=${window.browser_mod?.browser_locked}
             ></ha-textfield>
           </ha-settings-row>
 
@@ -91,6 +93,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                   <ha-switch
                     .checked=${window.browser_mod?.cameraEnabled}
                     @change=${this.toggleCameraEnabled}
+                    .disabled=${window.browser_mod?.browser_locked}
                   ></ha-switch>
                 </ha-settings-row>
                 ${window.browser_mod?.cameraError

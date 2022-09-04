@@ -35,6 +35,19 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     );
   }
 
+  toggle_lock_browser(ev) {
+    const browserID = ev.currentTarget.browserID;
+    const browser = window.browser_mod.browsers[browserID];
+    window.browser_mod.connection.sendMessage({
+      type: "browser_mod/register",
+      browserID,
+      data: {
+        ...browser,
+        locked: !browser.locked,
+      },
+    });
+  }
+
   register_cast() {
     window.browser_mod.connection.sendMessage({
       type: "browser_mod/register",
@@ -66,6 +79,14 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                     </a>
                   `
                 : ""}
+              <ha-icon-button
+                .browserID=${d}
+                @click=${this.toggle_lock_browser}
+              >
+                <ha-icon
+                  .icon=${browser.locked ? "mdi:lock" : "mdi:lock-open-variant"}
+                ></ha-icon>
+              </ha-icon-button>
               <ha-icon-button .browserID=${d} @click=${this.unregister_browser}>
                 <ha-icon .icon=${"mdi:delete"}></ha-icon>
               </ha-icon-button>

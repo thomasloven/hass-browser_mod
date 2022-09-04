@@ -35,6 +35,8 @@ If your device has a camera, this will allow it to be forwarded as a `camera` en
 
 This section shows all currently registered _Browsers_ and allows you to unregister them. This is useful e.g. if a `BrowserID` has changed or if you do not have access to a device anymore.
 
+You can also lock browsers so they cannot be unregistered by a non-admin user.
+
 ### Register CAST browser
 
 If you are using [Home Assistant Cast](https://www.home-assistant.io/integrations/cast/#home-assistant-cast) to display a lovelace view on a Chromecast device it will get a BrowserID of "`CAST`". Since you can't access the Browser Mod config panel from the device, clicking this button will register the `CAST` browser. Most Browser Mod services will work under Home Assistant Cast.
