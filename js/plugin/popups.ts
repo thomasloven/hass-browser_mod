@@ -37,6 +37,7 @@ class BrowserModPopup extends LitElement {
       );
       this._autocloseListener = undefined;
     }
+    this._actions?.dismiss_action?.();
   }
 
   openDialog() {
@@ -48,7 +49,10 @@ class BrowserModPopup extends LitElement {
         const ellapsed = new Date().getTime() - this._timeoutStart;
         const progress = (ellapsed / this.timeout) * 100;
         this.style.setProperty("--progress", `${progress}%`);
-        if (ellapsed >= this.timeout) this._timeout();
+        if (ellapsed >= this.timeout) {
+          clearInterval(this._timeoutTimer);
+          this._timeout();
+        }
       }, 10);
     }
     this._autocloseListener = undefined;
@@ -138,23 +142,23 @@ class BrowserModPopup extends LitElement {
     this._autoclose = autoclose;
   }
 
+  async do_close() {
+    await this.dialog?.close();
+  }
+
   async _primary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.dialog?.close();
+    await this.do_close();
     this._actions?.right_button_action?.(this._formdata);
   }
   async _secondary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.dialog?.close();
+    await this.do_close();
     this._actions?.left_button_action?.(this._formdata);
-  }
-  async _dismiss(ev?) {
-    this.dialog?.close();
-    this._actions?.dismiss_action?.();
   }
   async _timeout() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    this.dialog?.close();
+    await this.do_close();
     this._actions?.timeout_action?.();
   }
 
@@ -165,7 +169,6 @@ class BrowserModPopup extends LitElement {
       <ha-dialog
         open
         @closed=${this.closeDialog}
-        @closing=${this._dismiss}
         .heading=${this.title !== undefined}
         ?hideActions=${this.actions === undefined}
         .scrimClickAction=${this.dismissable ? "close" : ""}
