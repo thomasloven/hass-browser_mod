@@ -253,7 +253,7 @@ data:
 
 This is probably most useful as part of a `browser_mod.sequence` call.
 
-## `browsermod.console`
+## `browser_mod.console`
 
 Print a text to the browsers javascript console.
 
@@ -268,7 +268,7 @@ data:
 |---|---|
 |`message` | Text to print. |
 
-## `browsermod.javascript`
+## `browser_mod.javascript`
 
 Run arbitrary javascript code in the browser.
 
