@@ -327,4 +327,10 @@ data:
 
 Only use this one if you know what you're doing.
 
+Some helpful functions that are available:
+- `hass` - The `hass` frontend object
+- `data` - Any data sent to the service (also form data from popups)
+- `service(service, data)` - Make a Browser Mod service call
+- `log(message)` - Print `message` to the Home Assistant log
+- `lovelace_reload()` - Reload lovelace configuration
 The `hass` frontend object is available as global variable `hass`.

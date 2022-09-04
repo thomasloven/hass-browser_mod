@@ -165,12 +165,45 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "javascript":
+          // Reload Lovelace function
+          const lovelace_reload = async () => {
+            let root = await selectTree(
+              document,
+              "home-assistant$home-assistant-main$ha-panel-lovelace$hui-root"
+            );
+            if (!root)
+              root = await selectTree(
+                document,
+                "hc-main $ hc-lovelace $ hui-view"
+              );
+            if (!root)
+              root = await selectTree(
+                document,
+                "hc-main $ hc-lovelace $ hui-panel-view"
+              );
+
+            if (root) root.dispatchEvent(new CustomEvent("config-refresh"));
+
+            console.log(root);
+          };
+
+          const log = async (message) =>
+            this.connection.sendMessage({ type: "browser_mod/log", message });
+
           const code = `
           "use strict";
           ${data.code}
           `;
-          const fn = new Function("hass", "data", code);
-          fn(this.hass, data);
+
+          const fn = new Function(
+            "hass",
+            "data",
+            "service",
+            "log",
+            "lovelace_reload",
+            code
+          );
+          fn(this.hass, data, window.browser_mod.service, log, lovelace_reload);
           break;
       }
     }
