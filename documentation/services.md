@@ -216,6 +216,26 @@ data:
   [browser_id: <Browser IDs>]
 ```
 
+## `browser_mod.notification`
+
+Show a short notification.
+
+```yaml
+service: browser_mod.notification
+data:
+  message: <string>
+  [duration: <number>]
+  [action_text: <string>]
+  [action: <service call>]
+```
+
+|||
+|---|---|
+|`message`| The text to display.|
+|`duration` | Number of milliseconds until the message closes. (Default `3000`)|
+|`action_text`| Text of optional action button.|
+|`action` | Action to perform when action button is clicked.|
+
 ## `browser_mod.sequence`
 
 Perform several services sequentially.

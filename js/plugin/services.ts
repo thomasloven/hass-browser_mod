@@ -1,69 +1,7 @@
+import { hass_base_el, selectTree } from "../helpers";
+
 export const ServicesMixin = (SuperClass) => {
   return class ServicesMixinClass extends SuperClass {
-    /*
-      Structure of service call:
-        service: <service>
-        [data: <data>]
-
-      Sequence:
-        service: browser_mod.sequence
-        data:
-          sequence:
-            - <service call>
-            - <service call>
-            - ...
-
-      Delay
-        service: browser_mod.delay
-        data:
-          time: <number>
-
-      Popup:
-        service: browser_mod.popup
-        data:
-          [title: <string>]
-          [content: <string | Lovelace Card Configuration>]
-          [size: <NORMAL/wide/fullscreen>]
-          [right_button: <string>]
-          [right_button_action: <service call>]
-          [left_button: <string>]
-          [left_button_action: <service call>]
-          [dismissable: <TRUE/false>]
-          [dismiss_action: <service call>]
-          [autoclose: <true/FALSE>]
-          [timeout: <number>]
-          [timeout_action: <service call>]
-          [style: <string>]
-
-      More-info:
-        service: browser_mod.more_info
-        data:
-          entity: <string>
-          [large: <true/FALSE>]
-          [ignore_popup_card: <true/FALSE>]
-
-      Close popup:
-        service: browser_mod.close_popup
-
-      Navigate to path:
-        service: browser_mod.navigate
-        data:
-          path: <string>
-
-      Refresh browser:
-        service: browser_mod.refresh
-
-      Browser console print:
-        service: browser_mod.console
-        data:
-          message: <string>
-
-      Run javascript:
-        service: browser_mod.javascript
-        data:
-          code: <string>
-    */
-
     constructor() {
       super();
       const cmds = [
@@ -72,6 +10,7 @@ export const ServicesMixin = (SuperClass) => {
         "popup",
         "more_info",
         "close_popup",
+        "notification",
         "navigate",
         "refresh",
         "console",
@@ -144,6 +83,38 @@ export const ServicesMixin = (SuperClass) => {
             }
           }
           this.showPopup(title, content, d);
+          break;
+
+        case "notification":
+          {
+            const { message, action_text, action, duration, dismissable } =
+              data;
+            let act = undefined;
+            if (action && action_text) {
+              act = {
+                text: action_text,
+                action: (ext_data?) => {
+                  const { service, data } = action;
+                  this._service_action({
+                    service,
+                    data: { ...data, ...ext_data },
+                  });
+                },
+              };
+            }
+
+            const base = await hass_base_el();
+            base.dispatchEvent(
+              new CustomEvent("hass-notification", {
+                detail: {
+                  message,
+                  action: act,
+                  duration,
+                  dismissable,
+                },
+              })
+            );
+          }
           break;
 
         case "close_popup":

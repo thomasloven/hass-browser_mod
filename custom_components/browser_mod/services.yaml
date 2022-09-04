@@ -167,6 +167,42 @@ close_popup:
         integration: "browser_mod"
       multiple: true
 
+notification:
+  description: "Display a short notification"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    message:
+      name: Message
+      description: "Message to display"
+      required: true
+      selector:
+        text:
+    duration:
+      name: Auto close timeout
+      description: Time before closing (ms)
+      selector:
+        number:
+          mode: box
+    action_text:
+      name: Action button text
+      description: Text of optional action button
+      selector:
+        text:
+    action:
+      name: Button action
+      description: Action to perform when the action button is pressed
+      selector:
+        object:
+
 navigate:
   description: "Navigate browser to a different page"
   target:
