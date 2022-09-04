@@ -305,8 +305,6 @@ class BrowserModPopup extends LitElement {
         --ha-card-box-shadow: none;
       }
       :host([actions]) .content {
-        xborder-bottom: 2px solid
-          var(--popup-border-color, var(--divider-color));
         --footer-height: 54px;
       }
       :host([wide]) .content {
@@ -327,6 +325,7 @@ class BrowserModPopup extends LitElement {
         ha-dialog {
           --mdc-dialog-min-width: 100vw;
           --mdc-dialog-max-width: 100vw;
+          --mdc-dialog-min-height: 100%;
           --mdc-shape-medium: 0px;
         }
         :host([wide]) .content {
