@@ -13,6 +13,7 @@ export const ServicesMixin = (SuperClass) => {
         "notification",
         "navigate",
         "refresh",
+        "set_theme",
         "console",
         "javascript",
       ];
@@ -127,6 +128,31 @@ export const ServicesMixin = (SuperClass) => {
 
         case "refresh":
           window.location.href = window.location.href;
+          break;
+
+        case "set_theme":
+          {
+            const detail = { ...data };
+            if (detail.theme === "auto") detail.theme = undefined;
+            if (detail.dark === "auto") detail.dark = undefined;
+            if (detail.dark === "light") detail.dark = false;
+            if (detail.dark === "dark") detail.dark = true;
+            if (detail.primaryColor && Array.isArray(detail.primaryColor)) {
+              const [r, g, b] = detail.primaryColor;
+              detail.primaryColor =
+                "#" +
+                ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+            if (detail.accentColor && Array.isArray(detail.accentColor)) {
+              const [r, g, b] = detail.accentColor;
+              detail.accentColor =
+                "#" +
+                ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            }
+
+            const base = await hass_base_el();
+            base.dispatchEvent(new CustomEvent("settheme", { detail }));
+          }
           break;
 
         case "console":

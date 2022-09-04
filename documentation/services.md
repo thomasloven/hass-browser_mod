@@ -236,6 +236,28 @@ data:
 |`action_text`| Text of optional action button.|
 |`action` | Action to perform when action button is clicked.|
 
+## `browser_mod.set_theme`
+
+Set the theme.
+
+```yaml
+service: browser_mod.set_theme
+data:
+  [theme: <string>]
+  [dark: <AUTO/dark/light>]
+  [primaryColor: <RGB color>]
+  [accentColor: <RGB color>]
+```
+
+`<RGB color>` is either a list of three RGB values 0-255 (ex: `[0, 128, 128]`) or a six digit hex color value (ex: `"#800080"`).
+
+|||
+|---|---|
+|`theme`| Theme to apply. Use `"auto"` to set as Backend Specified.|
+|`dark`| Whether to use dark or light mode.|
+|`primaryColor`| Theme primary color.|
+|`accentColor`| Theme accent color.|
+
 ## `browser_mod.sequence`
 
 Perform several services sequentially.

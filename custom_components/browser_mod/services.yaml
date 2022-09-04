@@ -235,6 +235,44 @@ refresh:
         integration: "browser_mod"
       multiple: true
 
+set_theme:
+  description: "Change the current theme"
+  target:
+    device:
+      integration: "browser_mod"
+      multiple: true
+    entity:
+      integration: "browser_mod_none"
+    area:
+      device:
+        integration: "browser_mod"
+      multiple: true
+  fields:
+    theme:
+      name: Theme
+      description: "Name of theme or 'auto'"
+      selector:
+        text:
+    dark:
+      name: Mode
+      description: "Dark/light mode"
+      selector:
+        select:
+          options:
+            - auto
+            - light
+            - dark
+    primaryColor:
+      name: Primary Color
+      description: "Primary theme color"
+      selector:
+        color_rgb:
+    accentColor:
+      name: Accent Color
+      description: "Accent theme color"
+      selector:
+        color_rgb:
+
 console:
   description: "Print text to browser console"
   target:
