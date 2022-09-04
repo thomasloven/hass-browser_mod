@@ -45,13 +45,17 @@ loadConfigDashboard().then(() => {
               .hass=${this.hass}
             ></browser-mod-browser-settings-card>
 
-            <browser-mod-registered-browsers-card
-              .hass=${this.hass}
-            ></browser-mod-registered-browsers-card>
+            ${this.hass.user?.is_admin
+              ? html`
+                  <browser-mod-registered-browsers-card
+                    .hass=${this.hass}
+                  ></browser-mod-registered-browsers-card>
 
-            <browser-mod-frontend-settings-card
-              .hass=${this.hass}
-            ></browser-mod-frontend-settings-card>
+                  <browser-mod-frontend-settings-card
+                    .hass=${this.hass}
+                  ></browser-mod-frontend-settings-card>
+                `
+              : ""}
           </ha-config-section>
         </ha-app-layout>
       `;

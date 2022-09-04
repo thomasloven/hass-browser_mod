@@ -44,7 +44,7 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 
 # Browser Mod Configuration Panel
 
-When you're logged in as an administrator you should see a new panel called _Browser Mod_ in the sidebar. This is where you controll any Browser Mod settings.
+After installing Browser Mod you should see a new panel called _Browser Mod_ in the sidebar. This is where you controll any Browser Mod settings.
 
 ### See [Configuration Panel](documentation/configuration-panel.md) for more info
 \

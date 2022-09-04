@@ -26,7 +26,7 @@ async def async_setup_view(hass):
         sidebar_title="Browser Mod",
         sidebar_icon="mdi:server",
         frontend_url_path="browser-mod",
-        require_admin=True,
+        require_admin=False,
         config={
             "_panel_custom": {
                 "name": "browser-mod-panel",
