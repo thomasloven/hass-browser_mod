@@ -122,13 +122,17 @@ export const AutoSettingsMixin = (SuperClass) => {
       }
     }
 
-    _updateSidebarTitle({ result }) {
-      selectTree(
-        document,
-        "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar $ .title"
-      ).then((el) => {
-        if (el) (el as HTMLElement).innerHTML = result;
-      });
+    async _updateSidebarTitle({ result }) {
+      let sidebar = undefined;
+      let cnt = 0;
+      while (!sidebar && cnt++ < 5) {
+        sidebar = await selectTree(
+          document,
+          "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar $ .title"
+        );
+        if (!sidebar) await new Promise((r) => setTimeout(r, 500));
+      }
+      if (sidebar) sidebar.innerHTML = result;
     }
 
     get _currentFavicon() {

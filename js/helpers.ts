@@ -166,7 +166,7 @@ export function runOnce(restart = false) {
 
 export async function waitRepeat(fn, times, delay) {
   while (times--) {
-    fn();
+    await fn();
     await new Promise((r) => setTimeout(r, delay));
   }
 }
