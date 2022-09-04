@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property, query } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
 import { loadHaForm } from "../helpers";
@@ -66,6 +66,22 @@ class BrowserModPopup extends LitElement {
     }
   }
 
+  async _build_card(config) {
+    const helpers = await window.loadCardHelpers();
+    const card = await helpers.createCardElement(config);
+    card.hass = window.browser_mod.hass;
+    provideHass(card);
+    this.content = card;
+    if (!customElements.get(card.localName)) {
+      customElements.whenDefined(card.localName).then(() => {
+        this._build_card(config);
+      });
+    }
+    card.addEventListener("ll-rebuild", () => {
+      this._build_card(config);
+    });
+  }
+
   async setupDialog(
     title,
     content,
@@ -114,11 +130,7 @@ class BrowserModPopup extends LitElement {
     } else if (content && typeof content === "object") {
       // Create a card from config in content
       this.card = true;
-      const helpers = await window.loadCardHelpers();
-      const card = await helpers.createCardElement(content);
-      card.hass = window.browser_mod.hass;
-      provideHass(card);
-      this.content = card;
+      this._build_card(content);
     } else {
       // Basic HTML content
       this.content = unsafeHTML(content);
