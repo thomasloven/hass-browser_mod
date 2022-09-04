@@ -102,6 +102,10 @@ class BrowserModPopup extends LitElement {
         this._formdata = { ...ev.detail.value };
         form.data = this._formdata;
       });
+      form.addEventListener("closing", (ev) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+      });
       this.content = form;
     } else if (content && typeof content === "object") {
       // Create a card from config in content
