@@ -82,6 +82,13 @@ export const loadLoadCardHelpers = async () => {
     },
   ]);
   await routes?.routes?.a?.load?.();
+  // Load resources
+  try {
+    const llPanel = document.createElement("ha-panel-lovelace");
+    (llPanel as any).hass = await hass();
+    (llPanel as any).panel = { config: { mode: "yaml" } };
+    await (llPanel as any)._fetchConfig(false);
+  } catch (e) {}
 };
 
 export const loadHaForm = async () => {
