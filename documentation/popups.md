@@ -159,3 +159,40 @@ data:
 ```
 
 ![Screenshot of a popup allowing the user to choose which rooms to vacuum](https://user-images.githubusercontent.com/1299821/182713714-ef4149b1-217a-4d41-9737-714f5320c25c.png)
+
+
+## Styling popups
+
+The default value for the `style` parameter is as follows:
+
+```yaml
+style: |
+  --popup-min-width: 400px;
+  --popup-max-width: 600px;
+  --popup-border-width: var(--ha-card-border-width, 2px);
+  --popup-border-color: var(--ha-card-border-color, var(--divider-color, #eee));
+  --popup-border-radius: 28px;
+  --popup-background-color: var(--ha-card-background, var(--card-background-color, white));
+  --popup-padding-x: 0px;
+  --popup-padding-y: 0px;
+```
+
+The same variables can also be set by a theme.
+
+Those variables should be enough for mostly everything, really. Try it.
+
+Otherwise, [card-mod](https://github.com/thomasloven/lovelace-card-mod) can also be used to style popups by adding a `card_mod:` parameter to the service call:
+
+```yaml
+service: browser_mod.popup
+data:
+  title: Teal background
+  content: Where did the dashboard go?
+  card_mod:
+    style:
+      ha-dialog$: |
+        div.mdc-dialog div.mdc-dialog__scrim {
+          background: rgba(0, 128, 128, 0.9);
+        }
+```
+Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme.

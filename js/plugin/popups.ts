@@ -25,6 +25,7 @@ class BrowserModPopup extends LitElement {
   _timeoutTimer;
   _resolveClosed;
   _formdata;
+  card_mod;
 
   async closeDialog() {
     this.open = false;
@@ -68,7 +69,8 @@ class BrowserModPopup extends LitElement {
     customElements.whenDefined("card-mod").then(() => {
       (customElements.get("card-mod") as any)?.applyToElement?.(
         this,
-        "more-info"
+        "more-info",
+        this.card_mod?.style ?? ""
       );
     });
   }
@@ -104,11 +106,13 @@ class BrowserModPopup extends LitElement {
       size = undefined,
       style = undefined,
       autoclose = false,
+      card_mod = undefined,
     } = {}
   ) {
     this._formdata = undefined;
     this.title = title;
     this.card = undefined;
+    this.card_mod = card_mod;
     if (content && content instanceof HTMLElement) {
       this.content = content;
     } else if (content && Array.isArray(content)) {

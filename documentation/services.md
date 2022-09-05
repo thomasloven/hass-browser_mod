@@ -186,22 +186,6 @@ data:
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
 | `style` | CSS styles to apply to the dialog. |
 
-The default value for `style` is as follows:
-
-```yaml
-style: |
-  --popup-min-width: 400px;
-  --popup-max-width: 600px;
-  --popup-border-width: var(--ha-card-border-width, 2px);
-  --popup-border-color: var(--ha-card-border-color, var(--divider-color, #eee));
-  --popup-border-radius: 28px;
-  --popup-background-color: var(--ha-card-background, var(--card-background-color, white));
-  --popup-padding-x: 0px;
-  --popup-padding-y: 0px;
-```
-
-The same variables can also be set by a theme.
-
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
