@@ -39,6 +39,9 @@ class BrowserModPopup extends LitElement {
       this._autocloseListener = undefined;
     }
     this._actions?.dismiss_action?.();
+    if ((this as any)._cardMod?.[0]) {
+      (this as any)._cardMod[0].styles = "";
+    }
   }
 
   openDialog() {
