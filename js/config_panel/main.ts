@@ -35,7 +35,7 @@ loadConfigDashboard().then(() => {
                 href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
                 target="_blank"
               >
-                <ha-icon class="icon" .icon=${"mdi:help"}></ha-icon>
+                <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
               </a>
             </app-toolbar>
           </app-header>
