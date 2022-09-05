@@ -4,9 +4,29 @@ import { property, state } from "lit/decorators.js";
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
 
+  @property() _entity_registry?: any[];
+
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.requestUpdate()
+    );
+    this._fetch_entity_registry();
+  }
+
+  async _fetch_entity_registry() {
+    if (this._entity_registry) return;
+
+    this._entity_registry = await this.hass.callWS({
+      type: "config/device_registry/list",
+    });
+  }
+
+  _find_entity(browserID) {
+    if (!this._entity_registry) return undefined;
+    return this._entity_registry.find(
+      (v) =>
+        JSON.stringify(v?.identifiers?.[0]) ===
+        JSON.stringify(["browser_mod", browserID])
     );
   }
 
@@ -61,8 +81,11 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         <div class="card-content">
           ${Object.keys(window.browser_mod.browsers).map((d) => {
             const browser = window.browser_mod.browsers[d];
+            const device = this._find_entity(d);
             return html` <ha-settings-row>
-              <span slot="heading"> ${d} </span>
+              <span slot="heading">
+                ${d} ${device?.name_by_user ? `(${device.name_by_user})` : ""}
+              </span>
               <span slot="description">
                 Last connected:
                 <ha-relative-time
@@ -70,9 +93,9 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                   .datetime=${browser.last_seen}
                 ></ha-relative-time>
               </span>
-              ${browser.meta && browser.meta !== "default"
+              ${device
                 ? html`
-                    <a href="config/devices/device/${browser.meta}">
+                    <a href="config/devices/device/${device.id}">
                       <ha-icon-button>
                         <ha-icon .icon=${"mdi:devices"}></ha-icon>
                       </ha-icon-button>
