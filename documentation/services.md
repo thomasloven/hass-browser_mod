@@ -302,7 +302,7 @@ data:
 Run arbitrary javascript code in the browser.
 
 ```yaml
-service: browser_mod.console
+service: browser_mod.javascript
 data:
   code: <string>
   [browser_id: <Browser IDs>]
