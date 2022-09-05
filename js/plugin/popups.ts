@@ -64,6 +64,13 @@ class BrowserModPopup extends LitElement {
         { once: true }
       );
     }
+
+    customElements.whenDefined("card-mod").then(() => {
+      (customElements.get("card-mod") as any)?.applyToElement?.(
+        this,
+        "more-info"
+      );
+    });
   }
 
   async _build_card(config) {
@@ -248,6 +255,9 @@ class BrowserModPopup extends LitElement {
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
         --mdc-dialog-content-ink-color: var(--primary-text-color);
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+        --padding-x: var(--popup-padding-x 24px);
+        --padding-y: var(--popup-padding-y, 20px);
         --justify-action-buttons: space-between;
 
         --dialog-box-shadow: 0px 0px 0px
@@ -300,10 +310,8 @@ class BrowserModPopup extends LitElement {
         cursor: default;
       }
       .content {
-        --padding-x: 24px;
-        --padding-y: 20px;
         margin: -20px -24px;
-        padding: var(--padding-y) var(--padding-y);
+        padding: var(--padding-y) var(--padding-x);
         --header-height: 64px;
         --footer-height: 0px;
       }
@@ -312,8 +320,8 @@ class BrowserModPopup extends LitElement {
       }
 
       :host([card]) .content {
-        --padding-x: 0px;
-        --padding-y: 0px;
+        --padding-x: var(--popup-padding-x, 0px);
+        --padding-y: var(--popup-padding-y, 0px);
         --ha-card-box-shadow: none;
       }
       :host([actions]) .content {

@@ -194,10 +194,14 @@ style: |
   --popup-max-width: 600px;
   --popup-border-width: var(--ha-card-border-width, 2px);
   --popup-border-color: var(--ha-card-border-color, var(--divider-color, #eee));
-  --popup-border-radius: 8px;
+  --popup-border-radius: 28px;
   --popup-background-color: var(--ha-card-background, var(--card-background-color, white));
   --popup-header-background-color: var(--popup-background-color, var(--sidebar-background-color));
+  --popup-padding-x: 0px;
+  --popup-padding-y: 0px;
 ```
+
+The same variables can also be set by a theme.
 
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.
 
