@@ -183,8 +183,6 @@ export const ServicesMixin = (SuperClass) => {
               );
 
             if (root) root.dispatchEvent(new CustomEvent("config-refresh"));
-
-            console.log(root);
           };
 
           const log = async (message) =>
