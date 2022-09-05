@@ -196,7 +196,6 @@ style: |
   --popup-border-color: var(--ha-card-border-color, var(--divider-color, #eee));
   --popup-border-radius: 28px;
   --popup-background-color: var(--ha-card-background, var(--card-background-color, white));
-  --popup-header-background-color: var(--popup-background-color, var(--sidebar-background-color));
   --popup-padding-x: 0px;
   --popup-padding-y: 0px;
 ```
