@@ -6,6 +6,8 @@ import "./browser-settings-card";
 import "./registered-browsers-card";
 import "./frontend-settings-card";
 
+import pjson from "../../package.json";
+
 const bmWindow = window as any;
 
 loadConfigDashboard().then(() => {
@@ -31,12 +33,15 @@ loadConfigDashboard().then(() => {
                 .narrow=${this.narrow}
               ></ha-menu-button>
               <div main-title>Browser Mod Settings</div>
-              <a
-                href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
-                target="_blank"
-              >
-                <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
-              </a>
+              <div>
+                (${pjson.version})
+                <a
+                  href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
+                  target="_blank"
+                >
+                  <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
+                </a>
+              </div>
             </app-toolbar>
           </app-header>
 

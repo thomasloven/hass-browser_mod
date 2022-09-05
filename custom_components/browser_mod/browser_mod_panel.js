@@ -362,7 +362,7 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
         display: flex;
         align-items: center;
       }
-    `}}e([ee()],he.prototype,"hass",void 0),e([te()],he.prototype,"_dashboards",void 0),e([te()],he.prototype,"_editSidebar",void 0),customElements.define("browser-mod-frontend-settings-card",he),(async()=>{var e,t,i,o,s,n,r,a,l,d,h,c,u,p,w;await customElements.whenDefined("partial-panel-resolver");const v=document.createElement("partial-panel-resolver").getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==v?void 0:v.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const g=document.createElement("ha-panel-config");await(null===(r=null===(n=null===(s=null===(o=null==g?void 0:g.routerOptions)||void 0===o?void 0:o.routes)||void 0===s?void 0:s.dashboard)||void 0===n?void 0:n.load)||void 0===r?void 0:r.call(n)),await(null===(h=null===(d=null===(l=null===(a=null==g?void 0:g.routerOptions)||void 0===a?void 0:a.routes)||void 0===l?void 0:l.cloud)||void 0===d?void 0:d.load)||void 0===h?void 0:h.call(d)),await(null===(w=null===(p=null===(u=null===(c=null==g?void 0:g.routerOptions)||void 0===c?void 0:c.routes)||void 0===u?void 0:u.entities)||void 0===p?void 0:p.load)||void 0===w?void 0:w.call(p)),await customElements.whenDefined("ha-config-dashboard")})().then((()=>{class t extends Z{firstUpdated(){window.addEventListener("browser-mod-config-update",(()=>this.requestUpdate()))}render(){var e;return window.browser_mod?U`
+    `}}e([ee()],he.prototype,"hass",void 0),e([te()],he.prototype,"_dashboards",void 0),e([te()],he.prototype,"_editSidebar",void 0),customElements.define("browser-mod-frontend-settings-card",he);var ce="2.1.1";(async()=>{var e,t,i,o,s,n,r,a,l,d,h,c,u,p,w;await customElements.whenDefined("partial-panel-resolver");const v=document.createElement("partial-panel-resolver").getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==v?void 0:v.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const g=document.createElement("ha-panel-config");await(null===(r=null===(n=null===(s=null===(o=null==g?void 0:g.routerOptions)||void 0===o?void 0:o.routes)||void 0===s?void 0:s.dashboard)||void 0===n?void 0:n.load)||void 0===r?void 0:r.call(n)),await(null===(h=null===(d=null===(l=null===(a=null==g?void 0:g.routerOptions)||void 0===a?void 0:a.routes)||void 0===l?void 0:l.cloud)||void 0===d?void 0:d.load)||void 0===h?void 0:h.call(d)),await(null===(w=null===(p=null===(u=null===(c=null==g?void 0:g.routerOptions)||void 0===c?void 0:c.routes)||void 0===u?void 0:u.entities)||void 0===p?void 0:p.load)||void 0===w?void 0:w.call(p)),await customElements.whenDefined("ha-config-dashboard")})().then((()=>{class t extends Z{firstUpdated(){window.addEventListener("browser-mod-config-update",(()=>this.requestUpdate()))}render(){var e;return window.browser_mod?U`
         <ha-app-layout>
           <app-header slot="header" fixed>
             <app-toolbar>
@@ -371,12 +371,15 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
                 .narrow=${this.narrow}
               ></ha-menu-button>
               <div main-title>Browser Mod Settings</div>
-              <a
-                href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
-                target="_blank"
-              >
-                <ha-icon class="icon" .icon=${"mdi:help"}></ha-icon>
-              </a>
+              <div>
+                (${ce})
+                <a
+                  href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
+                  target="_blank"
+                >
+                  <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
+                </a>
+              </div>
             </app-toolbar>
           </app-header>
 
