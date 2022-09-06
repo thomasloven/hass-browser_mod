@@ -172,15 +172,17 @@ class BrowserModBrowser:
         """The current websocket connections for this Browser."""
         return self._connections
 
-    def open_connection(self, connection, cid):
+    def open_connection(self, hass, connection, cid):
         """Add a websocket connection."""
         self._connections.append((connection, cid))
+        self.update(hass, {"connected": True})
 
-    def close_connection(self, connection):
+    def close_connection(self, hass, connection):
         """Close a websocket connection."""
         self._connections = list(
             filter(lambda v: v[0] != connection, self._connections)
         )
+        self.update(hass, {"connected": False})
 
 
 def getBrowser(hass, browserID, *, create=True):

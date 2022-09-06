@@ -41,6 +41,10 @@ class BrowserModEntity(CoordinatorEntity):
         }
 
     @property
+    def available(self):
+        return self._data.get("connected", False)
+
+    @property
     def name(self):
         return self._name
 

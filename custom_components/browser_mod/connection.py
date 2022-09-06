@@ -52,7 +52,7 @@ async def async_setup_connection(hass):
             store_listener()
             dev = getBrowser(hass, browserID, create=False)
             if dev:
-                dev.close_connection(connection)
+                dev.close_connection(hass, connection)
 
         connection.subscriptions[msg["id"]] = close_connection
         connection.send_result(msg["id"])
@@ -60,7 +60,7 @@ async def async_setup_connection(hass):
         if store.get_browser(browserID).registered:
             dev = getBrowser(hass, browserID)
             dev.update_settings(hass, store.get_browser(browserID).asdict())
-            dev.open_connection(connection, msg["id"])
+            dev.open_connection(hass, connection, msg["id"])
             await store.set_browser(
                 browserID,
                 last_seen=datetime.now(tz=timezone.utc).isoformat(),
