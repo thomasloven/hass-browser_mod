@@ -1,3 +1,4 @@
+import "./event-target-polyfill.js";
 import "./browser-player";
 
 import { ConnectionMixin } from "./connection";
