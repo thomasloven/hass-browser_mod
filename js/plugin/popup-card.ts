@@ -75,10 +75,10 @@ class PopupCard extends LitElement {
               bubbles: true,
               composed: true,
               cancelable: false,
-              detail: { entityId: "." },
+              detail: { entityId: "" },
             })
           ),
-        50
+        10
       );
     }
   }

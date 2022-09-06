@@ -169,7 +169,10 @@ class BrowserModPopup extends LitElement {
   }
 
   async do_close() {
+    const action = this._actions?.dismiss_action;
+    if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     await this.dialog?.close();
+    action?.(this._formdata);
   }
 
   async _primary() {
@@ -379,47 +382,49 @@ export const PopupMixin = (SuperClass) => {
       document.body.append(this._popupEl);
 
       this._popupEl.addEventListener("hass-more-info", async (ev) => {
+        ev.stopPropagation();
         const base = await hass_base_el();
-        console.log("More info", ev, base);
-        this._popupEl.closeDialog();
+        this._popupEl.do_close();
+        // this._popupEl.style.display = "none";
         base.dispatchEvent(ev);
       });
 
-      // const historyListener = async (ev) => {
-      //   const popupState = ev.state?.browserModPopup;
-      //   if (popupState) {
-      //     if (popupState.open) {
-      //       this._popupEl.setupDialog(...popupState.args);
-      //       this._popupEl.openDialog();
-      //     } else {
-      //       this._popupEl.closeDialog();
-      //     }
-      //   }
-      // };
-      // window.addEventListener("popstate", historyListener);
+      const historyListener = async (ev) => {
+        const popupState = ev.state?.browserModPopup;
+        if (popupState) {
+          if (!popupState.open) {
+            if (this._popupEl?.open && this._popupEl?.dismissable)
+              this._popupEl.do_close();
+          }
+        }
+      };
+      window.addEventListener("popstate", historyListener);
     }
 
     showPopup(...args) {
-      // if (history.state?.browserModPopup === undefined) {
-      //   history.replaceState(
-      //     {
-      //       browserModPopup: {
-      //         open: false,
-      //       },
-      //     },
-      //     ""
-      //   );
-      // }
-      // history.pushState(
-      //   {
-      //     browserModPopup: {
-      //       open: true,
-      //       args,
-      //     },
-      //   },
-      //   ""
-      // );
-      this._popupEl.setupDialog(...args).then(() => this._popupEl.openDialog());
+      (async () => {
+        if (this._popupEl.open) await this._popupEl.do_close();
+        if (history.state?.browserModPopup === undefined) {
+          history.replaceState(
+            {
+              browserModPopup: {
+                open: false,
+              },
+            },
+            ""
+          );
+        }
+        history.pushState(
+          {
+            browserModPopup: {
+              open: true,
+            },
+          },
+          ""
+        );
+        await this._popupEl.setupDialog(...args);
+        this._popupEl.openDialog();
+      })();
     }
 
     closePopup(...args) {
