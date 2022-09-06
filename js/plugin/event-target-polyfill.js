@@ -55,7 +55,6 @@ if (
   typeof root.EventTarget === "undefined" ||
   !isConstructor(root.EventTarget)
 ) {
-  console.log("Polyfill EventTarget");
   root.EventTarget = (function () {
     function EventTarget() {
       this.__listeners = new Map();

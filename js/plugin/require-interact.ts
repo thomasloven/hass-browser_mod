@@ -60,9 +60,9 @@ export const RequireInteractMixin = (SuperClass) => {
             video.pause();
           })
           .catch((e) => {
-            if (e.name === "AbortError") {
-              this._interactionResolve();
-            }
+            // if (e.name === "AbortError") {
+            // this._interactionResolve();
+            // }
           });
         video.pause();
       }
@@ -74,8 +74,15 @@ export const RequireInteractMixin = (SuperClass) => {
         },
         { once: true }
       );
+      window.addEventListener(
+        "touchstart",
+        () => {
+          this._interactionResolve();
+        },
+        { once: true }
+      );
 
-      // if (this.fully) this._interactionResolve();
+      if (this.fully) this._interactionResolve();
 
       await this.firstInteraction;
       interactSymbol.remove();
