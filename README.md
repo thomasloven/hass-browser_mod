@@ -39,7 +39,29 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 >
 > They appear when a browser which has an old version of Browser Mod cached tries to connect and should disappear once you have cleared all your caches properly.
 
+
+# Quickstart
+
+1. [Install browser mod](#installation-instructions)
+2. Thoroughly [clear your browser cache](https://github.com/thomasloven/hass-config/wiki/Clearing-your-browser-cache)
+3. Go to the Browser Mod panel in your sidebar
+4. Make sure the "Register" toggle is checked.\
+  **This is required in order to enable backend services to target this browser.**
+5. Go to Developer Tools -> Services [![Open your Home Assistant instance and show your service developer tools.](https://my.home-assistant.io/badges/developer_services.svg)](https://my.home-assistant.io/redirect/developer_services/)
+6. Select service "Browser Mod: popup (browser_mod.popup)"
+7. Check the "Title" checkbar and write something as a title
+8. Enter some text in the "Content" text box\
+  Not yaml or anything, just any text for now.
+9. Click "CALL SERVICE" \
+  The button is likely grayed out. That's a Home Assistant visual bug. Click it anyway.
+10. A popup dialog should now open on all your Registered Browsers.
+
+![Screenshot of a popup dialog according to the setup above](https://user-images.githubusercontent.com/1299821/188604118-ed2ad79c-0286-4392-b7be-cbc9c3f2ffd8.png)
+
+
+
 \
+&nbsp; \
 &nbsp;
 
 # Browser Mod Configuration Panel
