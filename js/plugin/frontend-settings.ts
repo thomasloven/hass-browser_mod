@@ -155,7 +155,11 @@ export const AutoSettingsMixin = (SuperClass) => {
     }
 
     async _hideHeader() {
-      if (this.settings.hideHeader !== true) return true;
+      if (
+        this.settings.hideHeader !== true &&
+        this.settings.hideSidebar !== true
+      )
+        return true;
       let el = await selectTree(
         document,
         "home-assistant $ home-assistant-main $ app-drawer-layout partial-panel-resolver"
@@ -171,10 +175,15 @@ export const AutoSettingsMixin = (SuperClass) => {
         el = next;
       }
       if (el?.localName !== "ha-app-layout") return false;
-      if (el.header) {
-        el.header.style.setProperty("display", "none");
-        setTimeout(() => el._updateLayoutStates(), 0);
-        return true;
+      if (this.settings.hideHeader === true) {
+        if (el.header) {
+          el.header.style.setProperty("display", "none");
+          setTimeout(() => el._updateLayoutStates(), 0);
+          return true;
+        }
+      } else if (this.settings.hideSidebar === true) {
+        el = await selectTree(el, "ha-menu-button");
+        el?.remove?.();
       }
       return false;
     }
