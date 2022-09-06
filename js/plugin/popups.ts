@@ -266,7 +266,7 @@ class BrowserModPopup extends LitElement {
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
-        --padding-x: var(--popup-padding-x 24px);
+        --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
         --justify-action-buttons: space-between;
 
@@ -353,9 +353,8 @@ class BrowserModPopup extends LitElement {
 
       @media all and (max-width: 450px), all and (max-height: 500px) {
         ha-dialog {
-          --mdc-dialog-min-width: 100vw;
-          --mdc-dialog-max-width: 100vw;
-          --mdc-dialog-min-height: 100%;
+          --mdc-dialog-min-width: 97vw;
+          --mdc-dialog-max-width: 97vw;
           --mdc-shape-medium: 0px;
         }
         :host([wide]) .content {
