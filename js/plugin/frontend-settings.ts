@@ -212,7 +212,6 @@ export const AutoSettingsMixin = (SuperClass) => {
       } else if (type === "browser") {
         const browser = this._data.browsers[target];
         const newsettings = { ...browser.settings, ...settings };
-        console.log(newsettings);
         this.connection.sendMessage({
           type: "browser_mod/register",
           browserID: target,

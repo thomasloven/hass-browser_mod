@@ -85,7 +85,6 @@ class BrowserModSettingsTable extends LitElement {
           sidebarPanelOrder: JSON.stringify(sideBar._panelOrder),
         });
 
-        console.log(sideBar._hiddenPanels, sideBar._panelOrder);
         return;
       }
       let value = newValue.value;
