@@ -24,8 +24,6 @@ data:
   entity: light.bed_light
 ```
 
-If `data` contains `browser_id: THIS` then `THIS` will be replaced with the current browser ID.
-
 
 ## A note about targets
 
