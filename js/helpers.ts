@@ -116,7 +116,7 @@ export const loadConfigDashboard = async () => {
   await customElements.whenDefined("ha-panel-config");
   const configRouter: any = document.createElement("ha-panel-config");
   await configRouter?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
-  // await configRouter?.routerOptions?.routes?.cloud?.load?.(); // Load ha-settings-row
+  await configRouter?.routerOptions?.routes?.general?.load?.(); // Load ha-settings-row
   await configRouter?.routerOptions?.routes?.entities?.load?.(); // Load ha-data-table
   await customElements.whenDefined("ha-config-dashboard");
 };
