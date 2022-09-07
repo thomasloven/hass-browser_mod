@@ -90,6 +90,10 @@ class PopupCard extends LitElement {
     }
   }
 
+  getCardSize() {
+    return 0;
+  }
+
   render() {
     if (!this.editMode) return html``;
     return html` <ha-card>
