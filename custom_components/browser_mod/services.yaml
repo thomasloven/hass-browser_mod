@@ -3,13 +3,8 @@ sequence:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     sequence:
       name: Actions
@@ -22,13 +17,8 @@ delay:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     time:
       name: Time
@@ -42,13 +32,8 @@ popup:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     title:
       name: Title
@@ -63,6 +48,7 @@ popup:
         object:
     size:
       name: Size
+      description: ""
       selector:
         select:
           mode: dropdown
@@ -130,26 +116,24 @@ more_info:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     entity:
       name: Entity ID
+      description: ""
       required: true
       selector:
         text:
     large:
       name: Large size
+      description: ""
       default: false
       selector:
         boolean:
     ignore_popup_card:
       name: Ignore any active popup-card overrides
+      description: ""
       default: false
       selector:
         boolean:
@@ -159,26 +143,16 @@ close_popup:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
 
 notification:
   description: "Display a short notification"
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     message:
       name: Message
@@ -208,13 +182,8 @@ navigate:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     path:
       name: Path
@@ -227,26 +196,16 @@ refresh:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
 
 set_theme:
   description: "Change the current theme"
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     theme:
       name: Theme
@@ -278,13 +237,8 @@ console:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     message:
       name: Message
@@ -297,13 +251,8 @@ javascript:
   target:
     device:
       integration: "browser_mod"
-      multiple: true
     entity:
       integration: "browser_mod_none"
-    area:
-      device:
-        integration: "browser_mod"
-      multiple: true
   fields:
     code:
       name: Code
