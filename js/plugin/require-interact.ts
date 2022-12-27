@@ -16,6 +16,8 @@ export const RequireInteractMixin = (SuperClass) => {
 
       if (!this.registered) return;
 
+      if (this.settings.hideInteractIcon) return;
+
       const interactSymbol = document.createElement("div");
       document.body.append(interactSymbol);
 

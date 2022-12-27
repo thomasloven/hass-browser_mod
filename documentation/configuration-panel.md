@@ -109,3 +109,8 @@ Set the order and hidden items of the sidebar. To change this setting:
 
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
 Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/).
+
+
+### Hide interaction icon
+
+This hides the icon in the bottom right corner which indicates that you need to interact with the browser window before Browser Mod will function completely.

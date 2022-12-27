@@ -1069,6 +1069,8 @@ const RequireInteractMixin = (SuperClass) => {
             await this.connectionPromise;
             if (!this.registered)
                 return;
+            if (this.settings.hideInteractIcon)
+                return;
             const interactSymbol = document.createElement("div");
             document.body.append(interactSymbol);
             interactSymbol.classList.add("browser-mod-require-interaction");

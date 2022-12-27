@@ -947,6 +947,20 @@ class BrowserModFrontendSettingsCard extends s {
               .settingSelector=${{ text: {} }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
+          <ha-expansion-panel
+            .header=${"Hide ineraction icon"}
+            .secondary=${"Hide the icon showing that Browser Mod will not work fully until interacted with"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"hideInteractIcon"}
+              .settingSelector=${{
+            boolean: {},
+            label: "Hide interaction icon",
+        }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
         </div>
       </ha-card>
     `;
