@@ -1,0 +1,14 @@
+title: Popup-card
+cards:
+  - type: custom:popup-card
+    entity: light.bed_light
+    title: Custom popup
+    card:
+      type: markdown
+      content: A custom popup card
+
+  - type: entities
+    entities:
+      - light.bed_light
+      - light.ceiling_lights
+      - light.kitchen_lights

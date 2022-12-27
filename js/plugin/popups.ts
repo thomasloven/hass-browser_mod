@@ -91,6 +91,7 @@ class BrowserModPopup extends LitElement {
           styleEl.innerHTML = `
           ha-card {
             box-shadow: none !important;
+            border: none !important;
           }`;
           el.appendChild(styleEl);
         });
@@ -323,6 +324,10 @@ class BrowserModPopup extends LitElement {
         );
       }
 
+      .progress {
+        position: relative;
+      }
+
       .progress::before {
         content: "";
         position: absolute;
@@ -388,6 +393,7 @@ class BrowserModPopup extends LitElement {
         --mdc-shape-medium: 0px;
         --vertial-align-dialog: flex-end;
         --ha-dialog-border-radius: 0px;
+        --dialog-surface-margin-top: 0px;
       }
       :host([fullscreen]) .content {
         height: calc(

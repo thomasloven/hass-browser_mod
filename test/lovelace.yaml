@@ -1,67 +1,11 @@
 name: browser_mod
-popup_cards:
-  sun.sun:
-    title: Global Popup-card
-    card:
-      type: markdown
-      content: Gobal popup for sun.sun
+
 views:
   - title: Player
     cards:
       - type: custom:browser-player
-      - type: picture-elements
-        image: https://placekitten.com/g/800/600
-        elements:
-          - type: state-icon
-            entity: light.bed_light
-            style:
-              top: 50%
-              left: 50%
-              transform: none
-              animation: spin 4s linear infinite
-        style: |
-          @keyframes spin {
-            100% {
-              transform: rotate(359deg);
-            }
-          }
-      - type: button
-        entity: sun.sun
-        name: Global popup-card
-        tap_action:
-          action: more-info
 
   - !include views/popup.yaml
+  - !include views/popup-card.yaml
+
   - !include views/frontend-backend.yaml
-
-  - title: Popup card
-    popup_cards:
-      sun.sun:
-        title: Local Popup-card
-        card:
-          type: markdown
-          content: Local popup for sun.sun
-      climate.hvac:
-        title: Local Popup-card
-        card:
-          type: markdown
-          content: Local popup for climate.hvac
-      light.kitchen_lights:
-        type: No card
-
-    cards:
-      - type: button
-        entity: climate.hvac
-        name: Local popup-card
-        tap_action:
-          action: more-info
-      - type: button
-        entity: sun.sun
-        name: Override global popup-card
-        tap_action:
-          action: more-info
-      - type: button
-        entity: light.kitchen_lights
-        name: No card config
-        tap_action:
-          action: more-info

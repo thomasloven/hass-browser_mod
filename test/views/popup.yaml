@@ -16,210 +16,172 @@ title: Popup
 cards:
   - <<: *desc
     content: |
-      ## Service: `browser_mod.popup`
+      ## Common:
+      ```
+        type: button
+        icon: mdi:star
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            ...
+      ```
+
+  # Default
   - type: vertical-stack
     cards:
       - <<: *desc
         content: |
           ```
-          title: Default
-          card:
-            type: markdown
-            content: Popup!
+          service: popup
+          data:
+            title: Default
+            content:
+              type: markdown
+              content: Popup!
           ```
       - <<: *default
         name: Default
         tap_action:
           action: fire-dom-event
           browser_mod:
-            command: popup
-            title: Default
-            card:
+            service: popup
+            data:
+              title: Default
+              content:
+                type: markdown
+                content: Popup!
+
+  # size: wide
+  - type: vertical-stack
+    cards:
+      - <<: *desc
+        content: |
+          ```
+          service: popup
+          data:
+            title: Wide
+            size: wide
+            content:
               type: markdown
               content: Popup!
+          ```
+      - <<: *default
+        name: Wide
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: popup
+            data:
+              title: Wide
+              size: wide
+              content:
+                type: markdown
+                content: Popup!
 
+  # size: fullscreen
   - type: vertical-stack
     cards:
       - <<: *desc
         content: |
           ```
-          title: Large
-          large: true
-          card:
-            type: markdown
-            content: Popup!
-          ```
-      - <<: *default
-        name: Large
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            command: popup
-            title: Large
-            large: true
-            card:
+          service: popup
+          data:
+            title: Fullscreen
+            size: fullscreen
+            content:
               type: markdown
               content: Popup!
+          ```
+      - <<: *default
+        name: Fullscreen
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: popup
+            data:
+              title: Fullscreen
+              size: fullscreen
+              content:
+                type: markdown
+                content: Popup!
 
+  # dismissable: false
   - type: vertical-stack
     cards:
       - <<: *desc
         content: |
           ```
-          title: Hide Header
-          hide_header: true
-          card:
-            type: markdown
-            content: Popup!
-          ```
-      - <<: *default
-        name: Hide header
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            command: popup
-            title: Hide Header
-            hide_header: true
-            card:
+          service: popup
+          data:
+            title: Non-dismissable
+            dismissable: false
+            content:
               type: markdown
               content: Popup!
+          ```
+      - <<: *default
+        name: Non-dismissable
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: popup
+            data:
+              title: Non-dismissable
+              dismissable: false
+              content:
+                type: markdown
+                content: Popup!
 
+  # autoclose: true
   - type: vertical-stack
     cards:
       - <<: *desc
         content: |
           ```
-          title: Auto close
-          auto_close: true
-          card:
-            type: markdown
-            content: Popup!
-          ```
-      - <<: *default
-        name: Auto close
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            command: popup
-            title: Auto close
-            auto_close: true
-            card:
+          service: popup
+          data:
+            title: Autoclose
+            autoclose: true
+            content:
               type: markdown
               content: Popup!
+          ```
+      - <<: *default
+        name: Autoclose
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: popup
+            data:
+              title: Autoclose
+              autoclose: true
+              content:
+                type: markdown
+                content: Popup!
 
+  # timeout: 5000
   - type: vertical-stack
     cards:
       - <<: *desc
         content: |
           ```
-
-          title: Popup 1
-          card:
-            <<: *default
-            tap_action:
-              action: fire-dom-event
-              browser_mod:
-                command: popup
-                title: Popup 2
-                card:
-                  type: markdown
-                  content: Popup!
-          ```
-      - <<: *default
-        name: Nested popup
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            command: popup
-            title: Popup 1
-            card:
-              <<: *default
-              tap_action:
-                action: fire-dom-event
-                browser_mod:
-                  command: popup
-                  title: Popup 2
-                  card:
-                    type: markdown
-                    content: Popup!
-
-  - type: vertical-stack
-    cards:
-      - <<: *desc
-        content: |
-          More info in popup.
-          May have different behavior depending on whether a more-info dialog
-          has ever been opened before a popup.
-      - type: entities
-        entities: [light.bed_light]
-      - <<: *default
-        name: More info in popup
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            command: popup
-            title: More info in popup
-            card:
-              type: entities
-              entities: [light.bed_light]
-
-  - type: vertical-stack
-    cards:
-      - <<: *desc
-        content: |
-          ```
-            style:
-              $: |
-                .mdc-dialog {
-                  backdrop-filter: blur(17px);
-                  -webkit-backdrop-filter: blur(17px);
-                }
-                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-                  border-radius: 25px;
-                }
-              .: |
-                :host {
-                  --mdc-theme-surface: rgba(0,0,0,0);
-                  --secondary-background-color: rgba(0,0,0,0.5);
-                  --ha-card-background: rgba(0,0,0,0.5);
-                }
-                :host .content {
-                  width: 90vw;
-                  height: 90vh;
-                }
-          ```
-      - <<: *default
-        name: Styled
-        tap_action:
-          action: fire-dom-event
-          browser_mod:
-            command: popup
-            title: Styled popup
-            card:
+          service: popup
+          data:
+            title: Timeout
+            timeout: 5000
+            content:
               type: markdown
               content: Popup!
-            style:
-              $: |
-                .mdc-dialog {
-                  backdrop-filter: blur(17px);
-                  -webkit-backdrop-filter: blur(17px);
-                }
-                .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
-                  border-radius: 25px;
-                }
-              .: |
-                :host {
-                  --mdc-theme-surface: rgba(0,0,0,0);
-                  --secondary-background-color: rgba(0,0,0,0.5);
-                  --ha-card-background: rgba(0,0,0,0.5);
-                }
-                :host .content {
-                  width: 90vw;
-                  height: 90vh;
-                }
-
-  - <<: *default
-    name: Close popup
-    tap_action:
-      action: call-service
-      service: browser_mod.close_popup
+          ```
+      - <<: *default
+        name: Timeout
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            service: popup
+            data:
+              title: Timeout
+              timeout: 5000
+              content:
+                type: markdown
+                content: Popup!
