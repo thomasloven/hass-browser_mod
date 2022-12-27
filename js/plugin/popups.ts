@@ -1,7 +1,12 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { provideHass, loadLoadCardHelpers, hass_base_el } from "../helpers";
+import {
+  provideHass,
+  loadLoadCardHelpers,
+  hass_base_el,
+  selectTree,
+} from "../helpers";
 import { loadHaForm } from "../helpers";
 
 class BrowserModPopup extends LitElement {
@@ -76,6 +81,21 @@ class BrowserModPopup extends LitElement {
         this.card_mod?.style ?? ""
       );
     });
+
+    this.updateComplete.then(() => {
+      if (this.card) {
+        selectTree(this.content, "$").then((el) => {
+          if (!el) return;
+          const styleEl = document.createElement("style");
+          styleEl.classList.add("browser-mod-style");
+          styleEl.innerHTML = `
+          ha-card {
+            box-shadow: none !important;
+          }`;
+          el.appendChild(styleEl);
+        });
+      }
+    });
   }
 
   async _build_card(config) {
@@ -117,8 +137,10 @@ class BrowserModPopup extends LitElement {
     this.card = undefined;
     this.card_mod = card_mod;
     if (content && content instanceof HTMLElement) {
+      // HTML Element content
       this.content = content;
     } else if (content && Array.isArray(content)) {
+      // Form content
       loadHaForm();
       const form: any = document.createElement("ha-form");
       form.schema = content;
@@ -140,11 +162,13 @@ class BrowserModPopup extends LitElement {
         ev.stopPropagation();
         ev.preventDefault();
       });
-      this.content = form;
+      const haCard = document.createElement("ha-card");
+      haCard.append(form);
+      this.content = haCard;
     } else if (content && typeof content === "object") {
-      // Create a card from config in content
+      // Card content
       this.card = true;
-      this._build_card(content);
+      await this._build_card(content);
     } else {
       // Basic HTML content
       this.content = unsafeHTML(content);
@@ -208,7 +232,7 @@ class BrowserModPopup extends LitElement {
           : ""}
         ${this.title
           ? html`
-              <div slot="heading">
+              <div slot="heading" class="heading">
                 <ha-header-bar>
                   ${this.dismissable
                     ? html`
@@ -226,7 +250,9 @@ class BrowserModPopup extends LitElement {
             `
           : html``}
 
-        <div class="content">${this.content}</div>
+        <div class="content" tabindex="-1" dialogInitialFocus>
+          ${this.content}
+        </div>
 
         ${this.right_button !== undefined
           ? html`
@@ -259,16 +285,31 @@ class BrowserModPopup extends LitElement {
 
   static get styles() {
     return css`
+      /* Classes from haStyleDialog */
       ha-dialog {
-        z-index: 10;
         --mdc-dialog-min-width: var(--popup-min-width, 400px);
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
         --mdc-dialog-content-ink-color: var(--primary-text-color);
+        --justify-action-buttons: space-between;
+      }
+
+      ha-dialog .form {
+        color: var(--primary-text-color);
+      }
+
+      a {
+        color: var(--primary-color);
+      }
+
+      ha-dialog {
+        --dialog-surface-position: static;
+        --dialog-content-position: static;
+        --vertial-align-dialog: flex-start;
+
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
         --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
-        --justify-action-buttons: space-between;
 
         --dialog-box-shadow: 0px 0px 0px
           var(--popup-border-width, var(--ha-card-border-width, 2px))
@@ -281,18 +322,7 @@ class BrowserModPopup extends LitElement {
           var(--ha-card-background, var(--card-background-color, white))
         );
       }
-      :host([wide]) ha-dialog {
-        --mdc-dialog-max-width: 90vw;
-      }
-      :host([fullscreen]) ha-dialog {
-        --mdc-dialog-min-width: 100vw;
-        --mdc-dialog-max-width: 100vw;
-        --mdc-dialog-min-height: 100%;
-        --mdc-dialog-max-height: 100%;
-        --mdc-shape-medium: 0px;
-        --vertial-align-dialog: flex-end;
-        --ha-dialog-border-radius: 0px;
-      }
+
       .progress::before {
         content: "";
         position: absolute;
@@ -314,12 +344,14 @@ class BrowserModPopup extends LitElement {
       ha-icon-button > * {
         display: flex;
       }
+
       .main-title {
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: default;
       }
       .content {
+        outline: none;
         margin: -20px -24px;
         padding: var(--padding-y) var(--padding-x);
         --header-height: 64px;
@@ -330,25 +362,38 @@ class BrowserModPopup extends LitElement {
       }
 
       :host([card]) .content {
-        --padding-x: var(--popup-padding-x, 0px);
-        --padding-y: var(--popup-padding-y, 0px);
-        --ha-card-box-shadow: none;
+        --padding-x: var(--popup-padding-x, 8px);
+        --padding-y: var(--popup-padding-y, 8px);
       }
       :host([actions]) .content {
         --footer-height: 54px;
       }
+
+      .action-button {
+        margin-bottom: -24px;
+      }
+
+      :host([wide]) ha-dialog {
+        --mdc-dialog-max-width: 90vw;
+      }
       :host([wide]) .content {
         width: calc(90vw - 2 * var(--padding-x));
+      }
+
+      :host([fullscreen]) ha-dialog {
+        --mdc-dialog-min-width: 100vw;
+        --mdc-dialog-max-width: 100vw;
+        --mdc-dialog-min-height: 100%;
+        --mdc-dialog-max-height: 100%;
+        --mdc-shape-medium: 0px;
+        --vertial-align-dialog: flex-end;
+        --ha-dialog-border-radius: 0px;
       }
       :host([fullscreen]) .content {
         height: calc(
           100vh - var(--header-height) - var(--footer-height) - 2 *
             var(--padding-y) - 16px
         );
-      }
-
-      .action-button {
-        margin-bottom: -24px;
       }
 
       @media all and (max-width: 450px), all and (max-height: 500px) {
@@ -359,6 +404,12 @@ class BrowserModPopup extends LitElement {
         }
         :host([wide]) .content {
           width: 100vw;
+        }
+      }
+
+      @media all and (min-width: 600px) and (min-height: 501px) {
+        ha-dialog {
+          --dialog-surface-margin-top: 40px;
         }
       }
     `;
@@ -451,3 +502,29 @@ export const PopupMixin = (SuperClass) => {
     }
   };
 };
+
+/*
+service: browser_mod.popup
+data:
+  title: closer
+  content:
+    - selector:
+        select:
+          options:
+            - a
+            - b
+            - c
+            - d
+            - e
+            - f
+            - g
+            - h
+            */
+
+/*
+ha-select $ mwc-menu $ mwc-menu-surface $: |
+  div.mdc - menu - surface {
+    position: fixed;
+  }
+
+*/
