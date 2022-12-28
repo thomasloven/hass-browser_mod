@@ -1,0 +1,39 @@
+default: &default
+  type: button
+  icon: mdi:star
+
+title: services
+cards:
+  - <<: *default
+    name: Navigate
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: navigate
+        data:
+          path: /browser-mod/
+
+  - <<: *default
+    name: Refresh
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: refresh
+
+  - <<: *default
+    name: Primary color teal
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: set_theme
+        data:
+          primaryColor: teal
+
+  - <<: *default
+    name: Reset primary color
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: set_theme
+        data:
+          primaryColor: ~

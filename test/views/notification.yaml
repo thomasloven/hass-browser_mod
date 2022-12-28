@@ -1,0 +1,16 @@
+x-anchors:
+  default: &default
+    type: button
+    icon: mdi:star
+
+title: Notification
+
+cards:
+  - <<: *default
+    name: Notification
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: notification
+        data:
+          message: Notification

@@ -5,7 +5,10 @@ views:
     cards:
       - type: custom:browser-player
 
+  - !include views/various.yaml
+  - !include views/more-info.yaml
   - !include views/popup.yaml
   - !include views/popup-card.yaml
+  - !include views/notification.yaml
 
   - !include views/frontend-backend.yaml

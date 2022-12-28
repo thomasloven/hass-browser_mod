@@ -1,0 +1,40 @@
+x-anchors:
+  default: &default
+    type: button
+    icon: mdi:star
+
+title: More-info
+cards:
+  - type: custom:popup-card
+    entity: light.ceiling_lights
+    title: Custom popup
+    card:
+      type: markdown
+      content: A custom popup card
+
+  - <<: *default
+    name: light.bed_light
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: more_info
+        data:
+          entity: light.bed_light
+
+  - <<: *default
+    name: Popup card
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: more_info
+        data:
+          entity: light.ceiling_lights
+  - <<: *default
+    name: Ignore popup-card
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: more_info
+        data:
+          entity: light.ceiling_lights
+          ignore_popup_card: true

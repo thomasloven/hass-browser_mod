@@ -288,11 +288,13 @@ class BrowserModPopup extends LitElement {
     return css`
       /* Classes from haStyleDialog */
       ha-dialog {
-        --mdc-dialog-min-width: var(--popup-min-width, 400px);
-        --mdc-dialog-max-width: var(--popup-max-width, 600px);
+        --mdc-dialog-min-width: var(--popup-min-width, 560px);
+        --mdc-dialog-max-width: var(--popup-max-width, 580px);
+        --dialog-surface-margin-top: 40px;
         --mdc-dialog-heading-ink-color: var(--primary-text-color);
         --mdc-dialog-content-ink-color: var(--primary-text-color);
         --justify-action-buttons: space-between;
+        --vertical-align-dialog: flex-start;
       }
 
       ha-dialog .form {

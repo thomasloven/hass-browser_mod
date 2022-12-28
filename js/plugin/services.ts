@@ -35,6 +35,7 @@ export const ServicesMixin = (SuperClass) => {
     }
 
     async _service_action({ service, data }) {
+      if (data === undefined) data = {};
       if (!service) {
         console.error(
           "Browser Mod: Service parameter not specified in service call."
