@@ -65,7 +65,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <ha-switch
               .checked=${window.browser_mod?.registered}
               @change=${this.toggleRegister}
-              .disabled=${window.browser_mod?.browser_locked}
+              .disabled=${window.browser_mod?.browser_locked ||
+              window.browser_mod?.global_settings["autoRegister"]}
             ></ha-switch>
           </ha-settings-row>
 

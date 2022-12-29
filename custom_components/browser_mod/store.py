@@ -20,6 +20,7 @@ class SettingsStoreData:
     faviconTemplate = attr.ib(type=str, default=None)
     titleTemplate = attr.ib(type=str, default=None)
     hideInteractIcon = attr.ib(type=bool, default=None)
+    autoRegister = attr.ib(type=bool, default=None)
 
     @classmethod
     def from_dict(cls, data):

@@ -49,6 +49,9 @@ export const ConnectionMixin = (SuperClass) => {
       }
       this._data = cfg;
 
+      if (!this.registered && this.global_settings["autoRegister"] === true)
+        this.registered = true;
+
       if (!this.connected) {
         this.connected = true;
         this.fireEvent("browser-mod-connected");

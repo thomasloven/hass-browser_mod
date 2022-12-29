@@ -68,6 +68,14 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     });
   }
 
+  toggle_auto_register(ev) {
+    if (window.browser_mod?.global_settings["autoRegister"])
+      window.browser_mod.setSetting("global", null, {
+        autoRegister: undefined,
+      });
+    else window.browser_mod.setSetting("global", null, { autoRegister: true });
+  }
+
   register_cast() {
     window.browser_mod.connection.sendMessage({
       type: "browser_mod/register",
@@ -79,6 +87,18 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     return html`
       <ha-card header="Registered Browsers" outlined>
         <div class="card-content">
+          <ha-settings-row>
+            <span slot="heading">Auto-register</span>
+            <span slot="description">
+              Automatically register all new Browsers
+            </span>
+            <ha-switch
+              .checked=${window.browser_mod?.global_settings["autoRegister"] ===
+              true}
+              @change=${this.toggle_auto_register}
+            ></ha-switch>
+          </ha-settings-row>
+
           ${Object.keys(window.browser_mod.browsers).map((d) => {
             const browser = window.browser_mod.browsers[d];
             const device = this._find_entity(d);
