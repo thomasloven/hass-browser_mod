@@ -118,6 +118,10 @@ type: custom:browser-player
 
 # FAQ
 
+### **How do I access the FullyKiosk Browser special functions?**
+
+Make sure to activate the [Javascript Interface](https://www.fully-kiosk.com/en/#websiteintegration).
+The browser-mod panel will guide you through the rest of the required and suggested settings.
 
 ### **Why doesn't ANYTHING that used to work with Browser Mod 1.0 work with Browser Mod 2.0?**
 
