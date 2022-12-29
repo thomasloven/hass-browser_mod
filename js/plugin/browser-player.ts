@@ -16,8 +16,7 @@ class BrowserPlayer extends LitElement {
     return {};
   }
 
-  async connectedCallback() {
-    super.connectedCallback();
+  _reconnect() {
     if (!window.browser_mod?.registered) {
       if (this.parentElement.localName === "hui-card-preview") {
         this.removeAttribute("hidden");
@@ -25,6 +24,12 @@ class BrowserPlayer extends LitElement {
         this.setAttribute("hidden", "");
       }
     }
+  }
+
+  async connectedCallback() {
+    super.connectedCallback();
+    await window.browser_mod?.connectionPromise;
+    this._reconnect();
   }
 
   async setConfig(config) {
