@@ -21,6 +21,7 @@ class SettingsStoreData:
     titleTemplate = attr.ib(type=str, default=None)
     hideInteractIcon = attr.ib(type=bool, default=None)
     autoRegister = attr.ib(type=bool, default=None)
+    lockRegister = attr.ib(type=bool, default=None)
 
     @classmethod
     def from_dict(cls, data):

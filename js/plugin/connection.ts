@@ -105,7 +105,7 @@ export const ConnectionMixin = (SuperClass) => {
     set registered(reg) {
       (async () => {
         if (reg) {
-          if (this.registered) return;
+          if (this.registered || this.global_settings["lockRegister"]) return;
           await this.connection.sendMessage({
             type: "browser_mod/register",
             browserID: this.browserID,

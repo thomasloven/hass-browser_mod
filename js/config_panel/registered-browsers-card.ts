@@ -75,6 +75,17 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       });
     else window.browser_mod.setSetting("global", null, { autoRegister: true });
   }
+  toggle_lock_register(ev) {
+    if (window.browser_mod?.global_settings["lockRegister"])
+      window.browser_mod.setSetting("global", null, {
+        lockRegister: undefined,
+      });
+    else
+      window.browser_mod.setSetting("global", null, {
+        lockRegister: true,
+        autoRegister: undefined,
+      });
+  }
 
   register_cast() {
     window.browser_mod.connection.sendMessage({
@@ -96,6 +107,17 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               .checked=${window.browser_mod?.global_settings["autoRegister"] ===
               true}
               @change=${this.toggle_auto_register}
+            ></ha-switch>
+          </ha-settings-row>
+          <ha-settings-row>
+            <span slot="heading">Lock register</span>
+            <span slot="description">
+              Disable registering or unregistering of all Browsers
+            </span>
+            <ha-switch
+              .checked=${window.browser_mod?.global_settings["lockRegister"] ===
+              true}
+              @change=${this.toggle_lock_register}
             ></ha-switch>
           </ha-settings-row>
 
