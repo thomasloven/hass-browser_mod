@@ -34,6 +34,7 @@ class BrowserModPopup extends LitElement {
 
   async closeDialog() {
     this.open = false;
+    this.card?.remove?.();
     this.card = undefined;
     clearInterval(this._timeoutTimer);
     if (this._autocloseListener) {
