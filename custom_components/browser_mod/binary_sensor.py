@@ -24,6 +24,13 @@ class BrowserBinarySensor(BrowserModEntity, BinarySensorEntity):
     def is_on(self):
         return self._data.get("browser", {}).get(self.parameter, None)
 
+    @property
+    def extra_state_attributes(self):
+        retval = super().extra_state_attributes
+        if self.parameter == "fullyKiosk":
+            retval["data"] = self._data.get("browser", {}).get("fully_data")
+        return retval
+
 
 class ActivityBinarySensor(BrowserModEntity, BinarySensorEntity):
     def __init__(self, coordinator, browserID):

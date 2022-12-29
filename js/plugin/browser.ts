@@ -32,8 +32,10 @@ export const BrowserStateMixin = (SuperClass) => {
               window.fully?.getBatteryLevel() ?? battery?.level * 100,
             charging: window.fully?.isPlugged() ?? battery?.charging,
             darkMode: this.hass?.themes?.darkMode,
+
             userData: this.hass?.user,
             ip_address: window.fully?.getIp4Address(),
+            fully_data: this.fully_data,
           },
         });
       };

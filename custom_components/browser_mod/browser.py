@@ -77,15 +77,24 @@ class BrowserModBrowser:
             "sensor", "currentUser", "Browser user", icon="mdi:account"
         )
         _assert_browser_sensor(
+            "binary_sensor", "fullyKiosk", "Browser FullyKiosk", icon="mdi:alpha-f"
+        )
+        _assert_browser_sensor(
             "sensor", "width", "Browser width", "px", icon="mdi:arrow-left-right"
         )
         _assert_browser_sensor(
             "sensor", "height", "Browser height", "px", icon="mdi:arrow-up-down"
         )
+
         # Don't create battery sensor unless battery level is reported
         if self.data.get("browser", {}).get("battery_level", None) is not None:
             _assert_browser_sensor(
                 "sensor", "battery_level", "Browser battery", "%", "battery"
+            )
+        # Don't create a charging sensor unless charging state is reported
+        if self.data.get("browser", {}).get("charging", None) is not None:
+            _assert_browser_sensor(
+                "binary_sensor", "charging", "Browser charging", icon="mdi:power-plug"
             )
 
         _assert_browser_sensor(
@@ -94,14 +103,6 @@ class BrowserModBrowser:
             "Browser dark mode",
             icon="mdi:theme-light-dark",
         )
-        _assert_browser_sensor(
-            "binary_sensor", "fullyKiosk", "Browser FullyKiosk", icon="mdi:alpha-f"
-        )
-        # Don't create a charging sensor unless charging state is reported
-        if self.data.get("browser", {}).get("charging", None) is not None:
-            _assert_browser_sensor(
-                "binary_sensor", "charging", "Browser charging", icon="mdi:power-plug"
-            )
 
         if "activity" not in self.entities:
             adder = hass.data[DOMAIN][DATA_ADDERS]["binary_sensor"]
