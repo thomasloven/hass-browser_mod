@@ -1,4 +1,5 @@
 from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.helpers.entity import EntityCategory
 
 from .const import DOMAIN, DATA_ADDERS
 from .entities import BrowserModEntity
@@ -23,6 +24,10 @@ class BrowserBinarySensor(BrowserModEntity, BinarySensorEntity):
     @property
     def is_on(self):
         return self._data.get("browser", {}).get(self.parameter, None)
+
+    @property
+    def entity_category(self):
+        return EntityCategory.DIAGNOSTIC
 
     @property
     def extra_state_attributes(self):

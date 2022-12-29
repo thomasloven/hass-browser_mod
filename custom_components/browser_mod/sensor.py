@@ -1,4 +1,5 @@
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.helpers.entity import EntityCategory
 
 from .const import DOMAIN, DATA_ADDERS
 from .entities import BrowserModEntity
@@ -45,6 +46,10 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
     @property
     def native_unit_of_measurement(self):
         return self._unit_of_measurement
+
+    @property
+    def entity_category(self):
+        return EntityCategory.DIAGNOSTIC
 
     @property
     def extra_state_attributes(self):

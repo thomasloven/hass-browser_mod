@@ -52,9 +52,9 @@ class BrowserModEntity(CoordinatorEntity):
     def has_entity_name(self):
         return True
 
-    @property
-    def entity_registry_visible_default(self):
-        return False
+    # @property
+    # def entity_registry_visible_default(self):
+    #     return False
 
     @property
     def unique_id(self):
