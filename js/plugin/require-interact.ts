@@ -45,6 +45,14 @@ export const RequireInteractMixin = (SuperClass) => {
       video {
         display: none;
       }
+      @media all and (max-width: 450px), all and (max-height: 500px) {
+        ha-icon {
+          --mdc-icon-size: 30px;
+        }
+        ha-icon::before {
+          content: "";
+        }
+      }
       `;
 
       const icon = document.createElement("ha-icon");
