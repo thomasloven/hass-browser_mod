@@ -18,7 +18,9 @@ export const BrowserStateMixin = (SuperClass) => {
 
     _browser_state_update() {
       const update = async () => {
-        const battery = (<any>navigator).getBattery?.();
+        const battery = (<any>navigator).getBattery
+          ? await (<any>navigator).getBattery()
+          : undefined;
         this.sendUpdate({
           browser: {
             path: window.location.pathname,
