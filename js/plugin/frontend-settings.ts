@@ -1,4 +1,8 @@
-import { await_element, waitRepeat, runOnce, selectTree } from "../helpers";
+import {
+  runOnce,
+  selectTree,
+  waitRepeat,
+} from '../helpers';
 
 export const AutoSettingsMixin = (SuperClass) => {
   class AutoSettingsMixinClass extends SuperClass {
@@ -60,11 +64,11 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (settings.hideSidebar === true) {
         selectTree(
           document.body,
-          "home-assistant$home-assistant-main$app-drawer-layout"
-        ).then((el) => el?.style?.setProperty("--app-drawer-width", "0px"));
+          "home-assistant$home-assistant-main$ha-drawer"
+        ).then((el) => el?.style?.setProperty("--mdc-drawer-width", "0px"));
         selectTree(
           document.body,
-          "home-assistant$home-assistant-main$app-drawer-layout app-drawer"
+          "home-assistant$home-assistant-main$ha-drawer ha-sidebar"
         ).then((el) => el?.remove?.());
       }
 
@@ -160,30 +164,18 @@ export const AutoSettingsMixin = (SuperClass) => {
         this.settings.hideSidebar !== true
       )
         return true;
-      let el = await selectTree(
-        document,
-        "home-assistant $ home-assistant-main $ app-drawer-layout partial-panel-resolver"
-      );
-      if (!el) return false;
-      let steps = 0;
-      while (el && el.localName !== "ha-app-layout" && steps++ < 5) {
-        await await_element(el, true);
-        const next =
-          el.querySelector("ha-app-layout") ??
-          el.firstElementChild ??
-          el.shadowRoot;
-        el = next;
-      }
-      if (el?.localName !== "ha-app-layout") return false;
-      if (this.settings.hideHeader === true) {
-        if (el.header) {
-          el.header.style.setProperty("display", "none");
-          setTimeout(() => el._updateLayoutStates(), 0);
-          return true;
-        }
-      } else if (this.settings.hideSidebar === true) {
-        el = await selectTree(el, "ha-menu-button");
-        el?.remove?.();
+      if (this.settings.hideHeader === true){
+        let el = await selectTree(
+          document,
+          "home-assistant $ home-assistant-main $ ha-drawer"
+        );
+        el?.style.setProperty('--header-height', '0px');
+        let actions = await selectTree(
+          el ?? document,
+          "ha-panel-lovelace$hui-root$.action-items"
+        );
+        actions.style.setProperty('display', 'none');
+        return true;
       }
       return false;
     }
