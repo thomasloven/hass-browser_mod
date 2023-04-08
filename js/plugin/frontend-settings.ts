@@ -60,11 +60,11 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (settings.hideSidebar === true) {
         selectTree(
           document.body,
-          "home-assistant$home-assistant-main$app-drawer-layout"
-        ).then((el) => el?.style?.setProperty("--app-drawer-width", "0px"));
+          "home-assistant$home-assistant-main$ha-drawer"
+        ).then((el) => el?.style?.setProperty("--mdc-drawer-width", "0px"));
         selectTree(
           document.body,
-          "home-assistant$home-assistant-main$app-drawer-layout app-drawer"
+          "home-assistant$home-assistant-main$ha-drawer ha-sidebar"
         ).then((el) => el?.remove?.());
       }
 
@@ -160,30 +160,44 @@ export const AutoSettingsMixin = (SuperClass) => {
         this.settings.hideSidebar !== true
       )
         return true;
-      let el = await selectTree(
+      const rootEl = await selectTree(
         document,
-        "home-assistant $ home-assistant-main $ app-drawer-layout partial-panel-resolver"
+        "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver"
       );
-      if (!el) return false;
-      let steps = 0;
-      while (el && el.localName !== "ha-app-layout" && steps++ < 5) {
-        await await_element(el, true);
-        const next =
-          el.querySelector("ha-app-layout") ??
-          el.firstElementChild ??
-          el.shadowRoot;
-        el = next;
-      }
-      if (el?.localName !== "ha-app-layout") return false;
-      if (this.settings.hideHeader === true) {
-        if (el.header) {
-          el.header.style.setProperty("display", "none");
-          setTimeout(() => el._updateLayoutStates(), 0);
-          return true;
+      if (!rootEl) return false;
+
+      let header = await selectTree(
+        rootEl,
+        "ha-panel-lovelace$hui-root$.header"
+      );
+      let menuButton;
+
+      if (header) {
+        menuButton = header.querySelector("ha-menu-button");
+      } else {
+        let steps = 0;
+        let el = rootEl;
+        while (el && el.localName !== "ha-top-app-bar-fixed" && steps++ < 5) {
+          await await_element(el, true);
+          const next =
+            el.querySelector("ha-top-app-bar-fixed") ??
+            el.firstElementChild ??
+            el.shadowRoot;
+          el = next;
         }
-      } else if (this.settings.hideSidebar === true) {
-        el = await selectTree(el, "ha-menu-button");
-        el?.remove?.();
+        if (el?.localName !== "ha-top-app-bar-fixed") return false;
+
+        header = el.shadowRoot.querySelector("header");
+        menuButton = el.querySelector("ha-menu-button");
+      }
+
+      if (header && this.settings.hideHeader === true) {
+        rootEl.style.setProperty("--header-height", "0px");
+        header.style.setProperty("display", "none");
+        return true;
+      } else if (menuButton && this.settings.hideSidebar === true) {
+        menuButton.remove?.();
+        return true;
       }
       return false;
     }
