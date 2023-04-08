@@ -5,7 +5,7 @@
   "dependencies": ["panel_custom", "websocket_api", "http", "frontend", "lovelace"],
   "codeowners": [],
   "requirements": [],
-  "version": "2.2.0",
+  "version": "2.2.1",
   "iot_class": "local_push",
   "config_flow": true
 }
