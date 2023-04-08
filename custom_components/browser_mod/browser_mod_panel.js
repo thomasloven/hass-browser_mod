@@ -366,7 +366,7 @@ function e(e,t,i,o){var s,r=arguments.length,n=r<3?t:null===o?o=Object.getOwnPro
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
-            .header=${"Hide ineraction icon"}
+            .header=${"Hide interaction icon"}
             .secondary=${"Hide the icon showing that Browser Mod will not work fully until interacted with"}
             leftChevron
           >
