@@ -25,25 +25,22 @@ loadConfigDashboard().then(() => {
     render() {
       if (!window.browser_mod) return html``;
       return html`
-        <ha-app-layout>
-          <app-header slot="header" fixed>
-            <app-toolbar>
-              <ha-menu-button
-                .hass=${this.hass}
-                .narrow=${this.narrow}
-              ></ha-menu-button>
-              <div main-title>Browser Mod Settings</div>
-              <div>
-                (${pjson.version})
-                <a
-                  href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
-                  target="_blank"
-                >
-                  <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
-                </a>
-              </div>
-            </app-toolbar>
-          </app-header>
+        <ha-top-app-bar-fixed>
+          <ha-menu-button
+            slot="navigationIcon"
+            .hass=${this.hass}
+            .narrow=${this.narrow}
+          ></ha-menu-button>
+          <div slot="title">Browser Mod Settings</div>
+          <div slot="actionItems">
+            (${pjson.version})
+            <a
+              href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
+              target="_blank"
+            >
+              <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
+            </a>
+          </div>
 
           <ha-config-section .narrow=${this.narrow} full-width>
             <browser-mod-browser-settings-card
@@ -62,7 +59,7 @@ loadConfigDashboard().then(() => {
                 `
               : ""}
           </ha-config-section>
-        </ha-app-layout>
+        </ha-top-app-bar-fixed>
       `;
     }
 
