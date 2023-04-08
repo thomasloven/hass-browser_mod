@@ -75,6 +75,7 @@ loadConfigDashboard().then(() => {
           }
           ha-config-section {
             padding: 16px 0;
+            direction: ltr;
           }
           a {
             color: var(--primary-text-color);
