@@ -34,8 +34,8 @@ class BrowserModFrontendSettingsCard extends LitElement {
 
   async toggleEditSidebar() {
     const sideBar: any = await selectTree(
-      document,
-      "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar"
+      document.body,
+      "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
     );
     sideBar.editMode = !sideBar.editMode;
     this._editSidebar = sideBar.editMode;
