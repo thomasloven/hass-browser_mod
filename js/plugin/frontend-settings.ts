@@ -128,7 +128,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       while (!sidebar && cnt++ < 5) {
         sidebar = await selectTree(
           document,
-          "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar $ .title"
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar $ .title"
         );
         if (!sidebar) await new Promise((r) => setTimeout(r, 500));
       }
