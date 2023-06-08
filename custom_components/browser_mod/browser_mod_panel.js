@@ -439,6 +439,7 @@ function e(e,t,i,o){var s,r=arguments.length,n=r<3?t:null===o?o=Object.getOwnPro
           }
           ha-config-section {
             padding: 16px 0;
+            direction: ltr;
           }
           a {
             color: var(--primary-text-color);
