@@ -235,7 +235,7 @@ class BrowserModPopup extends LitElement {
         ${this.title
           ? html`
               <div slot="heading" class="heading">
-                <ha-header-bar>
+                <ha-dialog-header>
                   ${this.dismissable
                     ? html`
                         <ha-icon-button
@@ -246,8 +246,8 @@ class BrowserModPopup extends LitElement {
                         </ha-icon-button>
                       `
                     : ""}
-                  <div slot="title" class="main-title">${this.title}</div>
-                </ha-header-bar>
+                  <span slot="title" .title="${this.title}">${this.title}</span>
+                </ha-dialog-header>
               </div>
             `
           : html``}
@@ -309,7 +309,7 @@ class BrowserModPopup extends LitElement {
       ha-dialog {
         --dialog-surface-position: static;
         --dialog-content-position: static;
-        --vertial-align-dialog: flex-start;
+        --vertical-align-dialog: flex-start;
 
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
         --padding-x: var(--popup-padding-x, 24px);
@@ -342,18 +342,11 @@ class BrowserModPopup extends LitElement {
         z-index: 10;
       }
 
-      ha-header-bar {
-        --mdc-theme-on-primary: var(--primary-text-color);
-        --mdc-theme-primary: var(--mdc-theme-surface);
-        flex-shrink: 0;
-        display: block;
-      }
-
       ha-icon-button > * {
         display: flex;
       }
 
-      .main-title {
+      ha-dialog-header > span {
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: default;
@@ -394,7 +387,7 @@ class BrowserModPopup extends LitElement {
         --mdc-dialog-min-height: 100%;
         --mdc-dialog-max-height: 100%;
         --mdc-shape-medium: 0px;
-        --vertial-align-dialog: flex-end;
+        --vertical-align-dialog: flex-end;
         --ha-dialog-border-radius: 0px;
         --dialog-surface-margin-top: 0px;
       }
