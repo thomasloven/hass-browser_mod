@@ -441,6 +441,12 @@ export const PopupMixin = (SuperClass) => {
         base.dispatchEvent(ev);
       });
 
+      this._popupEl.addEventListener("hass-action", async (ev) => {
+        ev.stopPropagation();
+        const base = await hass_base_el();
+        base.dispatchEvent(ev);
+      });
+
       const historyListener = async (ev) => {
         const popupState = ev.state?.browserModPopup;
         if (popupState) {
