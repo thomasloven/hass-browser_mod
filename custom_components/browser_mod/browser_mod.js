@@ -75,7 +75,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         ${this.timeout?R` <div slot="heading" class="progress"></div> `:""}
         ${this.title?R`
               <div slot="heading" class="heading">
-                <ha-dialog-header>
+                <ha-header-bar>
                   ${this.dismissable?R`
                         <ha-icon-button
                           dialogAction="cancel"
@@ -84,8 +84,8 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
                           <ha-icon .icon=${"mdi:close"}></ha-icon>
                         </ha-icon-button>
                       `:""}
-                  <span slot="title" .title="${this.title}">${this.title}</span>
-                </ha-dialog-header>
+                  <div slot="title" class="main-title">${this.title}</div>
+                </ha-header-bar>
               </div>
             `:R``}
 
@@ -171,11 +171,18 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         z-index: 10;
       }
 
+      ha-header-bar {
+        --mdc-theme-on-primary: var(--primary-text-color);
+        --mdc-theme-primary: var(--mdc-theme-surface);
+        flex-shrink: 0;
+        display: block;
+      }
+
       ha-icon-button > * {
         display: flex;
       }
 
-      ha-dialog-header > span {
+      .main-title {
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: default;
