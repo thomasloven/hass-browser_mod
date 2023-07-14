@@ -83,6 +83,18 @@ export const ConnectionMixin = (SuperClass) => {
         this.sendUpdate({});
       });
 
+      window.addEventListener("connection-status", (ev: CustomEvent) => {
+        if (ev.detail === "connected") {
+          this.connected = true;
+          this.fireEvent("browser-mod-connected");
+          window.setTimeout(() => this.sendUpdate({}), 1000);
+        }
+        if (ev.detail === "disconnected") {
+          this.connected = false;
+          this.fireEvent("browser-mod-disconnected");
+        }
+      });
+
       provideHass(this);
     }
 

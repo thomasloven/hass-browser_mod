@@ -37,6 +37,9 @@ export const ScreenSaverMixin = (SuperClass) => {
       this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
 
       this.addEventListener("fully-update", () => this.send_screen_status());
+      this.addEventListener("browser-mod-connected", () =>
+        this.send_screen_status()
+      );
 
       this.connectionPromise.then(() => this._screen_on());
     }
