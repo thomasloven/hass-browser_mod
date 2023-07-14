@@ -9,6 +9,8 @@ import {
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 
+const CLOSE_POPUP_ACTIONS = new Set(["assist", "more-info"]);
+
 class BrowserModPopup extends LitElement {
   @property() open;
   @property() content;
@@ -444,11 +446,13 @@ export const PopupMixin = (SuperClass) => {
       this._popupEl.addEventListener("hass-action", async (ev: CustomEvent) => {
         if (
           (ev.detail.action === "tap" &&
-            ev.detail.config?.tap_action?.action === "more-info") ||
+            CLOSE_POPUP_ACTIONS.has(ev.detail.config?.tap_action?.action)) ||
           (ev.detail.action === "hold" &&
-            ev.detail.config?.hold_action?.action === "more-info") ||
+            CLOSE_POPUP_ACTIONS.has(ev.detail.config?.hold_action?.action)) ||
           (ev.detail.action === "double_tap" &&
-            ev.detail.config?.double_tap_action?.action === "more-info")
+            CLOSE_POPUP_ACTIONS.has(
+              ev.detail.config?.double_tap_action?.action
+            ))
         ) {
           this._popupEl.do_close();
         }
