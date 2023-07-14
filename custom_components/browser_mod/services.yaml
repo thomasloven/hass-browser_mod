@@ -4,7 +4,7 @@ sequence:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     sequence:
       name: Actions
@@ -18,7 +18,7 @@ delay:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     time:
       name: Time
@@ -33,7 +33,7 @@ popup:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     title:
       name: Title
@@ -117,7 +117,7 @@ more_info:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     entity:
       name: Entity ID
@@ -144,7 +144,7 @@ close_popup:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
 
 notification:
   description: "Display a short notification"
@@ -152,7 +152,7 @@ notification:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     message:
       name: Message
@@ -183,7 +183,7 @@ navigate:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     path:
       name: Path
@@ -197,7 +197,7 @@ refresh:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
 
 set_theme:
   description: "Change the current theme"
@@ -205,7 +205,7 @@ set_theme:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     theme:
       name: Theme
@@ -238,7 +238,7 @@ console:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     message:
       name: Message
@@ -252,7 +252,7 @@ javascript:
     device:
       integration: "browser_mod"
     entity:
-      integration: "browser_mod_none"
+      integration: "browser_mod"
   fields:
     code:
       name: Code
