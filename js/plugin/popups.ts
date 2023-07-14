@@ -441,7 +441,17 @@ export const PopupMixin = (SuperClass) => {
         base.dispatchEvent(ev);
       });
 
-      this._popupEl.addEventListener("hass-action", async (ev) => {
+      this._popupEl.addEventListener("hass-action", async (ev: CustomEvent) => {
+        if (
+          (ev.detail.action === "tap" &&
+            ev.detail.config?.tap_action?.action === "more-info") ||
+          (ev.detail.action === "hold" &&
+            ev.detail.config?.hold_action?.action === "more-info") ||
+          (ev.detail.action === "double_tap" &&
+            ev.detail.config?.double_tap_action?.action === "more-info")
+        ) {
+          this._popupEl.do_close();
+        }
         ev.stopPropagation();
         const base = await hass_base_el();
         base.dispatchEvent(ev);

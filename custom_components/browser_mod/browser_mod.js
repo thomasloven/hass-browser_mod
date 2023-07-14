@@ -75,7 +75,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         ${this.timeout?R` <div slot="heading" class="progress"></div> `:""}
         ${this.title?R`
               <div slot="heading" class="heading">
-                <ha-header-bar>
+                <ha-dialog-header>
                   ${this.dismissable?R`
                         <ha-icon-button
                           dialogAction="cancel"
@@ -84,8 +84,8 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
                           <ha-icon .icon=${"mdi:close"}></ha-icon>
                         </ha-icon-button>
                       `:""}
-                  <div slot="title" class="main-title">${this.title}</div>
-                </ha-header-bar>
+                  <span slot="title" .title="${this.title}">${this.title}</span>
+                </ha-dialog-header>
               </div>
             `:R``}
 
@@ -138,7 +138,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
       ha-dialog {
         --dialog-surface-position: static;
         --dialog-content-position: static;
-        --vertial-align-dialog: flex-start;
+        --vertical-align-dialog: flex-start;
 
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
         --padding-x: var(--popup-padding-x, 24px);
@@ -171,18 +171,11 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         z-index: 10;
       }
 
-      ha-header-bar {
-        --mdc-theme-on-primary: var(--primary-text-color);
-        --mdc-theme-primary: var(--mdc-theme-surface);
-        flex-shrink: 0;
-        display: block;
-      }
-
       ha-icon-button > * {
         display: flex;
       }
 
-      .main-title {
+      ha-dialog-header > span {
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: default;
@@ -223,7 +216,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         --mdc-dialog-min-height: 100%;
         --mdc-dialog-max-height: 100%;
         --mdc-shape-medium: 0px;
-        --vertial-align-dialog: flex-end;
+        --vertical-align-dialog: flex-end;
         --ha-dialog-border-radius: 0px;
         --dialog-surface-margin-top: 0px;
       }
@@ -250,7 +243,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
           --dialog-surface-margin-top: 40px;
         }
       }
-    `}}t([ne()],Ie.prototype,"open",void 0),t([ne()],Ie.prototype,"content",void 0),t([ne()],Ie.prototype,"title",void 0),t([ne({reflect:!0})],Ie.prototype,"actions",void 0),t([ne({reflect:!0})],Ie.prototype,"card",void 0),t([ne()],Ie.prototype,"right_button",void 0),t([ne()],Ie.prototype,"left_button",void 0),t([ne()],Ie.prototype,"dismissable",void 0),t([ne({reflect:!0})],Ie.prototype,"wide",void 0),t([ne({reflect:!0})],Ie.prototype,"fullscreen",void 0),t([ne()],Ie.prototype,"_style",void 0),t([ae("ha-dialog")],Ie.prototype,"dialog",void 0),customElements.get("browser-mod-popup")||customElements.define("browser-mod-popup",Ie);const Oe=e=>class extends e{constructor(){super(),ge(),this._popupEl=document.createElement("browser-mod-popup"),document.body.append(this._popupEl),this._popupEl.addEventListener("hass-more-info",(async e=>{e.stopPropagation();const t=await ve();this._popupEl.do_close(),t.dispatchEvent(e)}));window.addEventListener("popstate",(async e=>{var t,i,o;const s=null===(t=e.state)||void 0===t?void 0:t.browserModPopup;s&&(s.open||(null===(i=this._popupEl)||void 0===i?void 0:i.open)&&(null===(o=this._popupEl)||void 0===o?void 0:o.dismissable)&&this._popupEl.do_close())}))}showPopup(...e){(async()=>{var t;this._popupEl.open&&await this._popupEl.do_close(),void 0===(null===(t=history.state)||void 0===t?void 0:t.browserModPopup)&&history.replaceState({browserModPopup:{open:!1}},""),history.pushState({browserModPopup:{open:!0}},""),await this._popupEl.setupDialog(...e),this._popupEl.openDialog()})()}closePopup(...e){this._popupEl.closeDialog(),this.showMoreInfo("")}async showMoreInfo(e,t=!1,i){const o=await ve();if(o.dispatchEvent(new CustomEvent("hass-more-info",{bubbles:!0,composed:!0,cancelable:!1,detail:{entityId:e,ignore_popup_card:i}})),t){await new Promise((e=>setTimeout(e,50)));const e=o.shadowRoot.querySelector("ha-more-info-dialog");e&&(e.large=!0)}}};var Le="2.2.2";const De=[{name:"entity",label:"Entity",selector:{entity:{}}},{name:"title",label:"Title",selector:{text:{}}},{name:"size",selector:{select:{mode:"dropdown",options:["normal","wide","fullscreen"]}}},{type:"grid",schema:[{name:"right_button",label:"Right button",selector:{text:{}}},{name:"left_button",label:"Left button",selector:{text:{}}}]},{type:"grid",schema:[{name:"right_button_action",label:"Right button action",selector:{object:{}}},{name:"left_button_action",label:"Left button action",selector:{object:{}}}]},{type:"grid",schema:[{name:"dismissable",label:"User dismissable",selector:{boolean:{}}},{name:"timeout",label:"Auto close timeout (ms)",selector:{number:{mode:"box"}}}]},{type:"grid",schema:[{name:"dismiss_action",label:"Dismiss action",selector:{object:{}}},{name:"timeout_action",label:"Timeout action",selector:{object:{}}}]},{name:"style",label:"CSS style",selector:{text:{multiline:!0}}}];class Ue extends ie{constructor(){super(...arguments),this._selectedTab=0,this._cardGUIMode=!0,this._cardGUIModeAvailable=!0}setConfig(e){this._config=e}connectedCallback(){super.connectedCallback(),we()}_handleSwitchTab(e){this._selectedTab=parseInt(e.detail.index,10)}_configChanged(e){e.stopPropagation(),this._config&&(this._config=Object.assign({},e.detail.value),this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:this._config}})))}_cardConfigChanged(e){if(e.stopPropagation(),!this._config)return;const t=Object.assign({},e.detail.config);this._config=Object.assign(Object.assign({},this._config),{card:t}),this._cardGUIModeAvailable=e.detail.guiModeAvailable,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:this._config}}))}_toggleCardMode(e){var t;null===(t=this._cardEditorEl)||void 0===t||t.toggleMode()}_deleteCard(e){this._config&&(this._config=Object.assign({},this._config),delete this._config.card,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:this._config}})))}_cardGUIModeChanged(e){e.stopPropagation(),this._cardGUIMode=e.detail.guiMode,this._cardGUIModeAvailable=e.detail.guiModeAvailable}render(){return this.hass&&this._config?R`
+    `}}t([ne()],Ie.prototype,"open",void 0),t([ne()],Ie.prototype,"content",void 0),t([ne()],Ie.prototype,"title",void 0),t([ne({reflect:!0})],Ie.prototype,"actions",void 0),t([ne({reflect:!0})],Ie.prototype,"card",void 0),t([ne()],Ie.prototype,"right_button",void 0),t([ne()],Ie.prototype,"left_button",void 0),t([ne()],Ie.prototype,"dismissable",void 0),t([ne({reflect:!0})],Ie.prototype,"wide",void 0),t([ne({reflect:!0})],Ie.prototype,"fullscreen",void 0),t([ne()],Ie.prototype,"_style",void 0),t([ae("ha-dialog")],Ie.prototype,"dialog",void 0),customElements.get("browser-mod-popup")||customElements.define("browser-mod-popup",Ie);const Oe=e=>class extends e{constructor(){super(),ge(),this._popupEl=document.createElement("browser-mod-popup"),document.body.append(this._popupEl),this._popupEl.addEventListener("hass-more-info",(async e=>{e.stopPropagation();const t=await ve();this._popupEl.do_close(),t.dispatchEvent(e)})),this._popupEl.addEventListener("hass-action",(async e=>{var t,i,o,s,n,r;("tap"===e.detail.action&&"more-info"===(null===(i=null===(t=e.detail.config)||void 0===t?void 0:t.tap_action)||void 0===i?void 0:i.action)||"hold"===e.detail.action&&"more-info"===(null===(s=null===(o=e.detail.config)||void 0===o?void 0:o.hold_action)||void 0===s?void 0:s.action)||"double_tap"===e.detail.action&&"more-info"===(null===(r=null===(n=e.detail.config)||void 0===n?void 0:n.double_tap_action)||void 0===r?void 0:r.action))&&this._popupEl.do_close(),e.stopPropagation();(await ve()).dispatchEvent(e)}));window.addEventListener("popstate",(async e=>{var t,i,o;const s=null===(t=e.state)||void 0===t?void 0:t.browserModPopup;s&&(s.open||(null===(i=this._popupEl)||void 0===i?void 0:i.open)&&(null===(o=this._popupEl)||void 0===o?void 0:o.dismissable)&&this._popupEl.do_close())}))}showPopup(...e){(async()=>{var t;this._popupEl.open&&await this._popupEl.do_close(),void 0===(null===(t=history.state)||void 0===t?void 0:t.browserModPopup)&&history.replaceState({browserModPopup:{open:!1}},""),history.pushState({browserModPopup:{open:!0}},""),await this._popupEl.setupDialog(...e),this._popupEl.openDialog()})()}closePopup(...e){this._popupEl.closeDialog(),this.showMoreInfo("")}async showMoreInfo(e,t=!1,i){const o=await ve();if(o.dispatchEvent(new CustomEvent("hass-more-info",{bubbles:!0,composed:!0,cancelable:!1,detail:{entityId:e,ignore_popup_card:i}})),t){await new Promise((e=>setTimeout(e,50)));const e=o.shadowRoot.querySelector("ha-more-info-dialog");e&&(e.large=!0)}}};var Le="2.2.2";const De=[{name:"entity",label:"Entity",selector:{entity:{}}},{name:"title",label:"Title",selector:{text:{}}},{name:"size",selector:{select:{mode:"dropdown",options:["normal","wide","fullscreen"]}}},{type:"grid",schema:[{name:"right_button",label:"Right button",selector:{text:{}}},{name:"left_button",label:"Left button",selector:{text:{}}}]},{type:"grid",schema:[{name:"right_button_action",label:"Right button action",selector:{object:{}}},{name:"left_button_action",label:"Left button action",selector:{object:{}}}]},{type:"grid",schema:[{name:"dismissable",label:"User dismissable",selector:{boolean:{}}},{name:"timeout",label:"Auto close timeout (ms)",selector:{number:{mode:"box"}}}]},{type:"grid",schema:[{name:"dismiss_action",label:"Dismiss action",selector:{object:{}}},{name:"timeout_action",label:"Timeout action",selector:{object:{}}}]},{name:"style",label:"CSS style",selector:{text:{multiline:!0}}}];class Ue extends ie{constructor(){super(...arguments),this._selectedTab=0,this._cardGUIMode=!0,this._cardGUIModeAvailable=!0}setConfig(e){this._config=e}connectedCallback(){super.connectedCallback(),we()}_handleSwitchTab(e){this._selectedTab=parseInt(e.detail.index,10)}_configChanged(e){e.stopPropagation(),this._config&&(this._config=Object.assign({},e.detail.value),this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:this._config}})))}_cardConfigChanged(e){if(e.stopPropagation(),!this._config)return;const t=Object.assign({},e.detail.config);this._config=Object.assign(Object.assign({},this._config),{card:t}),this._cardGUIModeAvailable=e.detail.guiModeAvailable,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:this._config}}))}_toggleCardMode(e){var t;null===(t=this._cardEditorEl)||void 0===t||t.toggleMode()}_deleteCard(e){this._config&&(this._config=Object.assign({},this._config),delete this._config.card,this.dispatchEvent(new CustomEvent("config-changed",{detail:{config:this._config}})))}_cardGUIModeChanged(e){e.stopPropagation(),this._cardGUIMode=e.detail.guiMode,this._cardGUIModeAvailable=e.detail.guiModeAvailable}render(){return this.hass&&this._config?R`
       <div class="card-config">
         <div class="toolbar">
           <mwc-tab-bar
