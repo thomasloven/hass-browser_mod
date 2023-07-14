@@ -160,6 +160,12 @@ browser_mod:
       type: ...etc...
 ```
 
+### **How do I uninstall Browser Mod?***
+Besides removing the integration as usual, there is one extra step needed.
+In order to work well with [Home Assistant Cast](https://www.home-assistant.io/integrations/cast/#home-assistant-cast) Browser Mod will add itself to your Dashboard Resources, and you will need to remove it from there manually:
+
+[![Open your Home Assistant instance and show your dashboard resources.](https://my.home-assistant.io/badges/lovelace_resources.svg)](https://my.home-assistant.io/redirect/lovelace_resources/)
+
 ---
 
 <a href="https://www.buymeacoffee.com/uqD6KHCdJ" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/white_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
