@@ -60,11 +60,11 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (settings.hideSidebar === true) {
         selectTree(
           document.body,
-          "home-assistant$home-assistant-main$ha-drawer"
+          "home-assistant $ home-assistant-main $ ha-drawer"
         ).then((el) => el?.style?.setProperty("--mdc-drawer-width", "0px"));
         selectTree(
           document.body,
-          "home-assistant$home-assistant-main$ha-drawer ha-sidebar"
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
         ).then((el) => el?.remove?.());
       }
 
@@ -127,7 +127,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       let cnt = 0;
       while (!sidebar && cnt++ < 5) {
         sidebar = await selectTree(
-          document,
+          document.body,
           "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar $ .title"
         );
         if (!sidebar) await new Promise((r) => setTimeout(r, 500));
@@ -161,7 +161,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       )
         return true;
       const rootEl = await selectTree(
-        document,
+        document.body,
         "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver"
       );
       if (!rootEl) return false;

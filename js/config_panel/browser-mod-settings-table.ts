@@ -40,8 +40,8 @@ class BrowserModSettingsTable extends LitElement {
     const clearSettingCallback = async () => {
       if (this.settingKey === "sidebarPanelOrder") {
         const sideBar: any = await selectTree(
-          document,
-          "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar"
+          document.body,
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
         );
         window.browser_mod.setSetting(type, target, {
           sidebarHiddenPanels: "[]",
@@ -76,8 +76,8 @@ class BrowserModSettingsTable extends LitElement {
     const changeSettingCallback = async (newValue) => {
       if (this.settingKey === "sidebarPanelOrder") {
         const sideBar: any = await selectTree(
-          document,
-          "home-assistant $ home-assistant-main $ app-drawer-layout app-drawer ha-sidebar"
+          document.body,
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
         );
 
         window.browser_mod.setSetting(type, target, {
