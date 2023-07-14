@@ -133,6 +133,8 @@ In short, things are hopefully much easier now for new users of Browser Mod at t
 ### **Why does my Browser ID keep changing?**
 There's just no way around this. I've used every trick in the book and invented a handful of new ones in order to save the Browser ID as far as possible. It should be much better in Browser Mod 2.0 than earlier, but it's still not perfect. At least it's easy to change it back now...
 
+Note that you can also set the browser ID to e.g. `whatever` by adding `?BrowserID=whatever` (N.B. capital B) to any Home Assistant URL.
+
 
 ### **How do I update a popup from the Browser mod 1.5?**
 If you have used `fire-dom-event` it's really simple. Just change

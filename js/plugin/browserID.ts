@@ -18,6 +18,11 @@ export const BrowserIDMixin = (SuperClass) => {
           Storage.prototype.browser_mod_patched = true;
         }
       }
+
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const newBrowserID = urlParams.get("BrowserID");
+      if (newBrowserID != null) this.browserID = newBrowserID;
     }
 
     async recall_id() {
