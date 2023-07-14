@@ -60,6 +60,8 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 ![Screenshot of a popup dialog according to the setup above](https://user-images.githubusercontent.com/1299821/188604118-ed2ad79c-0286-4392-b7be-cbc9c3f2ffd8.png)
 
 
+Here's a great overview of the functionality by [Smart Home Scene](https://smarthomescene.com/guides/how-to-setup-browser-mod-2-0-in-home-assistant/).
+
 
 \
 &nbsp; \
