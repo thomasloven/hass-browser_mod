@@ -185,3 +185,103 @@ cards:
               content:
                 type: markdown
                 content: Popup!
+
+  - <<: *default
+    name: Card content
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: popup
+        data:
+          title: Card
+          content:
+            type: entities
+            entities:
+              - light.bed_light
+              - light.ceiling_lights
+              - light.kitchen_lights
+  - <<: *default
+    name: Card footer
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: popup
+        data:
+          title: Card
+          right_button: OK
+          content:
+            type: entities
+            entities:
+              - light.bed_light
+              - light.ceiling_lights
+              - light.kitchen_lights
+
+  - <<: *default
+    name: Form content
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: popup
+        data:
+          title: Form
+          content:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:
+            - name: Name
+              label: Label
+              default: Default value
+              selector:
+                text:

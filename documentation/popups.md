@@ -52,6 +52,8 @@ data:
 
 ![Screenshot of a popup rendering the entities card described above](https://user-images.githubusercontent.com/1299821/182710445-f09b74b8-dd53-4d65-8eba-0945fc1d418e.png)
 
+Note that some elements of some card expect the card to have a static position on the bottom of the page, but the popup will make it float above everything else. This means things like pull-down menues or some overlays may just not work right or at all. There's unfortunately nothing that can be done about this.
+
 ## Form content
 `content` can be a list of ha-form schemas and the popup will then contain a form for user input:
 
@@ -169,12 +171,7 @@ The default value for the `style` parameter is as follows:
 style: |
   --popup-min-width: 400px;
   --popup-max-width: 600px;
-  --popup-border-width: var(--ha-card-border-width, 2px);
-  --popup-border-color: var(--ha-card-border-color, var(--divider-color, #eee));
   --popup-border-radius: 28px;
-  --popup-background-color: var(--ha-card-background, var(--card-background-color, white));
-  --popup-padding-x: 0px;
-  --popup-padding-y: 0px;
 ```
 
 The same variables can also be set by a theme.
