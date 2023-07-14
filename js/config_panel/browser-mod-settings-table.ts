@@ -195,16 +195,20 @@ class BrowserModSettingsTable extends LitElement {
     for (const [k, v] of Object.entries(settings.user)) {
       const user = users.find((usr) => usr.id === k);
       if (!user) continue;
+      let val = String(v);
+      if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
         name: `User: ${user.name}`,
-        value: String(v),
+        value: val,
         controls: html`
-          <ha-icon-button @click=${() => this.changeSetting("user", k)}>
-            <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
-          </ha-icon-button>
-          <ha-icon-button @click=${() => this.clearSetting("user", k)}>
-            <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
-          </ha-icon-button>
+          <div>
+            <ha-icon-button @click=${() => this.changeSetting("user", k)}>
+              <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
+            </ha-icon-button>
+            <ha-icon-button @click=${() => this.clearSetting("user", k)}>
+              <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
+            </ha-icon-button>
+          </div>
         `,
       });
     }
@@ -220,16 +224,20 @@ class BrowserModSettingsTable extends LitElement {
     });
 
     for (const [k, v] of Object.entries(settings.browser)) {
+      let val = String(v);
+      if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
         name: `Browser: ${k}`,
-        value: String(v),
+        value: val,
         controls: html`
-          <ha-icon-button @click=${() => this.changeSetting("browser", k)}>
-            <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
-          </ha-icon-button>
-          <ha-icon-button @click=${() => this.clearSetting("browser", k)}>
-            <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
-          </ha-icon-button>
+          <div>
+            <ha-icon-button @click=${() => this.changeSetting("browser", k)}>
+              <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
+            </ha-icon-button>
+            <ha-icon-button @click=${() => this.clearSetting("browser", k)}>
+              <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
+            </ha-icon-button>
+          </div>
         `,
       });
     }
@@ -251,12 +259,14 @@ class BrowserModSettingsTable extends LitElement {
           ? String(settings.global)
           : html`<span style="color: var(--warning-color);">DEFAULT</span>`,
       controls: html`
-        <ha-icon-button @click=${() => this.changeSetting("global", null)}>
-          <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
-        </ha-icon-button>
-        <ha-icon-button @click=${() => this.clearSetting("global", null)}>
-          <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
-        </ha-icon-button>
+        <div>
+          <ha-icon-button @click=${() => this.changeSetting("global", null)}>
+            <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
+          </ha-icon-button>
+          <ha-icon-button @click=${() => this.clearSetting("global", null)}>
+            <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
+          </ha-icon-button>
+        </div>
       `,
     });
     this.tableData = data;
