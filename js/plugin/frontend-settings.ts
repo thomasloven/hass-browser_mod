@@ -60,7 +60,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (settings.hideSidebar === true) {
         selectTree(
           document.body,
-          "home-assistant $ home-assistant-main $ ha-drawer"
+          "home-assistant $ home-assistant-main"
         ).then((el) => el?.style?.setProperty("--mdc-drawer-width", "0px"));
         selectTree(
           document.body,
