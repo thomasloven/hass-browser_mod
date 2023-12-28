@@ -1,4 +1,5 @@
 import logging
+import homeassistant.helpers.config_validation as cv
 
 from .store import BrowserModStore
 from .mod_view import async_setup_view
@@ -8,6 +9,8 @@ from .service import async_setup_services
 
 _LOGGER = logging.getLogger(__name__)
 
+
+CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
 
 async def async_setup(hass, config):
 

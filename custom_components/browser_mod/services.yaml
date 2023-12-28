@@ -1,4 +1,5 @@
 sequence:
+  name: sequence
   description: "Run a sequence of services"
   target:
     device:
@@ -13,6 +14,7 @@ sequence:
         object:
 
 delay:
+  name: delay
   description: "Wait for a time"
   target:
     device:
@@ -28,6 +30,7 @@ delay:
           mode: box
 
 popup:
+  name: popup
   description: "Display a popup"
   target:
     device:
@@ -112,6 +115,7 @@ popup:
           multiline: true
 
 more_info:
+  name: more_info
   description: "Show more-info dialog"
   target:
     device:
@@ -139,6 +143,7 @@ more_info:
         boolean:
 
 close_popup:
+  name: close_popup
   description: "Close a popup"
   target:
     device:
@@ -147,6 +152,7 @@ close_popup:
       integration: "browser_mod"
 
 notification:
+  name: notification
   description: "Display a short notification"
   target:
     device:
@@ -178,6 +184,7 @@ notification:
         object:
 
 navigate:
+  name: navigate
   description: "Navigate browser to a different page"
   target:
     device:
@@ -192,6 +199,7 @@ navigate:
         text:
 
 refresh:
+  name: refresh
   description: "Refresh page"
   target:
     device:
@@ -200,6 +208,7 @@ refresh:
       integration: "browser_mod"
 
 set_theme:
+  name: set_theme
   description: "Change the current theme"
   target:
     device:
@@ -233,6 +242,7 @@ set_theme:
         color_rgb:
 
 console:
+  name: console
   description: "Print text to browser console"
   target:
     device:
@@ -247,6 +257,7 @@ console:
         text:
 
 javascript:
+  name: javascript
   description: "Run arbitrary JavaScript code"
   target:
     device:
