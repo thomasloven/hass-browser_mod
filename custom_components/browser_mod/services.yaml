@@ -1,12 +1,14 @@
 sequence:
   name: sequence
   description: "Run a sequence of services"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     sequence:
       name: Actions
       description: List of services to run
@@ -16,12 +18,14 @@ sequence:
 delay:
   name: delay
   description: "Wait for a time"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     time:
       name: Time
       description: Time to wait (ms)
@@ -32,12 +36,14 @@ delay:
 popup:
   name: popup
   description: "Display a popup"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     title:
       name: Title
       description: "Popup title"
@@ -117,12 +123,14 @@ popup:
 more_info:
   name: more_info
   description: "Show more-info dialog"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     entity:
       name: Entity ID
       description: ""
@@ -145,21 +153,26 @@ more_info:
 close_popup:
   name: close_popup
   description: "Close a popup"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
+  fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
 
 notification:
   name: notification
   description: "Display a short notification"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     message:
       name: Message
       description: "Message to display"
@@ -186,12 +199,14 @@ notification:
 navigate:
   name: navigate
   description: "Navigate browser to a different page"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     path:
       name: Path
       description: "Target path"
@@ -201,21 +216,26 @@ navigate:
 refresh:
   name: refresh
   description: "Refresh page"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
+  fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
 
 set_theme:
   name: set_theme
   description: "Change the current theme"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     theme:
       name: Theme
       description: "Name of theme or 'auto'"
@@ -244,12 +264,14 @@ set_theme:
 console:
   name: console
   description: "Print text to browser console"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     message:
       name: Message
       description: "Text to print"
@@ -259,12 +281,14 @@ console:
 javascript:
   name: javascript
   description: "Run arbitrary JavaScript code"
-  target:
-    device:
-      integration: "browser_mod"
-    entity:
-      integration: "browser_mod"
   fields:
+    browser_id:
+      name: Target
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
     code:
       name: Code
       description: "JavaScript code to run"

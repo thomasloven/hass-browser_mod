@@ -16,11 +16,8 @@ async def async_setup_services(hass):
 
         browsers = hass.data[DOMAIN][DATA_BROWSERS]
 
-        if isinstance(targets, str):
-            targets = [targets]
-
         # If no targets were specified, send to all browsers
-        if len(targets) == 0:
+        if targets is None:
             targets = browsers.keys()
 
         for target in targets:
@@ -36,29 +33,27 @@ async def async_setup_services(hass):
         browsers = data.pop("browser_id", [])
         if isinstance(browsers, str):
             browsers = [browsers]
-        browsers = set(browsers)
-        device_ids = set(data.pop("device_id", []))
-        area_ids = set(data.pop("area_id", []))
 
+        # Support service targets
+        browsers.extend(data.pop("device_id", []))
         dr = device_registry.async_get(hass)
-
-        for device in device_ids:
-            dev = dr.async_get(device)
-            if not dev:
-                continue
-            browserID = list(dev.identifiers)[0][1]
-            if browserID is None:
-                continue
-            browsers.add(browserID)
-
-        for area in area_ids:
+        for area in data.pop("area_id", []):
             for dev in device_registry.async_entries_for_area(dr, area):
-                browserID = list(dev.identifiers)[0][1]
-                if browserID is None:
-                    continue
-                browsers.add(browserID)
+                browsers.append(list(dev.identifiers)[0][1])
 
-        call_service(service, browsers, data)
+        browserIDs = None
+        if len(browsers):
+            browserIDs = set()
+            for br in browsers:
+                dev = dr.async_get(br)
+                if dev:
+                    browserIDs.add(list(dev.identifiers)[0][1])
+                else:
+                    browserIDs.add(br)
+
+            browserIDs = set(browserIDs)
+
+        call_service(service, browserIDs, data)
 
     for service in BROWSER_MOD_SERVICES:
         hass.services.async_register(DOMAIN, service, handle_service)
