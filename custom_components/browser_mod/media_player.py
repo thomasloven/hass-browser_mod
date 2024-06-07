@@ -1,12 +1,7 @@
 from homeassistant.components import media_source
 from homeassistant.components.media_player import (
-    SUPPORT_PLAY,
-    SUPPORT_PLAY_MEDIA,
-    SUPPORT_PAUSE,
-    SUPPORT_STOP,
-    SUPPORT_VOLUME_SET,
-    SUPPORT_VOLUME_MUTE,
     MediaPlayerEntity,
+    MediaPlayerEntityFeature,
 )
 from homeassistant.components.media_player.browse_media import (
     async_process_play_media_url,
@@ -14,10 +9,6 @@ from homeassistant.components.media_player.browse_media import (
 from homeassistant.components.media_player.const import (
     MEDIA_TYPE_MUSIC,
     MEDIA_TYPE_URL,
-    SUPPORT_BROWSE_MEDIA,
-    SUPPORT_SEEK,
-    SUPPORT_TURN_OFF,
-    SUPPORT_TURN_ON,
 )
 from homeassistant.const import (
     STATE_UNAVAILABLE,
@@ -74,16 +65,16 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     @property
     def supported_features(self):
         return (
-            SUPPORT_PLAY
-            | SUPPORT_PLAY_MEDIA
-            | SUPPORT_PAUSE
-            | SUPPORT_STOP
-            | SUPPORT_VOLUME_SET
-            | SUPPORT_VOLUME_MUTE
-            | SUPPORT_BROWSE_MEDIA
-            | SUPPORT_SEEK
-            | SUPPORT_TURN_OFF
-            | SUPPORT_TURN_ON
+            MediaPlayerEntityFeature.PLAY
+            | MediaPlayerEntityFeature.PLAY_MEDIA
+            | MediaPlayerEntityFeature.PAUSE
+            | MediaPlayerEntityFeature.STOP
+            | MediaPlayerEntityFeature.VOLUME_SET
+            | MediaPlayerEntityFeature.VOLUME_MUTE
+            | MediaPlayerEntityFeature.BROWSE_MEDIA
+            | MediaPlayerEntityFeature.SEEK
+            | MediaPlayerEntityFeature.TURN_OFF
+            | MediaPlayerEntityFeature.TURN_ON
         )
 
     @property
