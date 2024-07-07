@@ -249,7 +249,8 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
           </ha-icon-button>
         </div>
       `}),this.tableData=s}render(){var e,t;null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.global_settings)||void 0===t||t[this.settingKey];return B`
-      <ha-data-table .columns=${{name:{title:"Name",grows:!0},value:{title:"Value",grows:!0},controls:{}}} .data=${this.tableData} auto-height>
+      <ha-data-table .columns=${{name:{title:"Name",grows:!0},value:{title:"Value",grows:!0},controls:{}}}   .data=${this.tableData}
+      .localizeFunc=${(this.localizeFunc || (this.hass && this.hass.localize) || (() => ''))} auto-height>
       </ha-data-table>
     `}static get styles(){return r`
       :host {
