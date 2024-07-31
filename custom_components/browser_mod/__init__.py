@@ -1,5 +1,6 @@
 import logging
 import homeassistant.helpers.config_validation as cv
+from homeassistant.const import Platform
 
 from .store import BrowserModStore
 from .mod_view import async_setup_view
@@ -11,6 +12,14 @@ _LOGGER = logging.getLogger(__name__)
 
 
 CONFIG_SCHEMA = cv.empty_config_schema(DOMAIN)
+
+PLATFORMS = [
+    Platform.SENSOR,
+    Platform.BINARY_SENSOR,
+    Platform.LIGHT,
+    Platform.MEDIA_PLAYER,
+    Platform.CAMERA
+]
 
 async def async_setup(hass, config):
 
@@ -28,10 +37,7 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
 
-    for domain in ["sensor", "binary_sensor", "light", "media_player", "camera"]:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, domain)
-        )
+    await hass.config_entries.async_forward_entry_setups(config_entry, PLATFORMS)
 
     await async_setup_connection(hass)
     await async_setup_view(hass)
