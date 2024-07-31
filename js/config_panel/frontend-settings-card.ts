@@ -51,6 +51,25 @@ class BrowserModFrontendSettingsCard extends LitElement {
     }
   }
 
+  _toggle_afj() {
+    window.setTimeout(() => {
+      const afj = this.shadowRoot.querySelector("#afj") as any;
+      afj.checked = true;
+      afj.count = (afj.count ?? 0) + 1;
+      if (afj.count && afj.count > 5) {
+        afj.disabled = true;
+        const afj_heading = this.shadowRoot.querySelector(
+          "#afj_heading"
+        ) as any;
+        const afj_description = this.shadowRoot.querySelector(
+          "#afj_description"
+        ) as any;
+        afj_description.innerHTML =
+          "Something went wrong. Please try again later.";
+      }
+    }, 500 + Math.random() * 2500);
+  }
+
   render() {
     const db = this._dashboards.map((d) => {
       return { value: d.url_path, label: d.title };
@@ -81,6 +100,37 @@ class BrowserModFrontendSettingsCard extends LitElement {
             setting and otherwise the GLOBAL setting if that differs from
             DEFAULT.
           </p>
+
+          ${new Date().getMonth() == 3 && new Date().getDate() < 8
+            ? html`
+                <ha-expansion-panel
+                  .header=${"Extra boring settings"}
+                  .secondary=${"Nothing to see here"}
+                  leftChevron
+                >
+                  <ha-settings-row>
+                    <span slot="heading" id="afj_heading"
+                      >Allow April fools jokes</span
+                    >
+                    <span slot="description" id="afj_description">
+                      By enabling this, I consent to any April Fools Jokes
+                      messing with my frontend.
+                    </span>
+                    <span
+                      explanation="Oh hi!
+                      You found my April fools joke! Well done!
+                      Don't worry. This actually does ABSOLUTELY NOTHING.
+                      It's just a toggle connected to nothing."
+                    ></span>
+                    <ha-switch
+                      id="afj"
+                      .checked=${true}
+                      @change=${this._toggle_afj}
+                    ></ha-switch>
+                  </ha-settings-row>
+                </ha-expansion-panel>
+              `
+            : ``}
 
           <ha-expansion-panel
             .header=${"Title template"}
