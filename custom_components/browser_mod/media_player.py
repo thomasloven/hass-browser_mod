@@ -1,14 +1,12 @@
 from homeassistant.components import media_source
+from homeassistant.components.media_player import MediaPlayerEntity
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
     MediaPlayerEntityFeature,
+    MediaType,
 )
 from homeassistant.components.media_player.browse_media import (
     async_process_play_media_url,
-)
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_MUSIC,
-    MEDIA_TYPE_URL,
 )
 from homeassistant.const import (
     STATE_UNAVAILABLE,
@@ -113,7 +111,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
             media_type = play_item.mime_type
             media_id = play_item.url
             media_id = async_process_play_media_url(self.hass, media_id)
-        if media_type in (MEDIA_TYPE_URL, MEDIA_TYPE_MUSIC):
+        if media_type in (MediaType.URL, MediaType.MUSIC):
             media_id = async_process_play_media_url(self.hass, media_id)
         await self.browser.send(
             "player-play", media_content_id=media_id, media_type=media_type, **kwargs
