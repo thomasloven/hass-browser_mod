@@ -4,6 +4,7 @@ sequence:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -21,6 +22,7 @@ delay:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -39,6 +41,7 @@ popup:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -126,6 +129,7 @@ more_info:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -156,6 +160,7 @@ close_popup:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -168,6 +173,7 @@ notification:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -202,6 +208,7 @@ navigate:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -219,6 +226,7 @@ refresh:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -231,6 +239,7 @@ set_theme:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -267,6 +276,7 @@ console:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
@@ -284,6 +294,7 @@ javascript:
   fields:
     browser_id:
       name: Target
+      description: ""
       selector:
         device:
           multiple: true
