@@ -1,8 +1,6 @@
 from homeassistant.components import media_source
-from homeassistant.components.media_player import MediaPlayerEntity
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
-    MediaPlayerEntityFeature,
     MediaType,
     MediaPlayerEntityFeature
 )
