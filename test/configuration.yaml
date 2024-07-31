@@ -16,7 +16,7 @@ logger:
 
 # debugpy:
 
-browser_mod:
+# browser_mod:
 #   devices:
 #     camdevice:
 #       camera: true
