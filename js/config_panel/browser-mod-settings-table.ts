@@ -287,7 +287,12 @@ class BrowserModSettingsTable extends LitElement {
     };
 
     return html`
-      <ha-data-table .columns=${columns} .data=${this.tableData} auto-height>
+      <ha-data-table
+        .hass=${this.hass}
+        .columns=${columns}
+        .data=${this.tableData}
+        auto-height
+      >
       </ha-data-table>
     `;
   }
