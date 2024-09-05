@@ -92,6 +92,7 @@ class PopupCard extends LitElement {
   }
 
   render() {
+    this.toggleAttribute('hidden', !this.editMode);
     if (!this.editMode) return html``;
     return html` <ha-card>
       <div class="app-toolbar">
