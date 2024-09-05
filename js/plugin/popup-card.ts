@@ -92,7 +92,7 @@ class PopupCard extends LitElement {
   }
 
   render() {
-    this.toggleAttribute('hidden', !this.editMode);
+    this.setHidden(!this.editMode);
     if (!this.editMode) return html``;
     return html` <ha-card>
       <div class="app-toolbar">
@@ -137,6 +137,18 @@ class PopupCard extends LitElement {
           `
         : ""}
     </ha-card>`;
+  }
+
+  private setHidden(hidden: boolean): void {
+    if (this.hasAttribute('hidden') !== hidden) {
+      this.toggleAttribute('hidden', hidden);
+      this.dispatchEvent(
+        new Event('card-visibility-changed', {
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
   }
 
   static get styles() {
