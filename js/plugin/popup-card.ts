@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
+import { getLovelaceRoot, hass_base_el } from "../helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -23,11 +24,6 @@ class PopupCard extends LitElement {
     };
   }
 
-  constructor() {
-    super();
-    this.popup = this.popup.bind(this);
-  }
-
   setConfig(config) {
     this._config = config;
     (async () => {
@@ -35,49 +31,6 @@ class PopupCard extends LitElement {
       this._element = await ch.createCardElement(config.card);
       this._element.hass = this.hass;
     })();
-  }
-
-  async connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener("hass-more-info", this.popup);
-
-    if (this.parentElement.localName === "hui-card-preview") {
-      this.editMode = true;
-    }
-  }
-
-  async disconnectedCallback() {
-    super.disconnectedCallback();
-    window.removeEventListener("hass-more-info", this.popup);
-  }
-
-  popup(ev: CustomEvent) {
-    if (
-      ev.detail?.entityId === this._config.entity &&
-      !ev.detail?.ignore_popup_card
-    ) {
-      ev.stopPropagation();
-      ev.preventDefault();
-      const config = { ...this._config };
-      delete config.card;
-
-      window.browser_mod?.service("popup", {
-        content: this._config.card,
-        ...this._config,
-      });
-      setTimeout(
-        () =>
-          this.dispatchEvent(
-            new CustomEvent("hass-more-info", {
-              bubbles: true,
-              composed: true,
-              cancelable: false,
-              detail: { entityId: "" },
-            })
-          ),
-        10
-      );
-    }
   }
 
   updated(changedProperties) {
@@ -203,6 +156,29 @@ class PopupCard extends LitElement {
   }
 }
 
+function findPopupCardConfig(lovelaceRoot, entity) {
+  const lovelaceConfig = lovelaceRoot?.lovelace?.config;
+  if (lovelaceConfig) {
+    for (const view of lovelaceConfig.views) {
+      if (view.cards) {
+        for (const card of view.cards) {
+          if (card.type === 'custom:popup-card' && card.entity === entity) return card;
+        }
+      }
+      if (view.sections) {
+        for (const section of view.sections) {
+          if (section.cards) {
+            for (const card of section.cards) {
+              if (card.type === 'custom:popup-card' && card.entity === entity) return card;
+            }
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
 (async () => {
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -211,4 +187,36 @@ class PopupCard extends LitElement {
 
   if (!customElements.get("popup-card"))
     customElements.define("popup-card", PopupCard);
+
+  let lovelaceRoot = null;
+  for (;;) {
+    lovelaceRoot = await getLovelaceRoot(document);
+    if (lovelaceRoot) break;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+
+  window.addEventListener("hass-more-info", (ev: CustomEvent) => {
+    if (ev.detail?.ignore_popup_card || !ev.detail?.entityId) return;
+    const cardConfig = findPopupCardConfig(lovelaceRoot, ev.detail?.entityId);
+    if (cardConfig) {
+      ev.stopPropagation();
+      ev.preventDefault();
+      let properties = { ...cardConfig }
+      delete properties.card;
+      delete properties.entity;
+      delete properties.type;
+      window.browser_mod?.service("popup", {
+        content: cardConfig.card,
+        ...properties,
+      });
+      lovelaceRoot.dispatchEvent(
+        new CustomEvent("hass-more-info", {
+          bubbles: true,
+          composed: true,
+          cancelable: false,
+          detail: { entityId: "" },
+        })
+      );
+    }
+  });
 })();

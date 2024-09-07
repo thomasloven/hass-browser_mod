@@ -44,6 +44,24 @@ export async function selectTree(root, path, all = false, timeout = 10000) {
   });
 }
 
+export async function getLovelaceRoot(document) {
+  let root = await selectTree(
+    document,
+    "home-assistant$home-assistant-main$ha-panel-lovelace$hui-root"
+  );
+  if (!root)
+    root = await selectTree(
+      document,
+      "hc-main $ hc-lovelace $ hui-view"
+    );
+  if (!root)
+    root = await selectTree(
+      document,
+      "hc-main $ hc-lovelace $ hui-panel-view"
+    );
+  return root;
+}
+
 export async function hass_base_el() {
   await Promise.race([
     customElements.whenDefined("home-assistant"),
