@@ -7,7 +7,7 @@ import { getLovelaceRoot, hass_base_el } from "../helpers";
 class PopupCard extends LitElement {
   @property() hass;
   @state() _config;
-  @property({ attribute: "edit-mode", reflect: true }) editMode;
+  @property({ type: Boolean, reflect: true}) preview = false;
   @state() _element;
 
   static getConfigElement() {
@@ -45,8 +45,8 @@ class PopupCard extends LitElement {
   }
 
   render() {
-    this.setHidden(!this.editMode);
-    if (!this.editMode) return html``;
+    this.setHidden(!this.preview);
+    if (!this.preview) return html``;
     return html` <ha-card>
       <div class="app-toolbar">
         ${this._config.dismissable
@@ -109,7 +109,7 @@ class PopupCard extends LitElement {
       :host {
         display: none !important;
       }
-      :host([edit-mode="true"]) {
+      :host([preview]) {
         display: block !important;
         border: 1px solid var(--primary-color);
       }
