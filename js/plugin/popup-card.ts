@@ -209,13 +209,17 @@ function findPopupCardConfig(lovelaceRoot, entity) {
         content: cardConfig.card,
         ...properties,
       });
-      lovelaceRoot.dispatchEvent(
-        new CustomEvent("hass-more-info", {
-          bubbles: true,
-          composed: true,
-          cancelable: false,
-          detail: { entityId: "" },
-        })
+      setTimeout(
+        () =>
+          lovelaceRoot.dispatchEvent(
+            new CustomEvent("hass-more-info", {
+              bubbles: true,
+              composed: true,
+              cancelable: false,
+              detail: { entityId: "" },
+            })
+          ),
+        10
       );
     }
   });
