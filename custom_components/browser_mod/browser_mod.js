@@ -146,7 +146,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
       .content {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
-        outline: none;
+        outline: none !important;
       }
       .content .container {
         padding: 8px 24px 20px 24px;
