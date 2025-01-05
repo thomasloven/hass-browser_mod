@@ -75,7 +75,7 @@ export const loadLoadCardHelpers = async () => {
 
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
-  const routes = (ppResolver as any).getRoutes([
+  const routes = (ppResolver as any)._getRoutes([
     {
       component_name: "lovelace",
       url_path: "a",
@@ -106,7 +106,7 @@ export const loadHaForm = async () => {
 export const loadConfigDashboard = async () => {
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
-  const routes = (ppResolver as any).getRoutes([
+  const routes = (ppResolver as any)._getRoutes([
     {
       component_name: "config",
       url_path: "a",
@@ -125,7 +125,7 @@ export const loadDeveloperToolsTemplate = async () => {
   await customElements.whenDefined("partial-panel-resolver");
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
-  const routes = (ppResolver as any).getRoutes([
+  const routes = (ppResolver as any)._getRoutes([
     {
       component_name: "developer-tools",
       url_path: "a",
