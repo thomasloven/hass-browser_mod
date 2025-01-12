@@ -1,3 +1,5 @@
+import json
+from homeassistant.core import HomeAssistant
 from homeassistant.components.frontend import add_extra_js_url, async_register_built_in_panel
 from homeassistant.components.http import StaticPathConfig
 
@@ -7,8 +9,14 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
+def get_version(hass: HomeAssistant):
+    with open(hass.config.path("custom_components/browser_mod/manifest.json"), "r") as fp:
+        manifest = json.load(fp)
+        return manifest["version"]
 
-async def async_setup_view(hass):
+async def async_setup_view(hass: HomeAssistant):
+
+    version = await hass.async_add_executor_job(get_version, hass)
 
     # Serve the Browser Mod controller and add it as extra_module_url
     await hass.http.async_register_static_paths(
@@ -20,7 +28,7 @@ async def async_setup_view(hass):
             )
         ]
     )
-    add_extra_js_url(hass, FRONTEND_SCRIPT_URL)
+    add_extra_js_url(hass, FRONTEND_SCRIPT_URL + "?" + version)
 
     # Serve the Browser Mod Settings panel and register it as a panel
     await hass.http.async_register_static_paths(
@@ -42,7 +50,7 @@ async def async_setup_view(hass):
         config={
             "_panel_custom": {
                 "name": "browser-mod-panel",
-                "js_url": SETTINGS_PANEL_URL,
+                "js_url": SETTINGS_PANEL_URL + "?" + version,
             }
         },
     )
@@ -69,7 +77,7 @@ async def async_setup_view(hass):
                 await resources.async_create_item(
                     {
                         "res_type": "module",
-                        "url": FRONTEND_SCRIPT_URL + "?automatically-added",
+                        "url": FRONTEND_SCRIPT_URL + "?automatically-added" + "&" + version,
                     }
                 )
             elif getattr(resources, "data", None) and getattr(
@@ -78,6 +86,7 @@ async def async_setup_view(hass):
                 resources.data.append(
                     {
                         "type": "module",
-                        "url": FRONTEND_SCRIPT_URL + "?automatically-added",
+                        "url": FRONTEND_SCRIPT_URL + "?automatically-added" + "&" + version,
+
                     }
                 )
