@@ -56,7 +56,7 @@ async def async_setup_view(hass: HomeAssistant):
     )
 
     # Also load Browser Mod as a lovelace resource so it's accessible to Cast
-    resources = hass.data["lovelace"]["resources"]
+    resources = hass.data["lovelace"].resources
     if resources:
         if not resources.loaded:
             await resources.async_load()
