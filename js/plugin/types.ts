@@ -1,7 +1,7 @@
 const a = {};
 
 import { BrowserMod } from "./main";
-
+import { Context, ContextProvider } from "@lit/context";
 interface FullyKiosk {
   // Types from https://www.fully-kiosk.com/de/#websiteintegration
 
@@ -256,5 +256,8 @@ declare global {
     hassConnection?: Promise<any>;
     customCards?: [{}?];
     loadCardHelpers?: { () };
+  }
+  interface HomeAssistantMain {
+    __contextProviders?: ContextProvider<Context<unknown, unknown>, HTMLElement>[];
   }
 }
