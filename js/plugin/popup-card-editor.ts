@@ -16,7 +16,7 @@ const configSchema = [
   {
     name: "size",
     selector: {
-      select: { mode: "dropdown", options: ["normal", "wide", "fullscreen"] },
+      select: { mode: "dropdown", options: ["normal", "classic", "wide", "fullscreen"] },
     },
   },
   {
