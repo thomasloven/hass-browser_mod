@@ -83,6 +83,10 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         return self._data.get("player", {}).get("muted", False)
 
     @property
+    def source(self):
+        return self._data.get("player", {}).get("src", None)
+
+    @property
     def media_duration(self):
         duration = self._data.get("player", {}).get("media_duration", None)
         return float(duration) if duration is not None else None
@@ -96,6 +100,26 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     def media_position_updated_at(self):
         return dt.utcnow()
 
+    @property
+    def media_content_id(self):
+        return self._data.get("player", {}).get("extra", {}).get("media_content_id", None)
+
+    @property
+    def media_content_type(self):
+        return self._data.get("player", {}).get("extra", {}).get("media_content_type", None)
+
+    @property
+    def media_title(self):
+        return self._data.get("player", {}).get("extra", {}).get("title", None)
+
+    @property
+    def media_image_remotely_accessible(self):
+        return True if self._data.get("player", {}).get("extra", {}).get("thumb", None) else False
+
+    @property
+    def media_image_url(self):
+        return self._data.get("player", {}).get("extra", {}).get("thumb", None)
+
     async def async_set_volume_level(self, volume):
         await self.browser.send("player-set-volume", volume_level=volume)
 
@@ -103,6 +127,8 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         await self.browser.send("player-mute", mute=mute)
 
     async def async_play_media(self, media_type, media_id, **kwargs):
+        kwargs["extra"]["media_content_id"] = media_id
+        kwargs["extra"]["media_content_type"] = media_type
         if media_source.is_media_source_id(media_id):
             play_item = await media_source.async_resolve_media(
                 self.hass, media_id, self.entity_id
