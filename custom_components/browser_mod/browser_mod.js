@@ -142,9 +142,16 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
       }
-
+      .content {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+        outline: none !important;
+      }
       .content .container {
         padding: 8px 24px 20px 24px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+        outline: none !important;
       }
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
