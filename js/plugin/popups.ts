@@ -23,6 +23,7 @@ class BrowserModPopup extends LitElement {
   @property() dismissable;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
+  @property({ reflect: true }) classic;
   @property() _style;
   @query("ha-dialog") dialog: any;
   _autoclose;
@@ -191,6 +192,7 @@ class BrowserModPopup extends LitElement {
     };
     this.wide = size === "wide" ? "" : undefined;
     this.fullscreen = size === "fullscreen" ? "" : undefined;
+    this.classic = size === "classic" ? "" : undefined;
     this._style = style;
     this._autoclose = autoclose;
   }
@@ -364,6 +366,14 @@ class BrowserModPopup extends LitElement {
       }
       :host([wide]) .content {
         width: calc(90vw - 2 * var(--padding-x));
+      }
+
+      :host([classic]) ha-dialog {
+        --dialog-surface-margin-top: 40px;
+        --mdc-dialog-min-height: 10%;
+        --mdc-dialog-max-height: 100%;
+        --vertical-align-dialog: flex-start;
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
       }
 
       :host([fullscreen]) ha-dialog {
