@@ -97,6 +97,13 @@ data:
 
 ![Screenshot of a popup rendering the form described above](https://user-images.githubusercontent.com/1299821/182712670-f3b4fdb7-84a9-49d1-a26f-2cdaa450fa0e.png)
 
+**NOTE:** Some Home Assistant selectors may use another dialog for input. [Date](https://www.home-assistant.io/docs/blueprint/selectors/#date-selector) and [Date & Time](https://www.home-assistant.io/docs/blueprint/selectors/#date--time-selector) use a selector dialog for date & time. Browser Mod popups are not in the Home Assistant DOM hierachy so stacking will need to be adjusted by [styling](#styling-popups) the popup with th styles shown below. The Home Assistant top bar has a z-index of 4, so using a z-index of 5 will work in most cases, but your setup may vary so adjust to suit.
+
+```
+z-index: 5;
+position: absolute;
+```
+
 ## Actionable popups
 
 Example of a popup with actions opening more popups or calling Home Assistant services:
