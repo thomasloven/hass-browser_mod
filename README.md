@@ -1,4 +1,4 @@
-# browser_mod 2
+# browser_mod 2 (Phoenix)
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
@@ -16,8 +16,16 @@ What if you could change the more-info dialog for some entity to a dashboard car
 
 What if you could tap a button and have Home Assistant ask you which rooms you want the roomba to vacuum?
 
-\
-&nbsp;
+# Phoenix Version
+
+The Phoenix fork of Browser Mod 2 starts with Version 2.3.4. The version was made by @dcasplock given a backlog of PRs for the (main) repo by @thomasloven. Depending on actvity of the main repo, this fork may become the main repo and HACS adjusted accordingly.
+
+To use the Phoenix Versoin follow these steps:
+
+1. Uninstall the current HACS version (browser_mod)
+2. Add https://github.com/dcapslock/hass-browser_mod
+3. Download the latest Phoenix version (browser_mod_phx)
+4. Restart Home Assistant
 
 # Installation instructions
 
