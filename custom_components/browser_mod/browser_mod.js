@@ -192,6 +192,14 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         width: calc(90vw - 2 * var(--padding-x));
       }
 
+      :host([classic]) ha-dialog {
+        --dialog-surface-margin-top: 40px;
+        --mdc-dialog-min-height: 10%;
+        --mdc-dialog-max-height: 100%;
+        --vertical-align-dialog: flex-start;
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+      }
+
       :host([fullscreen]) ha-dialog {
         --mdc-dialog-min-width: 100vw;
         --mdc-dialog-max-width: 100vw;

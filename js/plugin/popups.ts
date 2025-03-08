@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { createContext, ContextProvider } from "@lit/context";
 import {
   provideHass,
   loadLoadCardHelpers,
@@ -22,6 +23,7 @@ class BrowserModPopup extends LitElement {
   @property() dismissable;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
+  @property({ reflect: true }) classic;
   @property() _style;
   @query("ha-dialog") dialog: any;
   _autoclose;
@@ -190,6 +192,7 @@ class BrowserModPopup extends LitElement {
     };
     this.wide = size === "wide" ? "" : undefined;
     this.fullscreen = size === "fullscreen" ? "" : undefined;
+    this.classic = size === "classic" ? "" : undefined;
     this._style = style;
     this._autoclose = autoclose;
   }
@@ -365,6 +368,14 @@ class BrowserModPopup extends LitElement {
         width: calc(90vw - 2 * var(--padding-x));
       }
 
+      :host([classic]) ha-dialog {
+        --dialog-surface-margin-top: 40px;
+        --mdc-dialog-min-height: 10%;
+        --mdc-dialog-max-height: 100%;
+        --vertical-align-dialog: flex-start;
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+      }
+
       :host([fullscreen]) ha-dialog {
         --mdc-dialog-min-width: 100vw;
         --mdc-dialog-max-width: 100vw;
@@ -420,6 +431,8 @@ export const PopupMixin = (SuperClass) => {
       this._popupEl = document.createElement("browser-mod-popup");
       document.body.append(this._popupEl);
 
+      this.setupContext();
+
       this._popupEl.addEventListener("hass-more-info", async (ev) => {
         ev.stopPropagation();
         const base = await hass_base_el();
@@ -446,6 +459,12 @@ export const PopupMixin = (SuperClass) => {
         base.dispatchEvent(ev);
       });
 
+      this._popupEl.addEventListener("show-dialog", async (ev) => {
+        ev.stopPropagation();
+        const base = await hass_base_el();
+        base.dispatchEvent(ev);
+      });
+
       const historyListener = async (ev) => {
         const popupState = ev.state?.browserModPopup;
         if (popupState) {
@@ -458,9 +477,34 @@ export const PopupMixin = (SuperClass) => {
       window.addEventListener("popstate", historyListener);
     }
 
+    async setupContext() {
+      this._popupEl.__contextProviders = [];
+      const base = await hass_base_el() as HomeAssistantMain;
+      if (base.__contextProviders) {
+        for (const [key, value] of Object.entries(base.__contextProviders)) {
+          const context = createContext<unknown, unknown>(key);
+          const contextProvider = new ContextProvider(this._popupEl, {
+            context: context,
+            initialValue: base.__contextProviders[key].value,
+          });
+          this._popupEl.__contextProviders[key] = contextProvider;       
+        }
+      }
+    }
+
+    async updateContext() {
+      const base = await hass_base_el() as HomeAssistantMain;
+      if (base.__contextProviders) {
+        for (const [key, context] of Object.entries(base.__contextProviders)) {
+          this._popupEl.__contextProviders[key].setValue(context.value);
+        }
+      }
+    }
+
     showPopup(...args) {
       (async () => {
         if (this._popupEl.open) await this._popupEl.do_close();
+        this.updateContext();
         if (history.state?.browserModPopup === undefined) {
           history.replaceState(
             {
