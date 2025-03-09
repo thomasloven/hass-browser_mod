@@ -97,10 +97,6 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         return float(position) if position is not None else None
 
     @property
-    def media_content_id(self):
-        return self._data.get("player", {}).get("src", None)
-
-    @property
     def media_position_updated_at(self):
         return dt.utcnow()
 
