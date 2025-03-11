@@ -35,7 +35,7 @@ loadConfigDashboard().then(() => {
           <div slot="actionItems">
             (${pjson.version})
             <a
-              href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
+              href="https://github.com/dcapslock/hass-browser_mod/blob/2.3.4/README.md"
               target="_blank"
             >
               <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>

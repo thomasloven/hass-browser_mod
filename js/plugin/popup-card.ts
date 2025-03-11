@@ -188,15 +188,14 @@ function findPopupCardConfig(lovelaceRoot, entity) {
   if (!customElements.get("popup-card"))
     customElements.define("popup-card", PopupCard);
 
-  let lovelaceRoot = null;
-  for (;;) {
+  let lovelaceRoot = await getLovelaceRoot(document);
+
+  window.addEventListener("location-changed", async () => {
     lovelaceRoot = await getLovelaceRoot(document);
-    if (lovelaceRoot) break;
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
+  });
 
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
-    if (ev.detail?.ignore_popup_card || !ev.detail?.entityId) return;
+    if (ev.detail?.ignore_popup_card || !ev.detail?.entityId || !lovelaceRoot) return;
     const cardConfig = findPopupCardConfig(lovelaceRoot, ev.detail?.entityId);
     if (cardConfig) {
       ev.stopPropagation();
