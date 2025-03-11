@@ -447,7 +447,7 @@ function e(e,t,s,i){var o,r=arguments.length,n=r<3?t:null===i?i=Object.getOwnPro
           <div slot="actionItems">
             (${ve})
             <a
-              href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
+              href="https://github.com/dcapslock/hass-browser_mod/blob/2.3.4/README.md"
               target="_blank"
             >
               <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
@@ -485,4 +485,4 @@ function e(e,t,s,i){var o,r=arguments.length,n=r<3?t:null===i?i=Object.getOwnPro
             color: var(--primary-text-color);
             text-decoration: none;
           }
-        `]}}e([le()],t.prototype,"hass",void 0),e([le()],t.prototype,"narrow",void 0),e([le()],t.prototype,"connection",void 0),customElements.define("browser-mod-panel",t)}));
+        `]}}e([ae()],t.prototype,"hass",void 0),e([ae()],t.prototype,"narrow",void 0),e([ae()],t.prototype,"connection",void 0),customElements.define("browser-mod-panel",t)}));

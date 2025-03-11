@@ -66,6 +66,7 @@ popup:
           mode: dropdown
           options:
             - normal
+            - classic
             - wide
             - fullscreen
     right_button:

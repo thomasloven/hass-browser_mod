@@ -158,9 +158,16 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
         --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
       }
-
+      .content {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+        outline: none !important;
+      }
       .content .container {
         padding: 8px 24px 20px 24px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+        outline: none !important;
       }
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
@@ -206,6 +213,14 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
       }
       :host([wide]) .content {
         width: calc(90vw - 2 * var(--padding-x));
+      }
+
+      :host([classic]) ha-dialog {
+        --dialog-surface-margin-top: 40px;
+        --mdc-dialog-min-height: 10%;
+        --mdc-dialog-max-height: 100%;
+        --vertical-align-dialog: flex-start;
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
       }
 
       :host([fullscreen]) ha-dialog {
@@ -355,7 +370,7 @@ const e="undefined"!=typeof globalThis&&globalThis||"undefined"!=typeof self&&se
       :host {
         display: none !important;
       }
-      :host([edit-mode="true"]) {
+      :host([preview]) {
         display: block !important;
         border: 1px solid var(--primary-color);
       }
