@@ -51,7 +51,7 @@ export const BrowserIDMixin = (SuperClass) => {
             .toString(16)
             .substring(1);
         };
-        return "browser_mod_" + (window.fully?.getDeviceId() ? window.fully.getDeviceId().replaceAll("-", "_") : `${s4()}${s4()}_${s4()}${s4()}`);
+        return "browser_mod_" + (window.fully?.getDeviceId() ? window.fully.getDeviceId().replace(/_/g,'-') : `${s4()}${s4()}_${s4()}${s4()}`);
       }
 
       if (id === "") id = _createBrowserID();
