@@ -20,6 +20,7 @@ class BrowserModPopup extends LitElement {
   @property() right_button;
   @property() left_button;
   @property() dismissable;
+  @property({ reflect: true }) show_progress;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
   @property() _style;
@@ -60,7 +61,9 @@ class BrowserModPopup extends LitElement {
       this._timeoutTimer = setInterval(() => {
         const ellapsed = new Date().getTime() - this._timeoutStart;
         const progress = (ellapsed / this.timeout) * 100;
-        this.style.setProperty("--progress", `${progress}%`);
+        if (this.show_progress) {
+          this.style.setProperty("--progress", `${progress}%`);
+        }
         if (ellapsed >= this.timeout) {
           clearInterval(this._timeoutTimer);
           this._timeout();
@@ -230,7 +233,7 @@ class BrowserModPopup extends LitElement {
         .scrimClickAction=${this.dismissable ? "close" : ""}
         .escapeKeyAction=${this.dismissable ? "close" : ""}
       >
-        ${this.timeout
+        ${this.timeout && this.show_progress
           ? html` <div slot="heading" class="progress"></div> `
           : ""}
         ${this.title
