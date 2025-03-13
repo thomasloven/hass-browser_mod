@@ -164,6 +164,7 @@ data:
   [autoclose: <true/FALSE>]
   [timeout: <number>]
   [timeout_action: <service call>]
+  [timeout_hide_progress: <true/FALSE>]
   [style: <string>]
   [browser_id: <Browser IDs>]
 ```
@@ -182,6 +183,7 @@ data:
 | `autoclose` | If true the dialog will close automatically when the mouse, screen or keyboard is touched. This will perform the `dismiss_action`. |
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
+| `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
 | `style` | CSS styles to apply to the dialog. |
 
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.
