@@ -179,7 +179,8 @@ function findPopupCardConfig(lovelaceRoot, entity) {
   return null;
 }
 
-(async () => {
+window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
+  ev.stopPropagation();
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
@@ -222,4 +223,4 @@ function findPopupCardConfig(lovelaceRoot, entity) {
       );
     }
   });
-})();
+});

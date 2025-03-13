@@ -250,7 +250,8 @@ class PopupCardEditor extends LitElement {
   }
 }
 
-(async () => {
+window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
+  ev.stopPropagation();
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
@@ -267,4 +268,4 @@ class PopupCardEditor extends LitElement {
         "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
     });
   }
-})();
+});

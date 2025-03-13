@@ -42,6 +42,7 @@ export class BrowserMod extends ServicesMixin(
     super();
     this.connect();
 
+    window.dispatchEvent(new Event("browser-mod-bootstrap"));
     console.info(
       `%cBROWSER_MOD ${pjson.version} IS INSTALLED
     %cBrowserID: ${this.browserID}`,
