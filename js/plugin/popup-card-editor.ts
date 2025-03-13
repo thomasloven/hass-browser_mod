@@ -65,6 +65,11 @@ const configSchema = [
     ],
   },
   {
+    name: "timeout_hide_progress" ,
+    label: "Hide timeout progress bar",
+    selector: { boolean: {} },
+  },
+  {
     type: "grid",
     schema: [
       {

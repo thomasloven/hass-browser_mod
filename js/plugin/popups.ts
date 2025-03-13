@@ -20,6 +20,7 @@ class BrowserModPopup extends LitElement {
   @property() right_button;
   @property() left_button;
   @property() dismissable;
+  @property({ reflect: true }) timeout_hide_progress;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
   @property({ reflect: true }) classic;
@@ -61,7 +62,9 @@ class BrowserModPopup extends LitElement {
       this._timeoutTimer = setInterval(() => {
         const ellapsed = new Date().getTime() - this._timeoutStart;
         const progress = (ellapsed / this.timeout) * 100;
-        this.style.setProperty("--progress", `${progress}%`);
+        if (!this.timeout_hide_progress) {
+          this.style.setProperty("--progress", `${progress}%`);
+        }
         if (ellapsed >= this.timeout) {
           clearInterval(this._timeoutTimer);
           this._timeout();
@@ -131,6 +134,7 @@ class BrowserModPopup extends LitElement {
       dismiss_action = undefined,
       timeout = undefined,
       timeout_action = undefined,
+      timeout_hide_progress = undefined,
       size = undefined,
       style = undefined,
       autoclose = false,
@@ -183,6 +187,7 @@ class BrowserModPopup extends LitElement {
 
     this.dismissable = dismissable;
     this.timeout = timeout;
+    this.timeout_hide_progress = timeout_hide_progress;
     this._actions = {
       right_button_action,
       left_button_action,
@@ -232,7 +237,7 @@ class BrowserModPopup extends LitElement {
         .scrimClickAction=${this.dismissable ? "close" : ""}
         .escapeKeyAction=${this.dismissable ? "close" : ""}
       >
-        ${this.timeout
+        ${this.timeout && !this.timeout_hide_progress
           ? html` <div slot="heading" class="progress"></div> `
           : ""}
         ${this.title
@@ -480,7 +485,7 @@ export const PopupMixin = (SuperClass) => {
       };
       window.addEventListener("popstate", historyListener);
 
-      // Pass on the context request to hass base elemt as we are outside its DOM tree
+      // Pass on the context request to hass base element as we are outside its DOM tree
       // Not using @lit/context as it does not work on older devices
       // Rather we patch through to hass base
       this._popupEl.addEventListener("context-request", async (ev) => {
