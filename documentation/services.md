@@ -154,7 +154,7 @@ service: browser_mod.popup
 data:
   [title: <string>]
   content: <string / Dashboard card configuration / ha-form schema>
-  [size: <NORMAL/wide/fullscreen>]
+  [size: <NORMAL/classic/wide/fullscreen>]
   [right_button: <string>]
   [right_button_action: <service call>]
   [left_button: <string>]
@@ -164,6 +164,7 @@ data:
   [autoclose: <true/FALSE>]
   [timeout: <number>]
   [timeout_action: <service call>]
+  [timeout_hide_progress: <true/FALSE>]
   [style: <string>]
   [browser_id: <Browser IDs>]
 ```
@@ -172,7 +173,7 @@ data:
 |---|---|
 |`title` | The title of the popup window.|
 |`content`| HTML, a dashboard card configuration or ha-form schema to display.|
-| `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. |
+| `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices |
 | `right_button`| The text of the right action button.|
 | `right_button_action`| Action to perform when the right action button is pressed. |
 | `left_button`| The text of the left action button.|
@@ -182,6 +183,7 @@ data:
 | `autoclose` | If true the dialog will close automatically when the mouse, screen or keyboard is touched. This will perform the `dismiss_action`. |
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
+| `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
 | `style` | CSS styles to apply to the dialog. |
 
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.

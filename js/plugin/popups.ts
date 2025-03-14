@@ -20,8 +20,10 @@ class BrowserModPopup extends LitElement {
   @property() right_button;
   @property() left_button;
   @property() dismissable;
+  @property({ reflect: true }) timeout_hide_progress;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
+  @property({ reflect: true }) classic;
   @property() _style;
   @query("ha-dialog") dialog: any;
   _autoclose;
@@ -60,7 +62,9 @@ class BrowserModPopup extends LitElement {
       this._timeoutTimer = setInterval(() => {
         const ellapsed = new Date().getTime() - this._timeoutStart;
         const progress = (ellapsed / this.timeout) * 100;
-        this.style.setProperty("--progress", `${progress}%`);
+        if (!this.timeout_hide_progress) {
+          this.style.setProperty("--progress", `${progress}%`);
+        }
         if (ellapsed >= this.timeout) {
           clearInterval(this._timeoutTimer);
           this._timeout();
@@ -130,6 +134,7 @@ class BrowserModPopup extends LitElement {
       dismiss_action = undefined,
       timeout = undefined,
       timeout_action = undefined,
+      timeout_hide_progress = undefined,
       size = undefined,
       style = undefined,
       autoclose = false,
@@ -182,6 +187,7 @@ class BrowserModPopup extends LitElement {
 
     this.dismissable = dismissable;
     this.timeout = timeout;
+    this.timeout_hide_progress = timeout_hide_progress;
     this._actions = {
       right_button_action,
       left_button_action,
@@ -190,6 +196,7 @@ class BrowserModPopup extends LitElement {
     };
     this.wide = size === "wide" ? "" : undefined;
     this.fullscreen = size === "fullscreen" ? "" : undefined;
+    this.classic = size === "classic" ? "" : undefined;
     this._style = style;
     this._autoclose = autoclose;
   }
@@ -230,7 +237,7 @@ class BrowserModPopup extends LitElement {
         .scrimClickAction=${this.dismissable ? "close" : ""}
         .escapeKeyAction=${this.dismissable ? "close" : ""}
       >
-        ${this.timeout
+        ${this.timeout && !this.timeout_hide_progress
           ? html` <div slot="heading" class="progress"></div> `
           : ""}
         ${this.title
@@ -315,9 +322,16 @@ class BrowserModPopup extends LitElement {
         --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
       }
-
+      .content {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+        outline: none !important;
+      }
       .content .container {
         padding: 8px 24px 20px 24px;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-focus-ring-color: rgba(0, 0, 0, 0);
+        outline: none !important;
       }
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
@@ -363,6 +377,14 @@ class BrowserModPopup extends LitElement {
       }
       :host([wide]) .content {
         width: calc(90vw - 2 * var(--padding-x));
+      }
+
+      :host([classic]) ha-dialog {
+        --dialog-surface-margin-top: 40px;
+        --mdc-dialog-min-height: 10%;
+        --mdc-dialog-max-height: 100%;
+        --vertical-align-dialog: flex-start;
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
       }
 
       :host([fullscreen]) ha-dialog {
@@ -446,6 +468,12 @@ export const PopupMixin = (SuperClass) => {
         base.dispatchEvent(ev);
       });
 
+      this._popupEl.addEventListener("show-dialog", async (ev) => {
+        ev.stopPropagation();
+        const base = await hass_base_el();
+        base.dispatchEvent(ev);
+      });
+
       const historyListener = async (ev) => {
         const popupState = ev.state?.browserModPopup;
         if (popupState) {
@@ -456,6 +484,14 @@ export const PopupMixin = (SuperClass) => {
         }
       };
       window.addEventListener("popstate", historyListener);
+
+      // Pass on the context request to hass base element as we are outside its DOM tree
+      // Not using @lit/context as it does not work on older devices
+      // Rather we patch through to hass base
+      this._popupEl.addEventListener("context-request", async (ev) => {
+        const base = await hass_base_el() as any;
+        base.__contextProviders[ev.context].onContextRequest(ev);
+      });
     }
 
     showPopup(...args) {

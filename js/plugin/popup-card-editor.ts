@@ -16,7 +16,7 @@ const configSchema = [
   {
     name: "size",
     selector: {
-      select: { mode: "dropdown", options: ["normal", "wide", "fullscreen"] },
+      select: { mode: "dropdown", options: ["normal", "classic", "wide", "fullscreen"] },
     },
   },
   {
@@ -63,6 +63,11 @@ const configSchema = [
         selector: { number: { mode: "box" } },
       },
     ],
+  },
+  {
+    name: "timeout_hide_progress" ,
+    label: "Hide timeout progress bar",
+    selector: { boolean: {} },
   },
   {
     type: "grid",
@@ -250,7 +255,8 @@ class PopupCardEditor extends LitElement {
   }
 }
 
-(async () => {
+window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
+  ev.stopPropagation();
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
@@ -267,4 +273,4 @@ class PopupCardEditor extends LitElement {
         "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
     });
   }
-})();
+});

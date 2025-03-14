@@ -1,4 +1,4 @@
-import { hass_base_el, selectTree } from "../helpers";
+import { getLovelaceRoot, hass_base_el } from "../helpers";
 
 export const ServicesMixin = (SuperClass) => {
   return class ServicesMixinClass extends SuperClass {
@@ -168,21 +168,7 @@ export const ServicesMixin = (SuperClass) => {
         case "javascript":
           // Reload Lovelace function
           const lovelace_reload = async () => {
-            let root = await selectTree(
-              document,
-              "home-assistant$home-assistant-main$ha-panel-lovelace$hui-root"
-            );
-            if (!root)
-              root = await selectTree(
-                document,
-                "hc-main $ hc-lovelace $ hui-view"
-              );
-            if (!root)
-              root = await selectTree(
-                document,
-                "hc-main $ hc-lovelace $ hui-panel-view"
-              );
-
+            let root = await getLovelaceRoot(document);
             if (root) root.dispatchEvent(new CustomEvent("config-refresh"));
           };
 

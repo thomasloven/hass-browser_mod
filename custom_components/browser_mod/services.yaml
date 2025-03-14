@@ -66,6 +66,7 @@ popup:
           mode: dropdown
           options:
             - normal
+            - classic
             - wide
             - fullscreen
     right_button:
@@ -116,6 +117,11 @@ popup:
       description: Action to perform when popup is closed by timeout
       selector:
         object:
+    timeout_hide_progress:
+      name: Hide timeout progress
+      description: Hide timeout progress bar
+      selector:
+        boolean:
     style:
       name: Styles
       description: CSS code to apply to the popup window
