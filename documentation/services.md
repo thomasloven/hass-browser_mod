@@ -8,7 +8,8 @@ Service parameters are described using the following conventions:
   - `<number>` is a number
   - `<TRUE/false>` means the value must be either `true` or `false` with `true` being the default
   - `<service call>` means a full service call specification. Note that this can be any service, not just Browser Mod services
-  - `<Browser IDs>` is a list of BrowserIDs
+  - `<Browser IDs>` is a list of Browser IDs
+  - `<Users>` is a list of Home Assistant Users by Person Entity of User ID (being the user_id attribute of a person). The UI will use select from Persons.
 
 - Square brackets `[ ]` indicate that a parameter is optional and can be omitted.
 
@@ -33,13 +34,13 @@ The first way is as a *server* call. This is when the service is called from a s
 
 The second way is as a *browser* call. This is when the service is called from a dashboard `fire-dom-event` action, as a part of a `browser_mod.sequence` call or as a `browser_mod.popup` `_action`.
 
-The notable difference between the two is when no target (`browser_id`) is specified, in which case:
+The notable difference between the two is when no target (`browser_id` or `user_id`) is specified, in which case:
 - A *server* call will perform the service on ALL REGISTERED BROWSERS.
 - A *browser* call will perform the service on THE CURRENT BROWSER, i.e. the browser it was called from.
 
 ---
 
-Finally, in *browser* calls, a parameter `browser_id` with the value `THIS` will be replaced with the current Browsers browser ID.
+Finally, in *browser* calls there is `browser_id` and `user_id` replacements of `THIS` available. A parameter `browser_id` with the value `THIS` will be replaced with the current Browsers browser ID. A parameter `user_id` with the value of `THIS` will be replaced by the logged in user ID.
 
 Ex:
 
@@ -67,10 +68,9 @@ Will print `"Button was clicked in 79be65e8-f06c78f" to the Home Assistant log.
 
 # Calling services
 
-Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through their device:
-![A picture exemplifying setting up a browser_mod.more_info service call in the GUI editor](https://user-images.githubusercontent.com/1299821/180668350-1cbe751d-615d-4102-b939-e49e9cd2ca74.png)
+Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through via Browser ID or User ID.
 
-In yaml, the BrowserID can be used for targeting a specific browser:
+In yaml, the Browser ID or User ID can be used for targeting a specific browser:
 
 ```yaml
 service: browser_mod.more_info
@@ -78,9 +78,11 @@ data:
   entity: light.bed_light
   browser_id:
     - 79be65e8-f06c78f
+  user_id:
+    - person.bob
 ```
 
-If no target or `browser_id` is specified, the service will target all registerd Browsers.
+If no target, either `browser_id` or `user_id` is specified, the service will target all registerd Browsers.
 
 To call a service from a dashboard use the call-service [action](https://www.home-assistant.io/dashboards/actions/) or the special action `fire-dom-event`:
 
@@ -99,7 +101,7 @@ Services called via `fire-dom-event` or called as a part of a different service 
 
 # Browser Mod Services
 
-> Note: Since `browser_id` is common for all services it is not explained further.
+> Note: Since `browser_id` and `user_id` are common for all services they are not explained further.
 
 ## `browser_mod.navigate`
 
@@ -257,13 +259,16 @@ data:
     - <service call>
     - ...
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
 |---|---|
 |`sequence` | List of actions to perform. |
 
-Note that if `browser_id` is omitted in the service calls listed in `sequence` the services will be performed on the Browser that's targeted as a whole rather than all browsers.
+Note that if `browser_id` and `user_id` is omitted in the service calls listed in `sequence` the services will be performed on the Browser that's targeted as a whole rather than all browsers. 
+
+TIP: To target browsers matching the current loggded in user ID you can use `user_id: THIS`. This may be useful when you have a number of panels logged in as a viewing account and wish for the sequence to be performed on all the panels.
 
 ## `browser_mod.delay`
 
