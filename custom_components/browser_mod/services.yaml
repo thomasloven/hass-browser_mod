@@ -3,13 +3,21 @@ sequence:
   description: "Run a sequence of services"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     sequence:
       name: Actions
       description: List of services to run
@@ -21,13 +29,21 @@ delay:
   description: "Wait for a time"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     time:
       name: Time
       description: Time to wait (ms)
@@ -40,13 +56,21 @@ popup:
   description: "Display a popup"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     title:
       name: Title
       description: "Popup title"
@@ -134,13 +158,21 @@ more_info:
   description: "Show more-info dialog"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     entity:
       name: Entity ID
       description: ""
@@ -165,26 +197,42 @@ close_popup:
   description: "Close a popup"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
 
 notification:
   name: notification
   description: "Display a short notification"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     message:
       name: Message
       description: "Message to display"
@@ -213,13 +261,21 @@ navigate:
   description: "Navigate browser to a different page"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+      user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     path:
       name: Path
       description: "Target path"
@@ -231,26 +287,42 @@ refresh:
   description: "Refresh page"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
 
 set_theme:
   name: set_theme
   description: "Change the current theme"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     theme:
       name: Theme
       description: "Name of theme or 'auto'"
@@ -281,13 +353,21 @@ console:
   description: "Print text to browser console"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     message:
       name: Message
       description: "Text to print"
@@ -299,13 +379,21 @@ javascript:
   description: "Run arbitrary JavaScript code"
   fields:
     browser_id:
-      name: Target
+      name: Target Browser
       description: ""
       selector:
         device:
           multiple: true
           filter:
             integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     code:
       name: Code
       description: "JavaScript code to run"
