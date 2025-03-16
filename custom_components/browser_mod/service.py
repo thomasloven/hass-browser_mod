@@ -76,6 +76,8 @@ async def async_setup_services(hass):
                 userId = template.state_attr(hass, user, "user_id")
                 if userId:
                     userIDs.add(userId)
+                else:
+                    userIDs.add(user)
 
         targets = {"browsers": browserIDs, "users": userIDs}
 
