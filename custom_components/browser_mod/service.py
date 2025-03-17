@@ -22,10 +22,10 @@ async def async_setup_services(hass):
         # If no targets were specified, send to all browsers
         if browserTargets is None and userTargets is None:
             browserTargets = browsers.keys()
-        else:
+        elif browserTargets is None and userTargets is not None:
             browserTargets = []
 
-        if len(userTargets):
+        if userTargets is not None and len(userTargets):
             for userId in userTargets:
                 for key, browser in browsers.items():
                     if browser.data.get("browser", {}).get("userData", {}).get("id") == userId:
