@@ -68,7 +68,7 @@ Will print `"Button was clicked in 79be65e8-f06c78f" to the Home Assistant log.
 
 # Calling services
 
-Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through via Browser ID or User ID.
+Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through via Browser ID or User ID. User ID can be a person entity or the user_id of the user.
 
 In yaml, the Browser ID or User ID can be used for targeting a specific browser:
 
@@ -80,6 +80,7 @@ data:
     - 79be65e8-f06c78f
   user_id:
     - person.bob
+    - 304450996c654be69b79d7304951b9b7
 ```
 
 If no target, either `browser_id` or `user_id` is specified, the service will target all registerd Browsers.
@@ -112,6 +113,7 @@ service: browser_mod.navigate
 data:
   path: <string>
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
@@ -126,6 +128,7 @@ Reload the current page.
 service: browser_mod.refresh
 data:
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 ## `browser_mod.more_info`
@@ -139,6 +142,7 @@ data:
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
@@ -169,6 +173,7 @@ data:
   [timeout_hide_progress: <true/FALSE>]
   [style: <string>]
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
@@ -203,6 +208,7 @@ Close any currently open popup or more-info dialog.
 service: browser_mod.close_popup
 data:
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 ## `browser_mod.notification`
@@ -216,6 +222,8 @@ data:
   [duration: <number>]
   [action_text: <string>]
   [action: <service call>]
+  [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 |||
@@ -236,6 +244,8 @@ data:
   [dark: <AUTO/dark/light>]
   [primaryColor: <RGB color>]
   [accentColor: <RGB color>]
+  [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 `<RGB color>` is either a list of three RGB values 0-255 (ex: `[0, 128, 128]`) or a six digit hex color value (ex: `"#800080"`).
@@ -279,6 +289,7 @@ service: browser_mod.delay
 data:
   time: <number>
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
@@ -296,6 +307,7 @@ service: browser_mod.console
 data:
   message: <string>
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
@@ -311,6 +323,7 @@ service: browser_mod.javascript
 data:
   code: <string>
   [browser_id: <Browser IDs>]
+  [user_id: <User IDs]
 ```
 
 | | |
