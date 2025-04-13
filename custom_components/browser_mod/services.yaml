@@ -402,7 +402,7 @@ javascript:
 
 deregister_browser:
   name: deregister_browser
-  description: "Deregister a browser"
+  description: "Deregister a browser. Include at leaset one paremeter. Calling wiith either exclude parameter will deregister all browsers except those excluded."
   fields:
     browser_id:
       name: Target Browsers
