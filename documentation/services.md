@@ -339,3 +339,23 @@ Some helpful functions that are available:
 - `log(message)` - Print `message` to the Home Assistant log
 - `lovelace_reload()` - Reload lovelace configuration
 The `hass` frontend object is available as global variable `hass`.
+
+## `browser_mod.deregister_browser`
+
+```yaml
+services: browser_mod.deregister_browser
+data:
+  [browser_id: <Browser IDs>]
+  [browser_id_exclude: <Browser IDs>]
+  [area_id_exclude: <Area IDs>]
+```
+
+Degreisters browsers including those no longer reporting: removes entities, devices and cleans up the Browser Mod data store. If you deregister a browser that is currently active, it will be recreated if Auto Registration is currently active. However all specific browser settings will have been removed.
+
+When calling `browser_mod.deregister_browser`, one of `browser_id`, `browser_id_exclude` or `area_id_exclude` needs to be set. To tidy up a current installation, run `browser_mod.deregister_browser`with with one of the `_exclude` parameters. If you wish to use this regularly to clean up auto registered browsers, it is recommended to use areas to be able to exclude those areas. Alternative, turn off Auto Registration once your installation is stable.
+
+| | |
+|---|---|
+|`browser_id` | Single or list or browsers to deregister. If included these browsers will be deregistered. |
+|`browser_id_exclude` | Single or list or browsers to exclude from deregister. |
+|`area_id_exclude` | Single or list or areas to exclude from deregister. |

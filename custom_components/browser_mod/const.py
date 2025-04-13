@@ -18,7 +18,7 @@ WS_SETTINGS = f"{WS_ROOT}/settings"
 WS_RECALL_ID = f"{WS_ROOT}/recall_id"
 WS_LOG = f"{WS_ROOT}/log"
 
-BROWSER_MOD_SERVICES = [
+BROWSER_MOD_BROWSER_SERVICES = [
     "sequence",
     "delay",
     "popup",
@@ -30,4 +30,8 @@ BROWSER_MOD_SERVICES = [
     "set_theme",
     "console",
     "javascript",
+]
+
+BROWSER_MOD_COMPONENT_SERVICES = [
+    "deregister_browser",
 ]

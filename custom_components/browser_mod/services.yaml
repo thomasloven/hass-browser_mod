@@ -399,3 +399,32 @@ javascript:
       description: "JavaScript code to run"
       selector:
         object:
+
+deregister_browser:
+  name: deregister_browser
+  description: "Deregister a browser"
+  fields:
+    browser_id:
+      name: Target Browsers
+      description: ""
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
+    browser_id_exclude:
+      name: Browsers to exclude
+      description: "Exclude browser from deregister"
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
+    area_id_exclude:
+      name: Areas to exclude
+      description: "Exclude browsers in area from deregister"
+      selector:
+        area:
+          multiple: true
+          entity:
+            integration: "browser_mod"
