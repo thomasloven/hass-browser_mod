@@ -71,6 +71,20 @@ export async function getLovelaceRoot(document) {
   }
 }
 
+export async function getMoreInfoDialogHADialog() {
+  const base: any = await hass_base_el();
+  let haDialog = undefined;
+  if (base) {
+    const dialog: any = base.shadowRoot.querySelector(
+      "ha-more-info-dialog"
+    );
+    if (dialog) {
+      haDialog = dialog.shadowRoot.querySelector("ha-dialog");
+    }
+  }
+  return haDialog;
+}
+
 export async function hass_base_el() {
   await Promise.race([
     customElements.whenDefined("home-assistant"),

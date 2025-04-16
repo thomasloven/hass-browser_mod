@@ -6,6 +6,7 @@ import {
   loadLoadCardHelpers,
   hass_base_el,
   selectTree,
+  getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 
@@ -520,9 +521,15 @@ export const PopupMixin = (SuperClass) => {
       })();
     }
 
-    closePopup(...args) {
+    async closePopup(...args) {
       this._popupEl.closeDialog();
-      this.showMoreInfo("");
+      // Prefer closing ha-dialog directly as this is better for issues when webRTC is used on dialog
+      const haDialog = await getMoreInfoDialogHADialog();
+      if (haDialog) {
+        haDialog.close();
+      } else {
+        this.showMoreInfo("");
+      }
     }
 
     async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {

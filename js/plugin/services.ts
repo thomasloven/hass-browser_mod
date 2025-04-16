@@ -121,7 +121,7 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "close_popup":
-          this.closePopup();
+          await this.closePopup();
           break;
 
         case "navigate":
