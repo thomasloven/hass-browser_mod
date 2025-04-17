@@ -23,10 +23,9 @@ The Phoenix fork of Browser Mod 2 starts with Version 2.3.4. The version was mad
 To use the Phoenix Versoin follow these steps:
 
 1. Uninstall the current HACS version (browser_mod)
-3. Add ```https://github.com/dcapslock/hass-browser_mod``` as a [custom HACS reporistory](https://www.hacs.xyz/docs/faq/custom_repositories/) (Integration)
-4. Download the latest Phoenix version (browser_mod_phx)
-5. Check dashboard resources for any old reference to broswer_mod.js (e.g. /browser_mod.js?automatically-added&2.3.3). Remove if present.
-6. Restart Home Assistant
+2. Add ```https://github.com/dcapslock/hass-browser_mod``` as a [custom HACS reporistory](https://www.hacs.xyz/docs/faq/custom_repositories/) (Integration)
+3. Download the latest Phoenix version (browser_mod_phx). As of v2.3.5, dashboard resource will be correctly updated with latest version.
+4. Restart Home Assistant
 
 # Installation instructions
 
