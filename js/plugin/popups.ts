@@ -488,8 +488,10 @@ export const PopupMixin = (SuperClass) => {
 
       // Pass on the context request to hass base element as we are outside its DOM tree
       // Not using @lit/context as it does not work on older devices
-      // Rather we patch through to hass base
+      // Rather we patch through to hass base, first providing an empty object via callback
+      // to stop errors on cards accessing context properties on an undefined value
       this._popupEl.addEventListener("context-request", async (ev) => {
+        ev.callback({}, (value: any, unsubscribe: any) => { void(0); });
         const base = await hass_base_el() as any;
         base.__contextProviders[ev.context].onContextRequest(ev);
       });
