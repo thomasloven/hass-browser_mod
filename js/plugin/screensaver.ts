@@ -40,8 +40,6 @@ export const ScreenSaverMixin = (SuperClass) => {
       this.addEventListener("browser-mod-connected", () =>
         this.send_screen_status()
       );
-
-      this.connectionPromise.then(() => this._screen_on());
     }
 
     send_screen_status() {

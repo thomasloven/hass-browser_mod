@@ -6,6 +6,7 @@ import {
   loadLoadCardHelpers,
   hass_base_el,
   selectTree,
+  getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 
@@ -485,12 +486,17 @@ export const PopupMixin = (SuperClass) => {
       };
       window.addEventListener("popstate", historyListener);
 
+      this._contextProviderValues = [];
       // Pass on the context request to hass base element as we are outside its DOM tree
       // Not using @lit/context as it does not work on older devices
-      // Rather we patch through to hass base
+      // Rather we patch through to hass base, first providing the last known context value
+      // to manage any issues with cards and contexts. e.g. history card.
       this._popupEl.addEventListener("context-request", async (ev) => {
+        const value = (ev.context in this._contextProviderValues) ? this._contextProviderValues[ev.context] : {};
+        ev.callback(value, (value: any, unsubscribe: any) => { void(0); });
         const base = await hass_base_el() as any;
         base.__contextProviders[ev.context].onContextRequest(ev);
+        this._contextProviderValues[ev.context] =base.__contextProviders[ev.context].value;
       });
     }
 
@@ -520,9 +526,15 @@ export const PopupMixin = (SuperClass) => {
       })();
     }
 
-    closePopup(...args) {
+    async closePopup(...args) {
       this._popupEl.closeDialog();
-      this.showMoreInfo("");
+      // Prefer closing ha-dialog directly as this is better for issues when webRTC is used on dialog
+      const haDialog = await getMoreInfoDialogHADialog();
+      if (haDialog) {
+        haDialog.close();
+      } else {
+        this.showMoreInfo("");
+      }
     }
 
     async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {

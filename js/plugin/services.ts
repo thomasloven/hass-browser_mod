@@ -45,10 +45,11 @@ export const ServicesMixin = (SuperClass) => {
       let _service: String = service;
       if (
         (!_service.startsWith("browser_mod.") && _service.includes(".")) ||
-        data.browser_id !== undefined
+        data.browser_id !== undefined || data.user_id !== undefined
       ) {
         const d = { ...data };
         if (d.browser_id === "THIS") d.browser_id = this.browserID;
+        if (d.user_id === "THIS") d.user_id = this.hass?.user.id;
         // CALL HOME ASSISTANT SERVICE
         const [domain, srv] = _service.split(".");
         return this.hass.callService(domain, srv, d);
@@ -120,7 +121,7 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "close_popup":
-          this.closePopup();
+          await this.closePopup();
           break;
 
         case "navigate":

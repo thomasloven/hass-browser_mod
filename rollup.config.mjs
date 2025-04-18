@@ -6,7 +6,7 @@ import babel from "@rollup/plugin-babel";
 
 const dev = process.env.ROLLUP_WATCH;
 
-module.exports = [
+export default [
   {
     input: "js/plugin/main.ts",
     output: {
@@ -17,7 +17,7 @@ module.exports = [
       nodeResolve(),
       json(),
       typescript(),
-      babel({
+      babel.babel({
         exclude: "node_modules/**",
       }),
       !dev && terser({ format: { comments: false } }),
@@ -33,7 +33,7 @@ module.exports = [
       nodeResolve(),
       json(),
       typescript(),
-      babel({
+      babel.babel({
         exclude: "node_modules/**",
       }),
       !dev && terser({ format: { comments: false } }),
