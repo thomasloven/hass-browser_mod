@@ -18,7 +18,7 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 
 # Phoenix Version
 
-The Phoenix fork of Browser Mod 2 starts with Version 2.3.4. The version was made by @dcasplock given a backlog of PRs for the (main) repo by @thomasloven. Depending on actvity of the main repo, this fork may become the main repo and HACS adjusted accordingly.
+The Phoenix fork of Browser Mod 2 starts with Version 2.3.4. The version was made by @dcapslock given a backlog of PRs for the (main) repo by @thomasloven. Depending on actvity of the main repo, this fork may become the main repo and HACS adjusted accordingly.
 
 To use the Phoenix Versoin follow these steps:
 
