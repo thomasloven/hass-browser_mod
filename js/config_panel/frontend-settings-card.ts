@@ -243,7 +243,20 @@ class BrowserModFrontendSettingsCard extends LitElement {
               }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
-        </div>
+          <ha-expansion-panel
+            .header=${"Save screen state"}
+            .secondary=${"Save screen state when browser is disconnected"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"saveScreenState"}
+              .settingSelector=${{
+                boolean: {},
+                label: "Save screen state",
+              }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>        </div>
       </ha-card>
     `;
   }
