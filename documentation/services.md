@@ -252,6 +252,7 @@ data:
   [timeout: <number>]
   [timeout_action: <service call>]
   [timeout_hide_progress: <true/FALSE>]
+  [allow_nested_more_info: <true/FALSE>]
   [style: <string>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs]
@@ -272,9 +273,10 @@ data:
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
 | `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
+| `allow_nested_more_info` | If true nested Home Assistant more-info popups are allowed without closing the popup. |
 | `style` | CSS styles to apply to the dialog. |
 
-Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.
+Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` or `user_id` is given.
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
 

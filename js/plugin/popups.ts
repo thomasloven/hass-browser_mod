@@ -6,6 +6,7 @@ import {
   loadLoadCardHelpers,
   hass_base_el,
   selectTree,
+  getMoreInfoDialog,
   getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
@@ -36,6 +37,7 @@ class BrowserModPopup extends LitElement {
   _resolveClosed;
   _formdata;
   card_mod;
+  _allowNestedMoreInfo;
 
   async closeDialog() {
     this.open = false;
@@ -53,6 +55,16 @@ class BrowserModPopup extends LitElement {
     if ((this as any)._cardMod?.[0]) {
       (this as any)._cardMod[0].styles = "";
     }
+    this.dispatchEvent(
+      new CustomEvent("browser-mod-style-hass-more-info-dialog", {
+        bubbles: false,
+        composed: false,
+        cancelable: false,
+        detail: {
+          apply: false,
+        },
+      })
+    );
   }
 
   openDialog() {
@@ -140,6 +152,7 @@ class BrowserModPopup extends LitElement {
       style = undefined,
       autoclose = false,
       card_mod = undefined,
+      allow_nested_more_info = false,
     } = {}
   ) {
     this._formdata = undefined;
@@ -200,6 +213,7 @@ class BrowserModPopup extends LitElement {
     this.classic = size === "classic" ? "" : undefined;
     this._style = style;
     this._autoclose = autoclose;
+    this._allowNestedMoreInfo = allow_nested_more_info;
   }
 
   async do_close() {
@@ -446,9 +460,47 @@ export const PopupMixin = (SuperClass) => {
       this._popupEl.addEventListener("hass-more-info", async (ev) => {
         ev.stopPropagation();
         const base = await hass_base_el();
-        this._popupEl.do_close();
-        // this._popupEl.style.display = "none";
+        if (this._popupEl?._allowNestedMoreInfo) {
+          if (ev.detail?.ignore_popup_card === undefined) {
+            ev.detail.ignore_popup_card = true;
+          }
+        } else {
+          this._popupEl.do_close();
+        }
         base.dispatchEvent(ev);
+        this._popupEl.dispatchEvent(
+          new CustomEvent("browser-mod-style-hass-more-info-dialog", {
+            bubbles: false,
+            composed: false,
+            cancelable: false,
+            detail: {
+              apply: true,
+            },
+          })
+        );
+      });
+
+      this._popupEl.addEventListener("browser-mod-style-hass-more-info-dialog", async (ev: CustomEvent) => {
+        if (!this._popupEl?._allowNestedMoreInfo) return;
+        const hassMoreInfoDialog = await getMoreInfoDialog(true);
+        if (hassMoreInfoDialog) {
+          let styleEl = hassMoreInfoDialog.shadowRoot.querySelector("#browser-mod-style");
+          if (!styleEl) {
+            styleEl = document.createElement("style");
+            styleEl.id = "browser-mod-style";
+            styleEl.innerHTML = `
+            :host([browser-mod-nested]) ha-dialog {
+              position: fixed !important;
+              z-index: 999 !important;
+            }`;
+            hassMoreInfoDialog.shadowRoot.appendChild(styleEl);
+          }
+          if (ev.detail?.apply) {
+            hassMoreInfoDialog.setAttribute("browser-mod-nested", "");
+          } else {
+            hassMoreInfoDialog.removeAttribute("browser-mod-nested");
+          }
+        }
       });
 
       this._popupEl.addEventListener("hass-action", async (ev: CustomEvent) => {
@@ -553,6 +605,18 @@ export const PopupMixin = (SuperClass) => {
           "ha-more-info-dialog"
         );
         if (dialog) dialog.large = true;
+      }
+      if (this._popupEl?.open) {
+        this._popupEl.dispatchEvent(
+          new CustomEvent("browser-mod-style-hass-more-info-dialog", {
+            bubbles: false,
+            composed: false,
+            cancelable: false,
+            detail: {
+              apply: true,
+            },
+          })
+        );
       }
     }
   };

@@ -85,6 +85,11 @@ const configSchema = [
     ],
   },
   {
+    name: "allow_nested_more_info",
+    label: "Allow nested more-info dialogs",
+    selector: { boolean: {} },
+  },
+  {
     name: "style",
     label: "CSS style",
     selector: { text: { multiline: true } },
