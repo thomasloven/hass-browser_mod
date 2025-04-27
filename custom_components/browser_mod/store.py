@@ -23,6 +23,7 @@ class SettingsStoreData:
     hideInteractIcon = attr.ib(type=bool, default=None)
     autoRegister = attr.ib(type=bool, default=None)
     lockRegister = attr.ib(type=bool, default=None)
+    saveScreenState = attr.ib(type=bool, default=None)
 
     @classmethod
     def from_dict(cls, data):

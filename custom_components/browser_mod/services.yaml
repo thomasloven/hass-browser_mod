@@ -146,6 +146,11 @@ popup:
       description: Hide timeout progress bar
       selector:
         boolean:
+    allow_nested_more_info:
+      name: Allow nested more-info dialogs
+      description: Allow nested more-info dialogs to be opened from this popup
+      selector:
+        boolean:
     style:
       name: Styles
       description: CSS code to apply to the popup window

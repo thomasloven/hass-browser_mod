@@ -98,7 +98,88 @@ tap_action:
 
 Services called via `fire-dom-event` or called as a part of a different service call will (by default) _only_ target the current Browser (even if it's not registered).
 
+# Actions
 
+Wherever an action is used (`*_action:` in `browser_mod.popup` and `action:` in `browser_mod.notification`), both old style `service:` and new style `action:` can be used. Also actions can be a list allowing for several actions to be called. This can be useful if you only have server actions to run. Otherwise, if you have browser calls you are best to use `broswer_mod.sequence`.
+
+All styles below are valid since Version 2.3.6.
+
+#### New Style
+```yaml
+action: browser_mod.popup
+data:
+  content: Popup Content
+  right_button: Toggle Light
+  right_button_action:
+    action: light.toggle
+    target:
+      entity_id: light.bed_light
+```
+
+#### New style with action list
+```yaml
+action: browser_mod.popup
+data:
+  content: Popup Content
+  right_button: Wakeup
+  right_button_action:
+    - action: light.turn_off
+      target:
+        entity_id: light.bed_light
+    - action: cover.open_cover
+      target:
+        entity_id: cover.kitchen_cover
+```
+
+#### Old Style
+```yaml
+action: browser_mod.popup
+data:
+  content: Popup Content
+  right_button: Toggle Light
+  right_button_action:
+    service: light.toggle
+    data:
+      entity_id: light.bed_light
+```
+
+It is possible to allow for fields in scripts/blueprints to use the `action:` selector and then pass directly to any action parameter. __NOTE__: Only `action:` actions are supported by Browser Mod at this time, whereas the `action:` selector may return other automation building blocks. Use at your own risk checking for any action call errors in the local browser console while testing your installation. See below for a simple example.
+
+#### Script
+```yaml
+alias: Example Browser Mod using Action field
+description: ""
+fields:
+  action:
+    selector:
+      action: {}
+    name: Action
+    required: true
+sequence:
+  - action: browser_mod.popup
+    data:
+      content: Popup Content
+      right_button: Call Action
+      right_button_action: "{{ action }}"
+```
+
+Yaml after testing up script in developer tools, using the action selector. You will note the actions are returned as a list which is supported.
+
+```yaml
+action: script.example_browser_mod_using_action_field
+data:
+  action:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: light.bed_light
+    - action: cover.open_cover
+      metadata: {}
+      data: {}
+      target:
+        entity_id: cover.kitchen_cover
+```
 
 # Browser Mod Services
 
@@ -171,6 +252,7 @@ data:
   [timeout: <number>]
   [timeout_action: <service call>]
   [timeout_hide_progress: <true/FALSE>]
+  [allow_nested_more_info: <true/FALSE>]
   [style: <string>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs]
@@ -191,9 +273,10 @@ data:
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
 | `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
+| `allow_nested_more_info` | If true nested Home Assistant more-info popups are allowed without closing the popup. |
 | `style` | CSS styles to apply to the dialog. |
 
-Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` is given.
+Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` or `user_id` is given.
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
 

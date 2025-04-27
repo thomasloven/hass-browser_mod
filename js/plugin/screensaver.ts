@@ -1,8 +1,10 @@
+const SCREEN_STATE_ID = "browser_mod-screen_state";
 export const ScreenSaverMixin = (SuperClass) => {
   class ScreenSaverMixinClass extends SuperClass {
     private _panel;
     private _listeners = {};
     private _brightness = 255;
+    private _screen_state;
 
     constructor() {
       super();
@@ -37,20 +39,52 @@ export const ScreenSaverMixin = (SuperClass) => {
       this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
 
       this.addEventListener("fully-update", () => this.send_screen_status());
-      this.addEventListener("browser-mod-connected", () =>
-        this.send_screen_status()
-      );
+      this.addEventListener("browser-mod-disconnected", () => this._screen_save_state());
+      this.addEventListener("browser-mod-connected", () => this._screen_restore_state());
     }
 
     send_screen_status() {
-      let screen_on = !this._panel.hasAttribute("dark");
+      this._screen_state = !this._panel.hasAttribute("dark");
       let screen_brightness = this._brightness;
       if (this.fully) {
-        screen_on = this.fully_screen;
+        this._screen_state = this.fully_screen;
         screen_brightness = this.fully_brightness;
       }
 
-      this.sendUpdate({ screen_on, screen_brightness });
+      this.sendUpdate({ screen_on: this._screen_state, screen_brightness });
+    }
+
+    private _screen_save_state() {
+      if (this.settings.saveScreenState) {
+        let storedScreenState = {
+          screen_on: this._screen_state,
+          screen_brightness: this._brightness,
+        };
+        localStorage.setItem(
+          SCREEN_STATE_ID,
+          JSON.stringify(storedScreenState)
+        );
+      }
+    }
+
+    private _screen_restore_state() {
+      if (this.settings.saveScreenState) {
+        const storedScreenState = localStorage.getItem(SCREEN_STATE_ID);
+        if (storedScreenState) {
+          const { screen_on, screen_brightness } = JSON.parse(storedScreenState);
+          this._screen_state = screen_on;
+          this._brightness = screen_brightness;
+          if (this._screen_state) {
+            this._screen_on({ detail: { brightness: this._brightness } });
+          } else {
+            this._screen_off();
+          }
+        } else {
+          this._screen_on();
+        }
+      } else {
+        this._screen_on();
+      }
     }
 
     private _screen_off() {

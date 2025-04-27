@@ -31,10 +31,10 @@ export const ServicesMixin = (SuperClass) => {
     }
 
     async service(service, data) {
-      this._service_action({ service, data });
+      this._service_action({ service, data, target: {} });
     }
 
-    async _service_action({ service, data }) {
+    async _service_action({ service, data, target }) {
       if (data === undefined) data = {};
       if (!service) {
         console.error(
@@ -48,11 +48,12 @@ export const ServicesMixin = (SuperClass) => {
         data.browser_id !== undefined || data.user_id !== undefined
       ) {
         const d = { ...data };
+        const t = { ...target };
         if (d.browser_id === "THIS") d.browser_id = this.browserID;
         if (d.user_id === "THIS") d.user_id = this.hass?.user.id;
         // CALL HOME ASSISTANT SERVICE
         const [domain, srv] = _service.split(".");
-        return this.hass.callService(domain, srv, d);
+        return this.hass.callService(domain, srv, d, t);
       }
 
       if (_service.startsWith("browser_mod.")) {
@@ -74,13 +75,20 @@ export const ServicesMixin = (SuperClass) => {
 
         case "popup":
           const { title, content, ...d } = data;
-          for (const [k, v] of Object.entries(d)) {
+          for (var [k, v] of Object.entries<any>(d)) {
             if (k.endsWith("_action")) {
               d[k] = (ext_data?) => {
-                const { service, data } = v as any;
-                this._service_action({
-                  service,
-                  data: { ...data, ...ext_data },
+                if (!Array.isArray(v)) {
+                  v = [v];
+                }
+                v.forEach((actionItem) => {
+                  var { action, service, target, data } = actionItem as any;
+                  service = action ?? service;
+                  this._service_action({
+                    service,
+                    target,
+                    data: { ...data, ...ext_data },
+                  });
                 });
               };
             }
@@ -90,22 +98,30 @@ export const ServicesMixin = (SuperClass) => {
 
         case "notification":
           {
-            const { message, action_text, action, duration, dismissable } =
+            data.action_action = data.action;
+            delete data.action;
+            var { message, action_text, action_action, duration, dismissable } =
               data;
             let act = undefined;
-            if (action && action_text) {
-              act = {
-                text: action_text,
-                action: (ext_data?) => {
-                  const { service, data } = action;
-                  this._service_action({
-                    service,
-                    data: { ...data, ...ext_data },
-                  });
-                },
-              };
-            }
-
+            act = {
+              text: action_text,
+              action: (ext_data?) => {
+                if (action_action && action_text) {
+                  if (!Array.isArray(action_action)) {
+                    action_action = [action_action];
+                  }
+                  action_action.forEach((actionItem) => {
+                    var { action, service, target, data } = actionItem;
+                    service = action ?? service;
+                    this._service_action({
+                      service,
+                      target,
+                      data: { ...data, ...ext_data },
+                    });
+                  })
+                }
+              }
+            };
             const base = await hass_base_el();
             base.dispatchEvent(
               new CustomEvent("hass-notification", {
