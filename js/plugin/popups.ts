@@ -98,7 +98,10 @@ class BrowserModPopup extends LitElement {
       (customElements.get("card-mod") as any)?.applyToElement?.(
         this,
         "more-info",
-        this.card_mod?.style ?? ""
+        this.card_mod?.style ? { style: this.card_mod.style, debug: this.card_mod?.debug ?? false } : "",
+            {},
+            true,
+            "browser_mod-card_mod"
       );
     });
 
