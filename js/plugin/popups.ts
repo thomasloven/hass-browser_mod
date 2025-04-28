@@ -11,7 +11,7 @@ import {
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 
-const CLOSE_POPUP_ACTIONS = new Set(["assist", "more-info"]);
+const CLOSE_POPUP_ACTIONS = new Set(["assist"]);
 
 class BrowserModPopup extends LitElement {
   @property() open;
@@ -527,17 +527,22 @@ export const PopupMixin = (SuperClass) => {
       });
 
       this._popupEl.addEventListener("hass-action", async (ev: CustomEvent) => {
-        if (
-          (ev.detail.action === "tap" &&
-            CLOSE_POPUP_ACTIONS.has(ev.detail.config?.tap_action?.action)) ||
-          (ev.detail.action === "hold" &&
-            CLOSE_POPUP_ACTIONS.has(ev.detail.config?.hold_action?.action)) ||
-          (ev.detail.action === "double_tap" &&
-            CLOSE_POPUP_ACTIONS.has(
-              ev.detail.config?.double_tap_action?.action
-            ))
-        ) {
-          this._popupEl.do_close();
+        const actionType = ev.detail.action;
+        if (actionType) {
+          const actionConfig = ev.detail?.config?.[`${actionType}_action`];        
+          if (actionConfig) {
+            if (actionConfig.action === "more-info") {
+              ev.stopPropagation();
+              this.showMoreInfo(
+                actionConfig.entity,
+                actionConfig.large ?? false,
+                actionConfig.ignore_popup_card ?? false,
+              );
+              return;
+            } else if (CLOSE_POPUP_ACTIONS.has(actionConfig.action)){
+              this._popupEl.do_close();
+            }
+          }
         }
         ev.stopPropagation();
         const base = await hass_base_el();
