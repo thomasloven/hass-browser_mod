@@ -534,7 +534,7 @@ export const PopupMixin = (SuperClass) => {
             if (actionConfig.action === "more-info") {
               ev.stopPropagation();
               this.showMoreInfo(
-                actionConfig.entity,
+                actionConfig.entity ? actionConfig.entity : ev.detail.config.entity,
                 actionConfig.large ?? false,
                 actionConfig.ignore_popup_card ?? false,
               );
