@@ -44,5 +44,6 @@ My Home Assistant version: 0.XX.X
 - [ ] Have made sure I am using the latest version of the plugin.
 
 - [ ] Understand that leaving one or more boxes unticked or failure to follow the template above may increase the time required to handle my bug-report, or cause it to be closed without further action.
+      
 - [ ] If this issue is to do with an Android device losing connection, sensors becoming unavailable etc., please confirm you have read, understood and tried methods described in Wiki Article [Andoird Devices 'Always On'](https://github.com/dcapslock/hass-browser_mod/wiki/Andoird-Devices-'Always-On')
 
