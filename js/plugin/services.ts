@@ -77,11 +77,13 @@ export const ServicesMixin = (SuperClass) => {
           const { title, content, ...d } = data;
           for (var [k, v] of Object.entries<any>(d)) {
             if (k.endsWith("_action")) {
+              let actions = v; // Force Closure. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures#creating_closures_in_loops_a_common_mistake
+              let key = k; // If required use key in anonymous function to avoid closure issue as per above comment
               d[k] = (ext_data?) => {
-                if (!Array.isArray(v)) {
-                  v = [v];
+                if (!Array.isArray(actions)) {
+                  actions = [actions];
                 }
-                v.forEach((actionItem) => {
+                actions.forEach((actionItem) => {
                   var { action, service, target, data } = actionItem as any;
                   service = action ?? service;
                   this._service_action({
