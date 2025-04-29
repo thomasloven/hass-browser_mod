@@ -94,23 +94,16 @@ class BrowserModPopup extends LitElement {
       );
     }
 
-    if (this.card_mod?.style) {
-      customElements.whenDefined("card-mod").then(() => {
-      
-        // card-mod can be delayed in unloading styles so we need to wait before apply new styles
-        // this may cause breif styling issues if popups are used quickly in succession
-        this.cardModUnloaded().then(() => {
-          (customElements.get("card-mod") as any)?.applyToElement?.(
-            this,
-            "more-info",
-            this.card_mod?.style ? { style: this.card_mod.style, debug: this.card_mod?.debug ?? false } : "",
-            {},
-            true,
-            "browser_mod-card_mod"
-          );
-        });
-      });
-    }
+    customElements.whenDefined("card-mod").then(() => {
+      (customElements.get("card-mod") as any)?.applyToElement?.(
+        this,
+        "more-info",
+        this.card_mod?.style ? { style: this.card_mod.style, debug: this.card_mod?.debug ?? false } : "",
+        {},
+        true,
+        "browser_mod-card_mod"
+      );
+    });
 
     this.updateComplete.then(() => {
       if (this.card) {
@@ -125,19 +118,6 @@ class BrowserModPopup extends LitElement {
           }`;
           el.appendChild(styleEl);
         });
-      }
-    });
-  }
-
-  async cardModUnloaded() {
-    return new Promise<void>(async (resolve) => {
-      if ((this as any)._cardMod?.[0]) {
-        while ((this as any)._cardMod[0].styles) {
-          await new Promise((timeout) => setTimeout(timeout, 50));
-        }
-        resolve();
-      } else {
-        resolve();
       }
     });
   }
