@@ -11,7 +11,7 @@ import {
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 
-const CLOSE_POPUP_ACTIONS = new Set(["assist", "more-info"]);
+const CLOSE_POPUP_ACTIONS = new Set(["assist"]);
 
 class BrowserModPopup extends LitElement {
   @property() open;
@@ -98,7 +98,10 @@ class BrowserModPopup extends LitElement {
       (customElements.get("card-mod") as any)?.applyToElement?.(
         this,
         "more-info",
-        this.card_mod?.style ?? ""
+        this.card_mod?.style ? { style: this.card_mod.style, debug: this.card_mod?.debug ?? false } : "",
+        {},
+        true,
+        "browser_mod-card_mod"
       );
     });
 
@@ -504,17 +507,22 @@ export const PopupMixin = (SuperClass) => {
       });
 
       this._popupEl.addEventListener("hass-action", async (ev: CustomEvent) => {
-        if (
-          (ev.detail.action === "tap" &&
-            CLOSE_POPUP_ACTIONS.has(ev.detail.config?.tap_action?.action)) ||
-          (ev.detail.action === "hold" &&
-            CLOSE_POPUP_ACTIONS.has(ev.detail.config?.hold_action?.action)) ||
-          (ev.detail.action === "double_tap" &&
-            CLOSE_POPUP_ACTIONS.has(
-              ev.detail.config?.double_tap_action?.action
-            ))
-        ) {
-          this._popupEl.do_close();
+        const actionType = ev.detail.action;
+        if (actionType) {
+          const actionConfig = ev.detail?.config?.[`${actionType}_action`];        
+          if (actionConfig) {
+            if (actionConfig.action === "more-info") {
+              ev.stopPropagation();
+              this.showMoreInfo(
+                actionConfig.entity ? actionConfig.entity : ev.detail.config.entity,
+                actionConfig.large ?? false,
+                actionConfig.ignore_popup_card ?? false,
+              );
+              return;
+            } else if (CLOSE_POPUP_ACTIONS.has(actionConfig.action)){
+              this._popupEl.do_close();
+            }
+          }
         }
         ev.stopPropagation();
         const base = await hass_base_el();

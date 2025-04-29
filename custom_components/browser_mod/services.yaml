@@ -273,14 +273,14 @@ navigate:
           multiple: true
           filter:
             integration: "browser_mod"
-      user_id:
-        name: Target User
-        description: ""
-        selector:
-          entity:
-            multiple: true
-            filter:
-              domain: "person"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
     path:
       name: Path
       description: "Target path"
