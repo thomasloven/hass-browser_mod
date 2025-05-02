@@ -1,0 +1,14 @@
+name: Bug Report
+description: For reporting bugs or unexpected behavior
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: haVersion
+    attributes:
+      label: My Home Assistant Version
+      description: You can view your Home Assistant Version in _Settings > About_
+      placeholder: |
+        Core: 2025.4.2 
+        Frontend: 20250411.0
+    
+  
