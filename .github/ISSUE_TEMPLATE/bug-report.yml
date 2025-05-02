@@ -21,7 +21,7 @@ body:
     attributes:
       label: What I expect to happen
   - type: textarea
-    id: what_happened_instead:
+    id: what_happened_instead
     attributes:
       label: What happened instead
   - type: textarea
