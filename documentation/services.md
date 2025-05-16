@@ -194,7 +194,7 @@ service: browser_mod.navigate
 data:
   path: <string>
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 | | |
