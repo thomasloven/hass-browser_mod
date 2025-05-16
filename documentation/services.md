@@ -390,7 +390,7 @@ service: browser_mod.console
 data:
   message: <string>
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 | | |
