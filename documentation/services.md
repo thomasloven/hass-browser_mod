@@ -209,7 +209,7 @@ Reload the current page.
 service: browser_mod.refresh
 data:
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 ## `browser_mod.more_info`
