@@ -306,7 +306,7 @@ data:
   [action_text: <string>]
   [action: <service call>]
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 |||
