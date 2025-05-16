@@ -406,7 +406,7 @@ service: browser_mod.javascript
 data:
   code: <string>
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 | | |
