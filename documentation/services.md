@@ -352,7 +352,7 @@ data:
     - <service call>
     - ...
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 | | |
