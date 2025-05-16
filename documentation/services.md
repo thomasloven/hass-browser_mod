@@ -291,7 +291,7 @@ Close any currently open popup or more-info dialog.
 service: browser_mod.close_popup
 data:
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 ## `browser_mod.notification`
