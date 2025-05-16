@@ -372,7 +372,7 @@ service: browser_mod.delay
 data:
   time: <number>
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 | | |
