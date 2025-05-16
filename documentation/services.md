@@ -223,7 +223,7 @@ data:
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 | | |
