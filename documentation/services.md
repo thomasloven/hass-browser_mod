@@ -328,7 +328,7 @@ data:
   [primaryColor: <RGB color>]
   [accentColor: <RGB color>]
   [browser_id: <Browser IDs>]
-  [user_id: <User IDs]
+  [user_id: <User IDs>]
 ```
 
 `<RGB color>` is either a list of three RGB values 0-255 (ex: `[0, 128, 128]`) or a six digit hex color value (ex: `"#800080"`).
