@@ -111,7 +111,6 @@ class PopupCard extends LitElement {
       }
       :host([preview]) {
         display: block !important;
-        border: 1px solid var(--primary-color);
       }
       ha-card {
         background-color: var(
