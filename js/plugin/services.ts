@@ -75,7 +75,7 @@ export const ServicesMixin = (SuperClass) => {
 
         case "popup":
           const { title, content, ...d } = data;
-          for (var [k, v] of Object.entries<any>(d)) {
+          for (const [k, v] of Object.entries<any>(d)) {
             if (k.endsWith("_action")) {
               let actions = v; // Force Closure. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures#creating_closures_in_loops_a_common_mistake
               let key = k; // If required use key in anonymous function to avoid closure issue as per above comment
