@@ -157,6 +157,13 @@ function findPopupCardConfig(lovelaceRoot, entity) {
     if (view.cards) {
       for (const card of view.cards) {
         if (card.type === 'custom:popup-card' && card.entity === entity) return card;
+        // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
+        // under another card. So we should look for card one level deep.
+        if (card.cards) {
+          for (const subCard of card.cards) {
+            if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+          }
+        }
       }
     }
     if (view.sections) {
@@ -164,6 +171,13 @@ function findPopupCardConfig(lovelaceRoot, entity) {
         if (section.cards) {
           for (const card of section.cards) {
             if (card.type === 'custom:popup-card' && card.entity === entity) return card;
+            // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
+            // under another card. So we should look for card one level deep.
+            if (card.cards) {
+              for (const subCard of card.cards) {
+                if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+              }
+            }
           }
         }
       }
