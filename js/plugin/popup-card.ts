@@ -106,12 +106,6 @@ class PopupCard extends LitElement {
 
   static get styles() {
     return css`
-      :host {
-        display: none !important;
-      }
-      :host([preview]) {
-        display: block !important;
-      }
       ha-card {
         background-color: var(
           --popup-background-color,
