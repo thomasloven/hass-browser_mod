@@ -152,18 +152,18 @@ class PopupCard extends LitElement {
 function findPopupCardConfig(lovelaceRoot, entity) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   if (lovelaceConfig) {
-    for (const view of lovelaceConfig.views) {
-      if (view.cards) {
-        for (const card of view.cards) {
-          if (card.type === 'custom:popup-card' && card.entity === entity) return card;
-        }
+    const curView = lovelaceRoot?._curView ?? 0;
+    const view = lovelaceConfig.views[curView]; 
+    if (view.cards) {
+      for (const card of view.cards) {
+        if (card.type === 'custom:popup-card' && card.entity === entity) return card;
       }
-      if (view.sections) {
-        for (const section of view.sections) {
-          if (section.cards) {
-            for (const card of section.cards) {
-              if (card.type === 'custom:popup-card' && card.entity === entity) return card;
-            }
+    }
+    if (view.sections) {
+      for (const section of view.sections) {
+        if (section.cards) {
+          for (const card of section.cards) {
+            if (card.type === 'custom:popup-card' && card.entity === entity) return card;
           }
         }
       }
