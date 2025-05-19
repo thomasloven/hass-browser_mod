@@ -173,7 +173,7 @@ data:
   [timeout: <number>]
   [timeout_action: <service call>]
   [timeout_hide_progress: <true/FALSE>]
-  [allow_nested_more_info: <true/FALSE>]
+  [allow_nested_more_info: <TRUE/false>]
   [style: <string>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs]

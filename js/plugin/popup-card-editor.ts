@@ -87,6 +87,7 @@ const configSchema = [
   {
     name: "allow_nested_more_info",
     label: "Allow nested more-info dialogs",
+    default: true,
     selector: { boolean: {} },
   },
   {

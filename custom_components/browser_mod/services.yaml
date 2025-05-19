@@ -149,6 +149,7 @@ popup:
     allow_nested_more_info:
       name: Allow nested more-info dialogs
       description: Allow nested more-info dialogs to be opened from this popup
+      default: true
       selector:
         boolean:
     style:

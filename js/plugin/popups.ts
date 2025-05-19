@@ -157,7 +157,7 @@ class BrowserModPopup extends LitElement {
       style = undefined,
       autoclose = false,
       card_mod = undefined,
-      allow_nested_more_info = false,
+      allow_nested_more_info = true,
     } = {}
   ) {
     this._formdata = undefined;

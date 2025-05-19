@@ -205,6 +205,6 @@ Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme
 
 ## Nested popups
 
-Except for the option to style nested standard Home Assistant more-info dialogs, nested popups are not supported. To allow for nested Home Assistant more-info dialogs, use the `allow_nested_more_info` paramater of `browser_mod.popup` or custom popup card. 
+Except for standard Home Assistant more-info dialogs, nested popups are not supported. Home Assistant more-info dialogs are allowed nested by defatult. To control this option, use the `allow_nested_more_info` paramater of `browser_mod.popup` or custom popup card.
 
 __NOTE__: If a custom popup card is is in use on the dashboard, the custom popup card is never nested. If you wish to have a nested more-info dialog in this case, use `browser_mod.more_info` with `ignore_popup_card` set to `true` to nest a standard more-info dialog. 
