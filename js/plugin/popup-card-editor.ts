@@ -119,7 +119,7 @@ class PopupCardEditor extends LitElement {
   }
 
   _handleSwitchTab(ev: CustomEvent) {
-    this._selectedTab = parseInt(ev.detail.index, 10);
+    this._selectedTab = ev.detail.name == "settings" ? 0 : 1;
   }
 
   _configChanged(ev: CustomEvent) {
@@ -168,13 +168,12 @@ class PopupCardEditor extends LitElement {
     return html`
       <div class="card-config">
         <div class="toolbar">
-          <mwc-tab-bar
-            .activeIndex=${this._selectedTab}
-            @MDCTabBar:activated=${this._handleSwitchTab}
+          <sl-tab-group
+            @sl-tab-show=${this._handleSwitchTab}
           >
-            <mwc-tab .label=${"Settings"}></mwc-tab>
-            <mwc-tab .label=${"Card"}></mwc-tab>
-          </mwc-tab-bar>
+            <sl-tab slot="nav" .panel=${"settings"} .active=${this._selectedTab==0}>Settings</sl-tab>
+            <sl-tab slot="nav" .panel=${"card"} .active=${this._selectedTab==1}>Card</sl-tab>
+          </sl-tab-group>
         </div>
         <div id="editor">
           ${[this._renderSettingsEditor, this._renderCardEditor][
@@ -240,9 +239,19 @@ class PopupCardEditor extends LitElement {
 
   static get styles() {
     return css`
-      mwc-tab-bar {
-        border-bottom: 1px solid var(--divider-color);
+      sl-tab-group {
+        margin-bottom: 16px;
       }
+
+      sl-tab {
+        flex: 1;
+      }
+
+      sl-tab::part(base) {
+        width: 100%;
+        justify-content: center;
+      }
+    
       .box {
         margin-top: 8px;
         border: 1px solid var(--divider-color);
