@@ -44,6 +44,75 @@ export async function selectTree(root, path, all = false, timeout = 10000) {
   });
 }
 
+export async function getLovelaceRoot(document) {
+  let _lovelaceRoot = await _getLovelaceRoot(document);
+  while (!_lovelaceRoot) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    _lovelaceRoot = await _getLovelaceRoot(document);
+  }
+  return _lovelaceRoot;
+  
+  async function _getLovelaceRoot(document)
+  {  let root = await selectTree(
+      document,
+      "home-assistant$home-assistant-main$ha-panel-lovelace$hui-root"
+    );
+    if (!root)
+      root = await selectTree(
+        document,
+        "hc-main $ hc-lovelace $ hui-view"
+      );
+    if (!root)
+      root = await selectTree(
+        document,
+        "hc-main $ hc-lovelace $ hui-panel-view"
+      );
+    return root;
+  }
+}
+
+export async function getMoreInfoDialog(wait = false) {
+  let _moreInfoDialog = await _getMoreInfoDialog();
+  while (wait && !_moreInfoDialog) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    _moreInfoDialog = await _getMoreInfoDialog();
+  }
+  return _moreInfoDialog;
+  
+  async function _getMoreInfoDialog()
+  {  
+    const base: any = await hass_base_el();
+    let moreInfoDialog;
+    if (base) {
+      moreInfoDialog = base.shadowRoot.querySelector(
+        "ha-more-info-dialog"
+      );
+    }
+    return moreInfoDialog;
+  }
+}
+
+export async function getMoreInfoDialogHADialog(wait = false) {
+  let _haDialog: any = await _getMoreInfoDialogHADialog(wait);
+  while (wait && !_haDialog) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    _haDialog = await _getMoreInfoDialogHADialog(wait);
+  }
+  return _haDialog;
+
+  async function _getMoreInfoDialogHADialog(wait = false)
+  {  
+    const moreInfoDialog: any = await getMoreInfoDialog(wait);
+    let haDialog;
+    if (moreInfoDialog) {
+      haDialog = moreInfoDialog.shadowRoot.querySelector(
+        "ha-dialog"
+      );
+    }
+    return haDialog;
+  }
+}
+
 export async function hass_base_el() {
   await Promise.race([
     customElements.whenDefined("home-assistant"),

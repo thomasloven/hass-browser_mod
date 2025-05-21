@@ -13,7 +13,7 @@ LocalStorage works basically like cookies in that the information is stored loca
 Registering a _Browser_ as a device will create a Home Assistant Device associated with that browser. The device has the following entities:
 
 - A `media_player` entitiy which will play sound and video through the browser.
-- A `light` entity will turn the screen on or off and controll the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box.
+- A `light` entity will turn the screen on or off and controll the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
 - A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
 - A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
 
@@ -110,7 +110,10 @@ Set the order and hidden items of the sidebar. To change this setting:
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
 Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/).
 
-
 ### Hide interaction icon
 
 This hides the icon in the bottom right corner which indicates that you need to interact with the browser window before Browser Mod will function completely.
+
+### Save screen state
+
+This saves the screen state on browser disconnect and restores on browser reconnect. The screen state (on/off) and brightness are both saved. The state will be saved and restored for all browsers that have this setting applied, including those running Fully Kiosk.

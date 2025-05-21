@@ -14,9 +14,11 @@ data:
 
 ## Size
 
-The `size` parameter can be set to `normal`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity):
+The `size` parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity):
 
 ![Screenshot of a normal size popup](https://user-images.githubusercontent.com/1299821/182709146-439814f1-d479-4fc7-aab1-e28f5c9a13c7.png)
+
+![Screenshot of effect of classic size popup on small device](https://github.com/user-attachments/assets/926646dd-f254-44ed-b94c-f63dcc5a335c)
 
 ![Screenshot of a wide size popup](https://user-images.githubusercontent.com/1299821/182709172-c98a9c23-5e58-4564-bcb7-1d187842948f.png)
 
@@ -94,6 +96,13 @@ data:
 ```
 
 ![Screenshot of a popup rendering the form described above](https://user-images.githubusercontent.com/1299821/182712670-f3b4fdb7-84a9-49d1-a26f-2cdaa450fa0e.png)
+
+**NOTE:** Some Home Assistant selectors may use another dialog for input. [Date](https://www.home-assistant.io/docs/blueprint/selectors/#date-selector) and [Date & Time](https://www.home-assistant.io/docs/blueprint/selectors/#date--time-selector) use a selector dialog for date & time. Browser Mod popups are not in the Home Assistant DOM hierachy so stacking will need to be adjusted by [styling](#styling-popups) the popup with th styles shown below. The Home Assistant top bar has a z-index of 4, so using a z-index of 5 will work in most cases, but your setup may vary so adjust to suit.
+
+```
+z-index: 5;
+position: absolute;
+```
 
 ## Actionable popups
 
@@ -193,3 +202,9 @@ data:
         }
 ```
 Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme.
+
+## Nested popups
+
+Except for standard Home Assistant more-info dialogs, nested popups are not supported. Home Assistant more-info dialogs are allowed nested by defatult. To control this option, use the `allow_nested_more_info` paramater of `browser_mod.popup` or custom popup card.
+
+__NOTE__: If a custom popup card is is in use on the dashboard, the custom popup card is never nested. If you wish to have a nested more-info dialog in this case, use `browser_mod.more_info` with `ignore_popup_card` set to `true` to nest a standard more-info dialog. 

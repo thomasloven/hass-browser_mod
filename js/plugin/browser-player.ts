@@ -60,7 +60,7 @@ class BrowserPlayer extends LitElement {
   }
   handleVolumeChange(ev) {
     const volume_level = parseFloat(ev.target.value);
-    window.browser_mod.player.volume = volume_level;
+    window.browser_mod.player.volume = volume_level / 100;
   }
   handleMoreInfo(ev) {
     this.dispatchEvent(
@@ -86,6 +86,19 @@ class BrowserPlayer extends LitElement {
       window.browser_mod.player.pause();
     }
   }
+  handleVolumeDown(ev) {
+    window.browser_mod.player.volume = Math.max(window.browser_mod.player.volume - 0.1, 0);
+  }
+  handleVolumeUp(ev) {
+    window.browser_mod.player.volume = Math.min(window.browser_mod.player.volume + 0.1, 1);
+  }
+  handleReload(ev) {
+    const wasPlaying = window.browser_mod.player.src && !window.browser_mod.player.paused && !window.browser_mod.player.ended
+    window.browser_mod.player.load();
+    if (wasPlaying) {
+      window.browser_mod.player.play();
+    }
+  }
 
   render() {
     if (!window.browser_mod) {
@@ -109,12 +122,19 @@ class BrowserPlayer extends LitElement {
                 : "mdi:volume-high"}
             ></ha-icon>
           </ha-icon-button>
+          <ha-icon-button @click=${this.handleVolumeDown}>
+            <ha-icon .icon=${"mdi:volume-minus"}></ha-icon>
+          </ha-icon-button>
+          <ha-icon-button @click=${this.handleVolumeUp}>
+            <ha-icon .icon=${"mdi:volume-plus"}></ha-icon>
+          </ha-icon-button>
           <ha-slider
+            labeled
             min="0"
-            max="1"
-            step="0.01"
+            max="100"
+            step="1"
             ?disabled=${window.browser_mod.player.muted}
-            value=${window.browser_mod.player.volume}
+            value=${window.browser_mod.player.volume * 100}
             @change=${this.handleVolumeChange}
           ></ha-slider>
 
@@ -131,6 +151,9 @@ class BrowserPlayer extends LitElement {
                   ></ha-icon>
                 </ha-icon-button>
               `}
+          <ha-icon-button @click=${this.handleReload}>
+            <ha-icon .icon=${"mdi:reload"}></ha-icon>
+          </ha-icon-button>
           <ha-icon-button @click=${this.handleMoreInfo}>
             <ha-icon .icon=${"mdi:cog"}></ha-icon>
           </ha-icon-button>
@@ -155,6 +178,7 @@ class BrowserPlayer extends LitElement {
       .card-content {
         display: flex;
         justify-content: center;
+        align-items: center;
       }
       .placeholder {
         width: 24px;
@@ -171,6 +195,11 @@ class BrowserPlayer extends LitElement {
       }
       ha-icon-button ha-icon {
         display: flex;
+      }
+      ha-slider {
+        flex-grow: 2;
+        flex-shrink: 2;
+        width: 100%;
       }
     `;
   }

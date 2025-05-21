@@ -416,7 +416,17 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
               .settingSelector=${{boolean:{},label:"Hide interaction icon"}}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
-        </div>
+          <ha-expansion-panel
+            .header=${"Save screen state"}
+            .secondary=${"Save screen state when browser is disconnected"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"saveScreenState"}
+              .settingSelector=${{boolean:{},label:"Save screen state"}}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>        </div>
       </ha-card>
     `}static get styles(){return r`
       .box {
@@ -436,7 +446,7 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
         display: flex;
         align-items: center;
       }
-    `}}e([le()],_e.prototype,"hass",void 0),e([de()],_e.prototype,"_dashboards",void 0),e([de()],_e.prototype,"_editSidebar",void 0),customElements.define("browser-mod-frontend-settings-card",_e);var fe="2.3.3";(async()=>{var e,t,i,o,s,n,r,a,l,d,h,c,u,p,g;await customElements.whenDefined("partial-panel-resolver");const w=document.createElement("partial-panel-resolver")._getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==w?void 0:w.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const v=document.createElement("ha-panel-config");await(null===(r=null===(n=null===(s=null===(o=null==v?void 0:v.routerOptions)||void 0===o?void 0:o.routes)||void 0===s?void 0:s.dashboard)||void 0===n?void 0:n.load)||void 0===r?void 0:r.call(n)),await(null===(h=null===(d=null===(l=null===(a=null==v?void 0:v.routerOptions)||void 0===a?void 0:a.routes)||void 0===l?void 0:l.general)||void 0===d?void 0:d.load)||void 0===h?void 0:h.call(d)),await(null===(g=null===(p=null===(u=null===(c=null==v?void 0:v.routerOptions)||void 0===c?void 0:c.routes)||void 0===u?void 0:u.entities)||void 0===p?void 0:p.load)||void 0===g?void 0:g.call(p)),await customElements.whenDefined("ha-config-dashboard")})().then((()=>{class t extends se{firstUpdated(){window.addEventListener("browser-mod-config-update",(()=>this.requestUpdate()))}render(){var e;return window.browser_mod?M`
+    `}}e([le()],_e.prototype,"hass",void 0),e([de()],_e.prototype,"_dashboards",void 0),e([de()],_e.prototype,"_editSidebar",void 0),customElements.define("browser-mod-frontend-settings-card",_e);var fe="2.3.8";(async()=>{var e,t,i,o,s,n,r,a,l,d,h,c,u,p,g;await customElements.whenDefined("partial-panel-resolver");const w=document.createElement("partial-panel-resolver")._getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==w?void 0:w.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const v=document.createElement("ha-panel-config");await(null===(r=null===(n=null===(s=null===(o=null==v?void 0:v.routerOptions)||void 0===o?void 0:o.routes)||void 0===s?void 0:s.dashboard)||void 0===n?void 0:n.load)||void 0===r?void 0:r.call(n)),await(null===(h=null===(d=null===(l=null===(a=null==v?void 0:v.routerOptions)||void 0===a?void 0:a.routes)||void 0===l?void 0:l.general)||void 0===d?void 0:d.load)||void 0===h?void 0:h.call(d)),await(null===(g=null===(p=null===(u=null===(c=null==v?void 0:v.routerOptions)||void 0===c?void 0:c.routes)||void 0===u?void 0:u.entities)||void 0===p?void 0:p.load)||void 0===g?void 0:g.call(p)),await customElements.whenDefined("ha-config-dashboard")})().then((()=>{class t extends se{firstUpdated(){window.addEventListener("browser-mod-config-update",(()=>this.requestUpdate()))}render(){var e;return window.browser_mod?M`
         <ha-top-app-bar-fixed>
           <ha-menu-button
             slot="navigationIcon"

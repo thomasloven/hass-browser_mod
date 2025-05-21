@@ -23,6 +23,7 @@ class SettingsStoreData:
     hideInteractIcon = attr.ib(type=bool, default=None)
     autoRegister = attr.ib(type=bool, default=None)
     lockRegister = attr.ib(type=bool, default=None)
+    saveScreenState = attr.ib(type=bool, default=None)
 
     @classmethod
     def from_dict(cls, data):
@@ -155,4 +156,22 @@ class BrowserModStore:
 
     async def set_global_settings(self, **data):
         self.data.settings.__dict__.update(data)
+        await self.updated()
+    
+    async def cleanup(self, browser_include, browser_exclude):
+        """Cleanup old browsers from data store."""
+        if browser_include:
+            for browserID in browser_include:
+                if self.data.browsers.get(browserID):
+                    _LOGGER.debug("Data Store Cleanup: Deleting browser %s (included)", browserID)
+                    del self.data.browsers[browserID]
+                    self.dirty = True
+
+        if browser_exclude:
+            for browserID in list(self.data.browsers.keys()):
+                if browserID not in browser_exclude and self.data.browsers.get(browserID):
+                    _LOGGER.debug("Data Store Cleanup: %s (not excluded)", browserID)
+                    del self.data.browsers[browserID]
+                    self.dirty = True
+
         await self.updated()

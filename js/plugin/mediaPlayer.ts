@@ -16,6 +16,7 @@ export const MediaPlayerMixin = (SuperClass) => {
       this._video_player.style.setProperty("width", "100%");
       this.player = this._audio_player;
       this._player_enabled = false;
+      this.extra = {}
 
       for (const ev of ["play", "pause", "ended", "volumechange"]) {
         this._audio_player.addEventListener(ev, () => this._player_update());
@@ -43,6 +44,7 @@ export const MediaPlayerMixin = (SuperClass) => {
           else this.player = this._audio_player;
         if (ev.detail?.media_content_id)
           this.player.src = ev.detail.media_content_id;
+        this.extra = ev.detail?.extra;
         this.player.play();
         this._show_video_player();
       });
@@ -125,6 +127,7 @@ export const MediaPlayerMixin = (SuperClass) => {
           state,
           media_duration: this.player.duration,
           media_position: this.player.currentTime,
+          extra: this.extra,
         },
       });
     }

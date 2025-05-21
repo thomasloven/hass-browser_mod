@@ -16,7 +16,7 @@ const configSchema = [
   {
     name: "size",
     selector: {
-      select: { mode: "dropdown", options: ["normal", "wide", "fullscreen"] },
+      select: { mode: "dropdown", options: ["normal", "classic", "wide", "fullscreen"] },
     },
   },
   {
@@ -65,6 +65,11 @@ const configSchema = [
     ],
   },
   {
+    name: "timeout_hide_progress" ,
+    label: "Hide timeout progress bar",
+    selector: { boolean: {} },
+  },
+  {
     type: "grid",
     schema: [
       {
@@ -78,6 +83,12 @@ const configSchema = [
         selector: { object: {} },
       },
     ],
+  },
+  {
+    name: "allow_nested_more_info",
+    label: "Allow nested more-info dialogs",
+    default: true,
+    selector: { boolean: {} },
   },
   {
     name: "style",
@@ -108,7 +119,7 @@ class PopupCardEditor extends LitElement {
   }
 
   _handleSwitchTab(ev: CustomEvent) {
-    this._selectedTab = parseInt(ev.detail.index, 10);
+    this._selectedTab = ev.detail.name == "settings" ? 0 : 1;
   }
 
   _configChanged(ev: CustomEvent) {
@@ -157,13 +168,12 @@ class PopupCardEditor extends LitElement {
     return html`
       <div class="card-config">
         <div class="toolbar">
-          <mwc-tab-bar
-            .activeIndex=${this._selectedTab}
-            @MDCTabBar:activated=${this._handleSwitchTab}
+          <sl-tab-group
+            @sl-tab-show=${this._handleSwitchTab}
           >
-            <mwc-tab .label=${"Settings"}></mwc-tab>
-            <mwc-tab .label=${"Card"}></mwc-tab>
-          </mwc-tab-bar>
+            <sl-tab slot="nav" .panel=${"settings"} .active=${this._selectedTab==0}>Settings</sl-tab>
+            <sl-tab slot="nav" .panel=${"card"} .active=${this._selectedTab==1}>Card</sl-tab>
+          </sl-tab-group>
         </div>
         <div id="editor">
           ${[this._renderSettingsEditor, this._renderCardEditor][
@@ -229,9 +239,19 @@ class PopupCardEditor extends LitElement {
 
   static get styles() {
     return css`
-      mwc-tab-bar {
-        border-bottom: 1px solid var(--divider-color);
+      sl-tab-group {
+        margin-bottom: 16px;
       }
+
+      sl-tab {
+        flex: 1;
+      }
+
+      sl-tab::part(base) {
+        width: 100%;
+        justify-content: center;
+      }
+    
       .box {
         margin-top: 8px;
         border: 1px solid var(--divider-color);
@@ -250,7 +270,8 @@ class PopupCardEditor extends LitElement {
   }
 }
 
-(async () => {
+window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
+  ev.stopPropagation();
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
@@ -267,4 +288,4 @@ class PopupCardEditor extends LitElement {
         "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
     });
   }
-})();
+});

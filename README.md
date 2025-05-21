@@ -16,9 +16,6 @@ What if you could change the more-info dialog for some entity to a dashboard car
 
 What if you could tap a button and have Home Assistant ask you which rooms you want the roomba to vacuum?
 
-\
-&nbsp;
-
 # Installation instructions
 
 - **First make sure you have completely removed any installation of Browser Mod 1** \
