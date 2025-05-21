@@ -11,6 +11,13 @@ export const BrowserStateMixin = (SuperClass) => {
         this._browser_state_update()
       );
 
+      window.addEventListener("popstate", () =>
+        // Use setTimeout as recommended by https://developer.mozilla.org/en-US/docs/Web/API/Window/popstate_event
+        setTimeout(() => {
+          this._browser_state_update()
+        },0)
+      );
+
       this.addEventListener("fully-update", () => this._browser_state_update());
       this.addEventListener("browser-mod-connected", () =>
         this._browser_state_update()
