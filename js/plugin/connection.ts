@@ -72,6 +72,22 @@ export const ConnectionMixin = (SuperClass) => {
         browserID: this.browserID,
       });
 
+      // Subscribe to component load
+      conn.subscribeEvents((event) => {
+        if (event.data?.component === "browser_mod") {
+          this.LOG("Discovered browser_mod component reload – reconnecting");
+          console.log("Discovered browser_mod component reload – reconnecting");
+          // conn.sendMessage({
+          //   type: "browser_mod/connect",
+          //   browserID: this.browserID,
+          // });
+          conn.subscribeMessage((msg) => this.incoming_message(msg), {
+            type: "browser_mod/connect",
+            browserID: this.browserID,
+          });
+        }
+      }, "component_loaded")
+
       // Keep connection status up to date
       conn.addEventListener("disconnected", () => {
         this.connected = false;
