@@ -182,6 +182,21 @@ function findPopupCardConfig(lovelaceRoot, entity) {
         }
       }
     }
+    if (lovelaceConfig.browser_mod) {
+      const popupCards = lovelaceConfig.browser_mod.popup_cards;
+      if (popupCards) {
+        for (const card of popupCards) {
+          if (card.type === 'custom:popup-card' && card.entity === entity) return card;
+          // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
+          // under another card. So we should look for card one level deep.
+          if (card.cards) {
+            for (const subCard of card.cards) {
+              if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+            }
+          }
+        }
+      }
+    }
   }
   return null;
 }

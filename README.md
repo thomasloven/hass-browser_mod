@@ -104,6 +104,23 @@ card:
 
 > *Note:* It's advisable to use a `fire-dom-event` tap action instead as far as possible. Popup card is for the few cases where that's not possible. See [`services`](documentation/services.md) for more info.
 
+### Dashboard configuration
+
+Popup cards can be saved in Dashboard raw configuration using the Raw Coniguration Editor. Add yaml config like that shown below. You can easily drop in yaml from a popup card configured in the UI Dashboard editor. Pay attention to yaml list structure and indentation when pasting any custom:popup-card config.
+
+```yaml
+browser_mod:
+  popup_cards:
+    - type: custom:popup-card
+      entity: sensor.sun_next_dawn
+      title: Custom popup
+      dismissable: true
+      card:
+        type: history-graph
+        entities:
+          - sun.sun
+```
+
 ## Browser Player
 
 Browser player is a card that allows you to controll the volume and playback on the current Browsers media player.
