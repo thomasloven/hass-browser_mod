@@ -264,14 +264,14 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
       <ha-card header="Frontend Settings" outlined>
         <div class="card-content">
           <ha-alert alert-type="warning" title="Please note:">
-            The settings in this section severely change the way the Home
+            The settings in this section severely alter the way the Home
             Assistant frontend works and looks. It is very easy to forget that
-            you made a setting here when you switch devices or user.
+            you made a change here when you switch devices or users.
             <p>
               Do not report any issues to Home Assistant before clearing
-              <b>EVERY</b> setting here and thouroghly clearing all your browser
-              caches. Failure to do so means you risk wasting a lot of peoples
-              time, and you will be severly and rightfully ridiculed.
+              <b>EVERY</b> setting here and thoroughly clearing all your browser
+              caches. Failure to do so means you risk wasting a lot of people's
+              time, and you will be severely and rightfully ridiculed.
             </p>
           </ha-alert>
           <p>
@@ -289,15 +289,15 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
                 >
                   <ha-settings-row>
                     <span slot="heading" id="afj_heading"
-                      >Allow April fools jokes</span
+                      >Allow April Fool's jokes</span
                     >
                     <span slot="description" id="afj_description">
-                      By enabling this, I consent to any April Fools Jokes
+                      By enabling this, I consent to any April Fool's Jokes
                       messing with my frontend.
                     </span>
                     <span
                       explanation="Oh hi!
-                      You found my April fools joke! Well done!
+                      You found my April Fool's joke! Well done!
                       Don't worry. This actually does ABSOLUTELY NOTHING.
                       It's just a toggle connected to nothing."
                     ></span>
@@ -358,7 +358,7 @@ function e(e,t,i,o){var s,n=arguments.length,r=n<3?t:null===o?o=Object.getOwnPro
 
           <ha-expansion-panel
             .header=${"Default dashboard"}
-            .secondary=${`The dashboard that is showed when navigating to ${location.origin}`}
+            .secondary=${`The dashboard that is shown when navigating to ${location.origin}`}
             leftChevron
           >
             <browser-mod-settings-table
