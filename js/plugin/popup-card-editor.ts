@@ -91,6 +91,12 @@ const configSchema = [
     selector: { boolean: {} },
   },
   {
+    name: "popup_card_all_views",
+    label: "Popup card is available for use in all views",
+    default: false,
+    selector: { boolean: {} },
+  },
+  {
     name: "style",
     label: "CSS style",
     selector: { text: { multiline: true } },

@@ -89,8 +89,7 @@ To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the 
 
 The card will be visible only while you're in Edit mode.
 
-As long as the popup card is (would be) visible, i.e. you stay on the same view;
-whenever the more-info dialog for the entitiy you selected would be opened, the popup card will be shown instead.
+Custom popup cards are either local to the current Dashboard view (default) or can be used across all views of the Dashboard. Use the `Popup card is available for use in all views` GUI switch or `popup_card_all_views` optional parameter in Yaml. Using global view custom popup cards allows you to use a sub view to store your custom popup cards for a Dashboard, if that fits your use case.
 
 Yaml configuration:
 
@@ -99,6 +98,7 @@ type: custom:popup-card
 entity: <entity id>
 card:
   type: ...etc...
+[popup_card_all_views: [true/FALSE]]
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
