@@ -46,17 +46,25 @@ export async function selectTree(root, path, all = false, timeout = 10000) {
 
 export async function getLovelaceRoot(document) {
   let _lovelaceRoot = await _getLovelaceRoot(document);
-  while (!_lovelaceRoot) {
+  while (_lovelaceRoot === null) {
     await new Promise((resolve) => setTimeout(resolve, 100));
     _lovelaceRoot = await _getLovelaceRoot(document);
   }
-  return _lovelaceRoot;
+  return _lovelaceRoot || null;
   
   async function _getLovelaceRoot(document)
   {  let root = await selectTree(
       document,
       "home-assistant$home-assistant-main$ha-panel-lovelace$hui-root"
     );
+    if (!root) {
+      let panel = await selectTree(
+        document,
+        "home-assistant$home-assistant-main$partial-panel-resolver>*"
+      );
+      if (panel)
+        return false;
+    }
     if (!root)
       root = await selectTree(
         document,
