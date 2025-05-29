@@ -208,7 +208,28 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   if (!customElements.get("popup-card"))
     customElements.define("popup-card", PopupCard);
 
+  let rootMutationObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === "childList") {
+        for (const node of mutation.removedNodes) {
+          if (node instanceof Element && node.localName === "hui-root") {
+            lovelaceRoot = null;
+          }
+        }        
+        for (const node of mutation.addedNodes) {
+          if (node instanceof Element && node.localName === "hui-root") {
+            lovelaceRoot = node;
+          }
+        }  
+      }
+    }
+  });
   let lovelaceRoot = await getLovelaceRoot(document);
+  if (rootMutationObserver && lovelaceRoot.parentNode) {
+    rootMutationObserver.observe(lovelaceRoot.parentNode, {
+      childList: true,
+    });
+  }
 
   window.addEventListener("location-changed", async () => {
     lovelaceRoot = await getLovelaceRoot(document);
