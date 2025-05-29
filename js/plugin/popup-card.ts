@@ -149,33 +149,45 @@ class PopupCard extends LitElement {
   }
 }
 
+function popupCardMatch(card, entity, viewIndex, curView) {
+  return card.type === 'custom:popup-card' &&
+         card.entity === entity &&
+         (viewIndex === curView || card.popup_card_all_views);
+}
+
 function findPopupCardConfig(lovelaceRoot, entity) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   if (lovelaceConfig) {
     const curView = lovelaceRoot?._curView ?? 0;
-    const view = lovelaceConfig.views[curView]; 
-    if (view.cards) {
-      for (const card of view.cards) {
-        if (card.type === 'custom:popup-card' && card.entity === entity) return card;
-        // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
-        // under another card. So we should look for card one level deep.
-        if (card.cards) {
-          for (const subCard of card.cards) {
-            if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+    // Place current view at the front of the view index lookup array.
+    // This allows the current view to be checked first for local cards, 
+    // and then the rest of the views for global cards, keeping current view precedence.
+    let viewLookup = Array.from(Array(lovelaceConfig.views.length).keys())
+    viewLookup.splice(curView, 1);
+    viewLookup.unshift(curView);
+    for (const viewIndex of viewLookup) {
+      const view = lovelaceConfig.views[viewIndex];
+      if (view.cards) {
+        for (const card of view.cards) {
+          if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+          // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
+          if (card.cards) {
+            for (const subCard of card.cards) {
+              if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+            }
           }
         }
       }
-    }
-    if (view.sections) {
-      for (const section of view.sections) {
-        if (section.cards) {
-          for (const card of section.cards) {
-            if (card.type === 'custom:popup-card' && card.entity === entity) return card;
-            // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
-            // under another card. So we should look for card one level deep.
-            if (card.cards) {
-              for (const subCard of card.cards) {
-                if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+      if (view.sections) {
+        for (const section of view.sections) {
+          if (section.cards) {
+            for (const card of section.cards) {
+              if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+              // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
+              if (card.cards) {
+                for (const subCard of card.cards) {
+                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+                }
               }
             }
           }
