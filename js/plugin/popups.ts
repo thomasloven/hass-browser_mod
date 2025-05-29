@@ -542,11 +542,16 @@ export const PopupMixin = (SuperClass) => {
         if (popupState) {
           if (!popupState.open) {
             if (this._popupEl?.open && this._popupEl?.dismissable)
-              this._popupEl.do_close();
+              await this._popupEl.do_close();
           }
         }
       };
       window.addEventListener("popstate", historyListener);
+      const locationListener = async (ev) => {
+        if (this._popupEl?.open)
+            await this._popupEl.do_close();
+      };
+      window.addEventListener("location-changed", locationListener);
 
       this._contextProviderValues = [];
       // Pass on the context request to hass base element as we are outside its DOM tree
