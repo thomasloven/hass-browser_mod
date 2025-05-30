@@ -225,15 +225,20 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
     }
   });
   let lovelaceRoot = await getLovelaceRoot(document);
-  if (rootMutationObserver && lovelaceRoot.parentNode) {
+  if (rootMutationObserver && lovelaceRoot?.parentNode) {
     rootMutationObserver.observe(lovelaceRoot.parentNode, {
       childList: true,
     });
   }
 
-  window.addEventListener("location-changed", async () => {
-    lovelaceRoot = await getLovelaceRoot(document);
-  });
+  // popstate will get fired on window.browser_mod?.service("popup", ...) but as this popstate
+  // is not currently cleared there is no way to distinguish this event properly at this time.
+  // Hence, setting lovelaceRoot on all popstate which captures, for examople, UI back from History Panel.
+  ['popstate','location-changed'].forEach(event => 
+    window.addEventListener(event, async (ev) => {
+      lovelaceRoot = await getLovelaceRoot(document);
+    })
+  );
 
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
     if (ev.detail?.ignore_popup_card || !ev.detail?.entityId || !lovelaceRoot) return;

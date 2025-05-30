@@ -62,7 +62,7 @@ export async function getLovelaceRoot(document) {
         document,
         "home-assistant$home-assistant-main$partial-panel-resolver>*"
       );
-      if (panel)
+      if (panel?.localName !== "ha-panel-lovelace")
         return false;
     }
     if (!root)
