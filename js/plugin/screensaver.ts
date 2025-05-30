@@ -40,7 +40,7 @@ export const ScreenSaverMixin = (SuperClass) => {
 
       this.addEventListener("fully-update", () => this.send_screen_status());
       this.addEventListener("browser-mod-disconnected", () => this._screen_save_state());
-      this.addEventListener("browser-mod-connected", () => this._screen_restore_state());
+      this.addEventListener("browser-mod-ready", () => this._screen_restore_state());
     }
 
     send_screen_status() {
