@@ -11,7 +11,7 @@ export const ActivityMixin = (SuperClass) => {
       this.addEventListener("fully-update", () => {
         this.activityTrigger();
       });
-      this.addEventListener("browser-mod-connected", () =>
+      this.addEventListener("browser-mod-ready", () =>
         this._activity_state_update()
       );
     }

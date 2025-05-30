@@ -6,6 +6,7 @@ export const ConnectionMixin = (SuperClass) => {
     public connection;
     private _data;
     public connected = false;
+    public ready = false;
     private _connectionResolve;
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
@@ -27,7 +28,30 @@ export const ConnectionMixin = (SuperClass) => {
       this.dispatchEvent(new CustomEvent(event, { detail, bubbles: true }));
     }
 
+    private onConnectionReady = () => {
+      this.connected = true;
+      this.fireEvent("browser-mod-connected");
+    }
+
+    private onConnectionLost = () => {
+      this.connected = false;
+      this.ready = false;
+      this.fireEvent("browser-mod-disconnected");
+    }
+
     private incoming_message(msg) {
+      // Check for connection state
+      if (!this.connected) {
+        this.onConnectionReady();
+      }
+      // Check for readiness
+      if (!this.ready) {
+        this.LOG("Integration ready: WebSocket connected and browser_mod loaded");
+        this.ready = true;
+        this.fireEvent("browser-mod-ready");
+        window.setTimeout(() => this.sendUpdate({}), 1000);
+      }
+      // Handle messages
       if (msg.command) {
         this.LOG("Command:", msg);
         this.fireEvent(`command-${msg.command}`, msg);
@@ -36,6 +60,7 @@ export const ConnectionMixin = (SuperClass) => {
       } else if (msg.result) {
         this.update_config(msg.result);
       }
+      // Resolve first connection promise
       this._connectionResolve?.();
       this._connectionResolve = undefined;
     }
@@ -52,11 +77,6 @@ export const ConnectionMixin = (SuperClass) => {
       if (!this.registered && this.global_settings["autoRegister"] === true)
         this.registered = true;
 
-      if (!this.connected) {
-        this.connected = true;
-        this.fireEvent("browser-mod-connected");
-      }
-
       this.fireEvent("browser-mod-config-update");
 
       if (update) this.sendUpdate({});
@@ -66,48 +86,38 @@ export const ConnectionMixin = (SuperClass) => {
       const conn = (await hass()).connection;
       this.connection = conn;
 
-      // Subscribe to configuration updates
-      conn.subscribeMessage((msg) => this.incoming_message(msg), {
-        type: "browser_mod/connect",
-        browserID: this.browserID,
-      });
+      const setupBrowserModConnection = () => {
+        this.LOG("Subscribing to browser_mod/connect events");
+        conn.subscribeMessage((msg) => this.incoming_message(msg), {
+          type: "browser_mod/connect",
+          browserID: this.browserID,
+        });
+      };
 
-      // Subscribe to component load
+      // Initial connect subscription
+      setupBrowserModConnection();
+      // If this fails, then:
+      // Observe `component_loaded` to track when `browser_mod` is dynamically added
       conn.subscribeEvents((event) => {
         if (event.data?.component === "browser_mod") {
-          this.LOG("Discovered browser_mod component reload – reconnecting");
-          console.log("Discovered browser_mod component reload – reconnecting");
-          // conn.sendMessage({
-          //   type: "browser_mod/connect",
-          //   browserID: this.browserID,
-          // });
-          conn.subscribeMessage((msg) => this.incoming_message(msg), {
-            type: "browser_mod/connect",
-            browserID: this.browserID,
-          });
+          this.LOG("Detected browser_mod component load");
+          setupBrowserModConnection();
         }
-      }, "component_loaded")
+      }, "component_loaded");
 
       // Keep connection status up to date
-      conn.addEventListener("disconnected", () => {
-        this.connected = false;
-        this.fireEvent("browser-mod-disconnected");
-      });
       conn.addEventListener("ready", () => {
-        this.connected = true;
-        this.fireEvent("browser-mod-connected");
-        this.sendUpdate({});
+        this.onConnectionReady();
       });
-
+      conn.addEventListener("disconnected", () => {
+        this.onConnectionLost();
+      });
       window.addEventListener("connection-status", (ev: CustomEvent) => {
         if (ev.detail === "connected") {
-          this.connected = true;
-          this.fireEvent("browser-mod-connected");
-          window.setTimeout(() => this.sendUpdate({}), 1000);
+          this.onConnectionReady();
         }
         if (ev.detail === "disconnected") {
-          this.connected = false;
-          this.fireEvent("browser-mod-disconnected");
+          this.onConnectionLost();
         }
       });
 
