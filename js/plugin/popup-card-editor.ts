@@ -54,13 +54,13 @@ const configSchema = [
     schema: [
       {
         name: "right_button_close",
-        label: "Right button close",
+        label: "Right button closes popup",
 		default: true,
         selector: { boolean: {} },
       },
       {
         name: "left_button_close",
-        label: "Left button close",
+        label: "Left button closes popup",
 		default: true,
         selector: { boolean: {} },
       },
