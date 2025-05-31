@@ -53,6 +53,23 @@ const configSchema = [
     type: "grid",
     schema: [
       {
+        name: "right_button_close",
+        label: "Right button closes popup",
+		default: true,
+        selector: { boolean: {} },
+      },
+      {
+        name: "left_button_close",
+        label: "Left button closes popup",
+		default: true,
+        selector: { boolean: {} },
+      },
+    ],
+  },
+  {
+    type: "grid",
+    schema: [
+      {
         name: "dismissable",
         label: "User dismissable",
         selector: { boolean: {} },
