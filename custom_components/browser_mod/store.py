@@ -27,7 +27,9 @@ class SettingsStoreData:
 
     @classmethod
     def from_dict(cls, data):
-        return cls(**data)
+        class_attributes = attr.fields_dict(cls).keys()
+        valid = {key: value for key, value in data.items() if key in class_attributes}
+        return cls(**valid)
 
     def asdict(self):
         return attr.asdict(self)
@@ -44,10 +46,12 @@ class BrowserStoreData:
 
     @classmethod
     def from_dict(cls, data):
+        class_attributes = attr.fields_dict(cls).keys()
+        valid = {key: value for key, value in data.items() if key in class_attributes}
         settings = SettingsStoreData.from_dict(data.get("settings", {}))
         return cls(
             **(
-                data
+                valid
                 | {
                     "settings": settings,
                 }
