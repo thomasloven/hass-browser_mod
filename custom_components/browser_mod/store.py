@@ -129,6 +129,14 @@ class BrowserModStore:
 
         return remove_listener
 
+    def get_version(self):
+        return self.data.version
+
+    async def set_version(self, version):
+        if self.data.version != version:
+            self.data.version = version
+            await self.updated()
+
     def get_browser(self, browserID):
         return self.data.browsers.get(browserID, BrowserStoreData())
 
