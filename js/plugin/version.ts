@@ -9,7 +9,7 @@ export const VersionMixin = (SuperClass) => {
     constructor() {
       super();
       this._version = pjson.version;
-      this.addEventListener("browser-mod-connected", async () => {
+      this.addEventListener("browser-mod-ready", async () => {
         await this._checkVersion();
       });
       this.addEventListener("browser-mod-disconnected", () => {
