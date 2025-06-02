@@ -32,6 +32,14 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 
 - Restart Home Assistant
 
+# Upgrading
+
+- Upgrade via [HACS](https://hacs.xyz) or copy new contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
+
+- Restart Home Assistant. If you are upgrading via [HACS](https://hacs.xyz) you will get a repair item to restart Home Assistant.
+
+- After restarting Home Assistant, all Browsers will need a reload to download the latest version of Browser Mod javascript file. Version 2.4.0 includes a notification when a Browser version mismatch is detected, so from 2.4.x onwards simply clicking __Reload__ should be sufficient. If you keep getting the notification, you may need to do a hard Browser reload `SHIFT+F5` or in some cases [clear your Browser cache](https://github.com/thomasloven/hass-config/wiki/Clearing-your-browser-cache).
+
 > Note: If you are upgrading from Browser Mod 1, it is likely that you will get some errors in your log during a transition period. They will say something along the lines of `Error handling message: extra keys not allowed @ data['deviceID']`.
 >
 > They appear when a browser which has an old version of Browser Mod cached tries to connect and should disappear once you have cleared all your caches properly.
