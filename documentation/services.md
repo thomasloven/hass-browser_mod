@@ -165,8 +165,10 @@ data:
   [size: <NORMAL/classic/wide/fullscreen>]
   [right_button: <string>]
   [right_button_action: <service call>]
+  [right_button_close: <TRUE/false>]
   [left_button: <string>]
   [left_button_action: <service call>]
+  [left_button_close: <TRUE/false>]
   [dismissable: <TRUE/false>]
   [dismiss_action: <service call>]
   [autoclose: <true/FALSE>]
@@ -186,8 +188,10 @@ data:
 | `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices |
 | `right_button`| The text of the right action button.|
 | `right_button_action`| Action to perform when the right action button is pressed. |
+| `right_button_close`| Enable/disable popup closing when the right action button is pressed. |
 | `left_button`| The text of the left action button.|
 | `left_button_action`| Action to perform when the left action button is pressed. |
+| `left_button_close`| Enable/disable popup closing when the left action button is pressed. |
 | `dismissable`| If false the dialog cannot be closed by the user without clicking an action button. |
 | `dismiss_action` | An action to perform if the dialog is closed by the user without clicking an action button. |
 | `autoclose` | If true the dialog will close automatically when the mouse, screen or keyboard is touched. This will perform the `dismiss_action`. |
