@@ -60,7 +60,7 @@ export const CameraMixin = (SuperClass) => {
         if (e.name !== "NotAllowedError") throw e;
         else {
           this.cameraError = true;
-          this.fireEvent("browser-mod-config-update");
+          this.fireBrowserEvent("browser-mod-config-update");
         }
       }
     }

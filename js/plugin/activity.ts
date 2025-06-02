@@ -28,7 +28,7 @@ export const ActivityMixin = (SuperClass) => {
       }
       this.activityTriggered = true;
       if (touched) {
-        this.fireEvent("browser-mod-activity");
+        this.fireBrowserEvent("browser-mod-activity");
       }
       clearTimeout(this._activityTimeout);
       this._activityTimeout = setTimeout(

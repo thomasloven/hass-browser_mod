@@ -4,10 +4,11 @@ export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
     public hass;
     public connection;
-    private _data;
-    public connected = false;
     public ready = false;
+
+    private _data;
     private _connectionResolve;
+
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
     });
@@ -24,37 +25,41 @@ export const ConnectionMixin = (SuperClass) => {
       });
     }
 
-    private fireEvent(event, detail = undefined) {
+    // Propagate internal browser event
+    private fireBrowserEvent(event, detail = undefined) {
       this.dispatchEvent(new CustomEvent(event, { detail, bubbles: true }));
     }
 
-    private onConnectionReady = () => {
-      this.connected = true;
-      this.fireEvent("browser-mod-connected");
+    /*
+     * Main state flags explained:
+     * * `connected` and `disconnected` refers to WS connection,
+     * * `ready` refers to established communication between browser and component counterpart.
+     */
+
+    // Component and frontend are mutually ready
+    private onReady = () => {
+      this.ready = true;
+      this.fireBrowserEvent("browser-mod-ready");
+      window.setTimeout(() => this.sendUpdate({}), 1000);
     }
 
-    private onConnectionLost = () => {
-      this.connected = false;
+    // WebSocket has disconnected
+    private onDisconnected = () => {
       this.ready = false;
-      this.fireEvent("browser-mod-disconnected");
+      this.fireBrowserEvent("browser-mod-disconnected");
     }
 
+    // Handle incoming message
     private incoming_message(msg) {
-      // Check for connection state
-      if (!this.connected) {
-        this.onConnectionReady();
-      }
-      // Check for readiness
+      // Check for readiness (of component and browser)
       if (!this.ready) {
         this.LOG("Integration ready: WebSocket connected and browser_mod loaded");
-        this.ready = true;
-        this.fireEvent("browser-mod-ready");
-        window.setTimeout(() => this.sendUpdate({}), 1000);
+        this.onReady();
       }
       // Handle messages
       if (msg.command) {
         this.LOG("Command:", msg);
-        this.fireEvent(`command-${msg.command}`, msg);
+        this.fireBrowserEvent(`command-${msg.command}`, msg);
       } else if (msg.browserEntities) {
         this.browserEntities = msg.browserEntities;
       } else if (msg.result) {
@@ -77,7 +82,7 @@ export const ConnectionMixin = (SuperClass) => {
       if (!this.registered && this.global_settings["autoRegister"] === true)
         this.registered = true;
 
-      this.fireEvent("browser-mod-config-update");
+      this.fireBrowserEvent("browser-mod-config-update");
 
       if (update) this.sendUpdate({});
     }
@@ -86,7 +91,7 @@ export const ConnectionMixin = (SuperClass) => {
       const conn = (await hass()).connection;
       this.connection = conn;
 
-      const setupBrowserModConnection = () => {
+      const connectBrowserModComponent = () => {
         this.LOG("Subscribing to browser_mod/connect events");
         conn.subscribeMessage((msg) => this.incoming_message(msg), {
           type: "browser_mod/connect",
@@ -94,30 +99,30 @@ export const ConnectionMixin = (SuperClass) => {
         });
       };
 
-      // Initial connect subscription
-      setupBrowserModConnection();
+      // Initial connect component subscription
+      connectBrowserModComponent();
       // If this fails, then:
       // Observe `component_loaded` to track when `browser_mod` is dynamically added
-      conn.subscribeEvents((event) => {
-        if (event.data?.component === "browser_mod") {
+      conn.subscribeEvents((haEvent) => {
+        if (haEvent.data?.component === "browser_mod") {
           this.LOG("Detected browser_mod component load");
-          setupBrowserModConnection();
+          connectBrowserModComponent();
         }
       }, "component_loaded");
 
       // Keep connection status up to date
       conn.addEventListener("ready", () => {
-        this.onConnectionReady();
+        this.onConnected();
       });
       conn.addEventListener("disconnected", () => {
-        this.onConnectionLost();
+        this.onDisconnected();
       });
       window.addEventListener("connection-status", (ev: CustomEvent) => {
         if (ev.detail === "connected") {
-          this.onConnectionReady();
+          this.onConnected();
         }
         if (ev.detail === "disconnected") {
-          this.onConnectionLost();
+          this.onDisconnected();
         }
       });
 
@@ -240,7 +245,7 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     sendUpdate(data) {
-      if (!this.connected || !this.registered) return;
+      if (!this.ready || !this.registered) return;
 
       const dt = new Date();
       this.LOG("Send:", data);
@@ -253,7 +258,7 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     browserIDChanged(oldID, newID) {
-      this.fireEvent("browser-mod-config-update");
+      this.fireBrowserEvent("browser-mod-config-update");
 
       if (
         this.browsers?.[oldID] !== undefined &&
