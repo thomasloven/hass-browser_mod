@@ -15,6 +15,7 @@ class SettingsStoreData:
     hideSidebar = attr.ib(type=bool, default=None)
     hideHeader = attr.ib(type=bool, default=None)
     defaultPanel = attr.ib(type=str, default=None)
+    defaultAction = attr.ib(type=object, default=None)
     sidebarPanelOrder = attr.ib(type=list, default=None)
     sidebarHiddenPanels = attr.ib(type=list, default=None)
     sidebarTitle = attr.ib(type=str, default=None)

@@ -33,6 +33,8 @@ export const AutoSettingsMixin = (SuperClass) => {
       });
 
       window.addEventListener("location-changed", runUpdates);
+
+      this.addEventListener("browser-mod-ready", this._runDefaultAction, {once: true});
     }
 
     async _auto_settings_setup() {
@@ -200,6 +202,24 @@ export const AutoSettingsMixin = (SuperClass) => {
         return true;
       }
       return false;
+    }
+
+    _runDefaultAction() {
+      if (this.settings.defaultAction) {
+        var action_action = this.settings.defaultAction;
+        if (!Array.isArray(action_action)) {
+          action_action = [action_action];
+        }
+        action_action.forEach(async (actionItem) => {
+          var { action, service, target, data } = actionItem;
+          service = action ?? service;
+          this._service_action({
+            service,
+            target,
+            data: data,
+          });
+        })
+      }
     }
 
     getSetting(key) {

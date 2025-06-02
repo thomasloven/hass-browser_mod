@@ -195,7 +195,7 @@ class BrowserModSettingsTable extends LitElement {
     for (const [k, v] of Object.entries(settings.user)) {
       const user = users.find((usr) => usr.id === k);
       if (!user) continue;
-      let val = String(v);
+      let val = (typeof(v) === "object") ? "Config" : String(v);
       if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
         name: `User: ${user.name}`,
@@ -224,7 +224,7 @@ class BrowserModSettingsTable extends LitElement {
     });
 
     for (const [k, v] of Object.entries(settings.browser)) {
-      let val = String(v);
+      let val = (typeof(v) === "object") ? "Config" : String(v);
       if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
         name: `Browser: ${k}`,
@@ -256,7 +256,7 @@ class BrowserModSettingsTable extends LitElement {
       name: "GLOBAL",
       value:
         settings.global != null
-          ? String(settings.global)
+          ?  ((typeof(settings.global) === "object") ? "Config" : String(settings.global))
           : html`<span style="color: var(--warning-color);">DEFAULT</span>`,
       controls: html`
         <div>

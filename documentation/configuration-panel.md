@@ -93,7 +93,41 @@ This will hide the header bar. Completely. It does not care if there are useful 
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
 
-> *Note:* This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
+> *Note:* 
+>1. This option sets the same local setting as Home Assistants' Dashboard setting in User Settings. If this setting does not provide exactly what you are after you may wish to use a Default action with `browser_mod.navigate`.
+>2. This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
+
+### Default action
+
+Set the default action to be run when Browser is loaded or refreshed. This setting accepts the same action Config as per `browser_mod.popup` actions. For more information see the examples actions included in [Actionable popups](./popups.md#actionable-popups). If you are using Browser Mod [SERVICES](./services.md), in most cases you would omit `browser_id` or `user_id` so the service runs on the loading Browser.
+
+__IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates. 
+
+*Tips:*
+1. Multiple actions can be called by using a list of actions. These are called in parallel, matching actions for popups and notifications.
+```yaml
+- action: browser_mod.navigate
+  data:
+    path: /my-dashboard/second-view
+- action: browser_mod.notification
+  data:
+    message: Good Morning Dave
+```
+2. For fine grained control of timing, consider using `browser_mod.sequence`. Note here that only one top level action is used.
+```yaml
+action: browser_mod.sequence
+data:
+  sequence:
+    - service: browser_mod.navigate
+      data:
+        path: /my-dashboard/second-view
+    - service: browser_mod.delay
+      data:
+        time: 5000
+    - service: browser_mod.notification
+      data:
+        message: Good Morning Dave
+```
 
 ### Sidebar order
 

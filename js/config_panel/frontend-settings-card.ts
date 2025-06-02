@@ -192,6 +192,19 @@ class BrowserModFrontendSettingsCard extends LitElement {
           </ha-expansion-panel>
 
           <ha-expansion-panel
+            .header=${"Default action"}
+            .secondary=${`Home Assistant action that executes when broweser is opened or refreshed.`}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"defaultAction"}
+              .settingSelector=${{ object: {} }}
+              .default=${ {} }
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+
+          <ha-expansion-panel
             .header=${"Sidebar order"}
             .secondary=${"Order and visibility of sidebar items."}
             leftChevron
