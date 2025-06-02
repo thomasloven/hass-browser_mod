@@ -6,7 +6,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() dirty = false;
 
   toggleRegister() {
-    if (!window.browser_mod?.connected) return;
+    if (!window.browser_mod?.ready) return;
     window.browser_mod.registered = !window.browser_mod.registered;
     this.dirty = true;
   }
@@ -30,7 +30,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       <ha-card outlined>
         <h1 class="card-header">
           <div class="name">This Browser</div>
-          ${window.browser_mod?.connected
+          ${window.browser_mod?.ready
             ? html`
                 <ha-icon
                   class="icon"

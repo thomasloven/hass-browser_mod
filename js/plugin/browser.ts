@@ -19,7 +19,7 @@ export const BrowserStateMixin = (SuperClass) => {
       );
 
       this.addEventListener("fully-update", () => this._browser_state_update());
-      this.addEventListener("browser-mod-connected", () =>
+      this.addEventListener("browser-mod-ready", () =>
         this._browser_state_update()
       );
 
