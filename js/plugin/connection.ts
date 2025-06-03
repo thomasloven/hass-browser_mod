@@ -112,14 +112,14 @@ export const ConnectionMixin = (SuperClass) => {
 
       // Keep connection status up to date
       conn.addEventListener("ready", () => {
-        this.onConnected();
+        this.onReady();
       });
       conn.addEventListener("disconnected", () => {
         this.onDisconnected();
       });
       window.addEventListener("connection-status", (ev: CustomEvent) => {
         if (ev.detail === "connected") {
-          this.onConnected();
+          this.onReady();
         }
         if (ev.detail === "disconnected") {
           this.onDisconnected();
