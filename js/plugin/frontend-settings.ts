@@ -212,6 +212,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         }
         action_action.forEach(async (actionItem) => {
           var { action, service, target, data } = actionItem;
+          action = (action === "call-service" && service) || action;
           service = action ?? service;
           this._service_action({
             service,

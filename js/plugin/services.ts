@@ -85,6 +85,7 @@ export const ServicesMixin = (SuperClass) => {
                 }
                 actions.forEach((actionItem) => {
                   var { action, service, target, data } = actionItem as any;
+                  action = (action === "call-service" && service) || action;
                   service = action ?? service;
                   this._service_action({
                     service,
@@ -114,6 +115,7 @@ export const ServicesMixin = (SuperClass) => {
                   }
                   action_action.forEach((actionItem) => {
                     var { action, service, target, data } = actionItem;
+                    action = (action === "call-service" && service) || action;
                     service = action ?? service;
                     this._service_action({
                       service,
