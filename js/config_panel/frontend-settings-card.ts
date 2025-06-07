@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { loadDeveloperToolsTemplate, selectTree } from "../helpers";
+import { SidebarSettingsCustomSelector } from "./sidebar-settings-custom-selector";
 
 import "./browser-mod-settings-table";
 
@@ -12,12 +13,15 @@ class BrowserModFrontendSettingsCard extends LitElement {
   @state() _dashboards = [];
 
   @state() _editSidebar = false;
+  @state() _hassUserHasSidebarSettings = false;
   _savedSidebar = { panelOrder: [], hiddenPanels: [] };
+  _sidebarSettingsCustomSelector: SidebarSettingsCustomSelector;
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.requestUpdate()
     );
+    this._sidebarSettingsCustomSelector = new SidebarSettingsCustomSelector();
   }
 
   updated(changedProperties) {
@@ -25,11 +29,48 @@ class BrowserModFrontendSettingsCard extends LitElement {
       changedProperties.has("hass") &&
       changedProperties.get("hass") === undefined
     ) {
-      (async () =>
-        (this._dashboards = await this.hass.callWS({
+      (async () => {
+        this._dashboards = await this.hass.callWS({
           type: "lovelace/dashboards/list",
-        })))();
+        });
+        this.checkHassUserSidebarSettings();
+     })();
     }
+  }
+
+  async checkHassUserSidebarSettings () {
+    const userData = await this.hass?.callWS({
+      type: 'frontend/get_user_data', 
+      key: 'sidebar'
+    })
+    this._hassUserHasSidebarSettings = (userData && userData.value?.panelOrder);
+  }
+
+  async clearHassUserSidebarSettings() {
+    const clearSettings = () => { 
+      this.hass.callWS({
+        type: 'frontend/set_user_data', 
+        key: 'sidebar',
+        value: {}
+      })
+      this.checkHassUserSidebarSettings();
+      window.browser_mod?.showPopup(
+        "Sidebar setings",
+        "Sidebar settings cleared",
+        {
+          right_button: "OK"
+        }
+      )
+    };
+    window.browser_mod?.showPopup(
+      "Sidebar settings",
+      "Clear sidebar settings synced in this user's Home Assistant profile?",
+      {
+        right_button: "Yes",
+        right_button_action: clearSettings,
+        left_button: "No",
+      }
+    );
   }
 
   async toggleEditSidebar() {
@@ -204,6 +245,42 @@ class BrowserModFrontendSettingsCard extends LitElement {
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
+          ${this._sidebarSettingsCustomSelector?.dialogAvaliable ?
+            html`
+            <ha-expansion-panel
+              .header=${"Sidebar order"}
+              .secondary=${"Order and visibility of sidebar items."}
+              leftChevron
+            >
+              ${this._hassUserHasSidebarSettings ? 
+                html`
+                <ha-settings-row >
+                  <span slot="heading">Sidebar user settings</span>
+                  <span slot="description">
+                    This user has sidebar settings synced to Home Assistant user profile. 
+                    It is recommend to clear these settings to allow Browser Mod settings to 
+                    take precedence. To check other Home Assistant users, login as that user
+                    and check back at this panel.
+                  </span>
+                  <ha-button
+                    @click=${() => this.clearHassUserSidebarSettings()}
+                  >Clear</ha-button>
+                </ha-settings-row>` 
+                : "" 
+              }
+              <browser-mod-settings-table
+                .hass=${this.hass}
+                .settingKey=${"sidebarPanelOrder"}
+                .settingSelector=${
+                  {
+                    custom: this._sidebarSettingsCustomSelector,
+                  }
+                }
+                .default=${"lovelace"}
+              ></browser-mod-settings-table>
+            </ha-expansion-panel>` 
+          :
+            html`
           <ha-expansion-panel
             .header=${"Sidebar order"}
             .secondary=${"Order and visibility of sidebar items."}
@@ -230,7 +307,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .default=${"lovelace"}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
-
+            `}
           <ha-expansion-panel
             .header=${"Sidebar title"}
             .secondary=${"The title at the top of the sidebar"}

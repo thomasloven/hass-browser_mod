@@ -1,10 +1,12 @@
-import { await_element, waitRepeat, runOnce, selectTree } from "../helpers";
+import { await_element, waitRepeat, runOnce, selectTree, hass_base_el } from "../helpers";
 
 export const AutoSettingsMixin = (SuperClass) => {
   class AutoSettingsMixinClass extends SuperClass {
     _faviconTemplateSubscription;
     _titleTemplateSubscription;
     _sidebarTitleSubscription;
+    // flag to remove legacy Sidebar Settings that hass leaves after migration to user profile
+    _removeLegacySidebarSettings: Boolean = false;
     __currentTitle = undefined;
 
     @runOnce()
@@ -35,6 +37,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       window.addEventListener("location-changed", runUpdates);
 
       this.addEventListener("browser-mod-config-update", this._runDefaultAction, {once: true});
+      this._watchEditSidebar();
     }
 
     async _auto_settings_setup() {
@@ -45,12 +48,16 @@ export const AutoSettingsMixin = (SuperClass) => {
       // Sidebar panel order and hiding
       if (settings.sidebarPanelOrder) {
         localStorage.setItem("sidebarPanelOrder", settings.sidebarPanelOrder);
+      } else if (this._removeLegacySidebarSettings) {
+        localStorage.removeItem("sidebarPanelOrder");
       }
       if (settings.sidebarHiddenPanels) {
         localStorage.setItem(
           "sidebarHiddenPanels",
           settings.sidebarHiddenPanels
         );
+      } else if (this._removeLegacySidebarSettings){
+        localStorage.removeItem("sidebarHiddenPanels");
       }
 
       // Default panel
@@ -219,6 +226,51 @@ export const AutoSettingsMixin = (SuperClass) => {
             data: data,
           });
         })
+      }
+    }
+
+    async _watchEditSidebar() {
+      let sidebar = undefined;
+      let cnt = 0;
+      while (!sidebar && cnt++ < 10) {
+        sidebar = await selectTree(
+          document.body,
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
+        );
+        if (!sidebar) await new Promise((r) => setTimeout(r, 1000));
+      }
+      // Home Assistant 2025.6 removed editMode from sidebar
+      // so this is the best check to see if sidebar settings dialog is available
+      if (sidebar && sidebar.editMode === undefined) {
+        // both Sidebar and Profile edit can fire show-dialog for dialog-edit-sidebar
+        // so listen on hass main
+        const main = await selectTree(
+          document.body,
+          "home-assistant $ home-assistant-main"
+        )
+        if (main) {
+          main.addEventListener("show-dialog", (ev: any) => {
+            if (ev.detail?.dialogTag === "dialog-edit-sidebar") {
+              if (ev.detail?.browser_mod_continue) return;
+              const evShowDialog = new CustomEvent("show-dialog", { bubbles: true, composed: true, detail: { browser_mod_continue: true, ...ev.detail } })
+              ev.stopPropagation();
+              window.browser_mod?.showPopup(
+                'Edit sidebar',
+                'Browser Mod is installed. It is recommend that you use Browser Mod Frontend Settings to manage sidebar settings.',
+                {
+                  right_button: "Continue",
+                  right_button_action: () => { main.dispatchEvent(evShowDialog) },
+                  left_button: "Edit with Browser Mod",
+                  left_button_action: () => { this.browser_navigate('/browser-mod') },
+                  style: 'ha-dialog { position: fixed; z-index: 999; }' // Need to be above open drawer sidebar
+                }
+              )
+            }
+          });
+        }
+        // flag to remove legacy sidebar settings which hass may have left over
+        this._removeLegacySidebarSettings = true;
+        this._auto_settings_setup();
       }
     }
 

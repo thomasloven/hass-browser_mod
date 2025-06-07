@@ -6,14 +6,14 @@ let _users = undefined;
 
 class BrowserModSettingsTable extends LitElement {
   @property() settingKey;
-  @property() settingSelector = {
-    template: {},
+  @property() settingSelector: any = {
+    template: {}
   };
 
   @property() hass;
   @property() default;
 
-  @property() tableData = [];
+  @property() tableData = <any>[];
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -72,7 +72,16 @@ class BrowserModSettingsTable extends LitElement {
     );
   }
 
-  changeSetting(type, target) {
+  async changeSetting(type, target) {
+    if ((this.settingSelector as any).custom) {
+      const allUsers = await this.fetchUsers();
+      (this.settingSelector as any).custom?.changeSetting(type, target, allUsers);
+    } else {
+      this.changeSettingForm(type, target);
+    }
+  }
+
+  changeSettingForm(type, target) {
     const changeSettingCallback = async (newValue) => {
       if (this.settingKey === "sidebarPanelOrder") {
         const sideBar: any = await selectTree(

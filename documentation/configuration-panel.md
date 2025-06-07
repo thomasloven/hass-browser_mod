@@ -131,6 +131,14 @@ data:
 
 ### Sidebar order
 
+#### Home Assistant 2025.6 and onwards
+
+Home Assistant 2025.6 introduced a sidebar settings dialog to replace the in place edit mode. Browser Mod uses this dialog for editing sdeibar order and visibility.
+
+__IMPORTANT__: Home Assistant will store sidebar settings in the Home Assistant user profile. This will prevent Browser and Global sidebar settings from being applied. If a user has sidebar settings synced to their user profile, a warning will be display with an option to clear the synced settings to allow Browser Mod to take precedence.
+
+#### Home Assistant prior to 2025.6
+
 Set the order and hidden items of the sidebar. To change this setting:
 
 - Click the "EDIT" button
