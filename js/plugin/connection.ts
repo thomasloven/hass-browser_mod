@@ -21,10 +21,14 @@ export const ConnectionMixin = (SuperClass) => {
       console.log(`${dt.toLocaleTimeString()}`, ...args);
 
       if (this._connected) {
-        this.connection.sendMessage({
-          type: "browser_mod/log",
-          message: args[0],
-        });
+        try {
+          this.connection.sendMessage({
+            type: "browser_mod/log",
+            message: args[0],
+          });
+        } catch (err) {
+         console.log("Browser Mod: Error sending log:", err);
+        }
       }
     }
 
@@ -264,8 +268,8 @@ export const ConnectionMixin = (SuperClass) => {
 
       const dt = new Date();
 
+      this.LOG("Send:", data);
       try {
-        this.LOG("Send:", data);
         this.connection.sendMessage({
           type: "browser_mod/update",
           browserID: this.browserID,
