@@ -36,7 +36,7 @@ export const AutoSettingsMixin = (SuperClass) => {
 
       window.addEventListener("location-changed", runUpdates);
 
-      this.addEventListener("browser-mod-config-update", this._runDefaultAction, {once: true});
+      this.addEventListener("browser-mod-ready", this._runDefaultAction, {once: true});
       this._watchEditSidebar();
     }
 
