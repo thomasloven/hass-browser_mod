@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 import { loadDeveloperToolsTemplate, selectTree } from "../helpers";
+import { SidebarSettingsCustomSelector } from "./sidebar-settings-custom-selector";
 
 import "./browser-mod-settings-table";
 
@@ -12,12 +13,15 @@ class BrowserModFrontendSettingsCard extends LitElement {
   @state() _dashboards = [];
 
   @state() _editSidebar = false;
+  @state() _hassUserHasSidebarSettings = false;
   _savedSidebar = { panelOrder: [], hiddenPanels: [] };
+  _sidebarSettingsCustomSelector: SidebarSettingsCustomSelector;
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.requestUpdate()
     );
+    this._sidebarSettingsCustomSelector = new SidebarSettingsCustomSelector();
   }
 
   updated(changedProperties) {
@@ -25,11 +29,48 @@ class BrowserModFrontendSettingsCard extends LitElement {
       changedProperties.has("hass") &&
       changedProperties.get("hass") === undefined
     ) {
-      (async () =>
-        (this._dashboards = await this.hass.callWS({
+      (async () => {
+        this._dashboards = await this.hass.callWS({
           type: "lovelace/dashboards/list",
-        })))();
+        });
+        this.checkHassUserSidebarSettings();
+     })();
     }
+  }
+
+  async checkHassUserSidebarSettings () {
+    const userData = await this.hass?.callWS({
+      type: 'frontend/get_user_data', 
+      key: 'sidebar'
+    })
+    this._hassUserHasSidebarSettings = (userData && userData.value?.panelOrder);
+  }
+
+  async clearHassUserSidebarSettings() {
+    const clearSettings = () => { 
+      this.hass.callWS({
+        type: 'frontend/set_user_data', 
+        key: 'sidebar',
+        value: {}
+      })
+      this.checkHassUserSidebarSettings();
+      window.browser_mod?.showPopup(
+        "Sidebar setings",
+        "Sidebar settings cleared",
+        {
+          right_button: "OK"
+        }
+      )
+    };
+    window.browser_mod?.showPopup(
+      "Sidebar settings",
+      "Clear sidebar settings synced in this user's Home Assistant profile?",
+      {
+        right_button: "Yes",
+        right_button_action: clearSettings,
+        left_button: "No",
+      }
+    );
   }
 
   async toggleEditSidebar() {
@@ -84,14 +125,14 @@ class BrowserModFrontendSettingsCard extends LitElement {
       <ha-card header="Frontend Settings" outlined>
         <div class="card-content">
           <ha-alert alert-type="warning" title="Please note:">
-            The settings in this section severely change the way the Home
+            The settings in this section severely alter the way the Home
             Assistant frontend works and looks. It is very easy to forget that
-            you made a setting here when you switch devices or user.
+            you made a change here when you switch devices or users.
             <p>
               Do not report any issues to Home Assistant before clearing
-              <b>EVERY</b> setting here and thouroghly clearing all your browser
-              caches. Failure to do so means you risk wasting a lot of peoples
-              time, and you will be severly and rightfully ridiculed.
+              <b>EVERY</b> setting here and thoroughly clearing all your browser
+              caches. Failure to do so means you risk wasting a lot of people's
+              time, and you will be severely and rightfully ridiculed.
             </p>
           </ha-alert>
           <p>
@@ -110,15 +151,15 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 >
                   <ha-settings-row>
                     <span slot="heading" id="afj_heading"
-                      >Allow April fools jokes</span
+                      >Allow April Fool's jokes</span
                     >
                     <span slot="description" id="afj_description">
-                      By enabling this, I consent to any April Fools Jokes
+                      By enabling this, I consent to any April Fool's Jokes
                       messing with my frontend.
                     </span>
                     <span
                       explanation="Oh hi!
-                      You found my April fools joke! Well done!
+                      You found my April Fool's joke! Well done!
                       Don't worry. This actually does ABSOLUTELY NOTHING.
                       It's just a toggle connected to nothing."
                     ></span>
@@ -180,7 +221,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
 
           <ha-expansion-panel
             .header=${"Default dashboard"}
-            .secondary=${`The dashboard that is showed when navigating to ${location.origin}`}
+            .secondary=${`The dashboard that is shown when navigating to ${location.origin}`}
             leftChevron
           >
             <browser-mod-settings-table
@@ -191,6 +232,55 @@ class BrowserModFrontendSettingsCard extends LitElement {
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
+          <ha-expansion-panel
+            .header=${"Default action"}
+            .secondary=${`Home Assistant action that executes when broweser is opened or refreshed.`}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"defaultAction"}
+              .settingSelector=${{ object: {} }}
+              .default=${ {} }
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+
+          ${this._sidebarSettingsCustomSelector?.dialogAvaliable ?
+            html`
+            <ha-expansion-panel
+              .header=${"Sidebar order"}
+              .secondary=${"Order and visibility of sidebar items."}
+              leftChevron
+            >
+              ${this._hassUserHasSidebarSettings ? 
+                html`
+                <ha-settings-row >
+                  <span slot="heading">Sidebar user settings</span>
+                  <span slot="description">
+                    This user has sidebar settings synced to Home Assistant user profile. 
+                    It is recommend to clear these settings to allow Browser Mod settings to 
+                    take precedence. To check other Home Assistant users, login as that user
+                    and check back at this panel.
+                  </span>
+                  <ha-button
+                    @click=${() => this.clearHassUserSidebarSettings()}
+                  >Clear</ha-button>
+                </ha-settings-row>` 
+                : "" 
+              }
+              <browser-mod-settings-table
+                .hass=${this.hass}
+                .settingKey=${"sidebarPanelOrder"}
+                .settingSelector=${
+                  {
+                    custom: this._sidebarSettingsCustomSelector,
+                  }
+                }
+                .default=${"lovelace"}
+              ></browser-mod-settings-table>
+            </ha-expansion-panel>` 
+          :
+            html`
           <ha-expansion-panel
             .header=${"Sidebar order"}
             .secondary=${"Order and visibility of sidebar items."}
@@ -217,7 +307,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .default=${"lovelace"}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
-
+            `}
           <ha-expansion-panel
             .header=${"Sidebar title"}
             .secondary=${"The title at the top of the sidebar"}

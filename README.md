@@ -32,6 +32,14 @@ What if you could tap a button and have Home Assistant ask you which rooms you w
 
 - Restart Home Assistant
 
+# Upgrading
+
+- Upgrade via [HACS](https://hacs.xyz) or copy new contents of `custom_components/browser_mod/` to `<your config dir>/custom_components/browser_mod/`.
+
+- Restart Home Assistant. If you are upgrading via [HACS](https://hacs.xyz) you will get a repair item to restart Home Assistant.
+
+- After restarting Home Assistant, all Browsers will need a reload to download the latest version of Browser Mod javascript file. Version 2.4.0 includes a notification when a Browser version mismatch is detected, so from 2.4.x onwards simply clicking __Reload__ should be sufficient. If you keep getting the notification, you may need to do a hard Browser reload `SHIFT+F5` or in some cases [clear your Browser cache](https://github.com/thomasloven/hass-config/wiki/Clearing-your-browser-cache).
+
 > Note: If you are upgrading from Browser Mod 1, it is likely that you will get some errors in your log during a transition period. They will say something along the lines of `Error handling message: extra keys not allowed @ data['deviceID']`.
 >
 > They appear when a browser which has an old version of Browser Mod cached tries to connect and should disappear once you have cleared all your caches properly.
@@ -89,8 +97,7 @@ To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the 
 
 The card will be visible only while you're in Edit mode.
 
-As long as the popup card is (would be) visible, i.e. you stay on the same view;
-whenever the more-info dialog for the entitiy you selected would be opened, the popup card will be shown instead.
+Custom popup cards are either local to the current Dashboard view (default) or can be used across all views of the Dashboard. Use the `Popup card is available for use in all views` GUI switch or `popup_card_all_views` optional parameter in Yaml. Using global view custom popup cards allows you to use a sub view to store your custom popup cards for a Dashboard, if that fits your use case.
 
 Yaml configuration:
 
@@ -99,6 +106,7 @@ type: custom:popup-card
 entity: <entity id>
 card:
   type: ...etc...
+[popup_card_all_views: [true/FALSE]]
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 

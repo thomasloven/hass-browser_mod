@@ -79,7 +79,7 @@ export const MediaPlayerMixin = (SuperClass) => {
         this._player_update();
       });
 
-      this.addEventListener("browser-mod-connected", () =>
+      this.addEventListener("browser-mod-ready", () =>
         this._player_update()
       );
 

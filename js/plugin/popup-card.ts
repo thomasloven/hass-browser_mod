@@ -149,33 +149,45 @@ class PopupCard extends LitElement {
   }
 }
 
+function popupCardMatch(card, entity, viewIndex, curView) {
+  return card.type === 'custom:popup-card' &&
+         card.entity === entity &&
+         (viewIndex === curView || card.popup_card_all_views);
+}
+
 function findPopupCardConfig(lovelaceRoot, entity) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   if (lovelaceConfig) {
     const curView = lovelaceRoot?._curView ?? 0;
-    const view = lovelaceConfig.views[curView]; 
-    if (view.cards) {
-      for (const card of view.cards) {
-        if (card.type === 'custom:popup-card' && card.entity === entity) return card;
-        // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
-        // under another card. So we should look for card one level deep.
-        if (card.cards) {
-          for (const subCard of card.cards) {
-            if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+    // Place current view at the front of the view index lookup array.
+    // This allows the current view to be checked first for local cards, 
+    // and then the rest of the views for global cards, keeping current view precedence.
+    let viewLookup = Array.from(Array(lovelaceConfig.views.length).keys())
+    viewLookup.splice(curView, 1);
+    viewLookup.unshift(curView);
+    for (const viewIndex of viewLookup) {
+      const view = lovelaceConfig.views[viewIndex];
+      if (view.cards) {
+        for (const card of view.cards) {
+          if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+          // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
+          if (card.cards) {
+            for (const subCard of card.cards) {
+              if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+            }
           }
         }
       }
-    }
-    if (view.sections) {
-      for (const section of view.sections) {
-        if (section.cards) {
-          for (const card of section.cards) {
-            if (card.type === 'custom:popup-card' && card.entity === entity) return card;
-            // In 2024 a suggested workaround for edit view issue was for popup-card to be nested 
-            // under another card. So we should look for card one level deep.
-            if (card.cards) {
-              for (const subCard of card.cards) {
-                if (subCard.type === 'custom:popup-card' && subCard.entity === entity) return subCard;
+      if (view.sections) {
+        for (const section of view.sections) {
+          if (section.cards) {
+            for (const card of section.cards) {
+              if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+              // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
+              if (card.cards) {
+                for (const subCard of card.cards) {
+                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+                }
               }
             }
           }
@@ -196,11 +208,37 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   if (!customElements.get("popup-card"))
     customElements.define("popup-card", PopupCard);
 
-  let lovelaceRoot = await getLovelaceRoot(document);
-
-  window.addEventListener("location-changed", async () => {
-    lovelaceRoot = await getLovelaceRoot(document);
+  let rootMutationObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === "childList") {
+        for (const node of mutation.removedNodes) {
+          if (node instanceof Element && node.localName === "hui-root") {
+            lovelaceRoot = null;
+          }
+        }        
+        for (const node of mutation.addedNodes) {
+          if (node instanceof Element && node.localName === "hui-root") {
+            lovelaceRoot = node;
+          }
+        }  
+      }
+    }
   });
+  let lovelaceRoot = await getLovelaceRoot(document);
+  if (rootMutationObserver && lovelaceRoot?.parentNode) {
+    rootMutationObserver.observe(lovelaceRoot.parentNode, {
+      childList: true,
+    });
+  }
+
+  // popstate will get fired on window.browser_mod?.service("popup", ...) but as this popstate
+  // is not currently cleared there is no way to distinguish this event properly at this time.
+  // Hence, setting lovelaceRoot on all popstate which captures, for examople, UI back from History Panel.
+  ['popstate','location-changed'].forEach(event => 
+    window.addEventListener(event, async (ev) => {
+      lovelaceRoot = await getLovelaceRoot(document);
+    })
+  );
 
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
     if (ev.detail?.ignore_popup_card || !ev.detail?.entityId || !lovelaceRoot) return;

@@ -53,6 +53,23 @@ const configSchema = [
     type: "grid",
     schema: [
       {
+        name: "right_button_close",
+        label: "Right button closes popup",
+		default: true,
+        selector: { boolean: {} },
+      },
+      {
+        name: "left_button_close",
+        label: "Left button closes popup",
+		default: true,
+        selector: { boolean: {} },
+      },
+    ],
+  },
+  {
+    type: "grid",
+    schema: [
+      {
         name: "dismissable",
         label: "User dismissable",
         selector: { boolean: {} },
@@ -88,6 +105,12 @@ const configSchema = [
     name: "allow_nested_more_info",
     label: "Allow nested more-info dialogs",
     default: true,
+    selector: { boolean: {} },
+  },
+  {
+    name: "popup_card_all_views",
+    label: "Popup card is available for use in all views",
+    default: false,
     selector: { boolean: {} },
   },
   {

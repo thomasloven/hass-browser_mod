@@ -7,6 +7,7 @@ from .mod_view import async_setup_view
 from .connection import async_setup_connection
 from .const import DOMAIN, DATA_BROWSERS, DATA_ADDERS, DATA_STORE
 from .service import async_setup_services
+from .helpers import get_version
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,6 +26,9 @@ async def async_setup(hass, config):
 
     store = BrowserModStore(hass)
     await store.load()
+
+    version = await hass.async_add_executor_job(get_version, hass)
+    await store.set_version(version)
 
     hass.data[DOMAIN] = {
         DATA_BROWSERS: {},

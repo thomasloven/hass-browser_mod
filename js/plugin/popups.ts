@@ -20,7 +20,9 @@ class BrowserModPopup extends LitElement {
   @property({ reflect: true }) actions;
   @property({ reflect: true }) card;
   @property() right_button;
+  @property() right_button_close;
   @property() left_button;
+  @property() left_button_close;
   @property() dismissable;
   @property({ reflect: true }) timeout_hide_progress;
   @property({ reflect: true }) wide;
@@ -146,8 +148,10 @@ class BrowserModPopup extends LitElement {
     {
       right_button = undefined,
       right_button_action = undefined,
+	    right_button_close = true,
       left_button = undefined,
       left_button_action = undefined,
+	    left_button_close = true,
       dismissable = true,
       dismiss_action = undefined,
       timeout = undefined,
@@ -201,7 +205,9 @@ class BrowserModPopup extends LitElement {
     }
 
     this.right_button = right_button;
+	  this.right_button_close = right_button_close;
     this.left_button = left_button;
+	  this.left_button_close = left_button_close;
     this.actions = right_button === undefined ? undefined : "";
 
     this.dismissable = dismissable;
@@ -230,12 +236,12 @@ class BrowserModPopup extends LitElement {
 
   async _primary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.do_close();
+	  if (this.right_button_close === true) await this.do_close();
     this._actions?.right_button_action?.(this._formdata);
   }
   async _secondary() {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.do_close();
+    if (this.left_button_close === true) await this.do_close();
     this._actions?.left_button_action?.(this._formdata);
   }
   async _timeout() {
@@ -542,11 +548,16 @@ export const PopupMixin = (SuperClass) => {
         if (popupState) {
           if (!popupState.open) {
             if (this._popupEl?.open && this._popupEl?.dismissable)
-              this._popupEl.do_close();
+              await this._popupEl.do_close();
           }
         }
       };
       window.addEventListener("popstate", historyListener);
+      const locationListener = async (ev) => {
+        if (this._popupEl?.open)
+            await this._popupEl.do_close();
+      };
+      window.addEventListener("location-changed", locationListener);
 
       this._contextProviderValues = [];
       // Pass on the context request to hass base element as we are outside its DOM tree

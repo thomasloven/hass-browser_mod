@@ -51,7 +51,7 @@ class BrowserPlayer extends LitElement {
     window.browser_mod?._video_player?.addEventListener(event, () =>
       this.requestUpdate()
     );
-    window.browser_mod?.addEventListener("browser-mod-connected", () =>
+    window.browser_mod?.addEventListener("browser-mod-ready", () =>
       this._reconnect()
     );
   }

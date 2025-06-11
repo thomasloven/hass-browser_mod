@@ -1,4 +1,5 @@
 const ID_STORAGE_KEY = "browser_mod-browser-id";
+const ID_STORAGE_KEY_LOVELACE_PLAYER = "lovelace-player-device-id"
 
 export const BrowserIDMixin = (SuperClass) => {
   return class BrowserIDMixinClass extends SuperClass {
@@ -17,7 +18,7 @@ export const BrowserIDMixin = (SuperClass) => {
           };
           Storage.prototype.browser_mod_patched = true;
         }
-      }
+      } 
 
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
@@ -39,7 +40,11 @@ export const BrowserIDMixin = (SuperClass) => {
 
     get browserID() {
       if (document.querySelector("hc-main")) return "CAST";
-      if (localStorage[ID_STORAGE_KEY]) return localStorage[ID_STORAGE_KEY];
+      if (localStorage[ID_STORAGE_KEY]) {
+        // set lovelace-player-device-id as used by card-tools, state-switch
+        localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
+        return localStorage[ID_STORAGE_KEY];
+      }
       this.browserID = "";
       this.recall_id();
       return this.browserID;
@@ -57,6 +62,8 @@ export const BrowserIDMixin = (SuperClass) => {
       if (id === "") id = _createBrowserID();
       const oldID = localStorage[ID_STORAGE_KEY];
       localStorage[ID_STORAGE_KEY] = id;
+      // set lovelace-player-device-id as used by card-tools, state-switch
+      localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
 
       this.browserIDChanged(oldID, id);
     }

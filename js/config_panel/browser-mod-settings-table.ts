@@ -6,14 +6,14 @@ let _users = undefined;
 
 class BrowserModSettingsTable extends LitElement {
   @property() settingKey;
-  @property() settingSelector = {
-    template: {},
+  @property() settingSelector: any = {
+    template: {}
   };
 
   @property() hass;
   @property() default;
 
-  @property() tableData = [];
+  @property() tableData = <any>[];
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -72,7 +72,16 @@ class BrowserModSettingsTable extends LitElement {
     );
   }
 
-  changeSetting(type, target) {
+  async changeSetting(type, target) {
+    if ((this.settingSelector as any).custom) {
+      const allUsers = await this.fetchUsers();
+      (this.settingSelector as any).custom?.changeSetting(type, target, allUsers);
+    } else {
+      this.changeSettingForm(type, target);
+    }
+  }
+
+  changeSettingForm(type, target) {
     const changeSettingCallback = async (newValue) => {
       if (this.settingKey === "sidebarPanelOrder") {
         const sideBar: any = await selectTree(
@@ -195,7 +204,7 @@ class BrowserModSettingsTable extends LitElement {
     for (const [k, v] of Object.entries(settings.user)) {
       const user = users.find((usr) => usr.id === k);
       if (!user) continue;
-      let val = String(v);
+      let val = (typeof(v) === "object") ? "Config" : String(v);
       if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
         name: `User: ${user.name}`,
@@ -224,7 +233,7 @@ class BrowserModSettingsTable extends LitElement {
     });
 
     for (const [k, v] of Object.entries(settings.browser)) {
-      let val = String(v);
+      let val = (typeof(v) === "object") ? "Config" : String(v);
       if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
         name: `Browser: ${k}`,
@@ -256,7 +265,7 @@ class BrowserModSettingsTable extends LitElement {
       name: "GLOBAL",
       value:
         settings.global != null
-          ? String(settings.global)
+          ?  ((typeof(settings.global) === "object") ? "Config" : String(settings.global))
           : html`<span style="color: var(--warning-color);">DEFAULT</span>`,
       controls: html`
         <div>

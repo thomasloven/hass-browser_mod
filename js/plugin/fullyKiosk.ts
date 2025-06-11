@@ -120,7 +120,7 @@ export const FullyMixin = (C) => {
     }
 
     fullyEvent(event = undefined) {
-      this.fireEvent("fully-update", { event });
+      this.fireBrowserEvent("fully-update", { event });
     }
   };
 };

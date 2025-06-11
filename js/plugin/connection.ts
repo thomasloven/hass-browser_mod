@@ -4,9 +4,12 @@ export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
     public hass;
     public connection;
+    public ready = false;
+
     private _data;
-    public connected = false;
+    private _connected = false;
     private _connectionResolve;
+
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
     });
@@ -17,25 +20,67 @@ export const ConnectionMixin = (SuperClass) => {
       const dt = new Date();
       console.log(`${dt.toLocaleTimeString()}`, ...args);
 
-      this.connection.sendMessage({
-        type: "browser_mod/log",
-        message: args[0],
-      });
+      if (this._connected) {
+        try {
+          this.connection.sendMessage({
+            type: "browser_mod/log",
+            message: args[0],
+          });
+        } catch (err) {
+         console.log("Browser Mod: Error sending log:", err);
+        }
+      }
     }
 
-    private fireEvent(event, detail = undefined) {
+    // Propagate internal browser event
+    private fireBrowserEvent(event, detail = undefined) {
       this.dispatchEvent(new CustomEvent(event, { detail, bubbles: true }));
     }
 
+    /*
+     * Main state flags explained:
+     * * `connected` and `disconnected` refers to WS connection,
+     * * `ready` refers to established communication between browser and component counterpart.
+     */
+
+    // Component and frontend are mutually ready
+    private onReady = () => {
+      this.ready = true;
+      this.LOG("Integration ready: browser_mod loaded and update received");
+      this.fireBrowserEvent("browser-mod-ready");
+      window.setTimeout(() => this.sendUpdate({}), 1000);
+    }
+
+    // WebSocket has connected
+    private onConnected = () => {
+      this._connected = true;
+      this.LOG("WebSocket connected");
+    }
+
+    // WebSocket has disconnected
+    private onDisconnected = () => {
+      this.ready = false;
+      this._connected = false;
+      this.LOG("WebSocket disconnected");
+      this.fireBrowserEvent("browser-mod-disconnected");
+    }
+
+    // Handle incoming message
     private incoming_message(msg) {
+      // Set that have a connection. Allows logging
+      if (!this._connected) {
+        this.onConnected();
+      }
+      // Handle messages
       if (msg.command) {
         this.LOG("Command:", msg);
-        this.fireEvent(`command-${msg.command}`, msg);
+        this.fireBrowserEvent(`command-${msg.command}`, msg);
       } else if (msg.browserEntities) {
         this.browserEntities = msg.browserEntities;
       } else if (msg.result) {
         this.update_config(msg.result);
       }
+      // Resolve first connection promise
       this._connectionResolve?.();
       this._connectionResolve = undefined;
     }
@@ -52,12 +97,11 @@ export const ConnectionMixin = (SuperClass) => {
       if (!this.registered && this.global_settings["autoRegister"] === true)
         this.registered = true;
 
-      if (!this.connected) {
-        this.connected = true;
-        this.fireEvent("browser-mod-connected");
+      // Check for readiness (of component and browser)
+      if (!this.ready) {
+        this.onReady();
       }
-
-      this.fireEvent("browser-mod-config-update");
+      this.fireBrowserEvent("browser-mod-config-update");
 
       if (update) this.sendUpdate({});
     }
@@ -66,32 +110,38 @@ export const ConnectionMixin = (SuperClass) => {
       const conn = (await hass()).connection;
       this.connection = conn;
 
-      // Subscribe to configuration updates
-      conn.subscribeMessage((msg) => this.incoming_message(msg), {
-        type: "browser_mod/connect",
-        browserID: this.browserID,
-      });
+      const connectBrowserModComponent = () => {
+        this.LOG("Subscribing to browser_mod/connect events");
+        conn.subscribeMessage((msg) => this.incoming_message(msg), {
+          type: "browser_mod/connect",
+          browserID: this.browserID,
+        });
+      };
+
+      // Initial connect component subscription
+      connectBrowserModComponent();
+      // If this fails, then:
+      // Observe `component_loaded` to track when `browser_mod` is dynamically added
+      conn.subscribeEvents((haEvent) => {
+        if (haEvent.data?.component === "browser_mod") {
+          this.LOG("Detected browser_mod component load");
+          connectBrowserModComponent();
+        }
+      }, "component_loaded");
 
       // Keep connection status up to date
-      conn.addEventListener("disconnected", () => {
-        this.connected = false;
-        this.fireEvent("browser-mod-disconnected");
-      });
       conn.addEventListener("ready", () => {
-        this.connected = true;
-        this.fireEvent("browser-mod-connected");
-        this.sendUpdate({});
+        this.onConnected();
       });
-
+      conn.addEventListener("disconnected", () => {
+        this.onDisconnected();
+      });
       window.addEventListener("connection-status", (ev: CustomEvent) => {
         if (ev.detail === "connected") {
-          this.connected = true;
-          this.fireEvent("browser-mod-connected");
-          window.setTimeout(() => this.sendUpdate({}), 1000);
+          this.onConnected();
         }
         if (ev.detail === "disconnected") {
-          this.connected = false;
-          this.fireEvent("browser-mod-disconnected");
+          this.onDisconnected();
         }
       });
 
@@ -214,20 +264,25 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     sendUpdate(data) {
-      if (!this.connected || !this.registered) return;
+      if (!this.ready || !this.registered) return;
 
       const dt = new Date();
-      this.LOG("Send:", data);
 
-      this.connection.sendMessage({
-        type: "browser_mod/update",
-        browserID: this.browserID,
-        data,
-      });
+      this.LOG("Send:", data);
+      try {
+        this.connection.sendMessage({
+          type: "browser_mod/update",
+          browserID: this.browserID,
+          data,
+        })
+      } catch (err) {
+        // As we are not sure of connection state, just log to console
+        console.log("Browser Mod: Error sending update:", err);
+      }
     }
 
     browserIDChanged(oldID, newID) {
-      this.fireEvent("browser-mod-config-update");
+      this.fireBrowserEvent("browser-mod-config-update");
 
       if (
         this.browsers?.[oldID] !== undefined &&
