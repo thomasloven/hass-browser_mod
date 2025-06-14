@@ -50,6 +50,8 @@ For each option the first applicable value will be applied.
 In the screenshot below, for example, the sidebar title would be set to "My home" - the GLOBAL setting - for any user on any browser (even unregistered). For any user logged in on the "kitchen-dashboard" browser, the sidebar title would instead be set to "FOOD", except for the user "dev" for whom the sidebar title would always be "DEV MODE".
 ![Example of a frontend setting being applied for a user, a browser and globally](https://user-images.githubusercontent.com/1299821/187984798-04e72fff-7cce-4394-ba69-42e62c5e0acb.png)
 
+As settings here may mean you get yourself locked out of Browser Mod panel in some way, there is a Frontend Settings __Kill Switch__ available. Append `?disableBrowserModFrontEndSettings` to the Home Assistant URL. e.g. `http://localhost:8123/lovelace/0?disableBrowserModFrontendSettings`
+
 ### Title template
 
 This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/).
