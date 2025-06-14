@@ -23,10 +23,10 @@ export const BrowserStateMixin = (SuperClass) => {
 
       this.connectionPromise.then(() => this._browser_state_update());
 
-      let timeout = undefined;
+      let resizeTimeout = undefined;
       window.addEventListener('resize', function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(this._browser_state_update(), 500);
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(this._browser_state_update(), 500);
       }.bind(this));
     }
 
