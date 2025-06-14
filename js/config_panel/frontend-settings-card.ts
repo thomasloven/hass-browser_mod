@@ -21,7 +21,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.requestUpdate()
     );
-    this._sidebarSettingsCustomSelector = new SidebarSettingsCustomSelector();
+    this._sidebarSettingsCustomSelector = new SidebarSettingsCustomSelector(this);
   }
 
   updated(changedProperties) {
@@ -234,7 +234,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
 
           <ha-expansion-panel
             .header=${"Default action"}
-            .secondary=${`Home Assistant action that executes when broweser is opened or refreshed.`}
+            .secondary=${`Home Assistant action that executes when browser is opened or refreshed.`}
             leftChevron
           >
             <browser-mod-settings-table

@@ -1,13 +1,16 @@
+import { LitElement } from "lit";
 import { selectTree, provideHass, hass_base_el } from "../helpers";
 
 export class SidebarSettingsCustomSelector {
+  _element: LitElement;
   _dialogAvaliable: boolean;
   _dialogEditSidebar: any;
   _type: string;
   _target: string;
   _allUsers: Array<any>;
   
-  constructor() {
+  constructor(element) {
+    this._element = element;
     if (customElements.get("dialog-edit-sidebar")) {
         this._dialogAvaliable = true;
         return;
@@ -36,8 +39,9 @@ export class SidebarSettingsCustomSelector {
         }
       }
     });
-    customElements.whenDefined("dialog-edit-sidebar").then(() => {
+    customElements.whenDefined("dialog-edit-sidebar").then(async () => {
       this._dialogAvaliable = true;
+      await this._element.updateComplete.then(() => this._element.requestUpdate());
     });
   }
     
