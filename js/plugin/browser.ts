@@ -1,5 +1,3 @@
-import { hass_base_el } from "../helpers";
-
 export const BrowserStateMixin = (SuperClass) => {
   return class BrowserStateMixinClass extends SuperClass {
     constructor() {
@@ -24,6 +22,12 @@ export const BrowserStateMixin = (SuperClass) => {
       );
 
       this.connectionPromise.then(() => this._browser_state_update());
+
+      let timeout = undefined;
+      window.addEventListener('resize', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(this._browser_state_update(), 500);
+      }.bind(this));
     }
 
     _browser_state_update() {
