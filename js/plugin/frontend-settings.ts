@@ -27,7 +27,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       };
 
       const searchParams = new URLSearchParams(window.location.search);
-      if (searchParams.has("noBrowserModFrontendSettings")) {
+      if (searchParams.has("disableBrowserModFrontendSettings")) {
         console.info("%cBROWSER_MOD FRONTEND SETTINGS DISABLED", 
           "color: black; background: yellow; font-weight: bold");
         return;
