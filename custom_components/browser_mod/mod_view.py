@@ -78,10 +78,6 @@ async def async_setup_view(hass: HomeAssistant):
                 
                 continue
 
-            # While going through the resources, also preload card-mod if it is found
-            if "card-mod.js" in r["url"]:
-                add_extra_js_url(hass, r["url"])
-
         if not frontend_added:
             if getattr(resources, "async_create_item", None):
                 await resources.async_create_item(
