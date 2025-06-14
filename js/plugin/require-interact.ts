@@ -1,8 +1,15 @@
+import { blankVideoUrl } from "../helpers";
+
 export const RequireInteractMixin = (SuperClass) => {
   return class RequireInteractMixinClass extends SuperClass {
-    private _interactionResolve;
-    public firstInteraction = new Promise((resolve) => {
-      this._interactionResolve = resolve;
+    private _videoInteractionResolve;
+    private _audioInteractionResolve;
+    private _video: HTMLVideoElement;
+    public videoInteraction = new Promise<any>((resolve) => {
+      this._videoInteractionResolve = resolve;
+    });
+    public audioInteraction = new Promise((resolve) => {
+      this._audioInteractionResolve = resolve;
     });
 
     constructor() {
@@ -16,16 +23,14 @@ export const RequireInteractMixin = (SuperClass) => {
 
       if (!this.registered) return;
 
-      if (this.settings.hideInteractIcon) return;
+      const interactElement = document.createElement("div");
+      document.body.append(interactElement);
 
-      const interactSymbol = document.createElement("div");
-      document.body.append(interactSymbol);
-
-      interactSymbol.classList.add("browser-mod-require-interaction");
-      interactSymbol.attachShadow({ mode: "open" });
+      interactElement.classList.add("browser-mod-require-interaction");
+      interactElement.attachShadow({ mode: "open" });
 
       const styleEl = document.createElement("style");
-      interactSymbol.shadowRoot.append(styleEl);
+      interactElement.shadowRoot.append(styleEl);
       styleEl.innerHTML = `
       :host {
         position: fixed;
@@ -46,6 +51,10 @@ export const RequireInteractMixin = (SuperClass) => {
         display: none;
       }
       @media all and (max-width: 450px), all and (max-height: 500px) {
+        :host {
+          right: 20px;
+          bottom: 20px;
+        }
         ha-icon {
           --mdc-icon-size: 30px;
         }
@@ -55,47 +64,77 @@ export const RequireInteractMixin = (SuperClass) => {
       }
       `;
 
-      const icon = document.createElement("ha-icon");
-      interactSymbol.shadowRoot.append(icon);
-      (icon as any).icon = "mdi:gesture-tap";
+      var interactIcon = undefined
+      if (!this.settings.hideInteractIcon) {
+        interactIcon = document.createElement("ha-icon");
+        interactElement.shadowRoot.append(interactIcon);
+        (interactIcon as any).icon = "mdi:gesture-tap";
+      }
 
-      // If we are allowed to play a video, we can assume no interaction is needed
+      // There may be two interaction levels, audio and video.
+      // Muted video can usually be played without user interaction,
+      // but unmuted audio requires user interaction.
       const video = (this._video = document.createElement("video"));
-      interactSymbol.shadowRoot.append(video);
+      video.setAttribute("playsinline", "");
+      const source = document.createElement("source");
+      source.setAttribute("type", "video/mp4");
+      source.setAttribute("src", blankVideoUrl());
+      video.append(source);
+      video.muted = true;
+      interactElement.shadowRoot.append(video);
       const vPlay = video.play();
-      if (vPlay) {
+      if (vPlay !== undefined) {
         vPlay
           .then(() => {
-            this._interactionResolve();
+            this._videoInteractionResolve();
             video.pause();
+            video.muted = false;
+            video.currentTime = 0;
+            const aPlay = video.play();
+            if (aPlay !== undefined) {
+              aPlay
+                .then(() => {
+                  this._audioInteractionResolve();
+                  video.pause();
+                })
+                .catch((e) => {
+                  // If audio can't be played due to no interaction, error is NotAllowedError
+                });
+            }
           })
-          .catch((e) => {
-            // if (e.name === "AbortError") {
-            // this._interactionResolve();
-            // }
+          .catch((e) => { 
+              // If video can't be played due to no interaction, error is NotAllowedError
           });
-        video.pause();
       }
 
       window.addEventListener(
         "pointerdown",
         () => {
-          this._interactionResolve();
+          this._videoInteractionResolve();
+          this._audioInteractionResolve();
         },
         { once: true }
       );
       window.addEventListener(
         "touchstart",
         () => {
-          this._interactionResolve();
+          this._videoInteractionResolve();
+          this._audioInteractionResolve();
         },
         { once: true }
       );
 
-      if (this.fully) this._interactionResolve();
+      if (this.fully) {
+        this._videoInteractionResolve();
+        this._audioInteractionResolve();
+      }
 
-      await this.firstInteraction;
-      interactSymbol.remove();
+      Promise.all([
+        this.videoInteraction,
+        this.audioInteraction,
+      ]).then(() => {
+        interactElement.remove();
+      });
     }
   };
 };

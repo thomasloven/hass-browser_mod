@@ -6,14 +6,19 @@ export const MediaPlayerMixin = (SuperClass) => {
     private _audio_player;
     private _video_player;
     private _player_enabled;
+    private _canPlayVideo: boolean = false;
+    private _canPlayAudio: boolean = false;
 
     constructor() {
       super();
 
       this._audio_player = new Audio();
+      this._audio_player.muted = true;
       this._video_player = document.createElement("video");
+      this._video_player.setAttribute("playsinline", "");
       this._video_player.controls = true;
       this._video_player.style.setProperty("width", "100%");
+      this._video_player.muted = true;
       this.player = this._audio_player;
       this._player_enabled = false;
       this.extra = {}
@@ -31,12 +36,28 @@ export const MediaPlayerMixin = (SuperClass) => {
         );
       }
 
-      this.firstInteraction.then(() => {
+      this.videoInteraction.then(() => {
         this._player_enabled = true;
-        if (!this.player.ended) this.player.play();
+        this._canPlayVideo = true;
+        this._player_update()
+      });
+
+      this.audioInteraction.then(() => {
+        this._canPlayAudio = true;
+        this._video_player.muted = false;
+        this._audio_player.muted = false;
+        this._player_update()
       });
 
       this.addEventListener("command-player-play", (ev) => {
+        if (this.player.src && ev.detail?.media_content_id === undefined) {
+          this.player.play();
+          this._show_video_player();
+          return;
+        }
+        if (!this.player.src && ev.detail?.media_content_id === undefined) {
+          return; // Nothing to play
+        }
         if (this.player.src) this.player.pause();
         if (ev.detail?.media_type)
           if (ev.detail?.media_type.startsWith("video"))
@@ -87,7 +108,7 @@ export const MediaPlayerMixin = (SuperClass) => {
     }
 
     private _show_video_player() {
-      if (this.player === this._video_player && this.player.src) {
+      if (this.player === this._video_player && this.player.src && !this._video_player.isConnected) {
         selectTree(
           document,
           "home-assistant $ dialog-media-player-browse"
@@ -127,7 +148,7 @@ export const MediaPlayerMixin = (SuperClass) => {
           state,
           media_duration: this.player.duration,
           media_position: this.player.currentTime,
-          extra: this.extra,
+          extra: { ...this.extra, videoInteractionRequired: !this._canPlayVideo, audioInteractionRequired: !this._canPlayAudio }
         },
       });
     }

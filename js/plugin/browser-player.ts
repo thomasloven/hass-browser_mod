@@ -166,7 +166,7 @@ class BrowserPlayer extends LitElement {
 
   static get styles() {
     return css`
-      :host(["hidden"]) {
+      :host([hidden]) {
         display: none;
       }
       :host([edit-mode="true"]) {
@@ -205,12 +205,5 @@ class BrowserPlayer extends LitElement {
   }
 }
 
-// (async () => {
-//   while (!window.browser_mod) {
-//     await new Promise((resolve) => setTimeout(resolve, 1000));
-//   }
-//   await window.browser_mod.connectionPromise;
-
 if (!customElements.get("browser-player"))
   customElements.define("browser-player", BrowserPlayer);
-// })();
