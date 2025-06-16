@@ -254,3 +254,27 @@ export async function waitRepeat(fn, times, delay) {
     await new Promise((r) => setTimeout(r, delay));
   }
 }
+
+export const debounce = <T extends any[]>(
+  func: (...args: T) => void,
+  wait: number,
+  immediate = false
+) => {
+  let timeout: number | undefined;
+  const debouncedFunc = (...args: T): void => {
+    const later = () => {
+      timeout = undefined;
+      func(...args);
+    };
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = window.setTimeout(later, wait);
+    if (callNow) {
+      func(...args);
+    }
+  };
+  debouncedFunc.cancel = () => {
+    clearTimeout(timeout);
+  };
+  return debouncedFunc;
+};
