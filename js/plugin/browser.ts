@@ -1,3 +1,5 @@
+import { debounce } from "../helpers";
+
 export const BrowserStateMixin = (SuperClass) => {
   return class BrowserStateMixinClass extends SuperClass {
     constructor() {
@@ -23,11 +25,12 @@ export const BrowserStateMixin = (SuperClass) => {
 
       this.connectionPromise.then(() => this._browser_state_update());
 
-      let resizeTimeout = undefined;
-      window.addEventListener('resize', function() {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(this._browser_state_update(), 500);
-      }.bind(this));
+      window.addEventListener(
+        'resize',
+        debounce(function() {
+          this._browser_state_update()
+        }.bind(this), 500)
+      );
     }
 
     _browser_state_update() {
