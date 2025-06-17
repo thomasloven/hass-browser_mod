@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import {
   provideHass,
@@ -10,6 +10,7 @@ import {
   getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
+import { ObjectSelectorMonitor } from "../object-selector-monitor";
 
 const CLOSE_POPUP_ACTIONS = new Set(["assist"]);
 
@@ -29,6 +30,7 @@ class BrowserModPopup extends LitElement {
   @property({ reflect: true }) fullscreen;
   @property({ reflect: true }) classic;
   @property() _style;
+  @property() _formDataValid;
   @query("ha-dialog") dialog: any;
   _autoclose;
   _autocloseListener;
@@ -40,9 +42,19 @@ class BrowserModPopup extends LitElement {
   _formdata;
   card_mod;
   _allowNestedMoreInfo;
+  _objectSelectorMonitor: ObjectSelectorMonitor;
+ 
+  connectedCallback() {
+    super.connectedCallback();
+    this._objectSelectorMonitor = new ObjectSelectorMonitor(
+      this,
+      (value: boolean) => { this._formDataValid = value }
+    );
+  }
 
   async closeDialog() {
     this.open = false;
+    this._objectSelectorMonitor.stopMonitoring();
     this.card?.remove?.();
     this.card = undefined;
     clearInterval(this._timeoutTimer);
@@ -123,6 +135,9 @@ class BrowserModPopup extends LitElement {
           el.appendChild(styleEl);
         });
       }
+      if (this._formdata) {
+        setTimeout(() => this._objectSelectorMonitor.startMonitoring(), 0);
+      }
     });
   }
 
@@ -165,6 +180,7 @@ class BrowserModPopup extends LitElement {
     } = {}
   ) {
     this._formdata = undefined;
+    this._formDataValid = true;
     this.title = title;
     this.card = undefined;
     this.card_mod = card_mod;
@@ -232,6 +248,7 @@ class BrowserModPopup extends LitElement {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     await this.dialog?.close();
     action?.(this._formdata);
+    this._objectSelectorMonitor.stopMonitoring()
   }
 
   async _primary() {
@@ -304,6 +321,7 @@ class BrowserModPopup extends LitElement {
                           .label=${this.right_button}
                           @click=${this._primary}
                           class="action-button"
+                          ?disabled=${!this._formDataValid}
                         ></mwc-button>
                       `
                     : ""}

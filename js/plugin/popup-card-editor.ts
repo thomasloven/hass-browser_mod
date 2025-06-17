@@ -1,6 +1,7 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
-import { loadHaForm } from "../helpers";
+import { hass_base_el, loadHaForm, selectTree } from "../helpers";
+import { ObjectSelectorMonitor } from "../object-selector-monitor";
 
 const configSchema = [
   {
@@ -129,8 +130,20 @@ class PopupCardEditor extends LitElement {
   @state() _selectedTab = 0;
   @state() _cardGUIMode = true;
   @state() _cardGUIModeAvailable = true;
+  @state() _settingsValid = true;
+  @state() _showErrors = false;
 
   @query("hui-card-element-editor") private _cardEditorEl?;
+
+  private _objectSelectorMonitor: ObjectSelectorMonitor;
+
+  get settingsValid() {
+    return this._settingsValid
+  }
+
+  get showErrors() {
+    return this._showErrors;
+  }
 
   setConfig(config) {
     this._config = config;
@@ -139,10 +152,67 @@ class PopupCardEditor extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     loadHaForm();
+    this._objectSelectorMonitor = new ObjectSelectorMonitor(
+      this,
+      (value: boolean) => { this._settingsValid = value },
+      (value: boolean) => { this._showErrors = value }
+    );
   }
 
+  firstUpdated(changedProperties: PropertyValues) {
+    this.updateComplete.then(async () => {
+      this._objectSelectorMonitor.startMonitoring();
+      const base = await hass_base_el();
+      const saveButton: HTMLElement = await selectTree(base?.shadowRoot, "hui-dialog-edit-card $ [slot='primaryAction']>mwc-button:nth-child(2) $ button");
+      saveButton?.addEventListener("click", this._handleClickAwayFromSettings.bind(this));
+      const showCodeEditorButton: HTMLElement = await selectTree(base?.shadowRoot, "hui-dialog-edit-card $ [slot='secondaryAction'] $ button");
+      showCodeEditorButton?.addEventListener("click", this._handleClickAwayFromSettings.bind(this));
+    });
+  }
+
+  override async getUpdateComplete(): Promise<boolean> {
+    // wait for ha-form to be ready
+    const formReady = new Promise((resolve) => {
+      const checkReady = () => {
+        const form: LitElement = this.shadowRoot?.querySelector("ha-form");
+        if (form) {
+          resolve(form.updateComplete);
+        } else {
+          setTimeout(checkReady, 100);
+        }
+      };
+      checkReady();
+    });
+    return Promise.all([formReady, super.getUpdateComplete()]).then(() => true)
+  }
+
+  _handleClickAwayFromSettings(ev: MouseEvent) {
+    if (!this._settingsValid) {
+      ev.stopPropagation();
+      this.dispatchEvent(
+        new CustomEvent("hass-notification", {
+          detail: {
+            message: `Settings are not valid. Please fix the errors before
+              before continuing.`,
+          },
+          bubbles: true,
+          composed: true,
+        })
+      )
+      return;
+    }
+  }
+  
   _handleSwitchTab(ev: CustomEvent) {
     this._selectedTab = ev.detail.name == "settings" ? 0 : 1;
+    if (this._selectedTab === 1) { // 1 is the card tab
+      this._objectSelectorMonitor.stopMonitoring();
+    } else {
+      // setTimeout is used to ensure that the card editor is cleared
+      // before the object selectors are monitored again.
+      // This is necessary because the card editor will have its own ha-form
+      setTimeout(() => this._objectSelectorMonitor.startMonitoring(), 0);
+    }
   }
 
   _configChanged(ev: CustomEvent) {
@@ -195,7 +265,7 @@ class PopupCardEditor extends LitElement {
             @sl-tab-show=${this._handleSwitchTab}
           >
             <sl-tab slot="nav" .panel=${"settings"} .active=${this._selectedTab==0}>Settings</sl-tab>
-            <sl-tab slot="nav" .panel=${"card"} .active=${this._selectedTab==1}>Card</sl-tab>
+            <sl-tab slot="nav" .panel=${"card"} .active=${this._selectedTab==1} @click=${this._handleClickAwayFromSettings}>Card</sl-tab>
           </sl-tab-group>
         </div>
         <div id="editor">
@@ -209,6 +279,17 @@ class PopupCardEditor extends LitElement {
 
   _renderSettingsEditor() {
     return html`<div class="box">
+      <ha-alert
+        .hass=${this.hass}
+        alert-type="error"
+        .hidden=${!this._showErrors}
+        >Settings are not valid. Please check the following fields for errors:
+        <ul>
+          ${this._objectSelectorMonitor.objectSelectors.map(
+            (s) => (s.isValid === false) ? html`<li>${s.label}</li>` : ""
+          )}
+        </ul>
+      </ha-alert>
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
