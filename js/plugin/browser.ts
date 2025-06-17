@@ -1,4 +1,4 @@
-import { hass_base_el } from "../helpers";
+import { debounce } from "../helpers";
 
 export const BrowserStateMixin = (SuperClass) => {
   return class BrowserStateMixinClass extends SuperClass {
@@ -24,6 +24,13 @@ export const BrowserStateMixin = (SuperClass) => {
       );
 
       this.connectionPromise.then(() => this._browser_state_update());
+
+      window.addEventListener(
+        'resize',
+        debounce(function() {
+          this._browser_state_update()
+        }.bind(this), 500)
+      );
     }
 
     _browser_state_update() {
