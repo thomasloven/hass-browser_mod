@@ -19,7 +19,7 @@ export const CameraMixin = (SuperClass) => {
     async _setup_camera() {
       if (this._video) return;
       await this.connectionPromise;
-      await this.firstInteraction;
+      await this.videoInteraction;
       if (!this.cameraEnabled) return;
       if (this.fully) return this.update_camera();
 
