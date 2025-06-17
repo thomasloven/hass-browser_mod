@@ -45,7 +45,11 @@ export const CameraMixin = (SuperClass) => {
       div.shadowRoot.append(canvas);
       canvas.style.display = "none";
 
-      if (!navigator.mediaDevices) return;
+      if (!navigator.mediaDevices) {
+        this.cameraError = true;
+        this.fireBrowserEvent("browser-mod-config-update");
+        return;
+      }
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
