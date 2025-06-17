@@ -3,7 +3,6 @@ import { debounce } from "./helpers";
 
 export type ObjectSelector  
   = {
-    form: LitElement;
     element: LitElement;
     name: string;
     label: string;
@@ -53,14 +52,6 @@ export class ObjectSelectorMonitor {
   
   private _debounceShowErrors = debounce(() => {
     if (!this._settingsValid) {
-      this.objectSelectors.map((selector) => {
-        if (selector.isValid === false && selector.form) {
-          (selector.form as any).error = {
-            ...((selector.form as any).error || {}),
-            [selector.name]: selector.errorMsg || "Uknown error."
-          };
-        }
-      });
       this.showErrors = true;
     }
   }, 2000);
@@ -71,7 +62,6 @@ export class ObjectSelectorMonitor {
     selectors?.forEach((selector) => {
         if ((selector as any)?.selector.hasOwnProperty("object")) {
         const objectSelector: ObjectSelector = {
-            form: form,
             element: selector as LitElement,
             name: (selector as any).name,
             label: (selector as any).label,
@@ -102,9 +92,6 @@ export class ObjectSelectorMonitor {
       selector.element?.addEventListener("value-changed", (ev: CustomEvent) => {
         selector.isValid = ev.detail.isValid;
         selector.errorMsg = ev.detail.errorMsg;
-        if (selector.isValid) {
-          delete (selector.form as any)?.error?.[selector.name];
-        }
         this.settingsValid = this.objectSelectors.every(
           (s) => s.isValid !== false
         );
@@ -120,7 +107,6 @@ export class ObjectSelectorMonitor {
 
   stopMonitoring() {
     this.objectSelectors.map((selector) => {
-      delete (selector.form as any)?.error?.[selector.name];
       selector.element?.removeEventListener("value-changed", () => {});
     });
     this.showErrors = false;
