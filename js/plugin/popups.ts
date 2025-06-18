@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { repeat } from "lit/directives/repeat.js";
 import {
   provideHass,
   loadLoadCardHelpers,
@@ -10,6 +11,7 @@ import {
   getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
+import { icon } from "./types";
 
 const CLOSE_POPUP_ACTIONS = new Set(["assist"]);
 
@@ -24,6 +26,7 @@ class BrowserModPopup extends LitElement {
   @property() left_button;
   @property() left_button_close;
   @property() dismissable;
+  @property({ type: Array}) icons: icon[];
   @property({ reflect: true }) timeout_hide_progress;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
@@ -162,6 +165,12 @@ class BrowserModPopup extends LitElement {
       autoclose = false,
       card_mod = undefined,
       allow_nested_more_info = true,
+      icon = undefined,
+      icon_title = undefined,
+      icon_action = undefined,
+      icon_close = true,
+      icon_class = undefined,
+      icons = undefined,
     } = {}
   ) {
     this._formdata = undefined;
@@ -225,6 +234,29 @@ class BrowserModPopup extends LitElement {
     this._style = style;
     this._autoclose = autoclose;
     this._allowNestedMoreInfo = allow_nested_more_info;
+    if (icons) {
+      this.icons = [];
+      const iconDefaults = { 
+        icon: undefined,
+        title: undefined,
+        action: undefined,
+        close: true,
+        class: undefined
+      }
+      icons.forEach((icon, index) => {
+        this.icons[index] = { ...iconDefaults, ...icon }
+      });
+    } else {
+      this.icons = [
+        { 
+          icon: icon, 
+          title: icon_title, 
+          action: icon_action,
+          close: icon_close,
+          class: icon_class,
+        }
+      ];
+    }
   }
 
   async do_close() {
@@ -248,6 +280,11 @@ class BrowserModPopup extends LitElement {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     await this.do_close();
     this._actions?.timeout_action?.();
+  }
+  async _icon_action(index) {
+    if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
+    if (this.icons?.[index]?.close) await this.do_close();
+    await this.icons?.[index]?.action?.();
   }
 
   render() {
@@ -280,6 +317,22 @@ class BrowserModPopup extends LitElement {
                     `
                   : ""}
                 <span slot="title" .title="${this.title}">${this.title}</span>
+                ${this.icons 
+                  ?
+                    repeat(
+                      this.icons,
+                      (icon, index) => html`
+                        <ha-icon-button
+                          slot="actionItems"
+                          title=${icon.title ?? ""}
+                          @click=${() => this._icon_action(index)}
+                          class=${icon.class ?? ""}
+                        >
+                          <ha-icon .icon=${icon.icon}></ha-icon>
+                        </ha-icon-button>
+                      `
+                    )
+                  : "" }
               </ha-dialog-header>
             `
           : html``}
