@@ -28,6 +28,13 @@ export const AutoSettingsMixin = (SuperClass) => {
         this.runHideHeader();
       };
 
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.has("disableBrowserModFrontendSettings")) {
+        console.info("%cBROWSER_MOD FRONTEND SETTINGS DISABLED", 
+          "color: black; background: yellow; font-weight: bold");
+        return;
+      }
+
       this._auto_settings_setup();
       this.addEventListener("browser-mod-config-update", () => {
         this._auto_settings_setup();

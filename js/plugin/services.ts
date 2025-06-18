@@ -1,4 +1,5 @@
 import { getLovelaceRoot, hass_base_el } from "../helpers";
+import structuredClone from "@ungap/structured-clone";
 
 export const ServicesMixin = (SuperClass) => {
   return class ServicesMixinClass extends SuperClass {
@@ -74,6 +75,13 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "popup":
+          // Promote icon actions to data so they can be made callable
+          // by the following code
+          if (data.icons) {
+            data.icons.forEach((icon, index) => {
+              data[`icon_${index}_action`] = icon.action;
+            });
+          }
           const { title, content, ...d } = data;
           for (const [k, v] of Object.entries<any>(d)) {
             if (k.endsWith("_action")) {
@@ -94,6 +102,15 @@ export const ServicesMixin = (SuperClass) => {
                 });
               };
             }
+          }
+          // Move icon actions back to icons
+          if (d.icons) {
+            // Need to clone to be able to update icons array
+            d.icons = structuredClone(d.icons);
+            d.icons.forEach((icon, index) => {
+              d.icons[index].action = d[`icon_${index}_action`];
+              delete d[`icon_${index}_action`];
+            });
           }
           this.showPopup(title, content, d);
           break;
