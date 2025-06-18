@@ -257,3 +257,11 @@ declare global {
     loadCardHelpers?: { () };
   }
 }
+
+export type icon = {
+  icon: string,
+  title: string,
+  action: any,
+  close: boolean,
+  class: string,
+}

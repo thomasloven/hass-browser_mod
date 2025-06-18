@@ -14,6 +14,42 @@ const configSchema = [
     selector: { text: {} },
   },
   {
+    type: "expandable",
+    label: "Header icon",
+    schema: [
+      {
+        label: "Multiple icons can be specified as a yaml list. Refer to Browser Mod documentation.",
+        type: "constant",
+      },
+      {
+        name: "icon",
+        label: "Icon",
+        selector: { icon: {} },
+      },
+      {
+        name: "icon_title",
+        label: "Icon title",
+        selector: { text: {} },
+      },
+      {
+        name: "icon_action",
+        label: "Icon action",
+        selector: { object: {} },
+      },
+      {
+        name: "icon_close",
+        label: "Icon closes popup",
+		    default: true,
+        selector: { boolean: {} },
+      },
+      {
+        name: "icon_class",
+        label: "Icon class",
+        selector: { text: {} }
+      }
+    ]
+  },
+  {
     name: "size",
     selector: {
       select: { mode: "dropdown", options: ["normal", "classic", "wide", "fullscreen"] },
@@ -55,13 +91,13 @@ const configSchema = [
       {
         name: "right_button_close",
         label: "Right button closes popup",
-		default: true,
+		    default: true,
         selector: { boolean: {} },
       },
       {
         name: "left_button_close",
         label: "Left button closes popup",
-		default: true,
+		    default: true,
         selector: { boolean: {} },
       },
     ],

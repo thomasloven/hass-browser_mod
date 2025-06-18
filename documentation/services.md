@@ -6,6 +6,7 @@ Service parameters are described using the following conventions:
 
   - `<string>` is a piece of text
   - `<number>` is a number
+  - `list` is a yaml list
   - `<TRUE/false>` means the value must be either `true` or `false` with `true` being the default
   - `<service call>` means a full service call specification. Note that this can be any service, not just Browser Mod services
   - `<Browser IDs>` is a list of Browser IDs
@@ -163,6 +164,17 @@ data:
   [title: <string>]
   content: <string / Dashboard card configuration / ha-form schema>
   [size: <NORMAL/classic/wide/fullscreen>]
+  [icon: <string>]
+  [icon_title: <string>]
+  [icon_action: <service call>]
+  [icon_close: <TRUE/false>]
+  [icon_class: <string>]
+  [icons: <list>]
+    [icon: <string>]
+    [title: <string>]
+    [action: <service-call>]
+    [close: <TRUE/false>]
+    [class: <string>]
   [right_button: <string>]
   [right_button_action: <service call>]
   [right_button_close: <TRUE/false>]
@@ -185,6 +197,11 @@ data:
 |---|---|
 |`title` | The title of the popup window.|
 |`content`| HTML, a dashboard card configuration or ha-form schema to display.|
+| `icon` | An mdi icon which will appear in the popup header. e.g. mdi:home. `title` must be set for the header to show. |
+| `icon_title` or `icons` > `title` | Tooltip for the icon. |
+| `icon_action` or `icons` > `action` | Action to perform when the icon is pressed. |
+| `icon_close` or `icons` > `close` | Enable/disable popup closing when the icon is pressed. |
+| `icon_class` or  `icons` > `class` | CSS Class to apply to the icon. This allows for styling the icon directly using `style`. |
 | `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices |
 | `right_button`| The text of the right action button.|
 | `right_button_action`| Action to perform when the right action button is pressed. |
@@ -204,6 +221,35 @@ data:
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` or `user_id` is given.
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
+
+One icon can be specified for custom:popup-card UI editor which populates `icon:`, `icon_*` parameters. To specificy multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
+
+```yaml
+...
+icons:
+  - icon: mdi:account
+    title: Account
+    action:
+      action: browser_mod.notification
+      data:
+        message: Account action
+    class: account-icon
+  - icon: mdi:home
+    title: Home
+    action:
+      action: browser_mod.notification
+      data:
+        message: Home action
+    class: home-icon
+...
+style: |-
+  .account-icon {
+    color: red;
+  }
+  .home-icon {
+    color: blue;
+  }
+```
 
 See [popups.md](popups.md) for more information and usage examples.
 
