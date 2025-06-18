@@ -262,7 +262,7 @@ class BrowserModPopup extends LitElement {
       icons.forEach((icon, index) => {
         this.icons[index] = { ...iconDefaults, ...icon }
       });
-    } else {
+    } else if (icon) {
       this.icons = [
         { 
           icon: icon, 
@@ -272,6 +272,8 @@ class BrowserModPopup extends LitElement {
           class: icon_class,
         }
       ];
+    } else {
+      icons = [];
     }
   }
 
