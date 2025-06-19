@@ -273,7 +273,7 @@ class BrowserModPopup extends LitElement {
         }
       ];
     } else {
-      icons = [];
+      this.icons = [];
     }
   }
 
