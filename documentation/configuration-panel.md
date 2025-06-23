@@ -91,6 +91,30 @@ This will hide the header bar. Completely. It does not care if there are useful 
 
 > Tip: See the big yellow warning box at the top of this card? For some reason, it seems to be really easy to forget you turned this on. Please do not bother the Home Assistant team about the header bar missing if you have hidden it yourself. Really, I've forgotten multiple times myself.
 
+### Overlay icon
+
+Allow for an overlay icon to apear on certain Dashboards/Panels and carry out an action when clicked. Even with good Dashboard design, you can end up on a Home Assistant panel that assumes header and sidebar navigation. E.g. History Panel, Energy Dashboard. An overlay icon allows for a method to show an icon and carry out an action.
+
+> Example: Your icon could be `mdi:chevron-left`, titled _Back_ with the following action using `browser_mod.javascript`.
+>
+>```yaml
+>action: browser_mod.javascript
+>data:
+>  code: history.back()
+>```
+>
+> Alternatively, use `mdi:home`, titled _Home_ with the following action using `browser_mod.navigate`
+>
+>```yaml
+>action: browser_mod.navigate
+>data:
+>  path: /lovelace
+>```
+
+See [Default action](#default-action) below for tips on calling multiple actions.
+
+__IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
+
 ### Default dashboard
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
