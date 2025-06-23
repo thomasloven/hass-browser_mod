@@ -12,8 +12,8 @@ LocalStorage works basically like cookies in that the information is stored loca
 
 Registering a _Browser_ as a device will create a Home Assistant Device associated with that browser. The device has the following entities:
 
-- A `media_player` entitiy which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio.
-- A `light` entity will turn the screen on or off and controll the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
+- A `media_player` entity which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio.
+- A `light` entity will turn the screen on or off and control the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
 - A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
 - A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
 
@@ -133,9 +133,9 @@ data:
 
 ### Sidebar order
 
-#### Home Assistant 2025.6 and onwards
+#### Home Assistant 2025.6 and onward
 
-Home Assistant 2025.6 introduced a sidebar settings dialog to replace the in place edit mode. Browser Mod uses this dialog for editing sdeibar order and visibility.
+Home Assistant 2025.6 introduced a sidebar settings dialog to replace the in place edit mode. Browser Mod uses this dialog for editing sidebar order and visibility.
 
 __IMPORTANT__: Home Assistant will store sidebar settings in the Home Assistant user profile. This will prevent Browser and Global sidebar settings from being applied. If a user has sidebar settings synced to their user profile, a warning will be display with an option to clear the synced settings to allow Browser Mod to take precedence.
 
