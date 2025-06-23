@@ -101,7 +101,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                 ${window.browser_mod?.cameraError
                   ? html`
                       <ha-alert alert-type="error">
-                        Setting up the device camera failed. Make sure you are browsering
+                        Setting up the device camera failed. Make sure you are browsing
                         in a secure (https://) context and have
                         allowed use of the camera in your browser.
                       </ha-alert>
