@@ -1,6 +1,7 @@
 import { LitElement, html, css } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { repeat } from "lit/directives/repeat.js";
 import {
   provideHass,
   loadLoadCardHelpers,
@@ -10,6 +11,8 @@ import {
   getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
+import { ObjectSelectorMonitor } from "../object-selector-monitor";
+import { icon } from "./types";
 
 const CLOSE_POPUP_ACTIONS = new Set(["assist"]);
 
@@ -24,11 +27,13 @@ class BrowserModPopup extends LitElement {
   @property() left_button;
   @property() left_button_close;
   @property() dismissable;
+  @property({ type: Array}) icons: icon[];
   @property({ reflect: true }) timeout_hide_progress;
   @property({ reflect: true }) wide;
   @property({ reflect: true }) fullscreen;
   @property({ reflect: true }) classic;
   @property() _style;
+  @property() _formDataValid;
   @query("ha-dialog") dialog: any;
   _autoclose;
   _autocloseListener;
@@ -40,9 +45,19 @@ class BrowserModPopup extends LitElement {
   _formdata;
   card_mod;
   _allowNestedMoreInfo;
+  _objectSelectorMonitor: ObjectSelectorMonitor;
+ 
+  connectedCallback() {
+    super.connectedCallback();
+    this._objectSelectorMonitor = new ObjectSelectorMonitor(
+      this,
+      (value: boolean) => { this._formDataValid = value }
+    );
+  }
 
   async closeDialog() {
     this.open = false;
+    this._objectSelectorMonitor.stopMonitoring();
     this.card?.remove?.();
     this.card = undefined;
     clearInterval(this._timeoutTimer);
@@ -123,6 +138,9 @@ class BrowserModPopup extends LitElement {
           el.appendChild(styleEl);
         });
       }
+      if (this._formdata) {
+        setTimeout(() => this._objectSelectorMonitor.startMonitoring(), 0);
+      }
     });
   }
 
@@ -162,9 +180,16 @@ class BrowserModPopup extends LitElement {
       autoclose = false,
       card_mod = undefined,
       allow_nested_more_info = true,
+      icon = undefined,
+      icon_title = undefined,
+      icon_action = undefined,
+      icon_close = true,
+      icon_class = undefined,
+      icons = undefined,
     } = {}
   ) {
     this._formdata = undefined;
+    this._formDataValid = true;
     this.title = title;
     this.card = undefined;
     this.card_mod = card_mod;
@@ -225,6 +250,31 @@ class BrowserModPopup extends LitElement {
     this._style = style;
     this._autoclose = autoclose;
     this._allowNestedMoreInfo = allow_nested_more_info;
+    if (icons) {
+      this.icons = [];
+      const iconDefaults = { 
+        icon: undefined,
+        title: undefined,
+        action: undefined,
+        close: true,
+        class: undefined
+      }
+      icons.forEach((icon, index) => {
+        this.icons[index] = { ...iconDefaults, ...icon }
+      });
+    } else if (icon) {
+      this.icons = [
+        { 
+          icon: icon, 
+          title: icon_title, 
+          action: icon_action,
+          close: icon_close,
+          class: icon_class,
+        }
+      ];
+    } else {
+      this.icons = [];
+    }
   }
 
   async do_close() {
@@ -232,6 +282,7 @@ class BrowserModPopup extends LitElement {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     await this.dialog?.close();
     action?.(this._formdata);
+    this._objectSelectorMonitor.stopMonitoring()
   }
 
   async _primary() {
@@ -248,6 +299,11 @@ class BrowserModPopup extends LitElement {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     await this.do_close();
     this._actions?.timeout_action?.();
+  }
+  async _icon_action(index) {
+    if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
+    if (this.icons?.[index]?.close) await this.do_close();
+    await this.icons?.[index]?.action?.();
   }
 
   render() {
@@ -280,6 +336,22 @@ class BrowserModPopup extends LitElement {
                     `
                   : ""}
                 <span slot="title" .title="${this.title}">${this.title}</span>
+                ${this.icons 
+                  ?
+                    repeat(
+                      this.icons,
+                      (icon, index) => html`
+                        <ha-icon-button
+                          slot="actionItems"
+                          title=${icon.title ?? ""}
+                          @click=${() => { this.blur(); this._icon_action(index)} }
+                          class=${icon.class ?? ""}
+                        >
+                          <ha-icon .icon=${icon.icon}></ha-icon>
+                        </ha-icon-button>
+                      `
+                    )
+                  : "" }
               </ha-dialog-header>
             `
           : html``}
@@ -304,6 +376,7 @@ class BrowserModPopup extends LitElement {
                           .label=${this.right_button}
                           @click=${this._primary}
                           class="action-button"
+                          ?disabled=${!this._formDataValid}
                         ></mwc-button>
                       `
                     : ""}

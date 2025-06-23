@@ -19,7 +19,7 @@ export const CameraMixin = (SuperClass) => {
     async _setup_camera() {
       if (this._video) return;
       await this.connectionPromise;
-      await this.firstInteraction;
+      await this.videoInteraction;
       if (!this.cameraEnabled) return;
       if (this.fully) return this.update_camera();
 
@@ -45,7 +45,11 @@ export const CameraMixin = (SuperClass) => {
       div.shadowRoot.append(canvas);
       canvas.style.display = "none";
 
-      if (!navigator.mediaDevices) return;
+      if (!navigator.mediaDevices) {
+        this.cameraError = true;
+        this.fireBrowserEvent("browser-mod-config-update");
+        return;
+      }
 
       try {
         const stream = await navigator.mediaDevices.getUserMedia({

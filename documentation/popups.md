@@ -171,6 +171,7 @@ data:
 
 ![Screenshot of a popup allowing the user to choose which rooms to vacuum](https://user-images.githubusercontent.com/1299821/182713714-ef4149b1-217a-4d41-9737-714f5320c25c.png)
 
+**NOTE:** If you use an Object Selector (yaml) together with a right button, the right button will be disabled and an error displayed when the yaml has a parsing error. This is due to the way the underlying Home Assistant yaml editor works to provide the output yaml as an object. While there is a yaml parsing error, the parsed yaml cannot be provied and nothing would be returned if the user was allowed to continue.
 
 ## Styling popups
 
