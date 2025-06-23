@@ -96,24 +96,41 @@ class BrowserModSettingsTable extends LitElement {
 
         return;
       }
-      let value = newValue.value;
+      let value = newValue.value ?? newValue;
       window.browser_mod.setSetting(type, target, { [this.settingKey]: value });
     };
 
     const settings = window.browser_mod?.getSetting?.(this.settingKey);
-    const def =
+    const value =
       (type === "global" ? settings.global : settings[type][target]) ??
       this.default;
-    window.browser_mod?.showPopup(
-      "Change value",
-      (this.settingSelector as any).plaintext ?? [
+    const content = 
+      (this.settingSelector as any).plaintext ?? 
+      (this.settingSelector as any).schema ??
+      [
         {
           name: "value",
           label: (this.settingSelector as any).label ?? "",
-          default: def,
+          default: value,
           selector: this.settingSelector,
         },
-      ],
+      ]
+    if ((this.settingSelector as any).schema && value !== undefined) {
+      _setDefaults(content, value);
+
+      function _setDefaults(schema, data) {
+        for (const i of schema) {
+          if (i["schema"]) { 
+            _setDefaults(i["schema"], data);
+          } else if (data[i.name] !== undefined) {
+            i.default = data[i.name];
+          }
+        }
+      }
+    }
+    window.browser_mod?.showPopup(
+      "Change setting",
+      content,
       {
         right_button: "OK",
         right_button_action: changeSettingCallback,
