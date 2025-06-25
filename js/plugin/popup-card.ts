@@ -2,9 +2,9 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { getLovelaceRoot, hass_base_el, mapObject } from "../helpers";
+import { getLovelaceRoot, hass_base_el } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
-import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
 
 class PopupCard extends LitElement {
@@ -66,13 +66,7 @@ class PopupCard extends LitElement {
               (icon: icon, index) => html`
               <ha-icon-button
                 .title=${icon.title ?? ""}
-                class=${
-                  classMap(icon.class ? 
-                    mapObject( icon.class.split(" ").filter((x) => x.length > 0),
-                                c => true)
-                    : {}
-                  )
-                }
+                class=${ifDefined(icon.class)}
               >
                 <ha-icon 
                   .icon=${icon.icon ?? ""}
@@ -86,13 +80,7 @@ class PopupCard extends LitElement {
             html`
               <ha-icon-button
                 .title=${this._config.icon_title ?? ""}
-                class=${
-                  classMap(this._config.icon_class ? 
-                    mapObject( this._config.icon_class.split(" ").filter((x) => x.length > 0),
-                                c => true)
-                    : {}
-                  )
-                }
+                class=${ifDefined(this._config.icon_class)}
               >
                 <ha-icon 
                   .icon=${this._config.icon}

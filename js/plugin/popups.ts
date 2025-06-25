@@ -2,15 +2,14 @@ import { LitElement, html, css } from "lit";
 import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { repeat } from "lit/directives/repeat.js";
-import {classMap} from 'lit/directives/class-map.js';
+import {ifDefined} from 'lit/directives/if-defined.js';
 import {
   provideHass,
   loadLoadCardHelpers,
   hass_base_el,
   selectTree,
   getMoreInfoDialog,
-  getMoreInfoDialogHADialog,
-  mapObject,
+  getMoreInfoDialogHADialog
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
@@ -347,13 +346,7 @@ class BrowserModPopup extends LitElement {
                           slot="actionItems"
                           title=${icon.title ?? ""}
                           @click=${() => { this.blur(); this._icon_action(index)} }
-                          class=${
-                            classMap(icon.class ? 
-                              mapObject( icon.class.split(" ").filter((x) => x.length > 0),
-                                         c => true)
-                              : {}
-                            )
-                          }
+                          class=${ifDefined(icon.class)}
                         >
                           <ha-icon .icon=${icon.icon}></ha-icon>
                         </ha-icon-button>
