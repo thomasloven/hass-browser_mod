@@ -282,3 +282,6 @@ export const debounce = <T extends any[]>(
   };
   return debouncedFunc;
 };
+
+export const mapObject = (arr, fn) =>
+  Object.fromEntries(arr.map((el, i, arr) => [el, fn(el, i, arr)]));
