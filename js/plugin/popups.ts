@@ -351,13 +351,8 @@ class BrowserModPopup extends LitElement {
                         <ha-icon-button
                           slot="actionItems"
                           title=${icon.title ?? ""}
-<<<<<<< frontend-icon-overlay
-                          @click=${() => this._icon_action(index)}
-                          class=${icon.class ?? ""}
-=======
                           @click=${() => { this.blur(); this._icon_action(index)} }
                           class=${ifDefined(icon.class)}
->>>>>>> dev
                         >
                           <ha-icon .icon=${icon.icon}></ha-icon>
                         </ha-icon-button>
