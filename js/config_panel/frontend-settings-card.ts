@@ -264,22 +264,22 @@ class BrowserModFrontendSettingsCard extends LitElement {
                     schema: [
                       {
                         name: "top",
-                        label: "Top",
+                        label: "Top (px)",
                         selector: { number: {} },
                       },
                       {
                         name: "left",
-                        label: "Left",
+                        label: "Left (px)",
                         selector: { number: {} },
                       },
                       {
                         name: "bottom",
-                        label: "Bottom",
+                        label: "Bottom (px)",
                         selector: { number: {} },
                       },
                       {
                         name: "right",
-                        label: "Right",
+                        label: "Right (px)",
                         selector: { number: {} },
                       },
                     ],
