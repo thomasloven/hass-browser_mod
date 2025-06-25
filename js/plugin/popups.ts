@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { repeat } from "lit/directives/repeat.js";
+import {ifDefined} from 'lit/directives/if-defined.js';
 import {
   provideHass,
   loadLoadCardHelpers,
@@ -350,8 +351,13 @@ class BrowserModPopup extends LitElement {
                         <ha-icon-button
                           slot="actionItems"
                           title=${icon.title ?? ""}
+<<<<<<< frontend-icon-overlay
                           @click=${() => this._icon_action(index)}
                           class=${icon.class ?? ""}
+=======
+                          @click=${() => { this.blur(); this._icon_action(index)} }
+                          class=${ifDefined(icon.class)}
+>>>>>>> dev
                         >
                           <ha-icon .icon=${icon.icon}></ha-icon>
                         </ha-icon-button>
