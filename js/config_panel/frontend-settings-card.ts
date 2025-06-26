@@ -11,6 +11,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
   @property() hass;
 
   @state() _dashboards = [];
+  @state() _panels = {};
 
   @state() _editSidebar = false;
   @state() _hassUserHasSidebarSettings = false;
@@ -33,6 +34,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
         this._dashboards = await this.hass.callWS({
           type: "lovelace/dashboards/list",
         });
+        this._panels = this.hass.panels;
         this.checkHassUserSidebarSettings();
      })();
     }
@@ -121,6 +123,14 @@ class BrowserModFrontendSettingsCard extends LitElement {
         custom_value: true,
       },
     };
+    const pl = Object.values(this._panels)
+      .filter((p: { url_path: string, title: string }) => {
+        if (!p.title) return false;
+        return true;
+      }).map((p: { url_path: string, title: string }) => {
+        return { value: p.url_path, label: this.hass.localize?.(`panel.${p.title}`) || p.title };
+      });
+    const panels = [{ value: "lovelace", label: this.hass.localize?.("panel.states") || "lovelace (default)" }, ...pl]
     return html`
       <ha-card header="Frontend Settings" outlined>
         <div class="card-content">
@@ -216,6 +226,76 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .hass=${this.hass}
               .settingKey=${"hideHeader"}
               .settingSelector=${{ boolean: {}, label: "Hide header" }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+
+          <ha-expansion-panel
+            .header=${"Overlay icon"}
+            .secondary=${"An overlay icon with action to show on selected panels."}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"overlayIcon"}
+              .settingSelector=${{ schema:
+                [
+                  {
+                    name: "icon",
+                    label: "Icon",
+                    selector: { icon: {} }
+                  },
+                  {
+                    name: "title",
+                    label: "Title",
+                    selector: { text: {} },
+                  },
+                  {
+                    name: "action",
+                    label: "Action",
+                    selector: { object: {} },
+                  },
+                  {
+                    name: "panels",
+                    label: "Show on panels",
+                    selector: { select: { multiple: true, options: panels,mode: "dropdown" } }
+                  },
+                  {
+                    type: "grid",
+                    schema: [
+                      {
+                        name: "top",
+                        label: "Top (px)",
+                        selector: { number: {} },
+                      },
+                      {
+                        name: "left",
+                        label: "Left (px)",
+                        selector: { number: {} },
+                      },
+                      {
+                        name: "bottom",
+                        label: "Bottom (px)",
+                        selector: { number: {} },
+                      },
+                      {
+                        name: "right",
+                        label: "Right (px)",
+                        selector: { number: {} },
+                      },
+                    ],
+                  },
+                  {
+                    name: "class",
+                    label: "Class",
+                    selector: { text: {} }
+                  },
+                  {
+                    name: "style",
+                    label: "CSS style",
+                    selector: { text: { multiline: true } },
+                  },
+                ]
+              }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 

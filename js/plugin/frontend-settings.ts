@@ -1,4 +1,5 @@
-import { await_element, waitRepeat, runOnce, selectTree, hass_base_el } from "../helpers";
+import { await_element, waitRepeat, runOnce, selectTree } from "../helpers";
+import { OverlayIcon } from "./overlay-icon"
 
 export const AutoSettingsMixin = (SuperClass) => {
   class AutoSettingsMixinClass extends SuperClass {
@@ -8,6 +9,7 @@ export const AutoSettingsMixin = (SuperClass) => {
     // flag to remove legacy Sidebar Settings that hass leaves after migration to user profile
     _removeLegacySidebarSettings: Boolean = false;
     __currentTitle = undefined;
+    _overlayIcon: OverlayIcon = undefined;
 
     @runOnce()
     async runHideHeader() {
@@ -20,12 +22,18 @@ export const AutoSettingsMixin = (SuperClass) => {
       await waitRepeat(() => this._updateTitle(), 3, 500);
     }
 
+    @runOnce(true)
+    async updateOverlayIcon() {
+      this._updateOverlayIcon();
+    }
+
     constructor() {
       super();
 
       const runUpdates = async () => {
         this.runUpdateTitle();
         this.runHideHeader();
+        this.updateOverlayIcon();
       };
 
       const searchParams = new URLSearchParams(window.location.search);
@@ -42,6 +50,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       });
 
       window.addEventListener("location-changed", runUpdates);
+      window.addEventListener("popstate", runUpdates);
 
       this.addEventListener("browser-mod-ready", this._runDefaultAction, {once: true});
       this._watchEditSidebar();
@@ -136,6 +145,9 @@ export const AutoSettingsMixin = (SuperClass) => {
             );
         })();
       }
+
+      // OverlayIcon
+      this._setupOverlayIcon();
     }
 
     async _updateSidebarTitle({ result }) {
@@ -233,6 +245,52 @@ export const AutoSettingsMixin = (SuperClass) => {
             data: data,
           });
         })
+      }
+    }
+
+    _runOverlayIconAction(action) {
+      if (action) {
+        var action_action = action;
+        if (!Array.isArray(action_action)) {
+          action_action = [action_action];
+        }
+        action_action.forEach(async (actionItem) => {
+          var { action, service, target, data } = actionItem;
+          service = (action === undefined || action === "call-service") ? service : action;
+          this._service_action({
+            service,
+            target,
+            data: data,
+          });
+        })
+      }    
+    }
+    
+    async _setupOverlayIcon() {
+      if (this.settings.overlayIcon) {
+        if (!this._overlayIcon) {
+          this._overlayIcon = new OverlayIcon(
+                                this.settings.overlayIcon,
+                                this._runOverlayIconAction.bind(this)
+                              )
+          document.body.append(this._overlayIcon);
+          this._updateOverlayIcon();
+        }
+      } else {
+        this._overlayIcon?.remove();
+        this._overlayIcon = undefined;
+      }
+    }
+
+    async _updateOverlayIcon() {
+      if (this.settings.overlayIcon && this._overlayIcon) {
+        const firstPathPart = window.location.pathname?.split('/')?.[1];
+        if (firstPathPart)
+          if (this.settings.overlayIcon.panels?.includes(firstPathPart)) {
+            this._overlayIcon.show = "";
+          } else {
+            this._overlayIcon.show = undefined;
+          }
       }
     }
 
