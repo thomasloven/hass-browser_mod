@@ -122,11 +122,15 @@ export async function getMoreInfoDialogHADialog(wait = false) {
 }
 
 export async function hass_base_el() {
-  await Promise.race([
-    customElements.whenDefined("home-assistant"),
-    customElements.whenDefined("hc-main"),
-  ]);
-
+  const customElement = customElements.get("home-assistant") ??
+    customElements.get("hc-main");
+  if (customElement === undefined) {
+    await Promise.race([
+      customElements.whenDefined("home-assistant"),
+      customElements.whenDefined("hc-main"),
+    ]);
+  }
+  
   const element = customElements.get("home-assistant")
     ? "home-assistant"
     : "hc-main";
