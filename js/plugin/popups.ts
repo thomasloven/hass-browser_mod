@@ -573,7 +573,7 @@ export const PopupMixin = (SuperClass) => {
 
       this._popupEl.addEventListener("browser-mod-style-hass-more-info-dialog", async (ev: CustomEvent) => {
         if (!this._popupEl?._allowNestedMoreInfo) return;
-        const hassMoreInfoDialog = await getMoreInfoDialog(true);
+        const hassMoreInfoDialog = await getMoreInfoDialog(ev.detail?.apply);
         if (hassMoreInfoDialog) {
           let styleEl = hassMoreInfoDialog.shadowRoot.querySelector("#browser-mod-style");
           if (!styleEl) {
