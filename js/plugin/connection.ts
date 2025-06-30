@@ -49,6 +49,13 @@ export const ConnectionMixin = (SuperClass) => {
       this.LOG("Integration ready: browser_mod loaded and update received");
       this.fireBrowserEvent("browser-mod-ready");
       window.setTimeout(() => this.sendUpdate({}), 1000);
+      this.userReady()
+        .then(() => {
+          this.onUserReady();
+        })
+        .catch((err) => {
+          console.log(`Browser Mod: ${err}. User Frontend settings have not been applied`);
+        });
     }
 
     // WebSocket has connected
@@ -63,6 +70,24 @@ export const ConnectionMixin = (SuperClass) => {
       this._connected = false;
       this.LOG("WebSocket disconnected");
       this.fireBrowserEvent("browser-mod-disconnected");
+    }
+
+    private async userReady() {
+      if (this.user) {
+        return true;
+      } else {
+        let cnt = 0;
+        while (!this.user&& cnt++ < 20) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        if (this.user) return true;
+        throw new Error("User data not available after 10 seconds");
+      }
+    }
+
+    private onUserReady = () => {
+      this.LOG("Hass user data ready");
+      this.fireBrowserEvent("browser-mod-user-ready");
     }
 
     // Handle incoming message
@@ -152,6 +177,10 @@ export const ConnectionMixin = (SuperClass) => {
       return this._data?.config ?? {};
     }
 
+    get user() {
+      return this.hass?.user;
+    }
+
     get browsers() {
       return this._data?.browsers ?? [];
     }
@@ -203,7 +232,7 @@ export const ConnectionMixin = (SuperClass) => {
     }
     get user_settings() {
       const settings = {};
-      const user = this._data?.user_settings?.[this.hass?.user?.id] ?? {};
+      const user = this._data?.user_settings?.[this.user?.id] ?? {};
       for (const [k, v] of Object.entries(user)) {
         if (v !== null) settings[k] = v;
       }
@@ -237,7 +266,7 @@ export const ConnectionMixin = (SuperClass) => {
           break;
         }
         case "user": {
-          const user = this.hass.user.id;
+          const user = this.user.id;
           this.connection.sendMessage({
             type: "browser_mod/settings",
             user,

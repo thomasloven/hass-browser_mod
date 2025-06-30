@@ -48,11 +48,16 @@ export const AutoSettingsMixin = (SuperClass) => {
         this._auto_settings_setup();
         runUpdates();
       });
+      
+      this.addEventListener("browser-mod-user-ready", () => {
+        this._auto_settings_setup();
+        runUpdates();
+      });
 
       window.addEventListener("location-changed", runUpdates);
       window.addEventListener("popstate", runUpdates);
 
-      this.addEventListener("browser-mod-ready", this._runDefaultAction, {once: true});
+      this.addEventListener("browser-mod-user-ready", this._runDefaultAction, {once: true});
       this._watchEditSidebar();
     }
 
