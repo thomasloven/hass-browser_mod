@@ -22,6 +22,9 @@ export const BrowserStateMixin = (SuperClass) => {
       this.addEventListener("browser-mod-ready", () =>
         this._browser_state_update()
       );
+      this.addEventListener("browser-mod-user-ready", () =>
+        this._browser_state_update()
+      );
 
       this.connectionPromise.then(() => this._browser_state_update());
 
@@ -43,7 +46,7 @@ export const BrowserStateMixin = (SuperClass) => {
             path: window.location.pathname,
             visibility: document.visibilityState,
             userAgent: navigator.userAgent,
-            currentUser: this.hass?.user?.name,
+            currentUser: this.user?.name,
             fullyKiosk: this.fully || false,
             width: window.innerWidth,
             height: window.innerHeight,
@@ -52,7 +55,7 @@ export const BrowserStateMixin = (SuperClass) => {
             charging: window.fully?.isPlugged() ?? battery?.charging,
             darkMode: this.hass?.themes?.darkMode,
 
-            userData: this.hass?.user,
+            userData: this.user,
             ip_address: window.fully?.getIp4Address(),
             fully_data: this.fully_data,
           },
