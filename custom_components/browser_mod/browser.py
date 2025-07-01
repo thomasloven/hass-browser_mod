@@ -183,7 +183,8 @@ class BrowserModBrowser:
         self._connections = list(
             filter(lambda v: v[0] != connection, self._connections)
         )
-        self.update(hass, {"connected": False})
+        if not self._connections:
+            self.update(hass, {"connected": False})
 
 
 def getBrowser(hass, browserID, *, create=True):
