@@ -1,3 +1,5 @@
+import { Unpromise } from "@watchable/unpromise";
+
 const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
 
 export async function await_element(el, hard = false) {
@@ -33,7 +35,7 @@ async function _selectTree(root, path, all = false) {
 }
 
 export async function selectTree(root, path, all = false, timeout = 10000) {
-  return Promise.race([
+  return Unpromise.race([
     _selectTree(root, path, all),
     new Promise((_, reject) =>
       setTimeout(() => reject(new Error(TIMEOUT_ERROR)), timeout)
@@ -125,7 +127,7 @@ export async function hass_base_el() {
   const customElement = customElements.get("home-assistant") ??
     customElements.get("hc-main");
   if (customElement === undefined) {
-    await Promise.race([
+    await Unpromise.race([
       customElements.whenDefined("home-assistant"),
       customElements.whenDefined("hc-main"),
     ]);
