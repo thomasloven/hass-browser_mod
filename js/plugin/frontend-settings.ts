@@ -88,14 +88,22 @@ export const AutoSettingsMixin = (SuperClass) => {
 
       // Hide sidebar
       if (settings.hideSidebar === true) {
+        // Set sidebar to always hidden
+        // _hideHeader routine will remove sidebar the menu button
         selectTree(
           document.body,
-          "home-assistant $ home-assistant-main"
-        ).then((el) => el?.style?.setProperty("--mdc-drawer-width", "0px"));
-        selectTree(
-          document.body,
-          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
-        ).then((el) => el?.remove?.());
+          "home-assistant"
+        ).then((el) => {
+          el.updateComplete.then(() => {
+            el.dispatchEvent(
+              new CustomEvent("hass-dock-sidebar", {
+                detail: {
+                  dock: "always_hidden",
+                }
+              })
+            )
+          })
+        });
       }
 
       // Sidebar title

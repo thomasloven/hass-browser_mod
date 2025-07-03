@@ -207,7 +207,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
 
           <ha-expansion-panel
             .header=${"Hide sidebar"}
-            .secondary=${"Completely remove the sidebar from all panels"}
+            .secondary=${"Hide sidebar and remove sidebar menu icon from all panels."}
             leftChevron
           >
             <browser-mod-settings-table

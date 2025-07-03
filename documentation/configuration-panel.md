@@ -81,7 +81,9 @@ Note that this _only_ applies to the current favicon of the page, not any manife
 
 ### Hide Sidebar
 
-This will hide the sidebar wit the navigation links. You can still access all the pages via normal links.
+This will hide the sidebar with the navigation links. You can still access all the pages via normal links.
+
+__IMPORTANT__: When this setting is cleared, the Browser will revert to a state in which the User Setting 'Always hide the sidebar' is in effect, with the sidebar menu icon showing. The 'Always hide the sidebar' setting can be reset in User Settings.
 
 > Tip: add `/browser-mod` to the end of your home assistant URL when you need to turn this off again...
 
