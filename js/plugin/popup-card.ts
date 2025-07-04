@@ -33,13 +33,21 @@ class PopupCard extends LitElement {
       const ch = await window.loadCardHelpers();
       this._element = await ch.createCardElement(config.card);
       this._element.hass = this.hass;
+      this._element.preview = this.preview;
     })();
   }
 
   updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has("hass")) {
-      if (this._element) this._element.hass = this.hass;
+      if (this._element) {
+        this._element.hass = this.hass;
+      }
+    }
+    if (changedProperties.has("preview")) {
+      if (this._element) {
+        this._element.preview = this.preview;
+      }
     }
   }
 
