@@ -1,3 +1,4 @@
+import copy
 from homeassistant.components import media_source
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
@@ -153,6 +154,9 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
                 raise ServiceValidationError(
                     f"Cannot play audio in browser: {self.browserID}. Please interact with the browser first."
                 )
+        # We cant't alter kwargs as this will end up altering the default value in the 
+        # core media_player schema. Hence we deepcopy before altering.
+        kwargs = copy.deepcopy(kwargs)
         kwargs["extra"]["media_content_id"] = media_id
         kwargs["extra"]["media_content_type"] = media_type
         if media_source.is_media_source_id(media_id):
