@@ -2,6 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { repeat } from "lit/directives/repeat.js";
+import {ifDefined} from 'lit/directives/if-defined.js';
 import {
   provideHass,
   loadLoadCardHelpers,
@@ -160,6 +161,16 @@ class BrowserModPopup extends LitElement {
     });
   }
 
+  _setFormdata(schema) {
+    for (const i of schema) {
+        if (i["schema"]) {
+          this._setFormdata(i["schema"]);
+        } else if (i.name && i.default !== undefined) {
+          this._formdata[i.name] = i.default;
+        }
+      }
+   }
+
   async setupDialog(
     title,
     content,
@@ -204,11 +215,7 @@ class BrowserModPopup extends LitElement {
       form.computeLabel = (s) => s.label ?? s.name;
       form.hass = window.browser_mod.hass;
       this._formdata = {};
-      for (const i of content) {
-        if (i.name && i.default !== undefined) {
-          this._formdata[i.name] = i.default;
-        }
-      }
+      this._setFormdata(content);
       form.data = this._formdata;
       provideHass(form);
       form.addEventListener("value-changed", (ev) => {
@@ -345,7 +352,7 @@ class BrowserModPopup extends LitElement {
                           slot="actionItems"
                           title=${icon.title ?? ""}
                           @click=${() => { this.blur(); this._icon_action(index)} }
-                          class=${icon.class ?? ""}
+                          class=${ifDefined(icon.class)}
                         >
                           <ha-icon .icon=${icon.icon}></ha-icon>
                         </ha-icon-button>
@@ -566,7 +573,7 @@ export const PopupMixin = (SuperClass) => {
 
       this._popupEl.addEventListener("browser-mod-style-hass-more-info-dialog", async (ev: CustomEvent) => {
         if (!this._popupEl?._allowNestedMoreInfo) return;
-        const hassMoreInfoDialog = await getMoreInfoDialog(true);
+        const hassMoreInfoDialog = await getMoreInfoDialog(ev.detail?.apply);
         if (hassMoreInfoDialog) {
           let styleEl = hassMoreInfoDialog.shadowRoot.querySelector("#browser-mod-style");
           if (!styleEl) {

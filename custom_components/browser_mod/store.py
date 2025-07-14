@@ -25,6 +25,7 @@ class SettingsStoreData:
     autoRegister = attr.ib(type=bool, default=None)
     lockRegister = attr.ib(type=bool, default=None)
     saveScreenState = attr.ib(type=bool, default=None)
+    overlayIcon = attr.ib(type=object, default=None)
 
     @classmethod
     def from_dict(cls, data):

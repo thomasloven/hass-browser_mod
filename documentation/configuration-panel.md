@@ -12,8 +12,8 @@ LocalStorage works basically like cookies in that the information is stored loca
 
 Registering a _Browser_ as a device will create a Home Assistant Device associated with that browser. The device has the following entities:
 
-- A `media_player` entitiy which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio.
-- A `light` entity will turn the screen on or off and controll the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
+- A `media_player` entity which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio.
+- A `light` entity will turn the screen on or off and control the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
 - A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
 - A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
 
@@ -50,7 +50,7 @@ For each option the first applicable value will be applied.
 In the screenshot below, for example, the sidebar title would be set to "My home" - the GLOBAL setting - for any user on any browser (even unregistered). For any user logged in on the "kitchen-dashboard" browser, the sidebar title would instead be set to "FOOD", except for the user "dev" for whom the sidebar title would always be "DEV MODE".
 ![Example of a frontend setting being applied for a user, a browser and globally](https://user-images.githubusercontent.com/1299821/187984798-04e72fff-7cce-4394-ba69-42e62c5e0acb.png)
 
-As settings here may mean you get yourself locked out of Browser Mod panel in some way, there is a Frontend Settings __Kill Switch__ available. Append `?disableBrowserModFrontEndSettings` to the Home Assistant URL. e.g. `http://localhost:8123/lovelace/0?disableBrowserModFrontendSettings`
+As settings here may mean you get yourself locked out of Browser Mod panel in some way, there is a Frontend Settings __Kill Switch__ available. Append `?disableBrowserModFrontendSettings` to the Home Assistant URL. e.g. `http://localhost:8123/lovelace/0?disableBrowserModFrontendSettings`
 
 ### Title template
 
@@ -81,7 +81,9 @@ Note that this _only_ applies to the current favicon of the page, not any manife
 
 ### Hide Sidebar
 
-This will hide the sidebar wit the navigation links. You can still access all the pages via normal links.
+This will hide the sidebar with the navigation links. You can still access all the pages via normal links.
+
+__IMPORTANT__: When this setting is cleared, the Browser will revert to a state in which the User Setting 'Always hide the sidebar' is in effect, with the sidebar menu icon showing. The 'Always hide the sidebar' setting can be reset in User Settings.
 
 > Tip: add `/browser-mod` to the end of your home assistant URL when you need to turn this off again...
 
@@ -90,6 +92,30 @@ This will hide the sidebar wit the navigation links. You can still access all th
 This will hide the header bar. Completely. It does not care if there are useful navigation links there or not. It's gone.
 
 > Tip: See the big yellow warning box at the top of this card? For some reason, it seems to be really easy to forget you turned this on. Please do not bother the Home Assistant team about the header bar missing if you have hidden it yourself. Really, I've forgotten multiple times myself.
+
+### Overlay icon
+
+Allow for an overlay icon to apear on certain Dashboards/Panels and carry out an action when clicked. Even with good Dashboard design, you can end up on a Home Assistant panel that assumes header and sidebar navigation. E.g. History Panel, Energy Dashboard. An overlay icon allows for a method to show an icon and carry out an action.
+
+> Example: Your icon could be `mdi:chevron-left`, titled _Back_ with the following action using `browser_mod.javascript`.
+>
+>```yaml
+>action: browser_mod.javascript
+>data:
+>  code: history.back()
+>```
+>
+> Alternatively, use `mdi:home`, titled _Home_ with the following action using `browser_mod.navigate`
+>
+>```yaml
+>action: browser_mod.navigate
+>data:
+>  path: /lovelace
+>```
+
+See [Default action](#default-action) below for tips on calling multiple actions.
+
+__IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
 
 ### Default dashboard
 
@@ -133,9 +159,9 @@ data:
 
 ### Sidebar order
 
-#### Home Assistant 2025.6 and onwards
+#### Home Assistant 2025.6 and onward
 
-Home Assistant 2025.6 introduced a sidebar settings dialog to replace the in place edit mode. Browser Mod uses this dialog for editing sdeibar order and visibility.
+Home Assistant 2025.6 introduced a sidebar settings dialog to replace the in place edit mode. Browser Mod uses this dialog for editing sidebar order and visibility.
 
 __IMPORTANT__: Home Assistant will store sidebar settings in the Home Assistant user profile. This will prevent Browser and Global sidebar settings from being applied. If a user has sidebar settings synced to their user profile, a warning will be display with an option to clear the synced settings to allow Browser Mod to take precedence.
 

@@ -69,10 +69,10 @@ export class ObjectSelectorMonitor {
         objectSelectors.push(objectSelector);
         }
     });
-    const grid = form?.shadowRoot?.querySelectorAll("ha-form-grid");
-    grid?.forEach((grid: LitElement) => {
-        if (grid.shadowRoot) {
-        const forms = grid.shadowRoot.querySelectorAll("ha-form");
+    const elements = form?.shadowRoot?.querySelectorAll("ha-form-grid, ha-form-expandable");
+    elements?.forEach((element: LitElement) => {
+        if (element.shadowRoot) {
+        const forms = element.shadowRoot.querySelectorAll("ha-form");
         forms.forEach((subForm: LitElement) => {
             const subSelectors = this._formObjectSelectors(subForm);
             objectSelectors.push(...subSelectors);

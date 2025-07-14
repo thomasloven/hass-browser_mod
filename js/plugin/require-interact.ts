@@ -15,7 +15,9 @@ export const RequireInteractMixin = (SuperClass) => {
     constructor() {
       super();
 
-      this.show_indicator();
+      this.addEventListener("browser-mod-user-ready", () => {
+        this.show_indicator()
+      });
     }
 
     async show_indicator() {

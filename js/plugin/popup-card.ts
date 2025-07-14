@@ -3,6 +3,9 @@ import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
 import { getLovelaceRoot, hass_base_el } from "../helpers";
+import { repeat } from "lit/directives/repeat.js";
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { icon } from "./types";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -30,13 +33,21 @@ class PopupCard extends LitElement {
       const ch = await window.loadCardHelpers();
       this._element = await ch.createCardElement(config.card);
       this._element.hass = this.hass;
+      this._element.preview = this.preview;
     })();
   }
 
   updated(changedProperties) {
     super.updated(changedProperties);
     if (changedProperties.has("hass")) {
-      if (this._element) this._element.hass = this.hass;
+      if (this._element) {
+        this._element.hass = this.hass;
+      }
+    }
+    if (changedProperties.has("preview")) {
+      if (this._element) {
+        this._element.preview = this.preview;
+      }
     }
   }
 
@@ -48,7 +59,7 @@ class PopupCard extends LitElement {
     this.setHidden(!this.preview);
     if (!this.preview) return html``;
     return html` <ha-card>
-      <div class="app-toolbar">
+      <div class="header">
         ${this._config.dismissable
           ? html`
               <ha-icon-button>
@@ -57,8 +68,39 @@ class PopupCard extends LitElement {
             `
           : ""}
         <div class="main-title">${this._config.title}</div>
+        ${this._config.icons
+          ? repeat(
+              this._config.icons,
+              (icon: icon, index) => html`
+              <ha-icon-button
+                .title=${icon.title ?? ""}
+                class=${ifDefined(icon.class)}
+              >
+                <ha-icon 
+                  .icon=${icon.icon ?? ""}
+                >
+                </ha-icon>
+              </ha-icon-button>
+            `
+            )
+          : 
+          this._config.icon ?
+            html`
+              <ha-icon-button
+                .title=${this._config.icon_title ?? ""}
+                class=${ifDefined(this._config.icon_class)}
+              >
+                <ha-icon 
+                  .icon=${this._config.icon}
+                >
+                </ha-icon>
+              </ha-icon-button>
+            ` : "" 
+          }
       </div>
-      ${this._element}
+      <div class="content">
+        ${this._element}
+      </div>
       <style>
         :host {
         ${this._config.style}
@@ -112,26 +154,28 @@ class PopupCard extends LitElement {
           var(--ha-card-background, var(--card-background-color, white))
         );
       }
-      .app-toolbar {
+      .header {
         color: var(--primary-text-color);
         background-color: var(
           --popup-header-background-color,
           var(--popup-background-color, --sidebar-background-color)
         );
-        display: var(--layout-horizontal_-_display);
-        flex-direction: var(--layout-horizontal_-_flex-direction);
+        display: var(--layout-horizontal_-_display, flex);
+        flex-direction: var(--layout-horizontal_-_flex-direction, row);
         align-items: var(--layout-center_-_align-items);
-        height: 64px;
-        padding: 0 16px;
+        padding: 12px;
         font-size: var(--app-toolbar-font-size, 20px);
       }
       ha-icon-button > * {
         display: flex;
       }
       .main-title {
-        margin-left: 16px;
-        line-height: 1.3em;
-        max-height: 2.6em;
+        flex: 1;
+        font-size: var(--ha-font-size-xl);
+        line-height: var(--ha-line-height-condensed);
+        font-weight: var(--ha-font-weight-normal);
+        padding: 10px 4px;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
       }
@@ -140,10 +184,13 @@ class PopupCard extends LitElement {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 52px;
         margin: 0px;
-        padding: 8px;
-        border-top: 1px solid transparent;
+        padding: 8px 16px 8px 24px;
+        border-top: 1px solid var(--divider-color);
+      }
+
+      .content {
+        padding: 8px 8px 20px 8px;
       }
     `;
   }
