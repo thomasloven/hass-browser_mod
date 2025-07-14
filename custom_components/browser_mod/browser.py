@@ -134,7 +134,7 @@ class BrowserModBrowser:
 
         hass.create_task(
             self.send(
-                None, browserEntities={k: v.entity_id for k, v in self.entities.items()}
+                None, browserEntities={k: {"entity_id": v.entity_id, "enabled": v.enabled} for k, v in self.entities.items()}
             )
         )
 

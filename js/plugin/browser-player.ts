@@ -69,7 +69,7 @@ class BrowserPlayer extends LitElement {
         composed: true,
         cancelable: false,
         detail: {
-          entityId: window.browser_mod.browserEntities?.player,
+          entityId: window.browser_mod.browserEntities?.player?.entity_id,
         },
       })
     );
@@ -109,6 +109,17 @@ class BrowserPlayer extends LitElement {
       return html`
         <ha-card>
           <ha-alert> This browser is not registered to Browser Mod. </ha-alert>
+        </ha-card>
+      `;
+    }
+    if (!window.browser_mod?.browserEntities) {
+      window.setTimeout(() => this.requestUpdate(), 100);
+      return html``;
+    }
+    if (!window.browser_mod?.playerEnabled) {
+      return html`
+        <ha-card>
+          <ha-alert> Media player disabled for this browser. </ha-alert>
         </ha-card>
       `;
     }
