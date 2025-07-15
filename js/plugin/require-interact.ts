@@ -16,11 +16,13 @@ export const RequireInteractMixin = (SuperClass) => {
       super();
 
       this.addEventListener("browser-mod-user-ready", () => {
-        this.show_indicator()
+        if (this.playerEnabled || this.cameraEnabled) {
+          this.show_indicator(this.playerEnabled);
+        }
       });
     }
 
-    async show_indicator() {
+    async show_indicator(audioRequired) {
       await this.connectionPromise;
 
       if (!this.registered) return;
@@ -90,18 +92,20 @@ export const RequireInteractMixin = (SuperClass) => {
           .then(() => {
             this._videoInteractionResolve();
             video.pause();
-            video.muted = false;
-            video.currentTime = 0;
-            const aPlay = video.play();
-            if (aPlay !== undefined) {
-              aPlay
-                .then(() => {
-                  this._audioInteractionResolve();
-                  video.pause();
-                })
-                .catch((e) => {
-                  // If audio can't be played due to no interaction, error is NotAllowedError
-                });
+            if (audioRequired) {
+              video.muted = false;
+              video.currentTime = 0;
+              const aPlay = video.play();
+              if (aPlay !== undefined) {
+                aPlay
+                  .then(() => {
+                    this._audioInteractionResolve();
+                    video.pause();
+                  })
+                  .catch((e) => {
+                    // If audio can't be played due to no interaction, error is NotAllowedError
+                  });
+              }
             }
           })
           .catch((e) => { 
@@ -131,10 +135,9 @@ export const RequireInteractMixin = (SuperClass) => {
         this._audioInteractionResolve();
       }
 
-      Promise.all([
-        this.videoInteraction,
-        this.audioInteraction,
-      ]).then(() => {
+      const interactPromisesRequired = audioRequired ? 
+        [this.videoInteraction, this.audioInteraction] : [this.videoInteraction];
+      Promise.all(interactPromisesRequired).then(() => {
         interactElement.remove();
       });
     }

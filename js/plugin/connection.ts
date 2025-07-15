@@ -102,6 +102,7 @@ export const ConnectionMixin = (SuperClass) => {
         this.fireBrowserEvent(`command-${msg.command}`, msg);
       } else if (msg.browserEntities) {
         this.browserEntities = msg.browserEntities;
+        this.fireBrowserEvent("browser-mod-entities-update");
       } else if (msg.result) {
         this.update_config(msg.result);
       }
@@ -290,6 +291,11 @@ export const ConnectionMixin = (SuperClass) => {
     }
     set cameraEnabled(value) {
       this._reregister({ camera: value });
+    }
+
+    get playerEnabled() {
+      if (!this.registered) return null;
+      return (this.browserEntities as any)?.player?.enabled ?? false;
     }
 
     sendUpdate(data) {

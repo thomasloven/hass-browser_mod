@@ -12,6 +12,14 @@ export const MediaPlayerMixin = (SuperClass) => {
     constructor() {
       super();
 
+      this.addEventListener("browser-mod-entities-update", () => {
+        this._setup_media_player();
+      }, { once: true });
+    }
+
+    private _setup_media_player() {
+      if (!this.playerEnabled) return;
+
       this._audio_player = new Audio();
       this._audio_player.muted = true;
       this._video_player = document.createElement("video");
@@ -100,11 +108,7 @@ export const MediaPlayerMixin = (SuperClass) => {
         this._player_update();
       });
 
-      this.addEventListener("browser-mod-ready", () =>
-        this._player_update()
-      );
-
-      this.connectionPromise.then(() => this._player_update());
+      this._player_update();
     }
 
     private _show_video_player() {
