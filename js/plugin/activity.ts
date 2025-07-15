@@ -1,3 +1,5 @@
+const FULLY_ACTIVITY_EVENTS = [ "onMotion" ];
+
 export const ActivityMixin = (SuperClass) => {
   return class ActivityMixinClass extends SuperClass {
     activityTriggered = false;
@@ -8,8 +10,10 @@ export const ActivityMixin = (SuperClass) => {
       for (const ev of ["pointerdown", "pointermove", "keydown"]) {
         window.addEventListener(ev, () => this.activityTrigger(true));
       }
-      this.addEventListener("fully-update", () => {
-        this.activityTrigger();
+      this.addEventListener("fully-update", (ev) => {
+        if (FULLY_ACTIVITY_EVENTS.includes(ev.detail?.event)) {
+          this.activityTrigger();
+        }
       });
       this.addEventListener("browser-mod-ready", () =>
         this._activity_state_update()
