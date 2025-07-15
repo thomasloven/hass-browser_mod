@@ -315,7 +315,9 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
           (!ev.detail?.entityId && !ev.detail?.target) || 
           !lovelaceRoot
         ) return;
-    const target = ev.detail?.target?.length > 0 || { entity_id: ev.detail?.entityId };
+    const target = (ev.detail?.target && Object.keys(ev.detail.target).length > 0) 
+      ? ev.detail.target 
+      : { entity_id: ev.detail?.entityId };
     const cardConfig = findPopupCardConfig(lovelaceRoot, target);
     if (cardConfig) {
       ev.stopPropagation();
