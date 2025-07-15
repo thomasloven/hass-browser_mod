@@ -97,7 +97,7 @@ This will hide the header bar. Completely. It does not care if there are useful 
 
 Allow for an overlay icon to apear on certain Dashboards/Panels and carry out an action when clicked. Even with good Dashboard design, you can end up on a Home Assistant panel that assumes header and sidebar navigation. E.g. History Panel, Energy Dashboard. An overlay icon allows for a method to show an icon and carry out an action.
 
-The settings of the Overlay icon includes position parameters: `top`, `left`, `bottom`, `right`. Use a pair of `top` & `left` or `bottom` & `right` to position the icon at that distance away from the top/left or bottom/right of the screen. The parameters are enter as numbers and prepresent pixels. __IMPORTANT__: Using all position parameters will lead to undesired results creating a large overlay that may take up your entire screen.
+The settings of the Overlay icon includes position parameters: `top`, `left`, `bottom`, `right`. Use a pair of `top` & `left` or `bottom` & `right` to position the icon at that distance away from the top/left or bottom/right of the screen. The parameters are entered as numbers and represent pixels. __IMPORTANT__: Using all position parameters will lead to undesired results creating a large overlay that may take up your entire screen.
 
 The icon and button sizes are default Home Assistant sizes of 24px and 48px respectively. If you wish to have a different icon/button size, set the `class` parameter to give the icon a class, then set the `--mdc-icon-size` and `--mdc-icon-button-size` CSS parameters for that class.
 
