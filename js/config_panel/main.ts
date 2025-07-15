@@ -45,6 +45,7 @@ loadConfigDashboard().then(() => {
           <ha-config-section .narrow=${this.narrow} full-width>
             <browser-mod-browser-settings-card
               .hass=${this.hass}
+              .narrow=${this.narrow}
             ></browser-mod-browser-settings-card>
 
             ${this.hass.user?.is_admin
