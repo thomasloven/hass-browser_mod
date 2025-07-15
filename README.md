@@ -74,7 +74,7 @@ Here's a great overview of the functionality by [Smart Home Scene](https://smart
 
 # Browser Mod Configuration Panel
 
-After installing Browser Mod you should see a new panel called _Browser Mod_ in the sidebar. This is where you controll any Browser Mod settings.
+After installing Browser Mod you should see a new panel called _Browser Mod_ in the sidebar. This is where you control any Browser Mod settings.
 
 ### See [Configuration Panel](documentation/configuration-panel.md) for more info
 \
@@ -91,30 +91,34 @@ Browser Mod has a number of services you can call to cause things to happen in t
 
 ## Popup card
 
-A popup card can be used to replace the more-info dialog of an entity with something of your choosing.
+A popup card can be used to replace the more-info dialog of an entity with something of your choosing. The entity can be targetted by entity, area, label or device.
 
-To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the entity you want to override, configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
+To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the target (entity, area, label, device) you want to override, configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
 
 The card will be visible only while you're in Edit mode.
 
 Custom popup cards are either local to the current Dashboard view (default) or can be used across all views of the Dashboard. Use the `Popup card is available for use in all views` GUI switch or `popup_card_all_views` optional parameter in Yaml. Using global view custom popup cards allows you to use a sub view to store your custom popup cards for a Dashboard, if that fits your use case.
 
+Using a wide target (label, area, device) and/or popup cards which are global to a view, allows for much customisation of more-info dialog to suit most cases.
+
 Yaml configuration:
 
 ```yaml
 type: custom:popup-card
-entity: <entity id>
+target:
+  [entity_id: <entity_id> ]
+  [area_id: <area-id>     ]
+  [label_id: <label-id>   ]
+  [device_id: <device-d>  ]
 card:
   type: ...etc...
 [popup_card_all_views: [true/FALSE]]
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
-> *Note:* It's advisable to use a `fire-dom-event` tap action instead as far as possible. Popup card is for the few cases where that's not possible. See [`services`](documentation/services.md) for more info.
-
 ## Browser Player
 
-Browser player is a card that allows you to controll the volume and playback on the current Browsers media player.
+Browser player is a card that allows you to control the volume and playback on the current Browsers media player.
 
 Add it to a dashboard via the GUI or through yaml:
 

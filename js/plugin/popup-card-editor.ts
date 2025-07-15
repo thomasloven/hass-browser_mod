@@ -4,10 +4,15 @@ import { hass_base_el, loadHaForm, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 
 const configSchema = [
-  {
+    {
     name: "entity",
-    label: "Entity",
+    label: "Entity (old style)",
     selector: { entity: {} },
+  },
+  {
+    name: "target",
+    label: "Target",
+    selector: { target: {} },
   },
   {
     name: "title",
@@ -172,6 +177,8 @@ class PopupCardEditor extends LitElement {
   @query("hui-card-element-editor") private _cardEditorEl?;
 
   private _objectSelectorMonitor: ObjectSelectorMonitor;
+  private _schema: Object[];
+  private _schemaOldStyle: Object[];
 
   get settingsValid() {
     return this._settingsValid
@@ -193,6 +200,8 @@ class PopupCardEditor extends LitElement {
       (value: boolean) => { this._settingsValid = value },
       (value: boolean) => { this._showErrors = value }
     );
+    this._schemaOldStyle = configSchema;
+    this._schema = configSchema.slice(1)
   }
 
   firstUpdated(changedProperties: PropertyValues) {
@@ -329,7 +338,7 @@ class PopupCardEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${configSchema}
+        .schema=${this._config.entity ? this._schemaOldStyle : this._schema}
         .computeLabel=${(s) => s.label ?? s.name}
         @value-changed=${this._configChanged}
       ></ha-form>

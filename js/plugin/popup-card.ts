@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { getLovelaceRoot, hass_base_el } from "../helpers";
+import { ensureArray, getLovelaceRoot } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
@@ -196,15 +196,38 @@ class PopupCard extends LitElement {
   }
 }
 
-function popupCardMatch(card, entity, viewIndex, curView) {
-  return card.type === 'custom:popup-card' &&
-         card.entity === entity &&
-         (viewIndex === curView || card.popup_card_all_views);
+function popupCardMatch(hass, card, target, viewIndex, curView) {
+  if (card.type !== 'custom:popup-card') return false;
+  // Resolve target IDs
+  const targetEntityIDs = ensureArray(target?.entity_id || []);
+  const targetAreaIDs = ensureArray(target?.area_id || []);
+  const targetLabelIDs = ensureArray(target?.label_id || []);
+  const targetDeviceIDs = ensureArray(target?.device_id || []);
+  // Resolve card IDs
+  const cardTargetEntityIDs = ensureArray(card.target?.entity_id || []);
+  const cardEntityIDs = 
+    (card.entity && !cardTargetEntityIDs.includes(card.entity)) ? 
+      [...cardTargetEntityIDs, card.entity] : cardTargetEntityIDs;
+  const cardAreaIDs = ensureArray(card.target?.area_id || []);
+  const cardLabelIDs = ensureArray(card.target?.label_id || []);
+  const cardDeviceIDs = ensureArray(card.target?.device_id || []);
+  // return match if card is a popup-card and matches the target
+  return  (
+            cardEntityIDs.some((e: string) => targetEntityIDs.includes(e))  ||
+            cardAreaIDs.some((a: string) => targetAreaIDs.includes(a))      ||
+            cardLabelIDs.some((l: string) => targetLabelIDs.includes(l))    ||
+            cardDeviceIDs.some((d: string) => targetDeviceIDs.includes(d))
+          )
+          &&
+          (
+            viewIndex === curView || card.popup_card_all_views
+          );
 }
 
-function findPopupCardConfig(lovelaceRoot, entity) {
+function findPopupCardConfig(lovelaceRoot, target) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
-  if (lovelaceConfig) {
+  const hass = lovelaceRoot?.hass;
+  if (lovelaceConfig && hass) {
     const curView = lovelaceRoot?._curView ?? 0;
     // Place current view at the front of the view index lookup array.
     // This allows the current view to be checked first for local cards, 
@@ -216,11 +239,11 @@ function findPopupCardConfig(lovelaceRoot, entity) {
       const view = lovelaceConfig.views[viewIndex];
       if (view.cards) {
         for (const card of view.cards) {
-          if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+          if (popupCardMatch(hass, card, target, viewIndex, curView)) return card;
           // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
           if (card.cards) {
             for (const subCard of card.cards) {
-              if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+              if (popupCardMatch(hass, subCard, target, viewIndex, curView)) return subCard;
             }
           }
         }
@@ -229,11 +252,11 @@ function findPopupCardConfig(lovelaceRoot, entity) {
         for (const section of view.sections) {
           if (section.cards) {
             for (const card of section.cards) {
-              if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+              if (popupCardMatch(hass, card, target, viewIndex, curView)) return card;
               // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
               if (card.cards) {
                 for (const subCard of card.cards) {
-                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+                  if (popupCardMatch(hass, subCard, target, viewIndex, curView)) return subCard;
                 }
               }
             }
@@ -288,8 +311,12 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   );
 
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
-    if (ev.detail?.ignore_popup_card || !ev.detail?.entityId || !lovelaceRoot) return;
-    const cardConfig = findPopupCardConfig(lovelaceRoot, ev.detail?.entityId);
+    if (  ev.detail?.ignore_popup_card || 
+          (!ev.detail?.entityId && !ev.detail?.target) || 
+          !lovelaceRoot
+        ) return;
+    const target = ev.detail?.target?.length > 0 || { entity_id: ev.detail?.entityId };
+    const cardConfig = findPopupCardConfig(lovelaceRoot, target);
     if (cardConfig) {
       ev.stopPropagation();
       ev.preventDefault();

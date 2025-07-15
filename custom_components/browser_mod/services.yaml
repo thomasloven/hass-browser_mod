@@ -182,9 +182,13 @@ more_info:
     entity:
       name: Entity ID
       description: ""
-      required: true
       selector:
         text:
+    target:
+      name: Target
+      description: ""
+      selector:
+        target:
     large:
       name: Large size
       description: ""
