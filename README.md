@@ -105,6 +105,7 @@ Yaml configuration:
 
 ```yaml
 type: custom:popup-card
+[entity: <entity_id> ]
 target:
   [entity_id: <entity_id> ]
   [area_id: <area-id>     ]
@@ -115,6 +116,8 @@ card:
 [popup_card_all_views: [true/FALSE]]
 [any parameter from the browser_mod.popup service call except "content"]
 ```
+
+> Note: While using old style `entity` is fully supported, it will not show in the GUI editor if `entity` is not in the current popup-card config. In this case add an entity to `target`.
 
 ## Browser Player
 
