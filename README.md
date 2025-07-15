@@ -91,7 +91,7 @@ Browser Mod has a number of services you can call to cause things to happen in t
 
 ## Popup card
 
-A popup card can be used to replace the more-info dialog of an entity with something of your choosing. The entity can be targetted by entity, area, label or device.
+A popup card can be used to replace the more-info dialog of an entity with something of your choosing. The entity can be targeted by entity, area, label or device.
 
 To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the target (entity, area, label, device) you want to override, configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
 
