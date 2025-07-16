@@ -141,7 +141,12 @@ Show a more-info dialog.
 ```yaml
 service: browser_mod.more_info
 data:
-  entity: <string>
+  [entity: <string>]
+  [target:]
+    [entity_id: <entity_id> ]
+    [area_id: <area-id>     ]
+    [label_id: <label-id>   ]
+    [device_id: <device-d>  ] 
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
@@ -151,8 +156,13 @@ data:
 | | |
 |---|---|
 |`entity`| The entity whose more-info dialog to display. |
+|`target`| If targetting a popup-card, the relevant target which matches the popup-card. |
 |`large`| If true, the dialog will be displayed wider, as if you had clicked the title of the dialog. |
-| `ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card which would override it. |
+|`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card which would override it. |
+
+Note that either `entity` or `target` is required. `target` will only have an effect if a popup-card exists in the view/dashboard(*) which matches `target` by either `entity_id`, `area_id`, `label_id` or `device_id`.
+
+_* Dashboard when popup-card config has `popup_card_all_views: true`._
 
 ## `browser_mod.popup`
 
