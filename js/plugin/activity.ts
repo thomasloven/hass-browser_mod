@@ -1,3 +1,5 @@
+import { capitalize } from "../helpers";
+
 const FULLY_ACTIVITY_EVENTS = [ "onMotion" ];
 
 export const ActivityMixin = (SuperClass) => {
@@ -12,7 +14,7 @@ export const ActivityMixin = (SuperClass) => {
       }
       this.addEventListener("fully-update", (ev) => {
         if (FULLY_ACTIVITY_EVENTS.includes(ev.detail?.event)) {
-          this.activityTrigger();
+          this.activityTrigger(false, `fully${capitalize(ev.detail?.event)}`);
         }
       });
       this.addEventListener("browser-mod-ready", () =>
@@ -24,10 +26,11 @@ export const ActivityMixin = (SuperClass) => {
       this.sendUpdate({ activity: this.activityTriggered });
     }
 
-    activityTrigger(touched = false) {
+    activityTrigger(touched = false, activityType = "userInteraction") {
       if (!this.activityTriggered) {
         this.sendUpdate({
           activity: true,
+          activityType: activityType,
         });
       }
       this.activityTriggered = true;
@@ -46,6 +49,7 @@ export const ActivityMixin = (SuperClass) => {
       if (this.activityTriggered) {
         this.sendUpdate({
           activity: false,
+          activityType: "none"
         });
       }
       this.activityTriggered = false;

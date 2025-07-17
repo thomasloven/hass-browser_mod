@@ -57,3 +57,9 @@ class ActivityBinarySensor(BrowserModEntity, BinarySensorEntity):
     @property
     def is_on(self):
         return self._data.get("activity", False)
+
+    @property
+    def extra_state_attributes(self):
+        retval = super().extra_state_attributes
+        retval["activityType"] = self._data.get("activityType", "unknown")
+        return retval
