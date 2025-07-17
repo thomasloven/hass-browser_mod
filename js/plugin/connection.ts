@@ -72,6 +72,19 @@ export const ConnectionMixin = (SuperClass) => {
       this.fireBrowserEvent("browser-mod-disconnected");
     }
 
+    private async entitiesReady() {
+      if (Object.keys(this.browserEntities).length > 0) {
+        return true;
+      } else {
+        let cnt = 0;
+        while (Object.keys(this.browserEntities).length === 0 && cnt++ < 20) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        if (Object.keys(this.browserEntities).length > 0) return true;
+        throw new Error("Browser entities not available after 10 seconds");
+      }
+    }
+
     private async userReady() {
       if (this.user) {
         return true;
