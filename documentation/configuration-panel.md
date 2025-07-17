@@ -204,7 +204,7 @@ The variable `browser_entities` is available in templates. It is a dictionary of
 | `browser_entities.width` | Browser width Sensor | _sensor.browser_id_browser_width_ |
 | `browser_entities.height` | Browser height Sensor | _sensor.browser_id_browser_height_ |
 | `browser_entities.darkMode` | Browser dark mode Sensor | _sensor.browser_id_browser_dark_mode_ |
-| `browser_entities.activity` | Browser activity Sensor | _sensor.browser_id_browser_ |
+| `browser_entities.activity` | Browser activity Sensor | _binary_sensor.browser_id_browser_ |
 | `browser_entities.screen` | Browser screen Sensor | _light.browser_id_browser_screen_ |
 | `browser_entities.player` | Browser player Sensor | _media_player.browser_id_ |
 | `browser_entities.battery_level` | Browser battery Sensor | _sensor.browser_id_browser_battery_ |
