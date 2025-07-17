@@ -33,22 +33,24 @@ export const PanelStateMixin = (SuperClass) => {
       }
       return _panel || null;
       
-      async function _getPanel(document)
-      {   let panel = await selectTree(
-              document,
-              "home-assistant $ home-assistant-main $ partial-panel-resolver>*"
+      async function _getPanel(document) {
+        let panel = await selectTree(
+          document,
+          "home-assistant $ home-assistant-main $ partial-panel-resolver>*"
+        );
+        if (!panel) {
+          panel = await selectTree(
+            document,
+            "hc-main $ hc-lovelace"
           );
-          if (!panel)
-            panel = await selectTree(
-                document,
-                "hc-main $ hc-lovelace"
-            );
-          if (!panel)
-            panel = await selectTree(
-                document,
-                "hc-main $ hc-lovelace"
-            );
-          return panel;
+        }
+        if (!panel) {
+          panel = await selectTree(
+            document,
+            "hc-main $ hc-lovelace"
+          );
+        }
+        return panel;
       }
     }
 
