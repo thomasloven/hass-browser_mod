@@ -7,19 +7,19 @@ export const PanelStateMixin = (SuperClass) => {
       window.addEventListener("location-changed", () =>
         setTimeout(() => {
           this._panel_state_update()
-        },1000)
+        }, 1000)
       );
 
       window.addEventListener("popstate", () =>
         setTimeout(() => {
           this._panel_state_update()
-        },1000)
+        }, 1000)
       );
 
       this.addEventListener("browser-mod-ready", () =>
         setTimeout(() => {
           this._panel_state_update()
-        },1000)
+        }, 1000)
       );
 
       this.connectionPromise.then(() => this._panel_state_update());
