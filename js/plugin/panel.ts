@@ -31,7 +31,7 @@ export const PanelStateMixin = (SuperClass) => {
           await new Promise((resolve) => setTimeout(resolve, 100));
           _panel = await _getPanel(document);
       }
-      return _panel || null;
+      return _panel;
       
       async function _getPanel(document) {
         let panel = await selectTree(
