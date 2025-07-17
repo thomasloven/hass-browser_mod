@@ -62,7 +62,15 @@ export const AutoSettingsMixin = (SuperClass) => {
       window.addEventListener("location-changed", runUpdates);
       window.addEventListener("popstate", runUpdates);
 
-      this.addEventListener("browser-mod-entities-update", this._runDefaultAction, {once: true});
+      this.addEventListener("browser-mod-user-ready", () => {
+          this.entitiesReady().then(() => {
+              this._runDefaultAction()
+          }).catch((err) => {
+            console.warn(`Browser Mod: ${err}. Timeout waiting for browser entities to be ready. Default action not run.`);
+          });
+        }, 
+        {once: true}
+      );
       this._watchEditSidebar();
     }
 
