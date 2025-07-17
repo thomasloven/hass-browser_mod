@@ -54,10 +54,15 @@ export const AutoSettingsMixin = (SuperClass) => {
         runUpdates();
       });
 
+      this.addEventListener("browser-mod-entities-update", () => {
+        this._auto_settings_setup();
+        runUpdates();
+      });
+
       window.addEventListener("location-changed", runUpdates);
       window.addEventListener("popstate", runUpdates);
 
-      this.addEventListener("browser-mod-user-ready", this._runDefaultAction, {once: true});
+      this.addEventListener("browser-mod-entities-update", this._runDefaultAction, {once: true});
       this._watchEditSidebar();
     }
 
@@ -117,7 +122,7 @@ export const AutoSettingsMixin = (SuperClass) => {
             await this.connection.subscribeMessage(this._updateSidebarTitle, {
               type: "render_template",
               template: settings.sidebarTitle,
-              variables: {},
+              variables: { browser_id: this.browserID, browser_entities: this.browserEntities },
             });
         })();
       }
@@ -135,7 +140,7 @@ export const AutoSettingsMixin = (SuperClass) => {
             await this.connection.subscribeMessage(this._updateFavicon, {
               type: "render_template",
               template: settings.faviconTemplate,
-              variables: {},
+              variables: { browser_id: this.browserID, browser_entities: this.browserEntities },
             });
         })();
       }
@@ -153,7 +158,7 @@ export const AutoSettingsMixin = (SuperClass) => {
               {
                 type: "render_template",
                 template: settings.titleTemplate,
-                variables: {},
+                variables: { browser_id: this.browserID, browser_entities: this.browserEntities },
               }
             );
         })();
