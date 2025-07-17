@@ -96,8 +96,8 @@ export const PanelStateMixin = (SuperClass) => {
       return {
         viewTitle: lovelace.config?.views?.[_curView]?.title || "",
         viewUrlPath: lovelace.config?.views?.[_curView]?.path || "",
-        viewNarrow: lovelace.narrow
-      }
+        viewNarrow: lovelace.narrow,
+      };
     }
 
     _panel_state_update() {
