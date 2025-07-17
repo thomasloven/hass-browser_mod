@@ -2,6 +2,8 @@ import { selectTree } from "../helpers";
 
 export const PanelStateMixin = (SuperClass) => {
   return class PanelStateMixinClass extends SuperClass {
+    private _isUpdating = false;
+
     constructor() {
       super();
       window.addEventListener("location-changed", () =>
@@ -101,9 +103,8 @@ export const PanelStateMixin = (SuperClass) => {
     }
 
     _panel_state_update() {
-      let isUpdating = false;
       const update = async () => {
-        isUpdating = true;
+        this._isUpdating = true;
         const panel = await this._getPanel(document);
         const panelAttributes = this._panelAttributes(panel);
         const viewAttributes = await this._viewAttributes(panel);
@@ -120,9 +121,9 @@ export const PanelStateMixin = (SuperClass) => {
             }
           }
         });
-        isUpdating = false;
+        this._isUpdating = false;
       };
-      if (!isUpdating)
+      if (!this._isUpdating)
         update();
     }
   };
