@@ -178,7 +178,7 @@ Set the order and hidden items of the sidebar. To change this setting:
 ### Sidebar title
 
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
-Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/).
+Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
 
 ### Hide interaction icon
 
@@ -187,3 +187,37 @@ This hides the icon in the bottom right corner which indicates that you need to 
 ### Save screen state
 
 This saves the screen state on browser disconnect and restores on browser reconnect. The screen state (on/off) and brightness are both saved. The state will be saved and restored for all browsers that have this setting applied, including those running Fully Kiosk.
+
+---
+
+#### Browser Entities variable
+
+The variable `browser_entities` is available in templates. It is a dictionary of the entities for the Browser and includes the following.
+
+| Variable | Sensor | Example |
+|---|---|---|
+| `browser_entities.path` | Browser path Sensor | _sensor.browser_id_browser_path_ |
+| `browser_entities.visibility` | Browser visibility Sensor | _sensor.browser_id_browser_visibility_ |
+| `browser_entities.userAgent` | Browser userAgent Sensor | _sensor.browser_id_browser_useragent_ |
+| `browser_entities.currentUser` | Browser user Sensor | _sensor.browser_id_browser_user_ |
+| `browser_entities.fullyKiosk` | Browser FullyKiosk Sensor | _binary_sensor.browser_id_browser_fullykiosk_ |
+| `browser_entities.width` | Browser width Sensor | _sensor.browser_id_browser_width_ |
+| `browser_entities.height` | Browser height Sensor | _sensor.browser_id_browser_height_ |
+| `browser_entities.darkMode` | Browser dark mode Sensor | _sensor.browser_id_browser_dark_mode_ |
+| `browser_entities.activity` | Browser activity Sensor | _sensor.browser_id_browser_ |
+| `browser_entities.screen` | Browser screen Sensor | _light.browser_id_browser_screen_ |
+| `browser_entities.player` | Browser player Sensor | _media_player.browser_id_ |
+| `browser_entities.battery_level` | Browser battery Sensor | _sensor.browser_id_browser_battery_ |
+| `browser_entities.charging` | Browser charging Sensor | _binary_sensor.browser_id_browser_charging_ |
+
+Your template can use the `browser_entities` variable to query a sensor state or get attributes of the sensor.
+
+Example: Get the current user name
+```yaml
+{{ states(browser_entities.currentUser) }}
+```
+
+Example: Get the first part of the Browser path
+```yaml
+{{ state_attr(browser_entities.path, 'pathSegments')[1] }}
+```
