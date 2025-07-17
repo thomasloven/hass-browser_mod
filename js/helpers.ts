@@ -289,4 +289,4 @@ export const debounce = <T extends any[]>(
   return debouncedFunc;
 };
 
-export const capitalize = s => (s && String(s[0]).toUpperCase() + String(s).slice(1)) || ""
+export const capitalize = (s: string): string => (s && String(s[0]).toUpperCase() + String(s).slice(1)) || ""
