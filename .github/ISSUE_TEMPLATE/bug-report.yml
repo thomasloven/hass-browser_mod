@@ -8,8 +8,9 @@ body:
       label: My Home Assistant Version
       description: You can view your Home Assistant Version in _Settings > About_
       placeholder: |
-        Core: 2025.4.2 
-        Frontend: 20250411.0
+        Core: 2025.7.2
+        Frontend: 20250702.2
+        Browser Mod: 2.4.2
     validations:
       required: true
   - type: textarea
