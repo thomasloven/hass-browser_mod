@@ -165,6 +165,16 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "refresh":
+          if (this._data?.version) {
+            // Fetch with { cache: "reload" } to ensure we have the latest version of browser_mod.js
+            // in situations where browser_mod.js has been cached with previous version.
+            const moduleURL = `/browser_mod.js?${this._data.version}`;
+            const resourceURL = `/browser_mod.js?automatically-added&${this._data.version}`;
+            await Promise.all([
+              fetch(moduleURL, { cache: "reload" }),
+              fetch(resourceURL, { cache: "reload" }),
+            ]);
+          }
           window.location.href = window.location.href;
           break;
 
