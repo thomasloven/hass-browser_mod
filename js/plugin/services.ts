@@ -52,6 +52,7 @@ export const ServicesMixin = (SuperClass) => {
         const t = { ...target };
         if (d.browser_id === "THIS") d.browser_id = this.browserID;
         if (d.user_id === "THIS" && this.user) d.user_id = this.user.id;
+        if (d.browser_entities === "THIS") d.browser_entities = this.browserEntities;
         // CALL HOME ASSISTANT SERVICE
         const [domain, srv] = _service.split(".");
         return this.hass.callService(domain, srv, d, t);
@@ -164,6 +165,16 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "refresh":
+          if (this._data?.version) {
+            // Fetch with { cache: "reload" } to ensure we have the latest version of browser_mod.js
+            // in situations where browser_mod.js has been cached with previous version.
+            const moduleURL = `/browser_mod.js?${this._data.version}`;
+            const resourceURL = `/browser_mod.js?automatically-added&${this._data.version}`;
+            await Promise.all([
+              fetch(moduleURL, { cache: "reload" }),
+              fetch(resourceURL, { cache: "reload" }),
+            ]);
+          }
           window.location.href = window.location.href;
           break;
 

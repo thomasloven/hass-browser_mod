@@ -310,3 +310,5 @@ export function ensureArray(value) {
   }
   return [value];
 }
+
+export const capitalize = (s: string): string => (s && String(s[0]).toUpperCase() + String(s).slice(1)) || ""

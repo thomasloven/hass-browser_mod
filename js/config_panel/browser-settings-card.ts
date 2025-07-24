@@ -4,6 +4,7 @@ import { property, state } from "lit/decorators.js";
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
   @property() dirty = false;
+  @property({ type: Boolean }) public narrow = false;
 
   toggleRegister() {
     if (!window.browser_mod?.ready) return;
@@ -71,7 +72,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             ></ha-switch>
           </ha-settings-row>
 
-          <ha-settings-row>
+          <ha-settings-row .narrow=${this.narrow}>
             <span slot="heading">Browser ID</span>
             <span slot="description"
               >A unique identifier for this browser-device combination.</span
@@ -257,7 +258,6 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         justify-content: space-between;
       }
       ha-textfield {
-        width: 250px;
         display: block;
         margin-top: 8px;
       }

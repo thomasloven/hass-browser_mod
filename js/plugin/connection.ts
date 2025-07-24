@@ -72,6 +72,19 @@ export const ConnectionMixin = (SuperClass) => {
       this.fireBrowserEvent("browser-mod-disconnected");
     }
 
+    private async entitiesReady() {
+      if (Object.keys(this.browserEntities).length > 0) {
+        return true;
+      } else {
+        let cnt = 0;
+        while (Object.keys(this.browserEntities).length === 0 && cnt++ < 20) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        if (Object.keys(this.browserEntities).length > 0) return true;
+        throw new Error("Browser entities not available after 10 seconds");
+      }
+    }
+
     private async userReady() {
       if (this.user) {
         return true;
@@ -102,6 +115,7 @@ export const ConnectionMixin = (SuperClass) => {
         this.fireBrowserEvent(`command-${msg.command}`, msg);
       } else if (msg.browserEntities) {
         this.browserEntities = msg.browserEntities;
+        this.fireBrowserEvent("browser-mod-entities-update");
       } else if (msg.result) {
         this.update_config(msg.result);
       }
@@ -290,6 +304,11 @@ export const ConnectionMixin = (SuperClass) => {
     }
     set cameraEnabled(value) {
       this._reregister({ camera: value });
+    }
+
+    get playerEnabled() {
+      if (!this.registered) return null;
+      return (this.browserEntities as any)?.player?.enabled ?? false;
     }
 
     sendUpdate(data) {
