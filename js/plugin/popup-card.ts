@@ -2,10 +2,11 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { ensureArray, getLovelaceRoot } from "../helpers";
+import { getLovelaceRoot } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
+import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -23,7 +24,7 @@ class PopupCard extends LitElement {
       entity,
       title: "Custom popup",
       dismissable: true,
-      card: { type: "markdown", content: "This replaces the more-info dialog" },
+      card: { type: "markdown", content: "This card can be used in browser_mod.popup service or to replace the more-info dialog" },
     };
   }
 
@@ -196,78 +197,6 @@ class PopupCard extends LitElement {
   }
 }
 
-function popupCardMatch(hass, card, target, viewIndex, curView) {
-  if (card.type !== 'custom:popup-card') return false;
-  // Resolve target IDs
-  const targetEntityIDs = ensureArray(target?.entity_id || []);
-  const targetAreaIDs = ensureArray(target?.area_id || []);
-  const targetLabelIDs = ensureArray(target?.label_id || []);
-  const targetDeviceIDs = ensureArray(target?.device_id || []);
-  // Resolve card IDs
-  const cardTargetEntityIDs = ensureArray(card.target?.entity_id || []);
-  const cardEntityIDs = 
-    (card.entity && !cardTargetEntityIDs.includes(card.entity)) ? 
-      [...cardTargetEntityIDs, card.entity] : cardTargetEntityIDs;
-  const cardAreaIDs = ensureArray(card.target?.area_id || []);
-  const cardLabelIDs = ensureArray(card.target?.label_id || []);
-  const cardDeviceIDs = ensureArray(card.target?.device_id || []);
-  // return match if card is a popup-card and matches the target
-  return  (
-            cardEntityIDs.some((e: string) => targetEntityIDs.includes(e))  ||
-            cardAreaIDs.some((a: string) => targetAreaIDs.includes(a))      ||
-            cardLabelIDs.some((l: string) => targetLabelIDs.includes(l))    ||
-            cardDeviceIDs.some((d: string) => targetDeviceIDs.includes(d))
-          )
-          &&
-          (
-            viewIndex === curView || card.popup_card_all_views
-          );
-}
-
-function findPopupCardConfig(lovelaceRoot, target) {
-  const lovelaceConfig = lovelaceRoot?.lovelace?.config;
-  const hass = lovelaceRoot?.hass;
-  if (lovelaceConfig && hass) {
-    const curView = lovelaceRoot?._curView ?? 0;
-    // Place current view at the front of the view index lookup array.
-    // This allows the current view to be checked first for local cards, 
-    // and then the rest of the views for global cards, keeping current view precedence.
-    let viewLookup = Array.from(Array(lovelaceConfig.views.length).keys())
-    viewLookup.splice(curView, 1);
-    viewLookup.unshift(curView);
-    for (const viewIndex of viewLookup) {
-      const view = lovelaceConfig.views[viewIndex];
-      if (view.cards) {
-        for (const card of view.cards) {
-          if (popupCardMatch(hass, card, target, viewIndex, curView)) return card;
-          // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
-          if (card.cards) {
-            for (const subCard of card.cards) {
-              if (popupCardMatch(hass, subCard, target, viewIndex, curView)) return subCard;
-            }
-          }
-        }
-      }
-      if (view.sections) {
-        for (const section of view.sections) {
-          if (section.cards) {
-            for (const card of section.cards) {
-              if (popupCardMatch(hass, card, target, viewIndex, curView)) return card;
-              // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
-              if (card.cards) {
-                for (const subCard of card.cards) {
-                  if (popupCardMatch(hass, subCard, target, viewIndex, curView)) return subCard;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  return null;
-}
-
 window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   ev.stopPropagation();
   while (!window.browser_mod) {
@@ -315,17 +244,17 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
           (!ev.detail?.entityId && !ev.detail?.target) || 
           !lovelaceRoot
         ) return;
-    const target = (ev.detail?.target && Object.keys(ev.detail.target).length > 0) 
-      ? ev.detail.target 
-      : { entity_id: ev.detail?.entityId };
-    const cardConfig = findPopupCardConfig(lovelaceRoot, target);
+    const target = { entity_id: ev.detail?.entityId };
+    const cardConfig = findPopupCardConfigByEntity(lovelaceRoot, ev.detail?.entityId);
     if (cardConfig) {
       ev.stopPropagation();
       ev.preventDefault();
       let properties = { ...cardConfig }
       delete properties.card;
-      delete properties.entity;
       delete properties.type;
+      if (properties.entity) delete properties.entity;
+      if (properties.target) delete properties.target;
+      if (properties.popup_card_id) delete properties.popup_card_id;
       window.browser_mod?.service("popup", {
         content: cardConfig.card,
         ...properties,

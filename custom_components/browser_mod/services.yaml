@@ -71,6 +71,11 @@ popup:
           multiple: true
           filter:
             domain: "person"
+    popup_card_id:
+      name: Popup-card ID
+      description: ID of the popup-card to use as a template for the popup
+      selector:
+        text:
     title:
       name: Title
       description: "Popup title"
@@ -184,11 +189,6 @@ more_info:
       description: ""
       selector:
         text:
-    target:
-      name: Target
-      description: ""
-      selector:
-        target:
     large:
       name: Large size
       description: ""

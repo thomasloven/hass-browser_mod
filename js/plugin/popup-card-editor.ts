@@ -2,17 +2,23 @@ import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { hass_base_el, loadHaForm, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
+import structuredClone from "@ungap/structured-clone";
 
 const configSchema = [
-    {
-    name: "entity",
-    label: "Entity (old style)",
-    selector: { entity: {} },
+  {
+    name: "popup_card_id",
+    label: "Popup-card ID",
+    selector: { text: {} },
   },
   {
     name: "target",
-    label: "Target",
+    label: "Targets",
     selector: { target: {} },
+  },
+  {
+    name: "entity",
+    label: "Entity (old style target)",
+    selector: { entity: {} },
   },
   {
     name: "title",
@@ -201,7 +207,7 @@ class PopupCardEditor extends LitElement {
       (value: boolean) => { this._showErrors = value }
     );
     this._schemaOldStyle = configSchema;
-    this._schema = configSchema.slice(1)
+    this._schema = configSchema.filter((s => s.name !== "entity"));
   }
 
   firstUpdated(changedProperties: PropertyValues) {
@@ -323,7 +329,17 @@ class PopupCardEditor extends LitElement {
   }
 
   _renderSettingsEditor() {
-    return html`<div class="box">
+    return html`
+    <ha-alert
+      .hass=${this.hass}
+      alert-type="info"
+    >
+      <ul>
+        <li>Set <strong>Popup-card ID</strong> to use as a template for <code>browser_mod.popup</code></li>
+        <li>Set <strong>Targets</strong> to use as a replacement for Home Assistant <code>more-info</code> dialog for entities matching selected targets.</li>
+      </ul>
+    </ha-alert>
+    <div class="box">
       <ha-alert
         .hass=${this.hass}
         alert-type="error"
@@ -434,7 +450,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
       name: "Popup card",
       preview: false,
       description:
-        "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
+        "Use a popup-card with browser_mod.popup action or to replace the more-info dialog for given targets.",
     });
   }
 });

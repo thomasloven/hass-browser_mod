@@ -603,7 +603,6 @@ export const PopupMixin = (SuperClass) => {
               ev.stopPropagation();
               this.showMoreInfo(
                 actionConfig.entity ? actionConfig.entity : ev.detail.config.entity,
-                {},
                 actionConfig.large ?? false,
                 actionConfig.ignore_popup_card ?? false,
               );
@@ -691,14 +690,14 @@ export const PopupMixin = (SuperClass) => {
       }
     }
 
-    async showMoreInfo(entityId, target = {}, large = false, ignore_popup_card = undefined) {
+    async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {
       const base = await hass_base_el();
       base.dispatchEvent(
         new CustomEvent("hass-more-info", {
           bubbles: true,
           composed: true,
           cancelable: false,
-          detail: { entityId, target, ignore_popup_card },
+          detail: { entityId, ignore_popup_card },
         })
       );
       if (large) {
