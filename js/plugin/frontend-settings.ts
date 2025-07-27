@@ -14,7 +14,7 @@ export const AutoSettingsMixin = (SuperClass) => {
     @runOnce()
     async runHideHeader() {
       let cnt = 0;
-      while (!await this._hideHeader() && cnt++ < 10) {
+      while (!await this._hideHeader() && cnt++ < 20) {
         await new Promise((r) => setTimeout(r, 500));
       }
     }
