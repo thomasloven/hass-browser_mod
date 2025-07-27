@@ -13,8 +13,10 @@ export const AutoSettingsMixin = (SuperClass) => {
 
     @runOnce()
     async runHideHeader() {
-      while (!(await this._hideHeader()))
+      let cnt = 0;
+      while (!await this._hideHeader() && cnt++ < 20) {
         await new Promise((r) => setTimeout(r, 500));
+      }
     }
 
     @runOnce(true)
@@ -249,7 +251,11 @@ export const AutoSettingsMixin = (SuperClass) => {
         rootEl.style.setProperty("--header-height", "0px");
         header.style.setProperty("display", "none");
         return true;
-      } else if (menuButton && this.settings.hideSidebar === true) {
+      } else if (
+          menuButton && 
+          this.settings.hideSidebar === true &&
+          this.settings.hideHeader !== true 
+        ) {
         menuButton.remove?.();
         return true;
       }
