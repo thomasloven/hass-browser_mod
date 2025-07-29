@@ -178,6 +178,7 @@ export const ServicesMixin = (SuperClass) => {
           } else {
             (window as Window).location.href = (window as Window).location.href;
           }
+          break;
 
         case "set_theme":
           {
