@@ -222,10 +222,16 @@ export const AutoSettingsMixin = (SuperClass) => {
       );
       if (!rootEl) return false;
 
-      let header = await selectTree(
+      let huiRootEl = await selectTree(
         rootEl,
-        "ha-panel-lovelace$hui-root$.header"
+        "ha-panel-lovelace$hui-root"
       );
+      let header;
+      if (huiRootEl) {
+        await huiRootEl.updateComplete;
+        header = huiRootEl.shadowRoot.querySelector(".header");
+      }
+
       let menuButton;
 
       if (header) {
@@ -251,11 +257,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         rootEl.style.setProperty("--header-height", "0px");
         header.style.setProperty("display", "none");
         return true;
-      } else if (
-          menuButton && 
-          this.settings.hideSidebar === true &&
-          this.settings.hideHeader !== true 
-        ) {
+      } else if (menuButton && this.settings.hideSidebar === true) {
         menuButton.remove?.();
         return true;
       }
