@@ -165,8 +165,19 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "refresh":
-          window.location.href = window.location.href;
-          break;
+          if ('caches' in window) {
+            let deleteCaches = [];
+            window.caches.keys().then((cacheNames) => {
+              cacheNames.forEach((cacheName) => {
+                deleteCaches.push(caches.delete(cacheName));
+              });
+            });
+            Promise.all(deleteCaches).then(() => {
+              window.location.reload();
+            });
+          } else {
+            (window as Window).location.href = (window as Window).location.href;
+          }
 
         case "set_theme":
           {
