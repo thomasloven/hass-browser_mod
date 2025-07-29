@@ -169,7 +169,7 @@ export const ServicesMixin = (SuperClass) => {
             let deleteCaches = [];
             window.caches.keys().then((cacheNames) => {
               cacheNames.forEach((cacheName) => {
-                deleteCaches.push(caches.delete(cacheName));
+                deleteCaches.push(window.caches.delete(cacheName));
               });
             });
             Promise.all(deleteCaches).then(() => {
