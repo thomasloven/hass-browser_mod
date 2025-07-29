@@ -167,12 +167,12 @@ export const ServicesMixin = (SuperClass) => {
         case "refresh":
           {
             if (window.caches) {
-              let deleteCaches = [];
+              let cacheDeletePromises = [];
               const cacheNames = await window.caches.keys();
               cacheNames.forEach((cacheName) => {
-                deleteCaches.push(window.caches.delete(cacheName));
+                cacheDeletePromises.push(window.caches.delete(cacheName));
               });
-              await Promise.all(deleteCaches);
+              await Promise.all(cacheDeletePromises);
               window.location.reload();
             } else {
               window.location.href = window.location.href;
