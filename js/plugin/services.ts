@@ -165,18 +165,19 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "refresh":
-          if ('caches' in window) {
-            let deleteCaches = [];
-            window.caches.keys().then((cacheNames) => {
-              cacheNames.forEach((cacheName) => {
-                deleteCaches.push(window.caches.delete(cacheName));
+          {
+            if (window.caches) {
+              let deleteCaches = [];
+              await window.caches.keys().then((cacheNames) => {
+                cacheNames.forEach((cacheName) => {
+                  deleteCaches.push(window.caches.delete(cacheName));
+                });
               });
-            });
-            Promise.all(deleteCaches).then(() => {
+              await Promise.all(deleteCaches);
               window.location.reload();
-            });
-          } else {
-            (window as Window).location.href = (window as Window).location.href;
+            } else {
+              window.location.href = window.location.href;
+            }
           }
           break;
 
