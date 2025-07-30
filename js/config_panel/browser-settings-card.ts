@@ -68,7 +68,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               @change=${this.toggleRegister}
               .disabled=${window.browser_mod?.browser_locked ||
               window.browser_mod?.global_settings["autoRegister"] ||
-              window.browser_mod?.global_settings["lockRegister"]}
+              window.browser_mod?.global_settings["lockRegister"] ||
+              !this.hass.user?.is_admin }
             ></ha-switch>
           </ha-settings-row>
 
@@ -80,7 +81,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <ha-textfield
               .value=${window.browser_mod?.browserID}
               @change=${this.changeBrowserID}
-              .disabled=${window.browser_mod?.browser_locked}
+              .disabled=${(
+                window.browser_mod?.browser_locked ||
+                !this.hass.user?.is_admin
+              )}
             ></ha-textfield>
           </ha-settings-row>
 
