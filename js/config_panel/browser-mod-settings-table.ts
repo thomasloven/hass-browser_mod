@@ -242,10 +242,12 @@ class BrowserModSettingsTable extends LitElement {
     data.push({
       name: "",
       value: html`
-        <mwc-button @click=${() => this.addUserSetting()}>
-          <ha-icon .icon=${"mdi:plus"}></ha-icon>
-          Add user setting
-        </mwc-button>
+        <ha-button 
+          appearance="plain"
+          @click=${() => this.addUserSetting()}>
+            <ha-icon slot="start" .icon=${"mdi:plus"}></ha-icon>
+            Add user setting
+        </ha-button>
       `,
     });
 
@@ -271,10 +273,12 @@ class BrowserModSettingsTable extends LitElement {
     data.push({
       name: "",
       value: html`
-        <mwc-button @click=${() => this.addBrowserSetting()}>
-          <ha-icon .icon=${"mdi:plus"}></ha-icon>
-          Add browser setting
-        </mwc-button>
+        <ha-button
+          appearance="plain" 
+          @click=${() => this.addBrowserSetting()}>
+            <ha-icon slot="start" .icon=${"mdi:plus"}></ha-icon>
+            Add browser setting
+        </ha-button>
       `,
     });
 
@@ -308,6 +312,7 @@ class BrowserModSettingsTable extends LitElement {
       value: {
         title: "Value",
         grows: true,
+        type: "overflow",
       },
       controls: {},
     };

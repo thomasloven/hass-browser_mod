@@ -161,9 +161,12 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         ${window.browser_mod.browsers["CAST"] === undefined
           ? html`
               <div class="card-actions">
-                <mwc-button @click=${this.register_cast}>
+                <ha-button
+                  appearance="plain"
+                  @click=${this.register_cast}  
+                >
                   Register CAST Browser
-                </mwc-button>
+                </ha-button>
               </div>
             `
           : ""}

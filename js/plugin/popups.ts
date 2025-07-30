@@ -370,21 +370,21 @@ class BrowserModPopup extends LitElement {
                 <div class="buttons">
                   ${this.left_button !== undefined
                     ? html`
-                        <mwc-button
-                          .label=${this.left_button}
+                        <ha-button
+                          appearance="plain"
                           @click=${this._secondary}
                           class="action-button"
-                        ></mwc-button>
+                        >${this.left_button}</ha-button>
                       `
                     : html`<div></div>`}
                   ${this.right_button !== undefined
                     ? html`
-                        <mwc-button
-                          .label=${this.right_button}
+                        <ha-button
+                          appearance="plain"
                           @click=${this._primary}
                           class="action-button"
                           ?disabled=${!this._formDataValid}
-                        ></mwc-button>
+                        >${this.right_button}</ha-button>
                       `
                     : ""}
                 </div>

@@ -343,6 +343,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                     and check back at this panel.
                   </span>
                   <ha-button
+                    appearance="plain"
                     @click=${() => this.clearHassUserSidebarSettings()}
                   >Clear</ha-button>
                 </ha-settings-row>` 
@@ -374,9 +375,11 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 <li>Add a new setting or edit an old one</li>
                 <li>Click RESTORE</li>
               </ol>
-              <mwc-button @click=${() => this.toggleEditSidebar()}>
-                ${this._editSidebar ? "Restore" : "Edit"}
-              </mwc-button>
+              <ha-button
+                appearance="plain"
+                @click=${() => this.toggleEditSidebar()}>
+                  ${this._editSidebar ? "Restore" : "Edit"}
+              </ha-button>
             </ha-settings-row>
             <browser-mod-settings-table
               .hass=${this.hass}
