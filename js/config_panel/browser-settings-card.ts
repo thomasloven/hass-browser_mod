@@ -81,8 +81,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <ha-textfield
               .value=${window.browser_mod?.browserID}
               @change=${this.changeBrowserID}
-              .disabled=${window.browser_mod?.browser_locked || 
-                !this.hass.user?.is_admin}
+              .disabled=${(
+                window.browser_mod?.browser_locked ||
+                !this.hass.user?.is_admin
+              )}
             ></ha-textfield>
           </ha-settings-row>
 
