@@ -210,6 +210,19 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (this.__currentTitle) document.title = this.__currentTitle;
     }
 
+    _addHeaderStyle(el) {
+      const existingStyle = el.shadowRoot.querySelector("#browser-mod-header-style");
+      if (existingStyle) return;
+      const style = document.createElement("style");
+      style.id = "browser-mod-header-style";
+      style.textContent = `\n
+        .header .hidden {
+          display: none !important;
+        }
+      `;
+      el.shadowRoot.appendChild(style);
+    }
+
     async _hideHeader() {
       if (
         this.settings.hideHeader !== true &&
@@ -228,7 +241,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       );
       let header;
       if (huiRootEl) {
-        await huiRootEl.updateComplete;
+        this._addHeaderStyle(huiRootEl);
         header = huiRootEl.shadowRoot.querySelector(".header");
       }
 
@@ -248,14 +261,17 @@ export const AutoSettingsMixin = (SuperClass) => {
           el = next;
         }
         if (el?.localName !== "ha-top-app-bar-fixed") return false;
-
+        
+        this._addHeaderStyle(el);
         header = el.shadowRoot.querySelector("header");
         menuButton = el.querySelector("ha-menu-button");
       }
 
       if (header && this.settings.hideHeader === true) {
         rootEl.style.setProperty("--header-height", "0px");
-        header.style.setProperty("display", "none");
+        if (!header.classList.contains("hidden")) {
+          header.classList.add("hidden");
+        }
         return true;
       } else if (menuButton && this.settings.hideSidebar === true) {
         menuButton.remove?.();
