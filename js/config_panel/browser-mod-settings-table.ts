@@ -15,10 +15,17 @@ class BrowserModSettingsTable extends LitElement {
 
   @property() tableData = <any>[];
 
+  private _newStyleButton = false;
+
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.updateTable()
     );
+
+    const [haMajor, haMinor, haPatch] = this.hass?.config?.version.split(".", 3);
+    if ((haMajor >= 2025 && haMinor >= 8) || haMajor > 2025) {
+      this._newStyleButton = true;
+    }
   }
 
   updated(changedProperties) {
@@ -245,7 +252,15 @@ class BrowserModSettingsTable extends LitElement {
         <ha-button 
           appearance="plain"
           @click=${() => this.addUserSetting()}>
-            <ha-icon slot="start" .icon=${"mdi:plus"}></ha-icon>
+            ${this._newStyleButton ?
+              html`<ha-icon 
+                slot="start" 
+                .icon=${"mdi:plus"}>
+              </ha-icon>` :
+              html`<ha-icon 
+                .icon=${"mdi:plus"}>
+              </ha-icon>`
+            }
             Add user setting
         </ha-button>
       `,
@@ -276,7 +291,15 @@ class BrowserModSettingsTable extends LitElement {
         <ha-button
           appearance="plain" 
           @click=${() => this.addBrowserSetting()}>
-            <ha-icon slot="start" .icon=${"mdi:plus"}></ha-icon>
+            ${this._newStyleButton ?
+              html`<ha-icon 
+                slot="start" 
+                .icon=${"mdi:plus"}>
+              </ha-icon>` :
+              html`<ha-icon 
+                .icon=${"mdi:plus"}>
+              </ha-icon>`
+            }
             Add browser setting
         </ha-button>
       `,
@@ -338,3 +361,4 @@ class BrowserModSettingsTable extends LitElement {
 }
 
 customElements.define("browser-mod-settings-table", BrowserModSettingsTable);
+
