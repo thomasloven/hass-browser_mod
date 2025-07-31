@@ -113,18 +113,18 @@ class PopupCard extends LitElement {
               <span>
                 ${this._config.left_button !== undefined
                   ? html`
-                      <mwc-button
-                        .label=${this._config.left_button}
-                      ></mwc-button>
+                      <ha-button
+                        appearance="plain"
+                      >${this._config.left_button}</ha-button>
                     `
                   : ""}
               </span>
               <span>
                 ${this._config.right_button !== undefined
                   ? html`
-                      <mwc-button
-                        .label=${this._config.right_button}
-                      ></mwc-button>
+                      <ha-button
+                        appearance="plain"
+                      >${this._config.right_button}</ha-button>
                     `
                   : ""}
               </span>
