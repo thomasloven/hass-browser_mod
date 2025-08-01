@@ -75,6 +75,56 @@ const configSchema = [
     type: "grid",
     schema: [
       {
+        name: "right_button_variant",
+        label: "Right button variant",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["brand", "neutral", "danger", "warning", "success"]
+            }
+        },
+      },
+      {
+        name: "left_button_variant",
+        label: "Left button variant",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["brand", "neutral", "danger", "warning", "success"]
+            }
+        },
+      },
+    ],
+  },
+  {
+    type: "grid",
+    schema: [
+      {
+        name: "right_button_appearance",
+        label: "Right button appearance",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["accent", "filled", "outlined", "plain"]
+            }
+        },
+      },
+      {
+        name: "left_button_appearance",
+        label: "Left button appearance",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["accent", "filled", "outlined", "plain"]
+            }
+        },
+      },
+    ],
+  },
+  {
+    type: "grid",
+    schema: [
+      {
         name: "right_button_action",
         label: "Right button action",
         selector: { object: {} },

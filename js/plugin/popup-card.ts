@@ -114,7 +114,8 @@ class PopupCard extends LitElement {
                 ${this._config.left_button !== undefined
                   ? html`
                       <ha-button
-                        appearance="plain"
+                        variant=${this._config.left_button_variant ?? "brand"}
+                        appearance=${this._config.left_button_appearance ?? "plain"}
                       >${this._config.left_button}</ha-button>
                     `
                   : ""}
@@ -123,7 +124,8 @@ class PopupCard extends LitElement {
                 ${this._config.right_button !== undefined
                   ? html`
                       <ha-button
-                        appearance="plain"
+                        variant=${this._config.right_button_variant ?? "brand"}
+                        appearance=${this._config.right_button_appearance ?? "plain"}
                       >${this._config.right_button}</ha-button>
                     `
                   : ""}
