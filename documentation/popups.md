@@ -110,7 +110,7 @@ Starting with Home Assistant 2025.8, popup left and right buttons can have a dif
 
 ![Button variant and appearance sample image](https://github.com/user-attachments/assets/7518310a-78b9-4793-98b5-54a3acf2c5bd)
 
-![Button variant and appearance sample video with highlights](https://github.com/user-attachments/assets/936dc909-ddda-4ccf-bc5b-f5981d314088)
+https://github.com/user-attachments/assets/936dc909-ddda-4ccf-bc5b-f5981d314088
 
 ## Actionable popups
 
