@@ -119,7 +119,7 @@ popup:
           options:
             - accent
             - filled
-            - outline
+            - outlined
             - plain
     right_button_action:
       name: Right button action
