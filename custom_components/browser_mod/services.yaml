@@ -152,7 +152,7 @@ popup:
           options:
             - accent
             - filled
-            - outline
+            - outlined
             - plain
     left_button_action:
       name: Left button action
