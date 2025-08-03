@@ -13,10 +13,8 @@ export const AutoSettingsMixin = (SuperClass) => {
 
     @runOnce()
     async runHideHeader() {
-      let cnt = 0;
-      while (!await this._hideHeader() && cnt++ < 20) {
+      while (!(await this._hideHeader()))
         await new Promise((r) => setTimeout(r, 500));
-      }
     }
 
     @runOnce(true)
@@ -210,19 +208,6 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (this.__currentTitle) document.title = this.__currentTitle;
     }
 
-    _addHeaderStyle(el) {
-      const existingStyle = el.shadowRoot.querySelector("#browser-mod-header-style");
-      if (existingStyle) return;
-      const style = document.createElement("style");
-      style.id = "browser-mod-header-style";
-      style.textContent = `\n
-        .header .hidden {
-          display: none !important;
-        }
-      `;
-      el.shadowRoot.appendChild(style);
-    }
-
     async _hideHeader() {
       if (
         this.settings.hideHeader !== true &&
@@ -235,16 +220,10 @@ export const AutoSettingsMixin = (SuperClass) => {
       );
       if (!rootEl) return false;
 
-      let huiRootEl = await selectTree(
+      let header = await selectTree(
         rootEl,
-        "ha-panel-lovelace$hui-root"
+        "ha-panel-lovelace$hui-root$.header"
       );
-      let header;
-      if (huiRootEl) {
-        this._addHeaderStyle(huiRootEl);
-        header = huiRootEl.shadowRoot.querySelector(".header");
-      }
-
       let menuButton;
 
       if (header) {
@@ -261,17 +240,14 @@ export const AutoSettingsMixin = (SuperClass) => {
           el = next;
         }
         if (el?.localName !== "ha-top-app-bar-fixed") return false;
-        
-        this._addHeaderStyle(el);
+
         header = el.shadowRoot.querySelector("header");
         menuButton = el.querySelector("ha-menu-button");
       }
 
       if (header && this.settings.hideHeader === true) {
         rootEl.style.setProperty("--header-height", "0px");
-        if (!header.classList.contains("hidden")) {
-          header.classList.add("hidden");
-        }
+        header.style.setProperty("display", "none");
         return true;
       } else if (menuButton && this.settings.hideSidebar === true) {
         menuButton.remove?.();
