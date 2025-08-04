@@ -58,6 +58,20 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             : ""}
         </div>
         <div class="card-content">
+          ${!this.hass.user?.is_admin
+            ? html`
+                <ha-alert alert-type="info" title="Login as admin to edit">
+                  Login as admin to change the settings of this Browser.
+                  <br /><br />
+                  You can set auto-register as admin on another Browser
+                  to register this Browser automatically. However you will
+                  still need to login as admin on this Browser to change the
+                  Browser ID from the auto-generated Browser ID.
+                </ha-alert>
+              `
+            : ""}
+        </div>
+        <div class="card-content">
           <ha-settings-row>
             <span slot="heading">Register</span>
             <span slot="description"
