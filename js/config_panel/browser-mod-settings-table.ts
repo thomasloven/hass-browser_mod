@@ -288,12 +288,19 @@ class BrowserModSettingsTable extends LitElement {
       `,
     });
 
+    let globalSetting = settings.global;
+    if (globalSetting != null) {
+      if (typeof(settings.global) === "object") {
+        globalSetting = "Config";
+      } else {
+        globalSetting = String(settings.global);
+        if (globalSetting.length >= 20) globalSetting = globalSetting.slice(0, 20) + "...";
+      }
+    }
     data.push({
       name: "GLOBAL",
       value:
-        settings.global != null
-          ?  ((typeof(settings.global) === "object") ? "Config" : String(settings.global))
-          : html`<span style="color: var(--warning-color);">DEFAULT</span>`,
+        globalSetting ?? html`<span style="color: var(--warning-color);">DEFAULT</span>`,
       controls: html`
         <div>
           <ha-icon-button @click=${() => this.changeSetting("global", null)}>
