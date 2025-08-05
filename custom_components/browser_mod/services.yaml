@@ -98,6 +98,29 @@ popup:
       description: Text of the right button
       selector:
         text:
+    right_button_variant:
+      name: Right button variant
+      description: Variant of the right button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - brand
+            - neutral
+            - danger
+            - warning
+            - success
+    right_button_appearance:
+      name: Right button appearance
+      description: Appearance of the right button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - accent
+            - filled
+            - outlined
+            - plain
     right_button_action:
       name: Right button action
       description: Action to perform when the right button is pressed
@@ -108,6 +131,29 @@ popup:
       description: Text of the left button
       selector:
         text:
+    left_button_variant:
+      name: Left button variant
+      description: Variant of the left button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - brand
+            - neutral
+            - danger
+            - warning
+            - success
+    left_button_appearance:
+      name: Left button appearance
+      description: Appearance of the left button
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - accent
+            - filled
+            - outlined
+            - plain
     left_button_action:
       name: Left button action
       description: Action to perform when left button is pressed

@@ -176,9 +176,13 @@ data:
     [close: <TRUE/false>]
     [class: <string>]
   [right_button: <string>]
+  [right_button_variant: <BRAND/neutral/danger/warning/success>]
+  [right_button_appearance: <accent/filled/outlined/PLAIN>]
   [right_button_action: <service call>]
   [right_button_close: <TRUE/false>]
   [left_button: <string>]
+  [left_button_variant: <BRAND/neutral/danger/warning/success>]
+  [left_button_appearance: <accent/filled/outlined/PLAIN>]
   [left_button_action: <service call>]
   [left_button_close: <TRUE/false>]
   [dismissable: <TRUE/false>]
@@ -204,9 +208,13 @@ data:
 | `icon_class` or  `icons` > `class` | CSS Class to apply to the icon. This allows for styling the icon directly using `style`. |
 | `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices |
 | `right_button`| The text of the right action button.|
+| `right_button_variant` | The right button variant. See [popups.md](popups.md#button-variant-and-appearance) for examples. |
+| `right_button_appearance` | The right button appearance. See [popups.md](popups.md#button-variant-and-appearance) for examples. |
 | `right_button_action`| Action to perform when the right action button is pressed. |
 | `right_button_close`| Enable/disable popup closing when the right action button is pressed. |
 | `left_button`| The text of the left action button.|
+| `left_button_variant` | The left button variant. See [popups.md](popups.md#button-variant-and-appearance) for examples. |
+| `left_button_appearance` | The left button appearance. See [popups.md](popups.md#button-variant-and-appearance) for examples. |
 | `left_button_action`| Action to perform when the left action button is pressed. |
 | `left_button_close`| Enable/disable popup closing when the left action button is pressed. |
 | `dismissable`| If false the dialog cannot be closed by the user without clicking an action button. |
