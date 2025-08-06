@@ -24,8 +24,12 @@ class BrowserModPopup extends LitElement {
   @property({ reflect: true }) actions;
   @property({ reflect: true }) card;
   @property() right_button;
+  @property() right_button_variant;
+  @property() right_button_appearance;
   @property() right_button_close;
   @property() left_button;
+  @property() left_button_variant;
+  @property() left_button_appearance;
   @property() left_button_close;
   @property() dismissable;
   @property({ type: Array}) icons: icon[];
@@ -176,9 +180,13 @@ class BrowserModPopup extends LitElement {
     content,
     {
       right_button = undefined,
+      right_button_variant = "brand",
+      right_button_appearance = "plain",
       right_button_action = undefined,
 	    right_button_close = true,
       left_button = undefined,
+      left_button_variant = "brand",
+      left_button_appearance = "plain",
       left_button_action = undefined,
 	    left_button_close = true,
       dismissable = true,
@@ -237,8 +245,12 @@ class BrowserModPopup extends LitElement {
     }
 
     this.right_button = right_button;
+    this.right_button_variant = right_button_variant;
+    this.right_button_appearance = right_button_appearance;
 	  this.right_button_close = right_button_close;
     this.left_button = left_button;
+    this.left_button_variant = left_button_variant;
+    this.left_button_appearance = left_button_appearance;
 	  this.left_button_close = left_button_close;
     this.actions = right_button === undefined ? undefined : "";
 
@@ -370,21 +382,23 @@ class BrowserModPopup extends LitElement {
                 <div class="buttons">
                   ${this.left_button !== undefined
                     ? html`
-                        <mwc-button
-                          .label=${this.left_button}
+                        <ha-button
+                          variant=${this.left_button_variant}
+                          appearance=${this.left_button_appearance}
                           @click=${this._secondary}
                           class="action-button"
-                        ></mwc-button>
+                        >${this.left_button}</ha-button>
                       `
                     : html`<div></div>`}
                   ${this.right_button !== undefined
                     ? html`
-                        <mwc-button
-                          .label=${this.right_button}
+                        <ha-button
+                          variant=${this.right_button_variant}
+                          appearance=${this.right_button_appearance}
                           @click=${this._primary}
                           class="action-button"
                           ?disabled=${!this._formDataValid}
-                        ></mwc-button>
+                        >${this.right_button}</ha-button>
                       `
                     : ""}
                 </div>

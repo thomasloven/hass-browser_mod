@@ -1,4 +1,4 @@
-import { hass, provideHass } from "../helpers";
+import { compare_deep, hass, provideHass } from "../helpers";
 
 export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
@@ -114,8 +114,11 @@ export const ConnectionMixin = (SuperClass) => {
         this.LOG("Command:", msg);
         this.fireBrowserEvent(`command-${msg.command}`, msg);
       } else if (msg.browserEntities) {
+        let oldEntities = this.browserEntities;
         this.browserEntities = msg.browserEntities;
-        this.fireBrowserEvent("browser-mod-entities-update");
+        if (!compare_deep(oldEntities, this.browserEntities)) {
+          this.fireBrowserEvent("browser-mod-entities-update");
+        }
       } else if (msg.result) {
         this.update_config(msg.result);
       }
