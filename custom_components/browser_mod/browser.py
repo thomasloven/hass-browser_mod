@@ -11,6 +11,7 @@ from .light import BrowserModLight
 from .binary_sensor import BrowserBinarySensor, ActivityBinarySensor
 from .media_player import BrowserModPlayer
 from .camera import BrowserModCamera
+from .panel import PanelSensor
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -131,6 +132,12 @@ class BrowserModBrowser:
             er = entity_registry.async_get(hass)
             er.async_remove(self.entities["camera"].entity_id)
             del self.entities["camera"]
+
+        if "panel" not in self.entities:
+            adder = hass.data[DOMAIN][DATA_ADDERS]["sensor"]
+            new = PanelSensor(coordinator, browserID, "Panel", icon="hass:view-dashboard")
+            adder([new])
+            self.entities["panel"] = new
 
         hass.create_task(
             self.send(
