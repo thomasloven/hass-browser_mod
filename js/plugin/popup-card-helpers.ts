@@ -28,7 +28,11 @@ export function findPopupCardConfigByEntity(lovelaceRoot, entity_id) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   const hass = lovelaceRoot?.hass;
   if (lovelaceConfig && hass) {
-    const entity = hass.entities[entity_id];
+    let entity = hass.entities[entity_id];
+    if (!entity) {
+      // Support fake entity_id
+      entity = { entity_id, area_id: undefined, device_id: undefined, labels: [] };
+    }
     const curView = lovelaceRoot?._curView ?? 0;
     // Place current view at the front of the view index lookup array.
     // This allows the current view to be checked first for local cards, 
