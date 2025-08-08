@@ -242,10 +242,15 @@ class BrowserModSettingsTable extends LitElement {
     data.push({
       name: "",
       value: html`
-        <mwc-button @click=${() => this.addUserSetting()}>
-          <ha-icon .icon=${"mdi:plus"}></ha-icon>
-          Add user setting
-        </mwc-button>
+        <ha-button 
+          appearance="plain"
+          @click=${() => this.addUserSetting()}>
+            <ha-icon 
+              slot="start" 
+              .icon=${"mdi:plus"}>
+            </ha-icon>
+            Add user setting
+        </ha-button>
       `,
     });
 
@@ -271,19 +276,31 @@ class BrowserModSettingsTable extends LitElement {
     data.push({
       name: "",
       value: html`
-        <mwc-button @click=${() => this.addBrowserSetting()}>
-          <ha-icon .icon=${"mdi:plus"}></ha-icon>
-          Add browser setting
-        </mwc-button>
+        <ha-button
+          appearance="plain" 
+          @click=${() => this.addBrowserSetting()}>
+            <ha-icon 
+              slot="start" 
+              .icon=${"mdi:plus"}>
+            </ha-icon>
+            Add browser setting
+        </ha-button>
       `,
     });
 
+    let globalSetting = settings.global;
+    if (globalSetting != null) {
+      if (typeof(settings.global) === "object") {
+        globalSetting = "Config";
+      } else {
+        globalSetting = String(settings.global);
+        if (globalSetting.length >= 20) globalSetting = globalSetting.slice(0, 20) + "...";
+      }
+    }
     data.push({
       name: "GLOBAL",
       value:
-        settings.global != null
-          ?  ((typeof(settings.global) === "object") ? "Config" : String(settings.global))
-          : html`<span style="color: var(--warning-color);">DEFAULT</span>`,
+        globalSetting ?? html`<span style="color: var(--warning-color);">DEFAULT</span>`,
       controls: html`
         <div>
           <ha-icon-button @click=${() => this.changeSetting("global", null)}>
@@ -308,6 +325,7 @@ class BrowserModSettingsTable extends LitElement {
       value: {
         title: "Value",
         grows: true,
+        type: "overflow",
       },
       controls: {},
     };
@@ -333,3 +351,4 @@ class BrowserModSettingsTable extends LitElement {
 }
 
 customElements.define("browser-mod-settings-table", BrowserModSettingsTable);
+

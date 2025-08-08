@@ -86,6 +86,56 @@ const configSchema = [
     type: "grid",
     schema: [
       {
+        name: "right_button_variant",
+        label: "Right button variant",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["brand", "neutral", "danger", "warning", "success"]
+            }
+        },
+      },
+      {
+        name: "left_button_variant",
+        label: "Left button variant",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["brand", "neutral", "danger", "warning", "success"]
+            }
+        },
+      },
+    ],
+  },
+  {
+    type: "grid",
+    schema: [
+      {
+        name: "right_button_appearance",
+        label: "Right button appearance",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["accent", "filled", "outlined", "plain"]
+            }
+        },
+      },
+      {
+        name: "left_button_appearance",
+        label: "Left button appearance",
+        selector: { 
+          select: 
+            { mode: "dropdown", 
+              options: ["accent", "filled", "outlined", "plain"]
+            }
+        },
+      },
+    ],
+  },
+  {
+    type: "grid",
+    schema: [
+      {
         name: "right_button_action",
         label: "Right button action",
         selector: { object: {} },
@@ -214,7 +264,7 @@ class PopupCardEditor extends LitElement {
     this.updateComplete.then(async () => {
       this._objectSelectorMonitor.startMonitoring();
       const base = await hass_base_el();
-      const saveButton: HTMLElement = await selectTree(base?.shadowRoot, "hui-dialog-edit-card $ [slot='primaryAction']>mwc-button:nth-child(2) $ button");
+      const saveButton: HTMLElement = await selectTree(base?.shadowRoot, "hui-dialog-edit-card $ [slot='primaryAction']>ha-button:nth-child(2) $ button");
       saveButton?.addEventListener("click", this._handleClickAwayFromSettings.bind(this));
       const showCodeEditorButton: HTMLElement = await selectTree(base?.shadowRoot, "hui-dialog-edit-card $ [slot='secondaryAction'] $ button");
       showCodeEditorButton?.addEventListener("click", this._handleClickAwayFromSettings.bind(this));
@@ -367,7 +417,8 @@ class PopupCardEditor extends LitElement {
         ${this._config.card
           ? html`
               <div class="toolbar">
-                <mwc-button
+                <ha-button
+                  appearance="plain"
                   @click=${this._toggleCardMode}
                   .disabled=${!this._cardGUIModeAvailable}
                   class="gui-mode-button"
@@ -375,13 +426,13 @@ class PopupCardEditor extends LitElement {
                   ${!this._cardEditorEl || this._cardGUIMode
                     ? "Show code editor"
                     : "Show visual editor"}
-                </mwc-button>
-                <mwc-button
-                  .title=${"Change card type"}
+                </ha-button>
+                <ha-button
+                  appearance="plain"
                   @click=${this._deleteCard}
                 >
                   Change card type
-                </mwc-button>
+                </ha-button>
               </div>
               <hui-card-element-editor
                 .hass=${this.hass}

@@ -179,7 +179,19 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "refresh":
-          window.location.href = window.location.href;
+          {
+            if (window.caches) {
+              let cacheDeletePromises = [];
+              const cacheNames = await window.caches.keys();
+              cacheNames.forEach((cacheName) => {
+                cacheDeletePromises.push(window.caches.delete(cacheName));
+              });
+              await Promise.all(cacheDeletePromises);
+              window.location.reload();
+            } else {
+              window.location.href = window.location.href;
+            }
+          }
           break;
 
         case "set_theme":

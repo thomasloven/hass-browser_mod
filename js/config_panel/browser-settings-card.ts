@@ -58,6 +58,20 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             : ""}
         </div>
         <div class="card-content">
+          ${!this.hass.user?.is_admin
+            ? html`
+                <ha-alert alert-type="info" title="Login as admin to edit">
+                  Login as admin to change the settings of this Browser.
+                  <br /><br />
+                  You can set auto-register as admin on another Browser
+                  to register this Browser automatically. However you will
+                  still need to login as admin on this Browser to change the
+                  Browser ID from the auto-generated Browser ID.
+                </ha-alert>
+              `
+            : ""}
+        </div>
+        <div class="card-content">
           <ha-settings-row>
             <span slot="heading">Register</span>
             <span slot="description"
@@ -68,7 +82,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               @change=${this.toggleRegister}
               .disabled=${window.browser_mod?.browser_locked ||
               window.browser_mod?.global_settings["autoRegister"] ||
-              window.browser_mod?.global_settings["lockRegister"]}
+              window.browser_mod?.global_settings["lockRegister"] ||
+              !this.hass.user?.is_admin }
             ></ha-switch>
           </ha-settings-row>
 
@@ -80,7 +95,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <ha-textfield
               .value=${window.browser_mod?.browserID}
               @change=${this.changeBrowserID}
-              .disabled=${window.browser_mod?.browser_locked}
+              .disabled=${(
+                window.browser_mod?.browser_locked ||
+                !this.hass.user?.is_admin
+              )}
             ></ha-textfield>
           </ha-settings-row>
 

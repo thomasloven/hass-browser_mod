@@ -101,7 +101,7 @@ export class ObjectSelectorMonitor {
         } else {
           this._debounceShowErrors(); 
         }
-      });
+      }, { capture: true } );
     });
   }
 
