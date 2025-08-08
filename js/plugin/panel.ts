@@ -6,23 +6,28 @@ export const PanelStateMixin = (SuperClass) => {
 
     constructor() {
       super();
-      window.addEventListener("location-changed", () =>
-        setTimeout(() => {
-          this._panel_state_update()
-        }, 1000)
-      );
+      [
+        'popstate',
+        'location-changed'
+      ].forEach(event => {
+        window.addEventListener(event, () =>
+          setTimeout(() => {
+            this._panel_state_update()
+          }, 1000)
+        );
+      });
 
-      window.addEventListener("popstate", () =>
-        setTimeout(() => {
-          this._panel_state_update()
-        }, 1000)
-      );
-
-      this.addEventListener("browser-mod-ready", () =>
-        setTimeout(() => {
-          this._panel_state_update()
-        }, 1000)
-      );
+      [
+        'browser-mod-ready',
+        'browser-mod-popup-opened',
+        'browser-mod-popup-closed'
+      ].forEach(event => {
+        this.addEventListener(event, () =>
+          setTimeout(() => {
+            this._panel_state_update()
+          }, 1000)
+        );
+      });
 
       this.connectionPromise.then(() => this._panel_state_update());
     }

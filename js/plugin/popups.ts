@@ -77,6 +77,9 @@ class BrowserModPopup extends LitElement {
     if ((this as any)._cardMod?.[0]) {
       (this as any)._cardMod[0].styles = "";
     }
+    window.browser_mod.dispatchEvent(
+      new CustomEvent("browser-mod-popup-closed")
+    );
     this.dispatchEvent(
       new CustomEvent("browser-mod-style-hass-more-info-dialog", {
         bubbles: false,
@@ -301,7 +304,7 @@ class BrowserModPopup extends LitElement {
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
     await this.dialog?.close();
     action?.(this._formdata);
-    this._objectSelectorMonitor.stopMonitoring()
+    this._objectSelectorMonitor.stopMonitoring();
   }
 
   async _primary() {
@@ -690,6 +693,9 @@ export const PopupMixin = (SuperClass) => {
         );
         await this._popupEl.setupDialog(...args);
         this._popupEl.openDialog();
+        window.browser_mod.dispatchEvent(
+          new CustomEvent("browser-mod-popup-opened")
+        );
       })();
     }
 
