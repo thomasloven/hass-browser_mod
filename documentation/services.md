@@ -234,11 +234,13 @@ Note that any Browser Mod services performed as `_action`s here will be performe
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
 
-(*) Dashboard url for `popup_card_id` can be found in a few ways. When using a dashboard url, remove the preceeding slash `/`
+(*) Dashboard url for `popup_card_id` can be found in a few ways.
 
-1. Note what you use for url when creating a new dashboard.
+1. You can note what you use for url when creating a new dashboard.
 2. Hover over sidebar links to reveal the dashboard url.
 3. Create a card with an action set to `Navigate` and check the dropdown which will show both dashboard name and url.
+
+When using a dashboard url, always remove the preceeding slash `/`
 
 One icon can be specified for custom:popup-card UI editor which populates `icon:`, `icon_*` parameters. To specificy multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
 

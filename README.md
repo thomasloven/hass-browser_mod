@@ -91,15 +91,19 @@ Browser Mod has a number of services you can call to cause things to happen in t
 
 ## Popup card
 
+Popup cards can be used to replace the more-info dialog of an entity, or to be used as a template for [`browser_mod.popup` service](documentation/services.md), or both!
+
+### Popup card - replace more-info dialog of an entity
+
 A popup card can be used to replace the more-info dialog of an entity with something of your choosing. The entity can be targeted by entity, area, label or device.
 
-To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the target (entity, area, label, device) you want to override, configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
+To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the targets (entity, area, label, device) for entities you want to override, then configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
 
 The card will be visible only while you're in Edit mode.
 
 Custom popup cards are either local to the current Dashboard view (default) or can be used across all views of the Dashboard. Use the `Popup card is available for use in all views` GUI switch or `popup_card_all_views` optional parameter in Yaml. Using global view custom popup cards allows you to use a sub view to store your custom popup cards for a Dashboard, if that fits your use case.
 
-Using a wide target (label, area, device) and/or popup cards which are global to a view, allows for much customisation of more-info dialog to suit most cases.
+Using wide targets (label, area, device) and/or popup cards which are global to a view, allows for much customisation of more-info dialog to suit most cases.
 
 Yaml configuration:
 
@@ -117,7 +121,57 @@ card:
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
-> Note: While using old style `entity` is fully supported, it will not show in the GUI editor if `entity` is not in the current popup-card config. In this case add an entity to `target`.
+| | |
+|---|---|
+|`type`| Always `custom:popup-card` |
+|`entity`| Old style single entity target. While using old style `entity` is fully supported, it will not show in the GUI editor if `entity` is not in the current popup card config. In this case add an entity to `target`. |
+|`target`| When configured in the UI, this uses the Home Assistant target selector. The popup card will be used for more-info override for an entity matching any of the target entitys, areas, labels or devices. |
+|`entity_id`| A single entity_id or list of entity_id's. The popup card will be used as an more-info override for all listed entities. |
+|`area_id`| A single area_id or list of area_id's. The popup card will be used as a more-info override for entities in these areas. |
+|`labels_id`| A single label_id or list of label_id's. The popup card will be used as a more-info override for entities with these labels. |
+|`device_id`| A single device_id or list of devices_id's. The popup card will be used as a more-info override for entities of these devices. |
+
+### Popup card - template for popup service
+
+A popup card can be used as a template for [`browser_mod.popup` service](documentation/services.md).
+
+To use it, add a "Custom: Popup card" to a dashboard view via the GUI, set the Popup-card ID, then configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
+
+The card will be visible only while you're in Edit mode.
+
+Yaml configuration:
+
+```yaml
+type: custom:popup-card
+[popup_card_id: <popup-card ID>]
+card:
+  type: ...etc...
+[any parameter from the browser_mod.popup service call except "content"]
+```
+
+Usgae:
+
+```yaml
+...
+tap_action:
+  action: perform-action
+  perform_action: browser_mod.popup
+  data:
+    popup_card_id: <popup-card ID>
+```
+
+| | |
+|---|---|
+|`type`| Always `custom:popup-card` |
+|`popup_card_id`| The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*browser* call](documentation/services.md#a-note-about-targets) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all [*server* calls](documentation/services.md#a-note-about-targets), you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url\|popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard\|my-awesome-popup`|
+
+(*) Dashboard url for `popup_card_id` can be found in a few ways.
+
+1. You can note what you use for url when creating a new dashboard.
+2. Hover over sidebar links to reveal the dashboard url.
+3. Create a card with an action set to `Navigate` and check the dropdown which will show both dashboard name and url.
+
+When using a dashboard url, always remove the preceeding slash `/`
 
 ## Browser Player
 
