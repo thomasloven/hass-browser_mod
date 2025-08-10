@@ -83,10 +83,6 @@ export const ServicesMixin = (SuperClass) => {
             if (popupCard) {
               let properties = { ...popupCard };
               delete properties.card;
-              delete properties.type;
-              if (properties.popup_card_id) delete properties.popup_card_id;
-              if (properties.entity) delete properties.entity;
-              if (properties.target) delete properties.target;
               data = { content: popupCard.card, ...properties, ...data };
             }
           }

@@ -253,10 +253,6 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       ev.preventDefault();
       let properties = { ...cardConfig }
       delete properties.card;
-      delete properties.type;
-      if (properties.entity) delete properties.entity;
-      if (properties.target) delete properties.target;
-      if (properties.popup_card_id) delete properties.popup_card_id;
       window.browser_mod?.service("popup", {
         content: cardConfig.card,
         ...properties,

@@ -1,4 +1,15 @@
 import { ensureArray, hass } from "../helpers";
+import structuredClone from "@ungap/structured-clone";
+
+function normaliseCardConfig(card) {
+  if (!card) return card;
+  card = structuredClone(card);
+  delete card.type;
+  if (card.popup_card_id) delete card.popup_card_id;
+  if (card.entity) delete card.entity;
+  if (card.target) delete card.target;
+  return card;
+}
 
 function popupCardMatch(card, entity, viewIndex, curView) {
   if (card.type !== 'custom:popup-card') return false;
@@ -44,11 +55,11 @@ export function findPopupCardConfigByEntity(lovelaceRoot, entity_id) {
       const view = lovelaceConfig.views[viewIndex];
       if (view.cards) {
         for (const card of view.cards) {
-          if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+          if (popupCardMatch(card, entity, viewIndex, curView)) return normaliseCardConfig(card);
           // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
           if (card.cards) {
             for (const subCard of card.cards) {
-              if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+              if (popupCardMatch(subCard, entity, viewIndex, curView)) return normaliseCardConfig(subCard);
             }
           }
         }
@@ -57,11 +68,11 @@ export function findPopupCardConfigByEntity(lovelaceRoot, entity_id) {
         for (const section of view.sections) {
           if (section.cards) {
             for (const card of section.cards) {
-              if (popupCardMatch(card, entity, viewIndex, curView)) return card;
+              if (popupCardMatch(card, entity, viewIndex, curView)) return normaliseCardConfig(card);
               // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
               if (card.cards) {
                 for (const subCard of card.cards) {
-                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
+                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return normaliseCardConfig(subCard);
                 }
               }
             }
@@ -136,5 +147,5 @@ export async function findPopupCardConfigByID(lovelaceRoot, popup_card_id) {
     }
   }
 
-  return card;
+  return normaliseCardConfig(card);
 }
