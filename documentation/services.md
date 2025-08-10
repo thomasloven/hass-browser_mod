@@ -202,7 +202,7 @@ data:
 
 | | |
 |---|---|
-|`popup_card_id` | The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a *browser* call you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all *server* calls, you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url\|popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard\|my-awesome-popup` |
+|`popup_card_id` | The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a *browser* call you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all *server* calls, you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup` |
 |`title` | The title of the popup window.|
 |`content`| HTML, a dashboard card configuration or ha-form schema to display.|
 | `icon` | An mdi icon which will appear in the popup header. e.g. mdi:home. `title` must be set for the header to show. |

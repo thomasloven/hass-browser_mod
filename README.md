@@ -163,7 +163,7 @@ tap_action:
 | | |
 |---|---|
 |`type`| Always `custom:popup-card` |
-|`popup_card_id`| The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*browser* call](documentation/services.md#a-note-about-targets) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all [*server* calls](documentation/services.md#a-note-about-targets), you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url\|popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard\|my-awesome-popup`|
+|`popup_card_id`| The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*browser* call](documentation/services.md#a-note-about-targets) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all [*server* calls](documentation/services.md#a-note-about-targets), you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup`|
 
 (*) Dashboard url for `popup_card_id` can be found in a few ways.
 

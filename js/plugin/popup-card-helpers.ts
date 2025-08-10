@@ -109,17 +109,17 @@ export async function findPopupCardConfigByID(lovelaceRoot, popup_card_id) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   var card_id = undefined;
   var url_path = undefined
-  if (popup_card_id.includes('|')) {
-    [url_path, card_id] = popup_card_id.split('|');
+  if (popup_card_id.includes('/')) {
+    [url_path, card_id] = popup_card_id.split('/');
   } else {
     card_id = popup_card_id;
   }
 
   var card = null;
-  if (lovelaceConfig) {
+  if (lovelaceConfig && card_id && !url_path) {
     card = findCardInConfig(lovelaceConfig, card_id);
   }
-  if (!card && url_path) {
+  else if (card_id && url_path) {
     if (window.browser_mod.connection) {
       var response;
       try {
