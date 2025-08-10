@@ -17,7 +17,7 @@ const configSchema = [
   },
   {
     name: "entity",
-    label: "Entity (old style target)",
+    label: "Entity (deprecated, use target instead)",
     selector: { entity: {} },
   },
   {

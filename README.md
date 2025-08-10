@@ -95,9 +95,9 @@ Popup cards can be used to replace the more-info dialog of an entity, or to be u
 
 ### Popup card - replace more-info dialog of an entity
 
-A popup card can be used to replace the more-info dialog of an entity with something of your choosing. The entity can be targeted by entity, area, label or device.
+You can use a popup card to replace the built-in more-info dialog. When you open a more-info dialog for an entity that matches the popup card's target filter, the popup card will be shown instead of the built-in more-info dialog. The popup card's target filter can be one or more of entity id, area, label, or device.
 
-To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the targets (entity, area, label, device) for entities you want to override, then configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
+To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the targets (entity, area, label, device) for entities whose more-info dialog you want to replace, then configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
 
 The card will be visible only while you're in Edit mode.
 
@@ -125,11 +125,11 @@ card:
 |---|---|
 |`type`| Always `custom:popup-card` |
 |`entity`| Old style single entity target. While using old style `entity` is fully supported, it will not show in the GUI editor if `entity` is not in the current popup card config. In this case add an entity to `target`. |
-|`target`| When configured in the UI, this uses the Home Assistant target selector. The popup card will be used for more-info override for an entity matching any of the target entitys, areas, labels or devices. |
-|`entity_id`| A single entity_id or list of entity_id's. The popup card will be used as an more-info override for all listed entities. |
-|`area_id`| A single area_id or list of area_id's. The popup card will be used as a more-info override for entities in these areas. |
-|`labels_id`| A single label_id or list of label_id's. The popup card will be used as a more-info override for entities with these labels. |
-|`device_id`| A single device_id or list of devices_id's. The popup card will be used as a more-info override for entities of these devices. |
+|`target`| When configured in the UI, this uses the Home Assistant target selector. The popup card will be used for more-info replacement for an entity matching any of the target entitys, areas, labels or devices. |
+|`entity_id`| A single entity id or list of entity id's. The popup card will be used as an more-info replacement for all listed entities. |
+|`area_id`| A single area id or list of area id's. The popup card will be used as a more-info replacement for entities in these areas. |
+|`labels_id`| A single label id or list of label id's. The popup card will be used as a more-info replacement for entities with these labels. |
+|`device_id`| A single device id or list of devices id's. The popup card will be used as a more-info replacement for entities of these devices. |
 
 ### Popup card - template for popup service
 

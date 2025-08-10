@@ -141,7 +141,7 @@ Show a more-info dialog.
 ```yaml
 service: browser_mod.more_info
 data:
-  [entity: <string>]
+  entity: <string>
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
@@ -158,7 +158,7 @@ _* Dashboard when popup-card config has `popup_card_all_views: true`._
 
 ## `browser_mod.popup`
 
-Display a popup dialog. You can use a `custom:popup-card` as a template and optionally override paramaters, or start from scratch specifying `content` and parameters. To display plaintext, HTML or a form, you need to use `content` as these are not avaulable using a `custom:popup-card`.
+Display a popup dialog. You can use a `custom:popup-card` as a template and optionally override parameters, or start from scratch specifying `content` and parameters. To display plaintext, HTML or a form, you need to use `content` as these are not avaulable using a `custom:popup-card`.
 
 ```yaml
 service: browser_mod.popup
