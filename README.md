@@ -74,7 +74,7 @@ Here's a great overview of the functionality by [Smart Home Scene](https://smart
 
 # Browser Mod Configuration Panel
 
-After installing Browser Mod you should see a new panel called _Browser Mod_ in the sidebar. This is where you controll any Browser Mod settings.
+After installing Browser Mod you should see a new panel called _Browser Mod_ in the sidebar. This is where you control any Browser Mod settings.
 
 ### See [Configuration Panel](documentation/configuration-panel.md) for more info
 \
@@ -91,30 +91,91 @@ Browser Mod has a number of services you can call to cause things to happen in t
 
 ## Popup card
 
-A popup card can be used to replace the more-info dialog of an entity with something of your choosing.
+Popup cards can be used to replace the more-info dialog of an entity, or to be used as a template for [`browser_mod.popup` service](documentation/services.md), or both!
 
-To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the entity you want to override, configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
+### Popup card - replace more-info dialog of an entity
+
+You can use a popup card to replace the built-in more-info dialog. When you open a more-info dialog for an entity that matches the popup card's target filter, the popup card will be shown instead of the built-in more-info dialog. The popup card's target filter can be one or more of entity id, area, label, or device.
+
+To use it, add a "Custom: Popup card" to a dashboard view via the GUI, pick the targets (entity, area, label, device) for entities whose more-info dialog you want to replace, then configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
 
 The card will be visible only while you're in Edit mode.
 
 Custom popup cards are either local to the current Dashboard view (default) or can be used across all views of the Dashboard. Use the `Popup card is available for use in all views` GUI switch or `popup_card_all_views` optional parameter in Yaml. Using global view custom popup cards allows you to use a sub view to store your custom popup cards for a Dashboard, if that fits your use case.
 
+Using wide targets (label, area, device) and/or popup cards which are global to a view, allows for much customisation of more-info dialog to suit most cases.
+
 Yaml configuration:
 
 ```yaml
 type: custom:popup-card
-entity: <entity id>
+[entity: <entity_id> ]
+target:
+  [entity_id: <entity_id> ]
+  [area_id: <area-id>     ]
+  [label_id: <label-id>   ]
+  [device_id: <device-d>  ]
 card:
   type: ...etc...
 [popup_card_all_views: [true/FALSE]]
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
-> *Note:* It's advisable to use a `fire-dom-event` tap action instead as far as possible. Popup card is for the few cases where that's not possible. See [`services`](documentation/services.md) for more info.
+| | |
+|---|---|
+|`type`| Always `custom:popup-card` |
+|`entity`| Old style single entity target. While using old style `entity` is fully supported, it will not show in the GUI editor if `entity` is not in the current popup card config. In this case add an entity to `target`. |
+|`target`| When configured in the UI, this uses the Home Assistant target selector. The popup card will be used for more-info replacement for an entity matching any of the target entitys, areas, labels or devices. |
+|`entity_id`| A single entity id or list of entity id's. The popup card will be used as an more-info replacement for all listed entities. |
+|`area_id`| A single area id or list of area id's. The popup card will be used as a more-info replacement for entities in these areas. |
+|`labels_id`| A single label id or list of label id's. The popup card will be used as a more-info replacement for entities with these labels. |
+|`device_id`| A single device id or list of devices id's. The popup card will be used as a more-info replacement for entities of these devices. |
+
+### Popup card - template for popup service
+
+A popup card can be used as a template for [`browser_mod.popup` service](documentation/services.md).
+
+To use it, add a "Custom: Popup card" to a dashboard view via the GUI, set the Popup-card ID, then configure the card and set up the popup like for the [`browser_mod.popup` service](documentation/services.md).
+
+The card will be visible only while you're in Edit mode.
+
+Yaml configuration:
+
+```yaml
+type: custom:popup-card
+[popup_card_id: <popup-card ID>]
+card:
+  type: ...etc...
+[any parameter from the browser_mod.popup service call except "content"]
+```
+
+Usgae:
+
+```yaml
+...
+tap_action:
+  action: perform-action
+  perform_action: browser_mod.popup
+  data:
+    popup_card_id: <popup-card ID>
+```
+
+| | |
+|---|---|
+|`type`| Always `custom:popup-card` |
+|`popup_card_id`| The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*browser* call](documentation/services.md#a-note-about-targets) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all [*server* calls](documentation/services.md#a-note-about-targets), you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup`|
+
+(*) Dashboard url for `popup_card_id` can be found in a few ways.
+
+1. You can note what you use for url when creating a new dashboard.
+2. Hover over sidebar links to reveal the dashboard url.
+3. Create a card with an action set to `Navigate` and check the dropdown which will show both dashboard name and url.
+
+When using a dashboard url, always remove the preceeding slash `/`
 
 ## Browser Player
 
-Browser player is a card that allows you to controll the volume and playback on the current Browsers media player.
+Browser player is a card that allows you to control the volume and playback on the current Browsers media player.
 
 Add it to a dashboard via the GUI or through yaml:
 

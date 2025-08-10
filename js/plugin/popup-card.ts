@@ -2,10 +2,11 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { getLovelaceRoot, hass_base_el } from "../helpers";
+import { getLovelaceRoot } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
+import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -23,7 +24,7 @@ class PopupCard extends LitElement {
       entity,
       title: "Custom popup",
       dismissable: true,
-      card: { type: "markdown", content: "This replaces the more-info dialog" },
+      card: { type: "markdown", content: "This card can be used in browser_mod.popup service or to replace the more-info dialog" },
     };
   }
 
@@ -198,55 +199,6 @@ class PopupCard extends LitElement {
   }
 }
 
-function popupCardMatch(card, entity, viewIndex, curView) {
-  return card.type === 'custom:popup-card' &&
-         card.entity === entity &&
-         (viewIndex === curView || card.popup_card_all_views);
-}
-
-function findPopupCardConfig(lovelaceRoot, entity) {
-  const lovelaceConfig = lovelaceRoot?.lovelace?.config;
-  if (lovelaceConfig) {
-    const curView = lovelaceRoot?._curView ?? 0;
-    // Place current view at the front of the view index lookup array.
-    // This allows the current view to be checked first for local cards, 
-    // and then the rest of the views for global cards, keeping current view precedence.
-    let viewLookup = Array.from(Array(lovelaceConfig.views.length).keys())
-    viewLookup.splice(curView, 1);
-    viewLookup.unshift(curView);
-    for (const viewIndex of viewLookup) {
-      const view = lovelaceConfig.views[viewIndex];
-      if (view.cards) {
-        for (const card of view.cards) {
-          if (popupCardMatch(card, entity, viewIndex, curView)) return card;
-          // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
-          if (card.cards) {
-            for (const subCard of card.cards) {
-              if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
-            }
-          }
-        }
-      }
-      if (view.sections) {
-        for (const section of view.sections) {
-          if (section.cards) {
-            for (const card of section.cards) {
-              if (popupCardMatch(card, entity, viewIndex, curView)) return card;
-              // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
-              if (card.cards) {
-                for (const subCard of card.cards) {
-                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return subCard;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  return null;
-}
-
 window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   ev.stopPropagation();
   while (!window.browser_mod) {
@@ -290,15 +242,17 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   );
 
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
-    if (ev.detail?.ignore_popup_card || !ev.detail?.entityId || !lovelaceRoot) return;
-    const cardConfig = findPopupCardConfig(lovelaceRoot, ev.detail?.entityId);
+    if (  ev.detail?.ignore_popup_card || 
+          (!ev.detail?.entityId && !ev.detail?.target) || 
+          !lovelaceRoot
+        ) return;
+    const target = { entity_id: ev.detail?.entityId };
+    const cardConfig = findPopupCardConfigByEntity(lovelaceRoot, ev.detail?.entityId);
     if (cardConfig) {
       ev.stopPropagation();
       ev.preventDefault();
       let properties = { ...cardConfig }
       delete properties.card;
-      delete properties.entity;
-      delete properties.type;
       window.browser_mod?.service("popup", {
         content: cardConfig.card,
         ...properties,

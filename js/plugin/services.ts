@@ -1,5 +1,6 @@
 import { getLovelaceRoot, hass_base_el } from "../helpers";
 import structuredClone from "@ungap/structured-clone";
+import { findPopupCardConfigByID } from "./popup-card-helpers";
 
 export const ServicesMixin = (SuperClass) => {
   return class ServicesMixinClass extends SuperClass {
@@ -76,6 +77,15 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "popup":
+          if (data.popup_card_id) {
+            const lovelaceRoot = await getLovelaceRoot(document);
+            const popupCard = await findPopupCardConfigByID(lovelaceRoot, data.popup_card_id);
+            if (popupCard) {
+              let properties = { ...popupCard };
+              delete properties.card;
+              data = { content: popupCard.card, ...properties, ...data };
+            }
+          }
           // Promote icon actions to data so they can be made callable
           // by the following code
           if (data.icons) {
