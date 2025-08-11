@@ -93,7 +93,7 @@ export interface BrowserModPopupParams {
 
 const customElementClassCache: Record<string, typeof BrowserModPopup> = {};
 
-export function setCustomElementClass(dialogTag: string): typeof BrowserModPopup {
+export function setCustomElementClass(dialogTag: string): void {
   if (customElementClassCache[dialogTag]) {
     return;
   }
