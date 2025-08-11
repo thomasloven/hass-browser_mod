@@ -186,10 +186,10 @@ export class SidebarSettingsCustomSelector {
   async changeSetting(type, target, allUsers) {
     if (!this.dialogAvaliable) {
       window.browser_mod?.showPopup?.(
-        "ERROR!",
-        "Sidebar settings dialog unavailable.",
-        {
-            right_button: "OK",
+        { 
+          title: "ERROR!",
+          content: "Sidebar settings dialog unavailable.",
+          right_button: "OK",
         }
       );
       return;

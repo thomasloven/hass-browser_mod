@@ -102,7 +102,7 @@ export const MediaPlayerMixin = (SuperClass) => {
           this.player === this._video_player &&
           this._video_player.isConnected
         )
-          this.closePopup();
+          this.closePopup({ popup_dialog_tag: "video" });
         else if (this.player.src) this.player.pause();
         this.player.src = "";
         this._player_update();
@@ -117,15 +117,18 @@ export const MediaPlayerMixin = (SuperClass) => {
           document,
           "home-assistant $ dialog-media-player-browse"
         ).then((el) => el?.closeDialog());
-        this.showPopup(undefined, this._video_player, {
+        this.showPopup({
+          title: undefined,
+          content: this._video_player,
           dismiss_action: () => this._video_player.pause(),
           size: "wide",
+          popup_dialog_tag: "video",
         });
       } else if (
         this.player !== this._video_player &&
         this._video_player.isConnected
       ) {
-        this.closePopup();
+        this.closePopup({ popup_dialog_tag: "video" });
       }
     }
 

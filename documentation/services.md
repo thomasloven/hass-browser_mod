@@ -189,13 +189,14 @@ data:
   [left_button_action: <service call>]
   [left_button_close: <TRUE/false>]
   [dismissable: <TRUE/false>]
+  [dismiss_icon: <string]
   [dismiss_action: <service call>]
   [autoclose: <true/FALSE>]
   [timeout: <number>]
   [timeout_action: <service call>]
   [timeout_hide_progress: <true/FALSE>]
-  [allow_nested_more_info: <TRUE/false>]
   [style: <string>]
+  [popup_dialog_tag: <string>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs]
 ```
@@ -222,13 +223,14 @@ data:
 | `left_button_action`| Action to perform when the left action button is pressed. |
 | `left_button_close`| Enable/disable popup closing when the left action button is pressed. |
 | `dismissable`| If false the dialog cannot be closed by the user without clicking an action button. |
+| `dismiss_icon` | An mdi icon which will replace the popup close icon which defaults to mdi:close. e.g. mdi:chevron-left. You would usually use this if you are creating a popup stack using dialog tags. See [Multiple popups](popups.md#multiple-stacked-popups) for more information. |
 | `dismiss_action` | An action to perform if the dialog is closed by the user without clicking an action button. |
 | `autoclose` | If true the dialog will close automatically when the mouse, screen or keyboard is touched. This will perform the `dismiss_action`. |
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
 | `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
-| `allow_nested_more_info` | If true nested Home Assistant more-info popups are allowed without closing the popup. |
 | `style` | CSS styles to apply to the dialog. |
+| `popup_dialog_tag` | A popup dialog tag used to allow for multiple popups. Only one popup can be shown for each dialog tag. See [Multiple popups](popups.md#multiple-stacked-popups) for more information. |
 
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` or `user_id` is given.
 
@@ -283,7 +285,14 @@ service: browser_mod.close_popup
 data:
   [browser_id: <Browser IDs>]
   [user_id: <User IDs>]
+  [all: true|FALSE]
+  [popup_dialog_tag: <string>]
 ```
+
+|||
+|---|---|
+| `all` | If true all Browser Mod popups will be closed |
+| `popup_dialog_tag` | Popup dialog tag of the popup to close. See [Multiple stacked popups](popups.md#multiple-stacked-popups) for more information. |
 
 ## `browser_mod.notification`
 

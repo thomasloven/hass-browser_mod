@@ -123,7 +123,7 @@ export const ServicesMixin = (SuperClass) => {
               delete d[`icon_${index}_action`];
             });
           }
-          this.showPopup(title, content, d);
+          this.showPopup({ title, content, ...d });
           break;
 
         case "notification":
@@ -167,7 +167,7 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "close_popup":
-          await this.closePopup();
+          await this.closePopup(data);
           break;
 
         case "navigate":

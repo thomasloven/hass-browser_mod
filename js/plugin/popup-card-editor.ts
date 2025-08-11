@@ -200,12 +200,6 @@ const configSchema = [
     ],
   },
   {
-    name: "allow_nested_more_info",
-    label: "Allow nested more-info dialogs",
-    default: true,
-    selector: { boolean: {} },
-  },
-  {
     name: "popup_card_all_views",
     label: "Popup card is available for use in all views",
     default: false,
@@ -216,6 +210,22 @@ const configSchema = [
     label: "CSS style",
     selector: { text: { multiline: true } },
   },
+  {
+    type: "expandable",
+    label: "Multiple popups",
+    schema: [
+      {
+        name: "popup_dialog_tag",
+        label: "Popup dialog tag",
+        selector: { text: {} },
+      },
+      {
+        name: "dismiss_icon",
+        label: "Popup dismiss/close icon",
+        selector: { icon: {} },
+      }
+    ],
+  }
 ];
 
 class PopupCardEditor extends LitElement {

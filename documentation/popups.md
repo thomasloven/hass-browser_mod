@@ -97,13 +97,6 @@ data:
 
 ![Screenshot of a popup rendering the form described above](https://user-images.githubusercontent.com/1299821/182712670-f3b4fdb7-84a9-49d1-a26f-2cdaa450fa0e.png)
 
-**NOTE:** Some Home Assistant selectors may use another dialog for input. [Date](https://www.home-assistant.io/docs/blueprint/selectors/#date-selector) and [Date & Time](https://www.home-assistant.io/docs/blueprint/selectors/#date--time-selector) use a selector dialog for date & time. Browser Mod popups are not in the Home Assistant DOM hierachy so stacking will need to be adjusted by [styling](#styling-popups) the popup with th styles shown below. The Home Assistant top bar has a z-index of 4, so using a z-index of 5 will work in most cases, but your setup may vary so adjust to suit.
-
-```
-z-index: 5;
-position: absolute;
-```
-
 ## Button variant and appearance
 
 Starting with Home Assistant 2025.8, popup left and right buttons can have a different variant and/or appearance. Variant options are "brand", "neutral", "danger", "warning", and "success". Appearance options are "accent", "filled", "outlined", and "plain". Default options are variant="brand" and appearance="plain" which matches buttons prior to Home Assistant 2025.8.
@@ -212,8 +205,86 @@ data:
 ```
 Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme.
 
-## Nested popups
+## Multiple stacked popups
 
-Except for standard Home Assistant more-info dialogs, nested popups are not supported. Home Assistant more-info dialogs are allowed nested by defatult. To control this option, use the `allow_nested_more_info` paramater of `browser_mod.popup` or custom popup card.
+Browser Mod uses Home Assistant dialog manager for popups which allows for one acive dialog per dialog type. Browser Mod allows for stacked popups by using a popup dialog tag to register multiple custom dialog types. If you wish to use multiple stacked popups, use different popup dialog tags to allow for multiple stacked popups to show.
 
-__NOTE__: If a custom popup card is is in use on the dashboard, the custom popup card is never nested. If you wish to have a nested more-info dialog in this case, use `browser_mod.more_info` with `ignore_popup_card` set to `true` to nest a standard more-info dialog. 
+Examples below use yaml. You may use `popup_card_id` to use a template popup card which has popup dialog tag set, or alternatively set `popup_dialog_tag` in the browser/service call directly. The examples below use browser calls.
+
+Example 1: Standard second popup with no popup dialog tag. When the second popup is shown by tapping the button on the first popup, the first popup will be replaced. The popup element is the startard `<browser-mod-popup>`.
+
+```yaml
+...
+type: button
+name: Standard second popup
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      title: First popup
+      content:
+        type: vertical-stack
+        cards:
+          - type: markdown
+            content: Use button to show second popup
+          - type: button
+            name: Show second popup
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Second popup
+                  content: I am a popup with no dialog tag.
+```
+
+Example 2: Showing use of multiple stacked popups by using a popup dialog tag on the second popup. When the second popup is shown by tapping the button on the first popup, the second popup by displayed in front of the first. The popup element is the startard `<browser-mod-popup-stack-1>`.
+
+```yaml
+...
+type: button
+name: Standard second popup
+tap_action:
+  action: fire-dom-event
+  browser_mod:
+    service: browser_mod.popup
+    data:
+      title: First popup
+      content:
+        type: vertical-stack
+        cards:
+          - type: markdown
+            content: Use button to show second popup
+          - type: button
+            name: Show second popup
+            tap_action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.popup
+                data:
+                  title: Second popup
+                  content: I am a popup with 'stack-1' dialog tag. I also have a left chevron as popup dismiss icon.
+                  popup_dialog_tag: stack-1
+                  dismiss_icon: mdi:chevron-left
+```
+
+![Screenshot of multiple stacked popups](https://github.com/user-attachments/assets/23287fe2-1520-4ad0-8fbb-be010a116ec5)
+
+>NOTE: Popup dialog tags MUST be a string. You may use numeric only tags but these must be quoted to be made a string rather than a number. If using the UI popup card editor, quotes will be added as the form field is a text input. If using yaml directly, make sure to quote numeric only tags.
+
+See [`browser_mod.popup'](./services.md#browser_modpopup) for using `popup_dialog_tag` and `dismiss_icon` yaml parameters.
+
+### Closing multiple stacked popups
+
+When using [`browser_mod.close_popup`](./services.md#browser_modclose_popup) service to close popups, you can choose to either:
+
+1. Close all popups
+2. Close popup by popup dialog tag taking it out of the stack wherever it is
+3. Clsoing top most popup
+
+### Multiple stacked popups and card-mod themes
+
+For working with card-mod and themes see https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes.
+
+Prior to supporting multiple stacked popups, Browser Mod 2 registered a card-mod type `more-info` for popups allowing the popup to be styled in a theme via `card-mod-more-info-yaml` or `card-mod-more-info-yaml`. For multiple stacked popups, the card-mod type is constructed from the popup dialog tag. For a popup dialog tag of `stack-1` the card-mod type is `browser-mod-popup-stack-1` allowing to the popup to be styled in a theme via `card-mod-browser-mod-popup-stack-1-yaml` or `card-mod-browser-mod-popup-stack-1-json`. Popups wih no popup dialog tag retain the card-mod type `more-info`.

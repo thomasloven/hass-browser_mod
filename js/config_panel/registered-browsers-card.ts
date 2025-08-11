@@ -45,9 +45,9 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     };
 
     window.browser_mod.showPopup(
-      "Unregister browser",
-      `Are you sure you want to unregister Browser ${browserID}?`,
       {
+        title: "Unregister browser",
+        content: `Are you sure you want to unregister Browser ${browserID}?`,
         right_button: "Yes",
         right_button_action: unregisterCallback,
         left_button: "No",

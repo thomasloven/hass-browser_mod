@@ -62,9 +62,9 @@ class BrowserModSettingsTable extends LitElement {
       });
     };
     window.browser_mod?.showPopup(
-      "Are you sure",
-      "Do you wish to clear this setting?",
       {
+        title: "Are you sure",
+        content: "Do you wish to clear this setting?",
         right_button: "Yes",
         right_button_action: clearSettingCallback,
         left_button: "No",
@@ -129,9 +129,9 @@ class BrowserModSettingsTable extends LitElement {
       }
     }
     window.browser_mod?.showPopup(
-      "Change setting",
-      content,
       {
+        title: "Change setting",
+        content,
         right_button: "OK",
         right_button_action: changeSettingCallback,
         left_button: "Cancel",
@@ -149,25 +149,27 @@ class BrowserModSettingsTable extends LitElement {
 
     if (browsers.length === 0) {
       window.browser_mod.showPopup(
-        "No browsers to configure",
-        "All registered browsers have already been configured.",
-        { right_button: "OK" }
+        {
+          title: "No browsers to configure",
+          content: "All registered browsers have already been configured.",
+          right_button: "OK"
+        }
       );
       return;
     }
 
     window.browser_mod.showPopup(
-      "Select browser to configure",
-      [
-        {
-          name: "browser",
-          label: "",
-          selector: {
-            select: { options: browsers },
-          },
-        },
-      ],
       {
+        title: "Select browser to configure",
+        content: [
+          {
+            name: "browser",
+            label: "",
+            selector: {
+              select: { options: browsers },
+            },
+          },
+        ],
         right_button: "Next",
         right_button_action: (value) =>
           this.changeSetting("browser", value.browser),
@@ -187,25 +189,27 @@ class BrowserModSettingsTable extends LitElement {
 
     if (users.length === 0) {
       window.browser_mod.showPopup(
-        "No users to configure",
-        "All users have already been configured.",
-        { right_button: "OK" }
+        {
+          title: "No users to configure",
+          content: "All users have already been configured.",
+          right_button: "OK"
+        }
       );
       return;
     }
 
     window.browser_mod.showPopup(
-      "Select user to configure",
-      [
-        {
-          name: "user",
-          label: "",
-          selector: {
-            select: { options: users },
-          },
-        },
-      ],
       {
+        title: "Select user to configure",
+        content: [
+          {
+            name: "user",
+            label: "",
+            selector: {
+              select: { options: users },
+            },
+          },
+        ],
         right_button: "Next",
         right_button_action: (value) => this.changeSetting("user", value.user),
         left_button: "Cancel",
