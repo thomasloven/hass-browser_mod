@@ -273,7 +273,11 @@ export class BrowserModPopup extends LitElement {
     this.left_button = left_button;
     this.left_button_variant = left_button_variant;
     this.left_button_appearance = left_button_appearance;
-	  this.left_button_close = left_button_close;
+    this.right_button_close = right_button_close;
+    this.left_button = left_button;
+    this.left_button_variant = left_button_variant;
+    this.left_button_appearance = left_button_appearance;
+    this.left_button_close = left_button_close;
     this.actions = right_button === undefined ? undefined : "";
     this.dismissable = dismissable;
     this.dismiss_icon = dismiss_icon;
