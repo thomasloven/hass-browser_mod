@@ -21,7 +21,7 @@ export const RequireInteractMixin = (SuperClass) => {
             this.show_indicator(this.playerEnabled);
           }
         }).catch((err) => {
-          console.warn(`Browser Mod: ${err}. Timeout waiting for browser entities to be ready. Player will be unavailable.`);
+          console.warn(`Browser Mod: Failed to wait for browser entities to be ready. Player will be unavailable. Error: ${err}`);
         });
       });
     }
