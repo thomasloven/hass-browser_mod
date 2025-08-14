@@ -269,7 +269,8 @@ tap_action:
                   dismiss_icon: mdi:chevron-left
 ```
 
-![Screenshot of multiple popups](https://github.com/user-attachments/assets/23287fe2-1520-4ad0-8fbb-be010a116ec5)
+![Screenshot of multiple popups](https://github.com/user-attachments/assets/84cf6b31-cfbd-4a16-9ae9-8ba06476be97)
+
 
 >NOTE: Popup dialog tags MUST be a lower case alphanumeric string. If using the UI popup card editor, quotes will be added when required. If using yaml directly, make sure to quote when required (e.g. numerals only string).
 
