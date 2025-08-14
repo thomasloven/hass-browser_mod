@@ -211,7 +211,7 @@ When you open a new popup while a current popup is already showing and the popup
 
 Examples below use yaml. You may use `popup_card_id` to use a template popup card which has popup tag set, or alternatively set `tag` in the browser/service call directly. The examples below use browser calls.
 
-Example 1: Standard second popup with no popup dialog tag. When the second popup is shown by tapping the button on the first popup, the first popup will be replaced. The popup HMTRL element is the standard `<browser-mod-popup>`.
+Example 1: Standard second popup with no popup dialog tag. When the second popup is shown by tapping the button on the first popup, the first popup will be replaced. The popup HTML element is the standard `<browser-mod-popup>`.
 
 ```yaml
 ...
