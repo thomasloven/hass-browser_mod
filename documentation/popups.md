@@ -274,7 +274,7 @@ tap_action:
 
 >NOTE: Popup dialog tags MUST be a lower case alphanumeric string. If using the UI popup card editor, quotes will be added when required. If using yaml directly, make sure to quote when required (e.g. numerals only string).
 
-See [`browser_mod.popup'](./services.md#browser_modpopup) for using `tag` and `dismiss_icon` yaml parameters.
+See [`browser_mod.popup`](./services.md#browser_modpopup) for using `tag` and `dismiss_icon` yaml parameters.
 
 ### Closing multiple popups
 
