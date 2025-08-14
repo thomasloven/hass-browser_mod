@@ -39,21 +39,22 @@ export const PopupMixin = (SuperClass) => {
     showPopup(params: BrowserModPopupParams) {
       (async () => {
         const base: any = await hass_base_el();
-        const dialogTag = params.popup_dialog_tag ? 
-          `browser-mod-popup-${params.popup_dialog_tag}` : "browser-mod-popup";
+        const dialogTag = params.tag ? 
+          `browser-mod-popup-${params.tag}` : "browser-mod-popup";
         showBrowserModPopup(base, dialogTag, params);
       })();
     }
 
     async closePopup(args) {
-      const { all, popup_dialog_tag } = args;
+      const { all, tag } = args;
       if (all === true) {
         this._popupElements.forEach((popup) => popup.closeDialog());
         this._popupElements = [];
-      } else if (typeof popup_dialog_tag === "string") {
+      } else if (typeof tag === "string") {
         const dialogTag =
-          popup_dialog_tag != "" ?
-            `browser-mod-popup-${popup_dialog_tag}` :
+          tag != "" ?
+            `browser-mod-popup-${tag}` :
+            "browser-mod-popup";
             "browser-mod-popup";
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag

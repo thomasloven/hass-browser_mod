@@ -348,7 +348,7 @@ export const AutoSettingsMixin = (SuperClass) => {
               window.browser_mod?.showPopup(
                 {
                   title: 'Edit sidebar',
-                  content: 'Browser Mod is installed. It is recommend that you use Browser Mod Frontend Settings to manage sidebar settings.',
+                  content: 'Browser Mod is installed. Edit sidebar settings with Browser Mod (recommended) or Continue to use the built-in editor.',
                   right_button: "Continue",
                   right_button_action: () => { main.dispatchEvent(evShowDialog) },
                   left_button: "Edit with Browser Mod",

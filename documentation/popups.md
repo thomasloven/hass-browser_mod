@@ -205,13 +205,13 @@ data:
 ```
 Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme.
 
-## Multiple stacked popups
+## Multiple popups
 
-Browser Mod uses Home Assistant dialog manager for popups which allows for one acive dialog per dialog type. Browser Mod allows for stacked popups by using a popup dialog tag to register multiple custom dialog types. If you wish to use multiple stacked popups, use different popup dialog tags to allow for multiple stacked popups to show.
+When you open a new popup while a current popup is already showing and the popups have no tag or both have the same tag, the current popup will be dismissed and replaced by the new popup. To make the new popup appear over the current popup, assign a different tag to at least one of the popups to distinguish them from one another. Then when you close the new popup, the previous popup will still be there underneath.
 
-Examples below use yaml. You may use `popup_card_id` to use a template popup card which has popup dialog tag set, or alternatively set `popup_dialog_tag` in the browser/service call directly. The examples below use browser calls.
+Examples below use yaml. You may use `popup_card_id` to use a template popup card which has popup tag set, or alternatively set `tag` in the browser/service call directly. The examples below use browser calls.
 
-Example 1: Standard second popup with no popup dialog tag. When the second popup is shown by tapping the button on the first popup, the first popup will be replaced. The popup element is the startard `<browser-mod-popup>`.
+Example 1: Standard second popup with no popup dialog tag. When the second popup is shown by tapping the button on the first popup, the first popup will be replaced. The popup HMTRL element is the standard `<browser-mod-popup>`.
 
 ```yaml
 ...
@@ -236,10 +236,10 @@ tap_action:
                 service: browser_mod.popup
                 data:
                   title: Second popup
-                  content: I am a popup with no dialog tag.
+                  content: I am a popup with no tag.
 ```
 
-Example 2: Showing use of multiple stacked popups by using a popup dialog tag on the second popup. When the second popup is shown by tapping the button on the first popup, the second popup by displayed in front of the first. The popup element is the startard `<browser-mod-popup-stack-1>`.
+Example 2: Showing use of multiple popups by using a tag on the second popup. When the second popup is shown by tapping the button on the first popup, the second popup is displayed in front of the first. The popup HTML element is `<browser-mod-popup-lights>`.
 
 ```yaml
 ...
@@ -264,27 +264,27 @@ tap_action:
                 service: browser_mod.popup
                 data:
                   title: Second popup
-                  content: I am a popup with 'stack-1' dialog tag. I also have a left chevron as popup dismiss icon.
-                  popup_dialog_tag: stack-1
+                  content: I am a popup with 'lights' dialog tag. I also have a left chevron as popup dismiss icon.
+                  tag: lights
                   dismiss_icon: mdi:chevron-left
 ```
 
-![Screenshot of multiple stacked popups](https://github.com/user-attachments/assets/23287fe2-1520-4ad0-8fbb-be010a116ec5)
+![Screenshot of multiple popups](https://github.com/user-attachments/assets/23287fe2-1520-4ad0-8fbb-be010a116ec5)
 
->NOTE: Popup dialog tags MUST be a string. You may use numeric only tags but these must be quoted to be made a string rather than a number. If using the UI popup card editor, quotes will be added as the form field is a text input. If using yaml directly, make sure to quote numeric only tags.
+>NOTE: Popup dialog tags MUST be a lower case alphanumeric string. If using the UI popup card editor, quotes will be added when required. If using yaml directly, make sure to quote when required (e.g. numerals only string).
 
-See [`browser_mod.popup'](./services.md#browser_modpopup) for using `popup_dialog_tag` and `dismiss_icon` yaml parameters.
+See [`browser_mod.popup'](./services.md#browser_modpopup) for using `tag` and `dismiss_icon` yaml parameters.
 
-### Closing multiple stacked popups
+### Closing multiple popups
 
 When using [`browser_mod.close_popup`](./services.md#browser_modclose_popup) service to close popups, you can choose to either:
 
 1. Close all popups
-2. Close popup by popup dialog tag taking it out of the stack wherever it is
-3. Clsoing top most popup
+2. Close popup by tag
+3. Closing top most popup
 
-### Multiple stacked popups and card-mod themes
+### Multiple popups and card-mod themes
 
 For working with card-mod and themes see https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes.
 
-Prior to supporting multiple stacked popups, Browser Mod 2 registered a card-mod type `more-info` for popups allowing the popup to be styled in a theme via `card-mod-more-info-yaml` or `card-mod-more-info-yaml`. For multiple stacked popups, the card-mod type is constructed from the popup dialog tag. For a popup dialog tag of `stack-1` the card-mod type is `browser-mod-popup-stack-1` allowing to the popup to be styled in a theme via `card-mod-browser-mod-popup-stack-1-yaml` or `card-mod-browser-mod-popup-stack-1-json`. Popups wih no popup dialog tag retain the card-mod type `more-info`.
+Prior to supporting multiple popups, Browser Mod 2 registered a card-mod type `more-info` for popups allowing the popup to be styled in a theme via `card-mod-more-info-yaml` or `card-mod-more-info-json`. For multiple popups, the card-mod type is constructed from the popup tag. For a popup dialog tag of `lights` the card-mod type is `browser-mod-popup-lights` allowing to the popup to be styled in a theme via `card-mod-browser-mod-popup-lights-yaml` or `card-mod-browser-mod-popup-lights-json`. Popups wih no popup tag retain the card-mod type `more-info`.

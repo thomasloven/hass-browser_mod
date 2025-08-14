@@ -102,7 +102,7 @@ export const MediaPlayerMixin = (SuperClass) => {
           this.player === this._video_player &&
           this._video_player.isConnected
         )
-          this.closePopup({ popup_dialog_tag: "video" });
+          this.closePopup({ tag: "media_player" });
         else if (this.player.src) this.player.pause();
         this.player.src = "";
         this._player_update();
@@ -122,13 +122,13 @@ export const MediaPlayerMixin = (SuperClass) => {
           content: this._video_player,
           dismiss_action: () => this._video_player.pause(),
           size: "wide",
-          popup_dialog_tag: "video",
+          tag: "media_player",
         });
       } else if (
         this.player !== this._video_player &&
         this._video_player.isConnected
       ) {
-        this.closePopup({ popup_dialog_tag: "video" });
+        this.closePopup({ tag: "media_player" });
       }
     }
 

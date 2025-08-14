@@ -28,7 +28,7 @@ export class BrowserModPopup extends LitElement {
   @property() left_button_close;
   @property() dismissable;
   @property({ type: Array}) icons: icon[];
-  @property() popup_dialog_tag;
+  @property() tag;
   @property() dismiss_icon;
   @property({ reflect: true }) timeout_hide_progress;
   @property({ reflect: true }) wide;
@@ -125,7 +125,7 @@ export class BrowserModPopup extends LitElement {
     customElements.whenDefined("card-mod").then(() => {
       (customElements.get("card-mod") as any)?.applyToElement?.(
         this,
-        this.popup_dialog_tag ? `browser-mod-popup-${this.popup_dialog_tag}` : "more-info",
+        this.tag ? `browser-mod-popup-${this.tag}` : "more-info",
         this.card_mod?.style ?
           { style: this.card_mod.style, debug: this.card_mod?.debug ?? false } :
           { style: "{}", debug: this.card_mod?.debug ?? false },
@@ -221,7 +221,7 @@ export class BrowserModPopup extends LitElement {
       icon_class = undefined,
       icons = undefined,
       dismiss_icon = undefined,
-      popup_dialog_tag = undefined
+      tag = undefined
     } = {}
   ) {
     this._formdata = undefined;
@@ -287,7 +287,7 @@ export class BrowserModPopup extends LitElement {
     this.wide = size === "wide" ? "" : undefined;
     this.fullscreen = size === "fullscreen" ? "" : undefined;
     this.classic = size === "classic" ? "" : undefined;
-    this.popup_dialog_tag = popup_dialog_tag;
+    this.tag = tag;
     this._style = style;
     this._autoclose = autoclose;
     if (icons) {

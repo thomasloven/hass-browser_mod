@@ -215,8 +215,8 @@ const configSchema = [
     label: "Multiple popups",
     schema: [
       {
-        name: "popup_dialog_tag",
-        label: "Popup dialog tag",
+        name: "tag",
+        label: "Tag",
         selector: { text: {} },
       },
       {
