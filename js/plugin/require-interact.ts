@@ -16,9 +16,13 @@ export const RequireInteractMixin = (SuperClass) => {
       super();
 
       this.addEventListener("browser-mod-user-ready", () => {
-        if (this.playerEnabled || this.cameraEnabled) {
-          this.show_indicator(this.playerEnabled);
-        }
+        this.entitiesReady().then(() => {
+          if (this.playerEnabled || this.cameraEnabled) {
+            this.show_indicator(this.playerEnabled);
+          }
+        }).catch((err) => {
+          console.warn(`Browser Mod: ${err}. Timeout waiting for browser entities to be ready. Player will be unavailable.`);
+        });
       });
     }
 
