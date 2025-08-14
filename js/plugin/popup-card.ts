@@ -64,7 +64,9 @@ class PopupCard extends LitElement {
         ${this._config.dismissable
           ? html`
               <ha-icon-button>
-                <ha-icon .icon=${"mdi:close"}></ha-icon>
+                <ha-icon 
+                  .icon=${this._config.dismiss_icon || "mdi:close"}
+                ></ha-icon>
               </ha-icon-button>
             `
           : ""}

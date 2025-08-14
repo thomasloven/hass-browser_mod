@@ -57,17 +57,17 @@ class BrowserModFrontendSettingsCard extends LitElement {
       })
       this.checkHassUserSidebarSettings();
       window.browser_mod?.showPopup(
-        "Sidebar setings",
-        "Sidebar settings cleared",
         {
+          title: "Sidebar settings",
+          content: "Sidebar settings cleared",
           right_button: "OK"
         }
       )
     };
     window.browser_mod?.showPopup(
-      "Sidebar settings",
-      "Clear sidebar settings synced in this user's Home Assistant profile?",
       {
+        title: "Sidebar settings",
+        content: "Clear sidebar settings synced in this user's Home Assistant profile?",
         right_button: "Yes",
         right_button_action: clearSettings,
         left_button: "No",
