@@ -117,7 +117,7 @@ target:
   [device_id: <device-d>  ]
 card:
   type: ...etc...
-[popup_card_all_views: [true/FALSE]]
+[popup_card_all_views: <true/FALSE>]
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
