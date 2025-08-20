@@ -55,7 +55,6 @@ export const PopupMixin = (SuperClass) => {
           tag != "" ?
             `browser-mod-popup-${tag}` :
             "browser-mod-popup";
-            "browser-mod-popup";
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag
         );

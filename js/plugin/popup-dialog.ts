@@ -569,6 +569,3 @@ export class BrowserModPopup extends LitElement {
     `;
   }
 }
-
-if (!customElements.get("browser-mod-popup"))
-  customElements.define("browser-mod-popup", BrowserModPopup);
