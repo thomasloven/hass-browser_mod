@@ -222,6 +222,7 @@ The variable `browser_entities` is available in templates. It is a dictionary of
 | `browser_entities.player` | Browser player Sensor | _media_player.browser_id_ |
 | `browser_entities.battery_level` | Browser battery Sensor | _sensor.browser_id_browser_battery_ |
 | `browser_entities.charging` | Browser charging Sensor | _binary_sensor.browser_id_browser_charging_ |
+| `browser_entities.panel` | Browser panel Sensor | _sensor.browser_id_panel_ |
 
 Your template can use the `browser_entities` variable to query a sensor state or get attributes of the sensor.
 

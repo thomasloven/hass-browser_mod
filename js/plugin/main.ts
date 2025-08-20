@@ -14,22 +14,26 @@ import "./popups";
 import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
 import "./popup-card";
+import "./popup-dialog"
 import { AutoSettingsMixin } from "./frontend-settings";
 import { BrowserIDMixin } from "./browserID";
 import { VersionMixin } from "./version.js";
+import { PanelStateMixin } from "./panel.js";
 
 export class BrowserMod extends ServicesMixin(
   VersionMixin(
     PopupMixin(
       ActivityMixin(
         BrowserStateMixin(
-          CameraMixin(
-            MediaPlayerMixin(
-              ScreenSaverMixin(
-                AutoSettingsMixin(
-                  FullyMixin(
-                    RequireInteractMixin(
-                      ConnectionMixin(BrowserIDMixin(EventTarget))
+          PanelStateMixin(
+            CameraMixin(
+              MediaPlayerMixin(
+                ScreenSaverMixin(
+                  AutoSettingsMixin(
+                    FullyMixin(
+                      RequireInteractMixin(
+                        ConnectionMixin(BrowserIDMixin(EventTarget))
+                      )
                     )
                   )
                 )

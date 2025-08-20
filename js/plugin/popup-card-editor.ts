@@ -2,11 +2,22 @@ import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { hass_base_el, loadHaForm, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
+import structuredClone from "@ungap/structured-clone";
 
 const configSchema = [
   {
+    name: "popup_card_id",
+    label: "Popup-card ID",
+    selector: { text: {} },
+  },
+  {
+    name: "target",
+    label: "Targets",
+    selector: { target: {} },
+  },
+  {
     name: "entity",
-    label: "Entity",
+    label: "Entity (deprecated, use target instead)",
     selector: { entity: {} },
   },
   {
@@ -189,12 +200,6 @@ const configSchema = [
     ],
   },
   {
-    name: "allow_nested_more_info",
-    label: "Allow nested more-info dialogs",
-    default: true,
-    selector: { boolean: {} },
-  },
-  {
     name: "popup_card_all_views",
     label: "Popup card is available for use in all views",
     default: false,
@@ -205,6 +210,22 @@ const configSchema = [
     label: "CSS style",
     selector: { text: { multiline: true } },
   },
+  {
+    type: "expandable",
+    label: "Multiple popups",
+    schema: [
+      {
+        name: "tag",
+        label: "Tag",
+        selector: { text: {} },
+      },
+      {
+        name: "dismiss_icon",
+        label: "Popup dismiss/close icon",
+        selector: { icon: {} },
+      }
+    ],
+  }
 ];
 
 class PopupCardEditor extends LitElement {
@@ -222,6 +243,8 @@ class PopupCardEditor extends LitElement {
   @query("hui-card-element-editor") private _cardEditorEl?;
 
   private _objectSelectorMonitor: ObjectSelectorMonitor;
+  private _schema: Object[];
+  private _schemaOldStyle: Object[];
 
   get settingsValid() {
     return this._settingsValid
@@ -243,6 +266,8 @@ class PopupCardEditor extends LitElement {
       (value: boolean) => { this._settingsValid = value },
       (value: boolean) => { this._showErrors = value }
     );
+    this._schemaOldStyle = configSchema;
+    this._schema = configSchema.filter((s => s.name !== "entity"));
   }
 
   firstUpdated(changedProperties: PropertyValues) {
@@ -364,7 +389,17 @@ class PopupCardEditor extends LitElement {
   }
 
   _renderSettingsEditor() {
-    return html`<div class="box">
+    return html`
+    <ha-alert
+      .hass=${this.hass}
+      alert-type="info"
+    >
+      <ul>
+        <li>Set <strong>Popup-card ID</strong> to use as a template for <code>browser_mod.popup</code></li>
+        <li>Set <strong>Targets</strong> to use as a replacement for Home Assistant <code>more-info</code> dialog for entities matching selected targets.</li>
+      </ul>
+    </ha-alert>
+    <div class="box">
       <ha-alert
         .hass=${this.hass}
         alert-type="error"
@@ -379,7 +414,7 @@ class PopupCardEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${configSchema}
+        .schema=${this._config.entity ? this._schemaOldStyle : this._schema}
         .computeLabel=${(s) => s.label ?? s.name}
         @value-changed=${this._configChanged}
       ></ha-form>
@@ -476,7 +511,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
       name: "Popup card",
       preview: false,
       description:
-        "Replace the more-info dialog for a given entity in the view that includes this card. (Browser Mod)",
+        "Use a popup-card with browser_mod.popup action or to replace the more-info dialog for given targets.",
     });
   }
 });

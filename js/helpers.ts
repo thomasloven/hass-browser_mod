@@ -81,48 +81,6 @@ export async function getLovelaceRoot(document) {
   }
 }
 
-export async function getMoreInfoDialog(wait = false) {
-  let _moreInfoDialog = await _getMoreInfoDialog();
-  while (wait && !_moreInfoDialog) {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    _moreInfoDialog = await _getMoreInfoDialog();
-  }
-  return _moreInfoDialog;
-  
-  async function _getMoreInfoDialog()
-  {  
-    const base: any = await hass_base_el();
-    let moreInfoDialog;
-    if (base) {
-      moreInfoDialog = base.shadowRoot.querySelector(
-        "ha-more-info-dialog"
-      );
-    }
-    return moreInfoDialog;
-  }
-}
-
-export async function getMoreInfoDialogHADialog(wait = false) {
-  let _haDialog: any = await _getMoreInfoDialogHADialog(wait);
-  while (wait && !_haDialog) {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    _haDialog = await _getMoreInfoDialogHADialog(wait);
-  }
-  return _haDialog;
-
-  async function _getMoreInfoDialogHADialog(wait = false)
-  {  
-    const moreInfoDialog: any = await getMoreInfoDialog(wait);
-    let haDialog;
-    if (moreInfoDialog) {
-      haDialog = moreInfoDialog.shadowRoot.querySelector(
-        "ha-dialog"
-      );
-    }
-    return haDialog;
-  }
-}
-
 export async function hass_base_el() {
   const customElement = customElements.get("home-assistant") ??
     customElements.get("hc-main");
@@ -288,6 +246,28 @@ export const debounce = <T extends any[]>(
   };
   return debouncedFunc;
 };
+
+type NonNullUndefined<T> = T extends undefined
+  ? never
+  : T extends null
+    ? never
+    : T;
+
+/**
+ * Ensure that the input is an array or wrap it in an array
+ * @param value - The value to ensure is an array
+ */
+export function ensureArray(value: undefined): undefined;
+export function ensureArray(value: null): null;
+export function ensureArray<T>(
+  value: T | T[] | readonly T[]
+): NonNullUndefined<T>[];
+export function ensureArray(value) {
+  if (value === undefined || value === null || Array.isArray(value)) {
+    return value;
+  }
+  return [value];
+}
 
 export const capitalize = (s: string): string => (s && String(s[0]).toUpperCase() + String(s).slice(1)) || ""
 

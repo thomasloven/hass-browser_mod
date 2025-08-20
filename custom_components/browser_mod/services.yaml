@@ -71,6 +71,11 @@ popup:
           multiple: true
           filter:
             domain: "person"
+    popup_card_id:
+      name: Popup-card ID
+      description: ID of the popup-card to use as a template for the popup
+      selector:
+        text:
     title:
       name: Title
       description: "Popup title"
@@ -192,12 +197,11 @@ popup:
       description: Hide timeout progress bar
       selector:
         boolean:
-    allow_nested_more_info:
-      name: Allow nested more-info dialogs
-      description: Allow nested more-info dialogs to be opened from this popup
-      default: true
+    tag:
+      name: Tag
+      description: Tag for managing multiple popups
       selector:
-        boolean:
+        text:
     style:
       name: Styles
       description: CSS code to apply to the popup window
@@ -228,7 +232,6 @@ more_info:
     entity:
       name: Entity ID
       description: ""
-      required: true
       selector:
         text:
     large:
@@ -264,6 +267,17 @@ close_popup:
           multiple: true
           filter:
             domain: "person"
+    all:
+      name: All popups
+      description: Close all Browser Mod popups on the browser
+      default: false
+      selector:
+        boolean:
+    tag:
+      name: Tag
+      description: Tag for popup to close when using multiple popups
+      selector:
+        text:
 
 notification:
   name: notification

@@ -152,17 +152,20 @@ data:
 |---|---|
 |`entity`| The entity whose more-info dialog to display. |
 |`large`| If true, the dialog will be displayed wider, as if you had clicked the title of the dialog. |
-| `ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card which would override it. |
+|`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card in the view/dashboard(*) which would override it. |
+
+_* Dashboard when popup-card config has `popup_card_all_views: true`._
 
 ## `browser_mod.popup`
 
-Display a popup dialog
+Display a popup dialog. You can use a `custom:popup-card` as a template and optionally override parameters, or start from scratch specifying `content` and parameters. To display plaintext, HTML or a form, you need to use `content` as these are not avaulable using a `custom:popup-card`.
 
 ```yaml
 service: browser_mod.popup
 data:
+  [popup_card_id: <string>]
   [title: <string>]
-  content: <string / Dashboard card configuration / ha-form schema>
+  [content: <string / Dashboard card configuration / ha-form schema>]
   [size: <NORMAL/classic/wide/fullscreen>]
   [icon: <string>]
   [icon_title: <string>]
@@ -186,19 +189,21 @@ data:
   [left_button_action: <service call>]
   [left_button_close: <TRUE/false>]
   [dismissable: <TRUE/false>]
+  [dismiss_icon: <string]
   [dismiss_action: <service call>]
   [autoclose: <true/FALSE>]
   [timeout: <number>]
   [timeout_action: <service call>]
   [timeout_hide_progress: <true/FALSE>]
-  [allow_nested_more_info: <TRUE/false>]
   [style: <string>]
+  [tag: <string>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs]
 ```
 
 | | |
 |---|---|
+|`popup_card_id` | The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a *browser* call you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all *server* calls, you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup` |
 |`title` | The title of the popup window.|
 |`content`| HTML, a dashboard card configuration or ha-form schema to display.|
 | `icon` | An mdi icon which will appear in the popup header. e.g. mdi:home. `title` must be set for the header to show. |
@@ -218,17 +223,26 @@ data:
 | `left_button_action`| Action to perform when the left action button is pressed. |
 | `left_button_close`| Enable/disable popup closing when the left action button is pressed. |
 | `dismissable`| If false the dialog cannot be closed by the user without clicking an action button. |
+| `dismiss_icon` | An mdi icon which will replace the popup close icon which defaults to mdi:close. e.g. mdi:chevron-left. You would usually use this if you are using multiple popups. See [Multiple popups](popups.md#multiple-popups) for more information. |
 | `dismiss_action` | An action to perform if the dialog is closed by the user without clicking an action button. |
 | `autoclose` | If true the dialog will close automatically when the mouse, screen or keyboard is touched. This will perform the `dismiss_action`. |
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
 | `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
-| `allow_nested_more_info` | If true nested Home Assistant more-info popups are allowed without closing the popup. |
 | `style` | CSS styles to apply to the dialog. |
+| `tag` | A popup tag used to allow for multiple popups. Only one popup can be shown for each tag. See [Multiple popups](popups.md#multiple-popups) for more information. |
 
 Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` or `user_id` is given.
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
+
+(*) Dashboard url for `popup_card_id` can be found in a few ways.
+
+1. You can note what you use for url when creating a new dashboard.
+2. Hover over sidebar links to reveal the dashboard url.
+3. Create a card with an action set to `Navigate` and check the dropdown which will show both dashboard name and url.
+
+When using a dashboard url, always remove the preceeding slash `/`
 
 One icon can be specified for custom:popup-card UI editor which populates `icon:`, `icon_*` parameters. To specificy multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
 
@@ -271,7 +285,14 @@ service: browser_mod.close_popup
 data:
   [browser_id: <Browser IDs>]
   [user_id: <User IDs>]
+  [all: true|FALSE]
+  [tag: <string>]
 ```
+
+|||
+|---|---|
+| `all` | If true all Browser Mod popups will be closed |
+| `tag` | Popup tag of the popup to close. See [Multiple popups](popups.md#multiple-popups) for more information. |
 
 ## `browser_mod.notification`
 
