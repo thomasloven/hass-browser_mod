@@ -59,7 +59,7 @@ This allows you to set and dynamically update the title text of the browser tab/
 > Ex:
 >
 > ```jinja
-> {{ {{ states.light |count}} lights in Home Assistant
+> {{ {{ states.sensor |count}} sensors in Home Assistant
 > ```
 
 ### Favicon template
