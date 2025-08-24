@@ -141,7 +141,7 @@ Show a more-info dialog.
 ```yaml
 service: browser_mod.more_info
 data:
-  entity: <string>
+  [entity: <string>]
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
@@ -155,6 +155,8 @@ data:
 |`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card in the view/dashboard(*) which would override it. |
 
 _* Dashboard when popup-card config has `popup_card_all_views: true`._
+
+> NOTE: You can close an open more-info dialog by calling `browser_mod.more_info` with no entity.
 
 ## `browser_mod.popup`
 
@@ -293,6 +295,8 @@ data:
 |---|---|
 | `all` | If true all Browser Mod popups will be closed |
 | `tag` | Popup tag of the popup to close. See [Multiple popups](popups.md#multiple-popups) for more information. |
+
+> NOTE: To close an open more-info dialog, use `browser_mod.more_info` with no entity.
 
 ## `browser_mod.notification`
 
