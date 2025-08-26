@@ -214,7 +214,7 @@ While Browser Mod does its best to retain a Browser ID for browsers, it may chan
  b) Rename the automatically generated Browser ID string to be the same name as the Browser ID for existing Frontend settings you wish to apply.
  c) Enable Register toggle.
 
-Using this method means that the new random Browser ID never has sent information to Browser Mod integration so no random Browser IDs to tidy up (though you can tidy up any rougue Browser IDs with browser_mod.deregister_browser).
+Using this method means that the new random Browser ID never has sent information to Browser Mod integration so no random Browser IDs to tidy up (though you can tidy up any rogue Browser IDs with browser_mod.deregister_browser).
 
 ---
 
