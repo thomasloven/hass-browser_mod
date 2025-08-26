@@ -25,7 +25,7 @@ This box lets you set the `BrowserID` for the current _Browser_.
 Note that it is possible to assign the same `BrowserID` to several browsers, but unpredictable things _may_ happen if several of them are open at the same time.
 There may be benefits to using the same `BrowserID` in some cases, so you'll have to experiment with what works for you.
 
-Browser Mod is trying hard to keep the Browser ID constant
+Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider following the best practice for [Browser ID updates](#browser-id-updates).
 
 ### Enable camera
 
@@ -200,6 +200,21 @@ This hides the icon in the bottom right corner which indicates that you need to 
 ### Save screen state
 
 This saves the screen state on browser disconnect and restores on browser reconnect. The screen state (on/off) and brightness are both saved. The state will be saved and restored for all browsers that have this setting applied, including those running Fully Kiosk.
+
+---
+
+#### Browser ID updates
+
+While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied. To be able to restore Browser ID and Frontend settings tied to the Browser ID you can follow the best practices listed below.
+
+1. Turn off auto-register. This allows to control the register order, and also limits many new Browser IDs being registered in your environment of changing Browser IDs.
+2. Don't lock the register but leave open to make the next step easy to accomplish. 
+3. When you need to change/revert the Browser ID, to restore Frontend settings, do the following in this exact order:
+ a) Navigate to Browser Mod settings panel.
+ b) Rename the automatically generated Browser ID string to be the same name as the Browser ID for existing Frontend settings you wish to apply.
+ c) Enable Register toggle.
+
+Using this method means that the new random Browser ID never has sent information to Browser Mod integration so no random Browser IDs to tidy up (though you can tidy up any rogue Browser IDs with browser_mod.deregister_browser).
 
 ---
 
