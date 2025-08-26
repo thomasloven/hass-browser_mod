@@ -205,7 +205,7 @@ This saves the screen state on browser disconnect and restores on browser reconn
 
 #### Browser ID updates
 
-While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied. To be able to restore Browser ID and Frontend settings tied to the Broswer ID you can follow the best practices listed below.
+While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied. To be able to restore Browser ID and Frontend settings tied to the Browser ID you can follow the best practices listed below.
 
 1. Turn off auto-register. This allows to control the register order, and also limits many new Browser IDs being registered in your environment of changing Browser IDs.
 2. Don't lock the register but leave open to make the next step easy to accomplish. 
