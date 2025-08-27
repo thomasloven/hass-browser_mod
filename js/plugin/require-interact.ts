@@ -231,7 +231,7 @@ export const RequireInteractMixin = (SuperClass) => {
         justify-self: center;
         align-self: self-end;
         width: 250px;
-        scale: 1.2
+        scale: 1.2;
       }
       @media all and (max-width: 450px), all and (max-height: 500px) {
         :host {
