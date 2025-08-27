@@ -21,7 +21,7 @@ export const VersionMixin = (SuperClass) => {
       if (this._data?.version && this._data.version !== this._version) {
         if (!this._versionNotificationPending) {
           this._versionNotificationPending = true;
-          await this._loaclNotification(
+          await this._localNotification(
             this._data.version,
             this._version
           )
@@ -29,7 +29,7 @@ export const VersionMixin = (SuperClass) => {
       }
     }
 
-    async _loaclNotification(serverVersion, clientVersion) {
+    async _localNotification(serverVersion, clientVersion) {
       // Wait for any other notifications to expire
       let haToast;
       do {
