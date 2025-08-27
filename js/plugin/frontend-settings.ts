@@ -343,19 +343,27 @@ export const AutoSettingsMixin = (SuperClass) => {
           main.addEventListener("show-dialog", (ev: any) => {
             if (ev.detail?.dialogTag === "dialog-edit-sidebar") {
               if (ev.detail?.browser_mod_continue) return;
-              const evShowDialog = new CustomEvent("show-dialog", { bubbles: true, composed: true, detail: { browser_mod_continue: true, ...ev.detail } })
               ev.stopPropagation();
-              window.browser_mod?.showPopup(
-                {
-                  title: 'Edit sidebar',
-                  content: 'Browser Mod is installed. Edit sidebar settings with Browser Mod (recommended) or Continue to use the built-in editor.',
-                  right_button: "Continue",
-                  right_button_action: () => { main.dispatchEvent(evShowDialog) },
-                  left_button: "Edit with Browser Mod",
-                  left_button_action: () => { this.browser_navigate('/browser-mod') },
-                  style: 'ha-dialog { position: fixed; z-index: 999; }' // Need to be above open drawer sidebar
-                }
-              )
+              if (this.hass.user?.is_admin) {
+                const evShowDialog = new CustomEvent("show-dialog", { bubbles: true, composed: true, detail: { browser_mod_continue: true, ...ev.detail } })
+                window.browser_mod?.showPopup(
+                  {
+                    title: 'Edit sidebar',
+                    content: 'Browser Mod is installed. Edit sidebar settings with Browser Mod (recommended) or Continue to use the built-in editor.',
+                    right_button: "Continue",
+                    right_button_action: () => { main.dispatchEvent(evShowDialog) },
+                    left_button: "Edit with Browser Mod",
+                    left_button_action: () => { this.browser_navigate('/browser-mod') },
+                    style: 'ha-dialog { position: fixed; z-index: 999; }' // Need to be above open drawer sidebar
+                  }
+                )
+              } else {
+                const service = "browser_mod.notification";
+                const message = "Sidebar settings are managed by owner/admin using Browser Mod integration."
+                const duration = 5000;
+                const dismissable = true;
+                this.service(service, { message, duration, dismissable });
+              }
             }
           });
         }
