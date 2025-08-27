@@ -244,7 +244,7 @@ Due to Browser restrictions users may need to interact with a Browser after refr
 
 ![Tablet device showing interaction is required](https://github.com/user-attachments/assets/b98935b3-86e3-44bf-b745-4e0c4b6ad459)
 
-When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required **directly** on interactive element. If this is the case, users will see a full interaction screen like that shown below. To facilitate successful user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
+When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required **directly** on an interactive element. If this is the case, users will see a full interaction screen like that shown below. To facilitate successful user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
 
 ![Tablet device showing full interaction](https://github.com/user-attachments/assets/a1ce01af-091e-4618-bd8e-c50ebd05f9cf)
 
