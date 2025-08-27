@@ -16,14 +16,13 @@ data:
 
 The `size` parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity):
 
-![Screenshot of a normal size popup](https://user-images.githubusercontent.com/1299821/182709146-439814f1-d479-4fc7-aab1-e28f5c9a13c7.png)
+![Screenshot of a normal size popup](https://github.com/user-attachments/assets/43865cf6-49c8-44d1-af9a-40638c440bc9)
 
 ![Screenshot of effect of classic size popup on small device](https://github.com/user-attachments/assets/926646dd-f254-44ed-b94c-f63dcc5a335c)
 
-![Screenshot of a wide size popup](https://user-images.githubusercontent.com/1299821/182709172-c98a9c23-5e58-4564-bcb7-1d187842948f.png)
+![Screenshot of a wide size popup](https://github.com/user-attachments/assets/268d11b2-d6eb-4d13-b039-e01fa5b91bb4)
 
-![Screenshot of a fullscreen size popup](https://user-images.githubusercontent.com/1299821/182709224-fb2e7b92-8a23-4422-95a0-f0f2835909e0.png)
-
+![Screenshot of a fullscreen size popup](https://github.com/user-attachments/assets/3ef52e6f-17ee-4fd9-9f0b-4bbfbf7d2a54)
 
 ## HTML content
 
