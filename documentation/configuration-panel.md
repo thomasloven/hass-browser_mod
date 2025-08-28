@@ -12,7 +12,7 @@ LocalStorage works basically like cookies in that the information is stored loca
 
 Registering a _Browser_ as a device will create a Home Assistant Device associated with that browser. The device has the following entities:
 
-- A `media_player` entity which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio.
+- A `media_player` entity which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio. For more information see [User interaction](#user-interaction).
 - A `light` entity will turn the screen on or off and control the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
 - A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
 - A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
@@ -59,7 +59,7 @@ This allows you to set and dynamically update the title text of the browser tab/
 > Ex:
 >
 > ```jinja
-> {{ {{ states.sensor |count}} sensors in Home Assistant
+> {{ states.sensor |count}} sensors in Home Assistant
 > ```
 
 ### Favicon template
@@ -195,7 +195,7 @@ Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templ
 
 ### Hide interaction icon
 
-This hides the icon in the bottom right corner which indicates that you need to interact with the browser window before Browser Mod will function completely. This does not remove the need for interaction. You can always check the need for interaction through the `video_interaction_required` and `audio_interaction_required` attributes of the `media_player` entity.
+This hides the icon in the bottom right corner which indicates that you need to interact with the browser window before Browser Mod will function completely. This does not remove the need for interaction. You can always check the need for interaction through the `video_interaction_required` and `audio_interaction_required` attributes of the `media_player` entity. For more information see [User interaction](#user-interaction).
 
 ### Save screen state
 
@@ -250,3 +250,17 @@ Example: Get the first part of the Browser path
 ```yaml
 {{ state_attr(browser_entities.path, 'pathSegments')[1] }}
 ```
+
+---
+
+#### User interaction 
+
+Due to Browser restrictions users may need to interact with a Browser after refresh to be able to play video/audio automatically with the media player created by Browser Mod for the Browser. Generally muted video will play automatically without needing interaction, but less so unmuted video and/or audio. To facilitate having the Browser ready to play video/audio, Browser Mod carries out interaction tests on Browser refresh. First Browser Mod checks if muted video can be played. If successful, Browser Mod next checks if unmuted video can be played. If one of these checks is not successful, Browser Mod will display an icon in the lower left of the Browser to show that user interaction is required.
+
+![Tablet device showing interaction is required](https://github.com/user-attachments/assets/b98935b3-86e3-44bf-b745-4e0c4b6ad459)
+
+When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required **directly** on an interactive element. If this is the case, users will see a full interaction screen like that shown below. To facilitate successful user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
+
+![Tablet device showing full interaction](https://github.com/user-attachments/assets/a1ce01af-091e-4618-bd8e-c50ebd05f9cf)
+
+The user interaction icon may be hidden using a [Frontend user setting](#hide-interaction-icon). This does not remove the need for interaction. You can always check the need for interaction through the `video_interaction_required` and `audio_interaction_required` attributes of the `media_player` entity for the Browser.

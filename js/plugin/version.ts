@@ -4,7 +4,7 @@ import { selectTree } from "../helpers";
 export const VersionMixin = (SuperClass) => {
   return class VersionMixinClass extends SuperClass {
     _version: string;
-    _notificationPending: boolean = false;
+    _versionNotificationPending: boolean = false;
 
     constructor() {
       super();
@@ -19,9 +19,9 @@ export const VersionMixin = (SuperClass) => {
 
     async _checkVersion() {
       if (this._data?.version && this._data.version !== this._version) {
-        if (!this._notificationPending) {
-          this._notificationPending = true;
-          await this._loaclNotification(
+        if (!this._versionNotificationPending) {
+          this._versionNotificationPending = true;
+          await this._localNotification(
             this._data.version,
             this._version
           )
@@ -29,7 +29,7 @@ export const VersionMixin = (SuperClass) => {
       }
     }
 
-    async _loaclNotification(serverVersion, clientVersion) {
+    async _localNotification(serverVersion, clientVersion) {
       // Wait for any other notifications to expire
       let haToast;
       do {
