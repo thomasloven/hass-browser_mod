@@ -133,7 +133,7 @@ export const ServicesMixin = (SuperClass) => {
             var { message, action_text, action_action, duration, dismissable } =
               data;
             let act = undefined;
-            if (action_text) {
+            if (action_text && action_text.trim()) {
               act = {
                 text: action_text,
                 action: (ext_data?) => {
