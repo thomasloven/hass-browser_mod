@@ -191,7 +191,7 @@ Set the order and hidden items of the sidebar. To change this setting:
 ### Sidebar title
 
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
-Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Vairables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
+Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
 
 ### Hide interaction icon
 
