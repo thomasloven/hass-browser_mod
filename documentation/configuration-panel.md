@@ -54,7 +54,7 @@ As settings here may mean you get yourself locked out of Browser Mod panel in so
 
 ### Title template
 
-This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/).
+This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). If the Browser is registered, variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
 
 > Ex:
 >
@@ -64,7 +64,7 @@ This allows you to set and dynamically update the title text of the browser tab/
 
 ### Favicon template
 
-This allows you to set and dynamically update the favicon of the browser tab/window. I.e. the little icon next to the page title. Favicons can be .png or .ico files and should be placed in your `<config>/www` directory. The box here should then contain a jinja [template](https://www.home-assistant.io/docs/configuration/templating/) which resolves to the path of the icon with `<config>/www/` replaced by `/local/` (see [Hosting files](https://www.home-assistant.io/integrations/http/#hosting-files)).
+This allows you to set and dynamically update the favicon of the browser tab/window. I.e. the little icon next to the page title. Favicons can be .png or .ico files and should be placed in your `<config>/www` directory. The box here should then contain a jinja [template](https://www.home-assistant.io/docs/configuration/templating/) which resolves to the path of the icon with `<config>/www/` replaced by `/local/` (see [Hosting files](https://www.home-assistant.io/integrations/http/#hosting-files)). If the Browser is registered, variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
 
 > Ex:
 >
@@ -191,7 +191,7 @@ Set the order and hidden items of the sidebar. To change this setting:
 ### Sidebar title
 
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
-Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
+Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). If the Browser is registered, variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
 
 ### Hide interaction icon
 
