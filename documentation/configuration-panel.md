@@ -54,7 +54,7 @@ As settings here may mean you get yourself locked out of Browser Mod panel in so
 
 ### Title template
 
-This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). If the Browser is registered, variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
+This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). Vairables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
 
 > Ex:
 >
@@ -64,7 +64,7 @@ This allows you to set and dynamically update the title text of the browser tab/
 
 ### Favicon template
 
-This allows you to set and dynamically update the favicon of the browser tab/window. I.e. the little icon next to the page title. Favicons can be .png or .ico files and should be placed in your `<config>/www` directory. The box here should then contain a jinja [template](https://www.home-assistant.io/docs/configuration/templating/) which resolves to the path of the icon with `<config>/www/` replaced by `/local/` (see [Hosting files](https://www.home-assistant.io/integrations/http/#hosting-files)). If the Browser is registered, variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
+This allows you to set and dynamically update the favicon of the browser tab/window. I.e. the little icon next to the page title. Favicons can be .png or .ico files and should be placed in your `<config>/www` directory. The box here should then contain a jinja [template](https://www.home-assistant.io/docs/configuration/templating/) which resolves to the path of the icon with `<config>/www/` replaced by `/local/` (see [Hosting files](https://www.home-assistant.io/integrations/http/#hosting-files)). Vairables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
 
 > Ex:
 >
@@ -191,7 +191,7 @@ Set the order and hidden items of the sidebar. To change this setting:
 ### Sidebar title
 
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
-Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). If the Browser is registered, variables available are `browser_id` and [`browser_entities`](#browser-entities-variable).
+Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Vairables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
 
 ### Hide interaction icon
 
@@ -222,6 +222,8 @@ Using this method means that the new random Browser ID never has sent informatio
 
 The variable `browser_entities` is available in templates. It is a dictionary of the entities for the Browser and includes the following.
 
+> NOTE: If the Browser is not regsitered, `browser_entities` will be undefined. Your template should use `default()`to handle such a case.
+
 | Variable | Sensor | Example |
 |---|---|---|
 | `browser_entities.path` | Browser path Sensor | _sensor.browser_id_browser_path_ |
@@ -243,12 +245,12 @@ Your template can use the `browser_entities` variable to query a sensor state or
 
 Example: Get the current user name
 ```yaml
-{{ states(browser_entities.currentUser) }}
+{{ states(browser_entities.currentUser.entity_id) if 'currentUser' in browser_entities else 'unknown' }}
 ```
 
 Example: Get the first part of the Browser path
 ```yaml
-{{ state_attr(browser_entities.path, 'pathSegments')[1] }}
+{{ state_attr(browser_entities.panel.entity_id, 'viewTitle') if 'panel' in browser_entities else 'unknown' }}
 ```
 
 ---
