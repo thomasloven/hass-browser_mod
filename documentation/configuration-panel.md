@@ -54,7 +54,7 @@ As settings here may mean you get yourself locked out of Browser Mod panel in so
 
 ### Title template
 
-This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). Vairables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
+This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
 
 > Ex:
 >
