@@ -222,7 +222,7 @@ Using this method means that the new random Browser ID never has sent informatio
 
 The variable `browser_entities` is available in templates. It is a dictionary of the entities for the Browser and includes the following.
 
-> NOTE: If the Browser is not regsitered, `browser_entities` will be undefined. Your template should use `default()`to handle such a case.
+> NOTE: If the Browser is not registered, `browser_entities` will be undefined. Your template should use `default()` to handle such a case.
 
 | Variable | Sensor | Example |
 |---|---|---|
