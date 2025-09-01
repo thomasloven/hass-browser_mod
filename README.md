@@ -155,7 +155,7 @@ Usgae: [*Server* call](documentation/services.md#calling-services---server-call-
 ```yaml
 ...
   action: browser_mod.popup
-  browser_id: <browwser-id>
+  browser_id: <browser-id>
   data:
     popup_card_id: <dashboard-url>/<popup-card ID>
 ```
