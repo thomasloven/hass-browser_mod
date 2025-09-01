@@ -13,7 +13,7 @@ The notable difference between the two is when no target (`browser_id` or `user_
 
 *Browser* calls are handled by the current Browser. If no Browser ID or User ID is provided in a *Browser* call it will be performed on **THE CURRENT BROWSER**.
 
-> TIP: If you wish to display a popup on a Browser using `browser_mod.popup` as a result of a user pressing a button, you will want to use a *Browser* call using `action: fire-dom-event`. This may be counterintuative for a new Home Assistant dashboard creator and may seem more complex than it needs to be. This is due to standard implementation of Home Assistant actions being server based, and only custom integartions like Browser Mod allowing for Browser based actions. See [popups.md](popups.md) for more information and examples.
+> TIP: If you wish to display a popup on a Browser using `browser_mod.popup` as a result of a user pressing a button, you will want to use a *Browser* call using `action: fire-dom-event`. This may be counterintuitive for a new Home Assistant dashboard creator and may seem more complex than it needs to be. This is due to standard implementation of Home Assistant actions being server based, and only custom integrations like Browser Mod allowing for Browser based actions. See [popups.md](popups.md) for more information and examples.
 
 ---
 
