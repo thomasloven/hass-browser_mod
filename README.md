@@ -88,7 +88,6 @@ Browser Mod has a number of services you can call to cause things to happen in t
 \
 &nbsp;
 
-
 ## Popup card
 
 Popup cards can be used to replace the more-info dialog of an entity, or to be used as a template for [`browser_mod.popup` service](documentation/services.md), or both!
@@ -139,6 +138,8 @@ To use it, add a "Custom: Popup card" to a dashboard view via the GUI, set the P
 
 The card will be visible only while you're in Edit mode.
 
+> TIP: If you wish to display a popup on a Browser as a result of pressing a button, use `browser_mod.popup` as a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call).
+
 Yaml configuration:
 
 ```yaml
@@ -149,21 +150,32 @@ card:
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
-Usgae:
+Usage: [*Server* call](documentation/services.md#calling-services---server-call-vs-browser-call)
 
 ```yaml
 ...
-tap_action:
-  action: perform-action
-  perform_action: browser_mod.popup
+  action: browser_mod.popup
+  browser_id: <browser-id>
   data:
-    popup_card_id: <popup-card ID>
+    popup_card_id: <dashboard-url>/<popup-card ID>
+```
+
+Usage: [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call)
+
+```yaml
+...
+  tap_action:
+    action: fire-dom-event
+    browser_mod:
+      service: browser_mod.popup
+      data:
+        popup_card_id: <popup-card ID>
 ```
 
 | | |
 |---|---|
 |`type`| Always `custom:popup-card` |
-|`popup_card_id`| The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*browser* call](documentation/services.md#a-note-about-targets) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all [*server* calls](documentation/services.md#a-note-about-targets), you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup`|
+|`popup_card_id`| The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *Browser* call is being made from. In all other cases, including all [*Server* calls](documentation/services.md#calling-services---server-call-vs-browser-call), you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup`|
 
 (*) Dashboard url for `popup_card_id` can be found in a few ways.
 
