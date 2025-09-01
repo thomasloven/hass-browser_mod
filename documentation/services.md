@@ -250,7 +250,7 @@ If a ha-form schema is used for `content` the resulting data will be inserted in
 
 When using a dashboard url, always remove the preceeding slash `/`
 
-One icon can be specified for `custom:popup-card` UI editor which populates `icon:`, `icon_*` parameters. To specificy multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
+One icon can be specified for `custom:popup-card` UI editor which populates `icon:`, `icon_*` parameters. To specify multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
 
 ```yaml
 ...
