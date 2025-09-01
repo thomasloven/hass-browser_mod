@@ -150,7 +150,7 @@ card:
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
-Usgae: [*Server* call](documentation/services.md#calling-services---server-call-vs-browser-call)
+Usage: [*Server* call](documentation/services.md#calling-services---server-call-vs-browser-call)
 
 ```yaml
 ...
@@ -160,7 +160,7 @@ Usgae: [*Server* call](documentation/services.md#calling-services---server-call-
     popup_card_id: <dashboard-url>/<popup-card ID>
 ```
 
-Usgae: [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call)
+Usage: [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call)
 
 ```yaml
 ...
