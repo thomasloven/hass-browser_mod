@@ -105,7 +105,7 @@ Services called via `fire-dom-event` or called as a part of a different service 
 
 ## Actions
 
-Wherever an action is used (`*_action:` in `browser_mod.popup` and `action:` in `browser_mod.notification`), both old style `service:` and new style `action:` can be used. Also actions can be a list allowing for several actions to be called. This can be useful if you only have server actions to run. Otherwise, if you have Browser calls you are best to use `broswer_mod.sequence`.
+Wherever an action is used (`*_action:` in `browser_mod.popup` and `action:` in `browser_mod.notification`), both old style `service:` and new style `action:` can be used. Also actions can be a list allowing for several actions to be called. This can be useful if you only have server actions to run. Otherwise, if you have Browser calls you are best to use `browser_mod.sequence`.
 
 ## Browser Mod Services
 
