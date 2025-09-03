@@ -1,7 +1,7 @@
 
 # Popups
 
-NOTE: This guide on Browser Mod popups shows general methods of `browser_mod.popup`. If you are new to Browser Mod, make sure to read the [Popup card](../README.md#popup-card) section in the main README document. You will also need to be familiar with the diffference between a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call) and a [*Server* call](documentation/services.md#calling-services---server-call-vs-browser-call) for Browser Mod services including `browser_mod.popup`. Most examples shown here are *Server* calls.
+NOTE: This guide on Browser Mod popups shows general methods of `browser_mod.popup`. If you are new to Browser Mod, make sure to read the [Popup card](../README.md#popup-card) section in the main README document. You will also need to be familiar with the diffference between a [*Browser* call](services.md#calling-services---server-call-vs-browser-call) and a [*Server* call](services.md#calling-services---server-call-vs-browser-call) for Browser Mod services including `browser_mod.popup`. Most examples shown here are *Server* calls.
 
 ## Anatomy of a popup
 
