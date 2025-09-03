@@ -73,12 +73,14 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     private async entitiesReady() {
+      if (this.ready && !this.registered) return false;
       if (Object.keys(this.browserEntities).length > 0) {
         return true;
       } else {
         let cnt = 0;
         while (Object.keys(this.browserEntities).length === 0 && cnt++ < 20) {
           await new Promise(resolve => setTimeout(resolve, 500));
+          if (this.ready && !this.registered) return false;
         }
         if (Object.keys(this.browserEntities).length > 0) return true;
         throw new Error("Browser entities not available after 10 seconds");

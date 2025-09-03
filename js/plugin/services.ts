@@ -133,25 +133,27 @@ export const ServicesMixin = (SuperClass) => {
             var { message, action_text, action_action, duration, dismissable } =
               data;
             let act = undefined;
-            act = {
-              text: action_text,
-              action: (ext_data?) => {
-                if (action_action && action_text) {
-                  if (!Array.isArray(action_action)) {
-                    action_action = [action_action];
+            if (action_text && action_text.trim()) {
+              act = {
+                text: action_text,
+                action: (ext_data?) => {
+                  if (action_action && action_text) {
+                    if (!Array.isArray(action_action)) {
+                      action_action = [action_action];
+                    }
+                    action_action.forEach((actionItem) => {
+                      var { action, service, target, data } = actionItem;
+                      service = (action === undefined || action === "call-service") ? service : action;
+                      this._service_action({
+                        service,
+                        target,
+                        data: { ...data, ...ext_data },
+                      });
+                    })
                   }
-                  action_action.forEach((actionItem) => {
-                    var { action, service, target, data } = actionItem;
-                    service = (action === undefined || action === "call-service") ? service : action;
-                    this._service_action({
-                      service,
-                      target,
-                      data: { ...data, ...ext_data },
-                    });
-                  })
                 }
-              }
-            };
+              };
+            }
             const base = await hass_base_el();
             base.dispatchEvent(
               new CustomEvent("hass-notification", {

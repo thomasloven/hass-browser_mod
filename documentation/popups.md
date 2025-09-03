@@ -1,4 +1,8 @@
 
+# Popups
+
+NOTE: This guide on Browser Mod popups shows general methods of `browser_mod.popup`. If you are new to Browser Mod, make sure to read the [Popup card](../README.md#popup-card) section in the main README document. You will also need to be familiar with the diffference between a [*Browser* call](services.md#calling-services---server-call-vs-browser-call) and a [*Server* call](services.md#calling-services---server-call-vs-browser-call) for Browser Mod services including `browser_mod.popup`. Most examples shown here are *Server* calls.
+
 ## Anatomy of a popup
 
 ```yaml
@@ -53,12 +57,11 @@ data:
 
 ![Screenshot of a popup rendering the entities card described above](https://user-images.githubusercontent.com/1299821/182710445-f09b74b8-dd53-4d65-8eba-0945fc1d418e.png)
 
-Note that some elements of some card expect the card to have a static position on the bottom of the page, but the popup will make it float above everything else. This means things like pull-down menues or some overlays may just not work right or at all. There's unfortunately nothing that can be done about this.
-
 ## Form content
+
 `content` can be a list of ha-form schemas and the popup will then contain a form for user input:
 
-```
+```yaml
 <ha-form schema>:
   name: <string>
   [label: <string>]
@@ -202,13 +205,14 @@ data:
           background: rgba(0, 128, 128, 0.9);
         }
 ```
+
 Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme.
 
 ## Multiple popups
 
 When you open a new popup while a current popup is already showing and the popups have no tag or both have the same tag, the current popup will be dismissed and replaced by the new popup. To make the new popup appear over the current popup, assign a different tag to at least one of the popups to distinguish them from one another. Then when you close the new popup, the previous popup will still be there underneath.
 
-Examples below use yaml. You may use `popup_card_id` to use a template popup card which has popup tag set, or alternatively set `tag` in the browser/service call directly. The examples below use browser calls.
+Examples below use yaml. You may use `popup_card_id` to use a template popup card which has popup tag set, or alternatively set `tag` in the Browser/Service call directly. The examples below use [*Browser* calls](documentation/services.md#calling-services---server-call-vs-browser-call).
 
 Example 1: Standard second popup with no popup dialog tag. When the second popup is shown by tapping the button on the first popup, the first popup will be replaced. The popup HTML element is the standard `<browser-mod-popup>`.
 
@@ -217,7 +221,7 @@ Example 1: Standard second popup with no popup dialog tag. When the second popup
 type: button
 name: Standard second popup
 tap_action:
-  action: fire-dom-event
+  action: fire-dom-event # Browser call
   browser_mod:
     service: browser_mod.popup
     data:
@@ -230,7 +234,7 @@ tap_action:
           - type: button
             name: Show second popup
             tap_action:
-              action: fire-dom-event
+              action: fire-dom-event # Browser call
               browser_mod:
                 service: browser_mod.popup
                 data:
@@ -245,7 +249,7 @@ Example 2: Showing use of multiple popups by using a tag on the second popup. Wh
 type: button
 name: Standard second popup
 tap_action:
-  action: fire-dom-event
+  action: fire-dom-event # Browser call
   browser_mod:
     service: browser_mod.popup
     data:
@@ -258,7 +262,7 @@ tap_action:
           - type: button
             name: Show second popup
             tap_action:
-              action: fire-dom-event
+              action: fire-dom-event # Browser call
               browser_mod:
                 service: browser_mod.popup
                 data:

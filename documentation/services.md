@@ -1,5 +1,50 @@
 
-## Reading guide
+# Calling services - Server call vs Browser call
+
+Browser Mod services can be called in two different ways which behave slightly differently.
+
+The first way is as a *Server* call. This is when the service is called from a script or automation, from Developer tools or directly from a dashboard card action.
+
+The second way is as a *Browser* call. This is when the service is called from a dashboard `fire-dom-event` action, or as a part of a `browser_mod.sequence` call, or as a `browser_mod.popup` `*_action`.
+
+The notable difference between the two is when no target (`browser_id` or `user_id`) is specified.
+
+*Server* calls route via Home Assistant server, and are sent to Browsers matching the Browser ID and/or User ID provided. If no Browser ID or User ID is provided in a *Server* call it will be performed on **ALL REGISTERED BROWSERS**.
+
+*Browser* calls are handled by the current Browser. If no Browser ID or User ID is provided in a *Browser* call it will be performed on **THE CURRENT BROWSER**.
+
+> TIP: If you wish to display a popup on a Browser using `browser_mod.popup` as a result of a user pressing a button, you will want to use a *Browser* call using `action: fire-dom-event`. This may be counterintuitive for a new Home Assistant dashboard creator and may seem more complex than it needs to be. This is due to standard implementation of Home Assistant actions being server based, and only custom integrations like Browser Mod allowing for Browser based actions. See [popups.md](popups.md) for more information and examples.
+
+---
+
+Finally, in *Browser* calls, there are `browser_id`, `user_id`, and `browser_entities` replacements of `THIS` available. A parameter `browser_id` with the value `THIS` will be replaced with the current Browser's browser ID. A parameter `user_id` with the value `THIS` will be replaced by the logged-in user ID. A parameter `browser_entities` with the value `THIS` will be replaced with a [`browser_entities`](./configuration-panel.md#browser-entities-variable) dictionary. These replacements allow for a *Browser* call to call a Home Assistant script without the need to hardcode a Browser ID or User ID in your *Browser* call.
+
+Ex:
+
+```yaml
+tap_action: # Browser call with THIS replacememt of Browser ID
+  action: fire-dom-event
+  browser_mod:
+    service: script.print_clicking_browser
+    data:
+      browser_id: THIS
+```
+
+with the script:
+
+```yaml
+script: # browser_id passed to script from Browser call
+  print_clicking_browser:
+    sequence:
+      - service: system_log.write
+        data:
+          message: "Button was clicked in {{browser_id}}"
+```
+
+Will print `"Button was clicked in 79be65e8-f06c78f"` to the Home Assistant log.
+
+## Service documentation guide
+
 Service parameters are described using the following conventions:
 
 - `<type>` in brackets describe the type of a parameter, e.g.
@@ -26,48 +71,7 @@ data:
   entity: light.bed_light
 ```
 
-
-## A note about targets
-
-Browser Mod services can be called in two different ways which behave slightly differently.
-
-The first way is as a *server* call. This is when the service is called from a script or automation, from the dev-services panel or from a dashboard `call-service` action.
-
-The second way is as a *browser* call. This is when the service is called from a dashboard `fire-dom-event` action, as a part of a `browser_mod.sequence` call or as a `browser_mod.popup` `_action`.
-
-The notable difference between the two is when no target (`browser_id` or `user_id`) is specified, in which case:
-- A *server* call will perform the service on ALL REGISTERED BROWSERS.
-- A *browser* call will perform the service on THE CURRENT BROWSER, i.e. the browser it was called from.
-
----
-
-Finally, in *browser* calls, there are `browser_id`, `user_id`, and `browser_entities` replacements of `THIS` available. A parameter `browser_id` with the value `THIS` will be replaced with the current Browser's browser ID. A parameter `user_id` with the value `THIS` will be replaced by the logged-in user ID. A parameter `browser_entities` with the value `THIS` will be replaced with a [`browser_entities`](./configuration-panel.md#browser-entities-variable) dictionary.
-
-Ex:
-
-```yaml
-tap_action:
-  action: fire-dom-event
-  browser_mod:
-    service: script.print_clicking_browser
-    data:
-      browser_id: THIS
-```
-
-with the script:
-
-```yaml
-script:
-  print_clicking_browser:
-    sequence:
-      - service: system_log.write
-        data:
-          message: "Button was clicked in {{browser_id}}"
-```
-
-Will print `"Button was clicked in 79be65e8-f06c78f"` to the Home Assistant log.
-
-# Calling services
+## Calling services
 
 Services can be called from the backend using the normal service call procedures. Registered Browsers can be selected as targets through via Browser ID or User ID. User ID can be a person entity or the user_id of the user.
 
@@ -99,11 +103,11 @@ tap_action:
 
 Services called via `fire-dom-event` or called as a part of a different service call will (by default) _only_ target the current Browser (even if it's not registered).
 
-# Actions
+## Actions
 
-Wherever an action is used (`*_action:` in `browser_mod.popup` and `action:` in `browser_mod.notification`), both old style `service:` and new style `action:` can be used. Also actions can be a list allowing for several actions to be called. This can be useful if you only have server actions to run. Otherwise, if you have browser calls you are best to use `broswer_mod.sequence`.
+Wherever an action is used (`*_action:` in `browser_mod.popup` and `action:` in `browser_mod.notification`), both old style `service:` and new style `action:` can be used. Also actions can be a list allowing for several actions to be called. This can be useful if you only have server actions to run. Otherwise, if you have [*Browser* calls](documentation/services.md#calling-services---server-call-vs-browser-call) you are best to use `browser_mod.sequence`.
 
-# Browser Mod Services
+## Browser Mod Services
 
 > Note: Since `browser_id` and `user_id` are common for all services they are not explained further.
 
@@ -205,7 +209,7 @@ data:
 
 | | |
 |---|---|
-|`popup_card_id` | The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a *browser* call you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *browser* call is being made from. In all other cases, including all *server* calls, you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup` |
+|`popup_card_id` | The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *Browser* call is being made from. In all other cases, including all *Server* calls, you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup` |
 |`title` | The title of the popup window.|
 |`content`| HTML, a dashboard card configuration or ha-form schema to display.|
 | `icon` | An mdi icon which will appear in the popup header. e.g. mdi:home. `title` must be set for the header to show. |
@@ -234,7 +238,7 @@ data:
 | `style` | CSS styles to apply to the dialog. |
 | `tag` | A popup tag used to allow for multiple popups. Only one popup can be shown for each tag. See [Multiple popups](popups.md#multiple-popups) for more information. |
 
-Note that any Browser Mod services performed as `_action`s here will be performed only on the same Browser as initiated the action unless `browser_id` or `user_id` is given.
+Note that any Browser Mod services performed as `*_action`s here will be performed as a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call) ONLY on the same Browser as initiated the action UNLESS `browser_id` or `user_id` is given.
 
 If a ha-form schema is used for `content` the resulting data will be inserted into the `data` for any `_action`.
 
@@ -246,7 +250,7 @@ If a ha-form schema is used for `content` the resulting data will be inserted in
 
 When using a dashboard url, always remove the preceeding slash `/`
 
-One icon can be specified for custom:popup-card UI editor which populates `icon:`, `icon_*` parameters. To specificy multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
+One icon can be specified for `custom:popup-card` UI editor which populates `icon:`, `icon_*` parameters. To specify multiple icons use a yaml list under `icons:` in yaml. `icons:` list takes precedence. Below is an example using multiple icons and a style to match.
 
 ```yaml
 ...
@@ -276,7 +280,6 @@ style: |-
 ```
 
 See [popups.md](popups.md) for more information and usage examples.
-
 
 ## `browser_mod.close_popup`
 
@@ -369,7 +372,7 @@ TIP: To target browsers matching the current loggded in user ID you can use `use
 
 ## `browser_mod.delay`
 
-Wait for a specified time.
+Wait for a specified time. Only valid in a `browser_mod.sequence` sequence. It does nothing if used in isolation.
 
 ```yaml
 service: browser_mod.delay
@@ -382,8 +385,6 @@ data:
 | | |
 |---|---|
 |`time` | Number of milliseconds to wait.|
-
-This is probably most useful as part of a `browser_mod.sequence` call.
 
 ## `browser_mod.console`
 
