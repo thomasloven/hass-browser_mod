@@ -199,7 +199,7 @@ This hides the icon in the bottom right corner which indicates that you need to 
 
 ### Full user interaction
 
-This allows for a [Full user interaction](#user-interaction) check if required.
+This allows for a Full [user interaction](#user-interaction) check if required.
 
 ### Save screen state
 
