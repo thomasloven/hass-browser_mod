@@ -429,12 +429,6 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 label: "Use full user interaction",
               }}
             ></browser-mod-settings-table>
-              .settingKey=${"hideInteractIcon"}
-              .settingSelector=${{
-                boolean: {},
-                label: "Hide interaction icon",
-              }}
-            ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
             .header=${"Save screen state"}
