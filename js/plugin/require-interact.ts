@@ -87,17 +87,18 @@ export const RequireInteractMixin = (SuperClass) => {
       this._interactElement.shadowRoot.append(interactIcon);
 
       this._interactElement.setAttribute("minimal", "");
+      const onerror = this.settings.fullInteraction ? () => this.fullInteraction() : undefined;
       this._interactElement.addEventListener(
         "pointerdown",
         () => {
-          this._checkInteraction(() => this.fullInteraction());
+          this._checkInteraction(onerror);
         },
         { once: true }
       );
       this._interactElement.addEventListener(
         "touchstart",
         () => {
-          this._checkInteraction(() => this.fullInteraction());
+          this._checkInteraction(onerror);
         },
         { once: true }
       );
