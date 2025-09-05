@@ -27,6 +27,7 @@ BROWSER_MOD_BROWSER_SERVICES = [
     "notification",
     "navigate",
     "refresh",
+    "change_browser_id",
     "set_theme",
     "console",
     "javascript",

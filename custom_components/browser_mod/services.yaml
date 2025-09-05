@@ -369,6 +369,35 @@ refresh:
           filter:
             domain: "person"
 
+change_browser_id:
+  name: change_browser_id
+  description: "Change browser ID" 
+  fields:
+    current_browser_id:
+      name: Current Browser ID
+      description: "Current Browser ID of the browser to change"
+      selector:
+        device:
+          multiple: false
+          filter:
+            integration: "browser_mod"
+    new_browser_id:
+      name: New ID
+      description: "New Browser ID for the browser"
+      selector:
+        text:
+    register:
+      name: Register
+      description: "Register the browser"
+      selector:
+        boolean:
+    refresh:
+      name: Refresh
+      description: "Refresh the browser after changing the ID"
+      default: true
+      selector:
+        boolean:
+
 set_theme:
   name: set_theme
   description: "Change the current theme"

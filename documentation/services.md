@@ -138,6 +138,28 @@ data:
   [user_id: <User IDs>]
 ```
 
+## `browser_mod.rename_browser`
+
+Change a Browser ID.
+
+```yaml
+service: browser_mod.change_browser_id
+data:
+  [current_browser_id: <string>]
+  [new_browser_id: <string>]
+  [register: <true|FALSE>]
+  [refresh: <TRUE|false>]
+```
+
+| | |
+|---|---|
+|`current_browser_id`| The Browser ID of the Browser to change. This is not the usual `browser_id` parameter as only a single Browser ID is supported for `browser_modchange_browser_idr`. |
+|`new_browser_id`| The new Browser ID for the Browser. |
+|`register`| If true, register the Browser after rename. |
+|`refresh`| If true, refresh the browser after rename. |
+
+> NOTE: Browser IDs are changed on the Browser. When this service is called as a [*Server* call](services.md#calling-services---server-call-vs-browser-call), it will send the change request to all registered Browsers and if `current_browser_id` matches the browser's Browser ID, it will perform the change. When this service is called as a [*Browser* call](services.md#calling-services---server-call-vs-browser-call), `current_browser_id` is still required to confirm the Browser ID change. If you wish for an interactive popup to change the Browser ID, call `browser_mod.change_browser_id` leaving all parameters empty. The interactive approach should only be taken when calling as a [*Browser* call](services.md#calling-services---server-call-vs-browser-call) as leaving all parameters empty with a [*Server* call](services.md#calling-services---server-call-vs-browser-call) will show the interactive Browser ID change popup on **ALL** registered Browsers.
+
 ## `browser_mod.more_info`
 
 Show a more-info dialog.
