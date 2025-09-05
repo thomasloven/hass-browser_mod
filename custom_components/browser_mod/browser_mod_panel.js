@@ -1,14 +1,384 @@
-function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPropertyDescriptor(t,i):s;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)r=Reflect.decorate(e,t,i,s);else for(var a=e.length-1;a>=0;a--)(o=e[a])&&(r=(n<3?o(r):n>3?o(t,i,r):o(t,i))||r);return n>3&&r&&Object.defineProperty(t,i,r),r}"function"==typeof SuppressedError&&SuppressedError;const t=window,i=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s=Symbol(),o=new WeakMap;class n{constructor(e,t,i){if(this._$cssResult$=!0,i!==s)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e,this.t=t}get styleSheet(){let e=this.o;const t=this.t;if(i&&void 0===e){const i=void 0!==t&&1===t.length;i&&(e=o.get(t)),void 0===e&&((this.o=e=new CSSStyleSheet).replaceSync(this.cssText),i&&o.set(t,e))}return e}toString(){return this.cssText}}const r=(e,...t)=>{const i=1===e.length?e[0]:t.reduce(((t,i,s)=>t+(e=>{if(!0===e._$cssResult$)return e.cssText;if("number"==typeof e)return e;throw Error("Value passed to 'css' function must be a 'css' function result: "+e+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(i)+e[s+1]),e[0]);return new n(i,e,s)},a=i?e=>e:e=>e instanceof CSSStyleSheet?(e=>{let t="";for(const i of e.cssRules)t+=i.cssText;return(e=>new n("string"==typeof e?e:e+"",void 0,s))(t)})(e):e;var l;const d=window,h=d.trustedTypes,c=h?h.emptyScript:"",u=d.reactiveElementPolyfillSupport,p={toAttribute(e,t){switch(t){case Boolean:e=e?c:null;break;case Object:case Array:e=null==e?e:JSON.stringify(e)}return e},fromAttribute(e,t){let i=e;switch(t){case Boolean:i=null!==e;break;case Number:i=null===e?null:Number(e);break;case Object:case Array:try{i=JSON.parse(e)}catch(e){i=null}}return i}},g=(e,t)=>t!==e&&(t==t||e==e),b={attribute:!0,type:String,converter:p,reflect:!1,hasChanged:g},v="finalized";class w extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this._$Eu()}static addInitializer(e){var t;this.finalize(),(null!==(t=this.h)&&void 0!==t?t:this.h=[]).push(e)}static get observedAttributes(){this.finalize();const e=[];return this.elementProperties.forEach(((t,i)=>{const s=this._$Ep(i,t);void 0!==s&&(this._$Ev.set(s,i),e.push(s))})),e}static createProperty(e,t=b){if(t.state&&(t.attribute=!1),this.finalize(),this.elementProperties.set(e,t),!t.noAccessor&&!this.prototype.hasOwnProperty(e)){const i="symbol"==typeof e?Symbol():"__"+e,s=this.getPropertyDescriptor(e,i,t);void 0!==s&&Object.defineProperty(this.prototype,e,s)}}static getPropertyDescriptor(e,t,i){return{get(){return this[t]},set(s){const o=this[e];this[t]=s,this.requestUpdate(e,o,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)||b}static finalize(){if(this.hasOwnProperty(v))return!1;this[v]=!0;const e=Object.getPrototypeOf(this);if(e.finalize(),void 0!==e.h&&(this.h=[...e.h]),this.elementProperties=new Map(e.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const e=this.properties,t=[...Object.getOwnPropertyNames(e),...Object.getOwnPropertySymbols(e)];for(const i of t)this.createProperty(i,e[i])}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(e){const t=[];if(Array.isArray(e)){const i=new Set(e.flat(1/0).reverse());for(const e of i)t.unshift(a(e))}else void 0!==e&&t.push(a(e));return t}static _$Ep(e,t){const i=t.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof e?e.toLowerCase():void 0}_$Eu(){var e;this._$E_=new Promise((e=>this.enableUpdating=e)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(e=this.constructor.h)||void 0===e||e.forEach((e=>e(this)))}addController(e){var t,i;(null!==(t=this._$ES)&&void 0!==t?t:this._$ES=[]).push(e),void 0!==this.renderRoot&&this.isConnected&&(null===(i=e.hostConnected)||void 0===i||i.call(e))}removeController(e){var t;null===(t=this._$ES)||void 0===t||t.splice(this._$ES.indexOf(e)>>>0,1)}_$Eg(){this.constructor.elementProperties.forEach(((e,t)=>{this.hasOwnProperty(t)&&(this._$Ei.set(t,this[t]),delete this[t])}))}createRenderRoot(){var e;const s=null!==(e=this.shadowRoot)&&void 0!==e?e:this.attachShadow(this.constructor.shadowRootOptions);return((e,s)=>{i?e.adoptedStyleSheets=s.map((e=>e instanceof CSSStyleSheet?e:e.styleSheet)):s.forEach((i=>{const s=document.createElement("style"),o=t.litNonce;void 0!==o&&s.setAttribute("nonce",o),s.textContent=i.cssText,e.appendChild(s)}))})(s,this.constructor.elementStyles),s}connectedCallback(){var e;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(e=this._$ES)||void 0===e||e.forEach((e=>{var t;return null===(t=e.hostConnected)||void 0===t?void 0:t.call(e)}))}enableUpdating(e){}disconnectedCallback(){var e;null===(e=this._$ES)||void 0===e||e.forEach((e=>{var t;return null===(t=e.hostDisconnected)||void 0===t?void 0:t.call(e)}))}attributeChangedCallback(e,t,i){this._$AK(e,i)}_$EO(e,t,i=b){var s;const o=this.constructor._$Ep(e,i);if(void 0!==o&&!0===i.reflect){const n=(void 0!==(null===(s=i.converter)||void 0===s?void 0:s.toAttribute)?i.converter:p).toAttribute(t,i.type);this._$El=e,null==n?this.removeAttribute(o):this.setAttribute(o,n),this._$El=null}}_$AK(e,t){var i;const s=this.constructor,o=s._$Ev.get(e);if(void 0!==o&&this._$El!==o){const e=s.getPropertyOptions(o),n="function"==typeof e.converter?{fromAttribute:e.converter}:void 0!==(null===(i=e.converter)||void 0===i?void 0:i.fromAttribute)?e.converter:p;this._$El=o,this[o]=n.fromAttribute(t,e.type),this._$El=null}}requestUpdate(e,t,i){let s=!0;void 0!==e&&(((i=i||this.constructor.getPropertyOptions(e)).hasChanged||g)(this[e],t)?(this._$AL.has(e)||this._$AL.set(e,t),!0===i.reflect&&this._$El!==e&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(e,i))):s=!1),!this.isUpdatePending&&s&&(this._$E_=this._$Ej())}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_}catch(e){Promise.reject(e)}const e=this.scheduleUpdate();return null!=e&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var e;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((e,t)=>this[t]=e)),this._$Ei=void 0);let t=!1;const i=this._$AL;try{t=this.shouldUpdate(i),t?(this.willUpdate(i),null===(e=this._$ES)||void 0===e||e.forEach((e=>{var t;return null===(t=e.hostUpdate)||void 0===t?void 0:t.call(e)})),this.update(i)):this._$Ek()}catch(e){throw t=!1,this._$Ek(),e}t&&this._$AE(i)}willUpdate(e){}_$AE(e){var t;null===(t=this._$ES)||void 0===t||t.forEach((e=>{var t;return null===(t=e.hostUpdated)||void 0===t?void 0:t.call(e)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(e){return!0}update(e){void 0!==this._$EC&&(this._$EC.forEach(((e,t)=>this._$EO(t,this[t],e))),this._$EC=void 0),this._$Ek()}updated(e){}firstUpdated(e){}}var m;w[v]=!0,w.elementProperties=new Map,w.elementStyles=[],w.shadowRootOptions={mode:"open"},null==u||u({ReactiveElement:w}),(null!==(l=d.reactiveElementVersions)&&void 0!==l?l:d.reactiveElementVersions=[]).push("1.6.3");const _=window,f=_.trustedTypes,y=f?f.createPolicy("lit-html",{createHTML:e=>e}):void 0,$="$lit$",S=`lit$${(Math.random()+"").slice(9)}$`,A="?"+S,E=`<${A}>`,x=document,C=()=>x.createComment(""),k=e=>null===e||"object"!=typeof e&&"function"!=typeof e,P=Array.isArray,O="[ \t\n\f\r]",U=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,H=/-->/g,T=/>/g,R=RegExp(`>|${O}(?:([^\\s"'>=/]+)(${O}*=${O}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),D=/'/g,B=/"/g,N=/^(?:script|style|textarea|title)$/i,I=(e=>(t,...i)=>({_$litType$:e,strings:t,values:i}))(1),M=Symbol.for("lit-noChange"),j=Symbol.for("lit-nothing"),L=new WeakMap,K=x.createTreeWalker(x,129,null,!1);function q(e,t){if(!Array.isArray(e)||!e.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==y?y.createHTML(t):t}class F{constructor({strings:e,_$litType$:t},i){let s;this.parts=[];let o=0,n=0;const r=e.length-1,a=this.parts,[l,d]=((e,t)=>{const i=e.length-1,s=[];let o,n=2===t?"<svg>":"",r=U;for(let t=0;t<i;t++){const i=e[t];let a,l,d=-1,h=0;for(;h<i.length&&(r.lastIndex=h,l=r.exec(i),null!==l);)h=r.lastIndex,r===U?"!--"===l[1]?r=H:void 0!==l[1]?r=T:void 0!==l[2]?(N.test(l[2])&&(o=RegExp("</"+l[2],"g")),r=R):void 0!==l[3]&&(r=R):r===R?">"===l[0]?(r=null!=o?o:U,d=-1):void 0===l[1]?d=-2:(d=r.lastIndex-l[2].length,a=l[1],r=void 0===l[3]?R:'"'===l[3]?B:D):r===B||r===D?r=R:r===H||r===T?r=U:(r=R,o=void 0);const c=r===R&&e[t+1].startsWith("/>")?" ":"";n+=r===U?i+E:d>=0?(s.push(a),i.slice(0,d)+$+i.slice(d)+S+c):i+S+(-2===d?(s.push(void 0),t):c)}return[q(e,n+(e[i]||"<?>")+(2===t?"</svg>":"")),s]})(e,t);if(this.el=F.createElement(l,i),K.currentNode=this.el.content,2===t){const e=this.el.content,t=e.firstChild;t.remove(),e.append(...t.childNodes)}for(;null!==(s=K.nextNode())&&a.length<r;){if(1===s.nodeType){if(s.hasAttributes()){const e=[];for(const t of s.getAttributeNames())if(t.endsWith($)||t.startsWith(S)){const i=d[n++];if(e.push(t),void 0!==i){const e=s.getAttribute(i.toLowerCase()+$).split(S),t=/([.?@])?(.*)/.exec(i);a.push({type:1,index:o,name:t[2],strings:e,ctor:"."===t[1]?Y:"?"===t[1]?Z:"@"===t[1]?Q:J})}else a.push({type:6,index:o})}for(const t of e)s.removeAttribute(t)}if(N.test(s.tagName)){const e=s.textContent.split(S),t=e.length-1;if(t>0){s.textContent=f?f.emptyScript:"";for(let i=0;i<t;i++)s.append(e[i],C()),K.nextNode(),a.push({type:2,index:++o});s.append(e[t],C())}}}else if(8===s.nodeType)if(s.data===A)a.push({type:2,index:o});else{let e=-1;for(;-1!==(e=s.data.indexOf(S,e+1));)a.push({type:7,index:o}),e+=S.length-1}o++}}static createElement(e,t){const i=x.createElement("template");return i.innerHTML=e,i}}function W(e,t,i=e,s){var o,n,r,a;if(t===M)return t;let l=void 0!==s?null===(o=i._$Co)||void 0===o?void 0:o[s]:i._$Cl;const d=k(t)?void 0:t._$litDirective$;return(null==l?void 0:l.constructor)!==d&&(null===(n=null==l?void 0:l._$AO)||void 0===n||n.call(l,!1),void 0===d?l=void 0:(l=new d(e),l._$AT(e,i,s)),void 0!==s?(null!==(r=(a=i)._$Co)&&void 0!==r?r:a._$Co=[])[s]=l:i._$Cl=l),void 0!==l&&(t=W(e,l._$AS(e,t.values),l,s)),t}class z{constructor(e,t){this._$AV=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(e){var t;const{el:{content:i},parts:s}=this._$AD,o=(null!==(t=null==e?void 0:e.creationScope)&&void 0!==t?t:x).importNode(i,!0);K.currentNode=o;let n=K.nextNode(),r=0,a=0,l=s[0];for(;void 0!==l;){if(r===l.index){let t;2===l.type?t=new V(n,n.nextSibling,this,e):1===l.type?t=new l.ctor(n,l.name,l.strings,this,e):6===l.type&&(t=new X(n,this,e)),this._$AV.push(t),l=s[++a]}r!==(null==l?void 0:l.index)&&(n=K.nextNode(),r++)}return K.currentNode=x,o}v(e){let t=0;for(const i of this._$AV)void 0!==i&&(void 0!==i.strings?(i._$AI(e,i,t),t+=i.strings.length-2):i._$AI(e[t])),t++}}class V{constructor(e,t,i,s){var o;this.type=2,this._$AH=j,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=i,this.options=s,this._$Cp=null===(o=null==s?void 0:s.isConnected)||void 0===o||o}get _$AU(){var e,t;return null!==(t=null===(e=this._$AM)||void 0===e?void 0:e._$AU)&&void 0!==t?t:this._$Cp}get parentNode(){let e=this._$AA.parentNode;const t=this._$AM;return void 0!==t&&11===(null==e?void 0:e.nodeType)&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=W(this,e,t),k(e)?e===j||null==e||""===e?(this._$AH!==j&&this._$AR(),this._$AH=j):e!==this._$AH&&e!==M&&this._(e):void 0!==e._$litType$?this.g(e):void 0!==e.nodeType?this.$(e):(e=>P(e)||"function"==typeof(null==e?void 0:e[Symbol.iterator]))(e)?this.T(e):this._(e)}k(e){return this._$AA.parentNode.insertBefore(e,this._$AB)}$(e){this._$AH!==e&&(this._$AR(),this._$AH=this.k(e))}_(e){this._$AH!==j&&k(this._$AH)?this._$AA.nextSibling.data=e:this.$(x.createTextNode(e)),this._$AH=e}g(e){var t;const{values:i,_$litType$:s}=e,o="number"==typeof s?this._$AC(e):(void 0===s.el&&(s.el=F.createElement(q(s.h,s.h[0]),this.options)),s);if((null===(t=this._$AH)||void 0===t?void 0:t._$AD)===o)this._$AH.v(i);else{const e=new z(o,this),t=e.u(this.options);e.v(i),this.$(t),this._$AH=e}}_$AC(e){let t=L.get(e.strings);return void 0===t&&L.set(e.strings,t=new F(e)),t}T(e){P(this._$AH)||(this._$AH=[],this._$AR());const t=this._$AH;let i,s=0;for(const o of e)s===t.length?t.push(i=new V(this.k(C()),this.k(C()),this,this.options)):i=t[s],i._$AI(o),s++;s<t.length&&(this._$AR(i&&i._$AB.nextSibling,s),t.length=s)}_$AR(e=this._$AA.nextSibling,t){var i;for(null===(i=this._$AP)||void 0===i||i.call(this,!1,!0,t);e&&e!==this._$AB;){const t=e.nextSibling;e.remove(),e=t}}setConnected(e){var t;void 0===this._$AM&&(this._$Cp=e,null===(t=this._$AP)||void 0===t||t.call(this,e))}}class J{constructor(e,t,i,s,o){this.type=1,this._$AH=j,this._$AN=void 0,this.element=e,this.name=t,this._$AM=s,this.options=o,i.length>2||""!==i[0]||""!==i[1]?(this._$AH=Array(i.length-1).fill(new String),this.strings=i):this._$AH=j}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,i,s){const o=this.strings;let n=!1;if(void 0===o)e=W(this,e,t,0),n=!k(e)||e!==this._$AH&&e!==M,n&&(this._$AH=e);else{const s=e;let r,a;for(e=o[0],r=0;r<o.length-1;r++)a=W(this,s[i+r],t,r),a===M&&(a=this._$AH[r]),n||(n=!k(a)||a!==this._$AH[r]),a===j?e=j:e!==j&&(e+=(null!=a?a:"")+o[r+1]),this._$AH[r]=a}n&&!s&&this.j(e)}j(e){e===j?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=e?e:"")}}class Y extends J{constructor(){super(...arguments),this.type=3}j(e){this.element[this.name]=e===j?void 0:e}}const G=f?f.emptyScript:"";class Z extends J{constructor(){super(...arguments),this.type=4}j(e){e&&e!==j?this.element.setAttribute(this.name,G):this.element.removeAttribute(this.name)}}class Q extends J{constructor(e,t,i,s,o){super(e,t,i,s,o),this.type=5}_$AI(e,t=this){var i;if((e=null!==(i=W(this,e,t,0))&&void 0!==i?i:j)===M)return;const s=this._$AH,o=e===j&&s!==j||e.capture!==s.capture||e.once!==s.once||e.passive!==s.passive,n=e!==j&&(s===j||o);o&&this.element.removeEventListener(this.name,this,s),n&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,i;"function"==typeof this._$AH?this._$AH.call(null!==(i=null===(t=this.options)||void 0===t?void 0:t.host)&&void 0!==i?i:this.element,e):this._$AH.handleEvent(e)}}class X{constructor(e,t,i){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=i}get _$AU(){return this._$AM._$AU}_$AI(e){W(this,e)}}const ee=_.litHtmlPolyfillSupport;null==ee||ee(F,V),(null!==(m=_.litHtmlVersions)&&void 0!==m?m:_.litHtmlVersions=[]).push("2.8.0");var te,ie;class se extends w{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){var e,t;const i=super.createRenderRoot();return null!==(e=(t=this.renderOptions).renderBefore)&&void 0!==e||(t.renderBefore=i.firstChild),i}update(e){const t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Do=((e,t,i)=>{var s,o;const n=null!==(s=null==i?void 0:i.renderBefore)&&void 0!==s?s:t;let r=n._$litPart$;if(void 0===r){const e=null!==(o=null==i?void 0:i.renderBefore)&&void 0!==o?o:null;n._$litPart$=r=new V(t.insertBefore(C(),e),e,void 0,null!=i?i:{})}return r._$AI(e),r})(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),null===(e=this._$Do)||void 0===e||e.setConnected(!1)}render(){return M}}se.finalized=!0,se._$litElement$=!0,null===(te=globalThis.litElementHydrateSupport)||void 0===te||te.call(globalThis,{LitElement:se});const oe=globalThis.litElementPolyfillSupport;null==oe||oe({LitElement:se}),(null!==(ie=globalThis.litElementVersions)&&void 0!==ie?ie:globalThis.litElementVersions=[]).push("3.3.3");const ne=(e,t)=>"method"===t.kind&&t.descriptor&&!("value"in t.descriptor)?{...t,finisher(i){i.createProperty(t.key,e)}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:t.key,initializer(){"function"==typeof t.initializer&&(this[t.key]=t.initializer.call(this))},finisher(i){i.createProperty(t.key,e)}},re=(e,t,i)=>{t.constructor.createProperty(i,e)};function ae(e){return(t,i)=>void 0!==i?re(e,t,i):ne(e,t)}function le(e){return ae({...e,state:!0})}var de,he;null===(de=window.HTMLSlotElement)||void 0===de||de.prototype.assignedElements;const ce=new WeakMap,ue=()=>{};he=Symbol.toStringTag;let pe=class e{constructor(e){this.subscribers=[],this.settlement=null,this[he]="Unpromise",this.promise="function"==typeof e?new Promise(e):e;const t=this.promise.then((e=>{const{subscribers:t}=this;this.subscribers=null,this.settlement={status:"fulfilled",value:e},null==t||t.forEach((({resolve:t})=>{t(e)}))}));"catch"in t&&t.catch((e=>{const{subscribers:t}=this;this.subscribers=null,this.settlement={status:"rejected",reason:e},null==t||t.forEach((({reject:t})=>{t(e)}))}))}subscribe(){let e,t;const{settlement:i}=this;if(null===i){if(null===this.subscribers)throw new Error("Unpromise settled but still has subscribers");const i=function(){let e,t;return{promise:new Promise(((i,s)=>{e=i,t=s})),resolve:e,reject:t}}();this.subscribers=function(e,t){return[...e,t]}(this.subscribers,i),e=i.promise,t=()=>{null!==this.subscribers&&(this.subscribers=function(e,t){const i=e.indexOf(t);return-1!==i?function(e,t){return[...e.slice(0,t),...e.slice(t+1)]}(e,i):e}(this.subscribers,i))}}else{const{status:s}=i;e="fulfilled"===s?Promise.resolve(i.value):Promise.reject(i.reason),t=ue}return Object.assign(e,{unsubscribe:t})}then(e,t){const i=this.subscribe(),{unsubscribe:s}=i;return Object.assign(i.then(e,t),{unsubscribe:s})}catch(e){const t=this.subscribe(),{unsubscribe:i}=t;return Object.assign(t.catch(e),{unsubscribe:i})}finally(e){const t=this.subscribe(),{unsubscribe:i}=t;return Object.assign(t.finally(e),{unsubscribe:i})}static proxy(t){const i=e.getSubscribablePromise(t);return typeof i<"u"?i:e.createSubscribablePromise(t)}static createSubscribablePromise(t){const i=new e(t);return ce.set(t,i),ce.set(i,i),i}static getSubscribablePromise(e){return ce.get(e)}static resolve(t){const i="object"==typeof t&&null!==t&&"then"in t&&"function"==typeof t.then?t:Promise.resolve(t);return e.proxy(i).subscribe()}static async any(t){const i=(Array.isArray(t)?t:[...t]).map(e.resolve);try{return await Promise.any(i)}finally{i.forEach((({unsubscribe:e})=>{e()}))}}static async race(t){const i=(Array.isArray(t)?t:[...t]).map(e.resolve);try{return await Promise.race(i)}finally{i.forEach((({unsubscribe:e})=>{e()}))}}static async raceReferences(e){const t=e.map(ge);try{return await Promise.race(t)}finally{for(const e of t)e.unsubscribe()}}};function ge(e){return pe.proxy(e).then((()=>[e]))}const be="SELECTTREE-TIMEOUT";async function ve(e,t=!1){var i;if((null===(i=e.localName)||void 0===i?void 0:i.includes("-"))&&await customElements.whenDefined(e.localName),e.updateComplete&&await e.updateComplete,t&&(e.pageRendered&&await e.pageRendered,e._panelState)){let t=0;for(;"loaded"!==e._panelState&&t++<5;)await new Promise((e=>setTimeout(e,100)))}}async function we(e,t,i=!1){let s=[e];for("string"==typeof t&&(t=t.split(/(\$| )/));""===t[t.length-1];)t.pop();for(const[e,i]of t.entries()){const e=s[0];if(!e)return null;i.trim().length&&(ve(e),s="$"===i?[e.shadowRoot]:e.querySelectorAll(i))}return i?s:s[0]}async function me(e,t,i=!1,s=1e4){return pe.race([we(e,t,i),new Promise(((e,t)=>setTimeout((()=>t(new Error(be))),s)))]).catch((e=>{if(!e.message||e.message!==be)throw e;return null}))}async function _e(){var e;void 0===(null!==(e=customElements.get("home-assistant"))&&void 0!==e?e:customElements.get("hc-main"))&&await pe.race([customElements.whenDefined("home-assistant"),customElements.whenDefined("hc-main")]);const t=customElements.get("home-assistant")?"home-assistant":"hc-main";for(;!document.querySelector(t);)await new Promise((e=>window.setTimeout(e,100)));return document.querySelector(t)}class fe extends se{constructor(){super(...arguments),this.dirty=!1,this.narrow=!1}toggleRegister(){var e;(null===(e=window.browser_mod)||void 0===e?void 0:e.ready)&&(window.browser_mod.registered=!window.browser_mod.registered,this.dirty=!0)}changeBrowserID(e){window.browser_mod.browserID=e.target.value,this.dirty=!0}toggleCameraEnabled(){window.browser_mod.cameraEnabled=!window.browser_mod.cameraEnabled,this.dirty=!0}firstUpdated(){window.browser_mod.addEventListener("browser-mod-config-update",(()=>this.requestUpdate()))}render(){var e,t,i,s,o,n,r,a,l,d,h,c,u,p;return I`
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __decorate(decorators, target, key, desc) {
+  var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+  else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+  return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+  var e = new Error(message);
+  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+};
+
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t$2=window,e$3=t$2.ShadowRoot&&(void 0===t$2.ShadyCSS||t$2.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$3=Symbol(),n$6=new WeakMap;class o$4{constructor(t,e,n){if(this._$cssResult$=!0,n!==s$3)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$3&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=n$6.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&n$6.set(s,t));}return t}toString(){return this.cssText}}const r$2=t=>new o$4("string"==typeof t?t:t+"",void 0,s$3),i$2=(t,...e)=>{const n=1===t.length?t[0]:e.reduce(((e,s,n)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[n+1]),t[0]);return new o$4(n,t,s$3)},S$1=(s,n)=>{e$3?s.adoptedStyleSheets=n.map((t=>t instanceof CSSStyleSheet?t:t.styleSheet)):n.forEach((e=>{const n=document.createElement("style"),o=t$2.litNonce;void 0!==o&&n.setAttribute("nonce",o),n.textContent=e.cssText,s.appendChild(n);}));},c$1=e$3?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$2(e)})(t):t;
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var s$2;const e$2=window,r$1=e$2.trustedTypes,h$2=r$1?r$1.emptyScript:"",o$3=e$2.reactiveElementPolyfillSupport,n$5={toAttribute(t,i){switch(i){case Boolean:t=t?h$2:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,i){let s=t;switch(i){case Boolean:s=null!==t;break;case Number:s=null===t?null:Number(t);break;case Object:case Array:try{s=JSON.parse(t);}catch(t){s=null;}}return s}},a$2=(t,i)=>i!==t&&(i==i||t==t),l$3={attribute:!0,type:String,converter:n$5,reflect:!1,hasChanged:a$2},d$1="finalized";class u$2 extends HTMLElement{constructor(){super(),this._$Ei=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$El=null,this._$Eu();}static addInitializer(t){var i;this.finalize(),(null!==(i=this.h)&&void 0!==i?i:this.h=[]).push(t);}static get observedAttributes(){this.finalize();const t=[];return this.elementProperties.forEach(((i,s)=>{const e=this._$Ep(s,i);void 0!==e&&(this._$Ev.set(e,s),t.push(e));})),t}static createProperty(t,i=l$3){if(i.state&&(i.attribute=!1),this.finalize(),this.elementProperties.set(t,i),!i.noAccessor&&!this.prototype.hasOwnProperty(t)){const s="symbol"==typeof t?Symbol():"__"+t,e=this.getPropertyDescriptor(t,s,i);void 0!==e&&Object.defineProperty(this.prototype,t,e);}}static getPropertyDescriptor(t,i,s){return {get(){return this[i]},set(e){const r=this[t];this[i]=e,this.requestUpdate(t,r,s);},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)||l$3}static finalize(){if(this.hasOwnProperty(d$1))return !1;this[d$1]=!0;const t=Object.getPrototypeOf(this);if(t.finalize(),void 0!==t.h&&(this.h=[...t.h]),this.elementProperties=new Map(t.elementProperties),this._$Ev=new Map,this.hasOwnProperty("properties")){const t=this.properties,i=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(const s of i)this.createProperty(s,t[s]);}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(i){const s=[];if(Array.isArray(i)){const e=new Set(i.flat(1/0).reverse());for(const i of e)s.unshift(c$1(i));}else void 0!==i&&s.push(c$1(i));return s}static _$Ep(t,i){const s=i.attribute;return !1===s?void 0:"string"==typeof s?s:"string"==typeof t?t.toLowerCase():void 0}_$Eu(){var t;this._$E_=new Promise((t=>this.enableUpdating=t)),this._$AL=new Map,this._$Eg(),this.requestUpdate(),null===(t=this.constructor.h)||void 0===t||t.forEach((t=>t(this)));}addController(t){var i,s;(null!==(i=this._$ES)&&void 0!==i?i:this._$ES=[]).push(t),void 0!==this.renderRoot&&this.isConnected&&(null===(s=t.hostConnected)||void 0===s||s.call(t));}removeController(t){var i;null===(i=this._$ES)||void 0===i||i.splice(this._$ES.indexOf(t)>>>0,1);}_$Eg(){this.constructor.elementProperties.forEach(((t,i)=>{this.hasOwnProperty(i)&&(this._$Ei.set(i,this[i]),delete this[i]);}));}createRenderRoot(){var t;const s=null!==(t=this.shadowRoot)&&void 0!==t?t:this.attachShadow(this.constructor.shadowRootOptions);return S$1(s,this.constructor.elementStyles),s}connectedCallback(){var t;void 0===this.renderRoot&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostConnected)||void 0===i?void 0:i.call(t)}));}enableUpdating(t){}disconnectedCallback(){var t;null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostDisconnected)||void 0===i?void 0:i.call(t)}));}attributeChangedCallback(t,i,s){this._$AK(t,s);}_$EO(t,i,s=l$3){var e;const r=this.constructor._$Ep(t,s);if(void 0!==r&&!0===s.reflect){const h=(void 0!==(null===(e=s.converter)||void 0===e?void 0:e.toAttribute)?s.converter:n$5).toAttribute(i,s.type);this._$El=t,null==h?this.removeAttribute(r):this.setAttribute(r,h),this._$El=null;}}_$AK(t,i){var s;const e=this.constructor,r=e._$Ev.get(t);if(void 0!==r&&this._$El!==r){const t=e.getPropertyOptions(r),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==(null===(s=t.converter)||void 0===s?void 0:s.fromAttribute)?t.converter:n$5;this._$El=r,this[r]=h.fromAttribute(i,t.type),this._$El=null;}}requestUpdate(t,i,s){let e=!0;void 0!==t&&(((s=s||this.constructor.getPropertyOptions(t)).hasChanged||a$2)(this[t],i)?(this._$AL.has(t)||this._$AL.set(t,i),!0===s.reflect&&this._$El!==t&&(void 0===this._$EC&&(this._$EC=new Map),this._$EC.set(t,s))):e=!1),!this.isUpdatePending&&e&&(this._$E_=this._$Ej());}async _$Ej(){this.isUpdatePending=!0;try{await this._$E_;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var t;if(!this.isUpdatePending)return;this.hasUpdated,this._$Ei&&(this._$Ei.forEach(((t,i)=>this[i]=t)),this._$Ei=void 0);let i=!1;const s=this._$AL;try{i=this.shouldUpdate(s),i?(this.willUpdate(s),null===(t=this._$ES)||void 0===t||t.forEach((t=>{var i;return null===(i=t.hostUpdate)||void 0===i?void 0:i.call(t)})),this.update(s)):this._$Ek();}catch(t){throw i=!1,this._$Ek(),t}i&&this._$AE(s);}willUpdate(t){}_$AE(t){var i;null===(i=this._$ES)||void 0===i||i.forEach((t=>{var i;return null===(i=t.hostUpdated)||void 0===i?void 0:i.call(t)})),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t);}_$Ek(){this._$AL=new Map,this.isUpdatePending=!1;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$E_}shouldUpdate(t){return !0}update(t){void 0!==this._$EC&&(this._$EC.forEach(((t,i)=>this._$EO(i,this[i],t))),this._$EC=void 0),this._$Ek();}updated(t){}firstUpdated(t){}}u$2[d$1]=!0,u$2.elementProperties=new Map,u$2.elementStyles=[],u$2.shadowRootOptions={mode:"open"},null==o$3||o$3({ReactiveElement:u$2}),(null!==(s$2=e$2.reactiveElementVersions)&&void 0!==s$2?s$2:e$2.reactiveElementVersions=[]).push("1.6.3");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+var t$1;const i$1=window,s$1=i$1.trustedTypes,e$1=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,o$2="$lit$",n$4=`lit$${(Math.random()+"").slice(9)}$`,l$2="?"+n$4,h$1=`<${l$2}>`,r=document,u$1=()=>r.createComment(""),d=t=>null===t||"object"!=typeof t&&"function"!=typeof t,c=Array.isArray,v=t=>c(t)||"function"==typeof(null==t?void 0:t[Symbol.iterator]),a$1="[ \t\n\f\r]",f$1=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m$1=/>/g,p=RegExp(`>|${a$1}(?:([^\\s"'>=/]+)(${a$1}*=${a$1}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y$1=/^(?:script|style|textarea|title)$/i,w=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),x=w(1),T=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),E=new WeakMap,C=r.createTreeWalker(r,129,null,!1);function P(t,i){if(!Array.isArray(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e$1?e$1.createHTML(i):i}const V=(t,i)=>{const s=t.length-1,e=[];let l,r=2===i?"<svg>":"",u=f$1;for(let i=0;i<s;i++){const s=t[i];let d,c,v=-1,a=0;for(;a<s.length&&(u.lastIndex=a,c=u.exec(s),null!==c);)a=u.lastIndex,u===f$1?"!--"===c[1]?u=_:void 0!==c[1]?u=m$1:void 0!==c[2]?(y$1.test(c[2])&&(l=RegExp("</"+c[2],"g")),u=p):void 0!==c[3]&&(u=p):u===p?">"===c[0]?(u=null!=l?l:f$1,v=-1):void 0===c[1]?v=-2:(v=u.lastIndex-c[2].length,d=c[1],u=void 0===c[3]?p:'"'===c[3]?$:g):u===$||u===g?u=p:u===_||u===m$1?u=f$1:(u=p,l=void 0);const w=u===p&&t[i+1].startsWith("/>")?" ":"";r+=u===f$1?s+h$1:v>=0?(e.push(d),s.slice(0,v)+o$2+s.slice(v)+n$4+w):s+n$4+(-2===v?(e.push(void 0),i):w);}return [P(t,r+(t[s]||"<?>")+(2===i?"</svg>":"")),e]};class N{constructor({strings:t,_$litType$:i},e){let h;this.parts=[];let r=0,d=0;const c=t.length-1,v=this.parts,[a,f]=V(t,i);if(this.el=N.createElement(a,e),C.currentNode=this.el.content,2===i){const t=this.el.content,i=t.firstChild;i.remove(),t.append(...i.childNodes);}for(;null!==(h=C.nextNode())&&v.length<c;){if(1===h.nodeType){if(h.hasAttributes()){const t=[];for(const i of h.getAttributeNames())if(i.endsWith(o$2)||i.startsWith(n$4)){const s=f[d++];if(t.push(i),void 0!==s){const t=h.getAttribute(s.toLowerCase()+o$2).split(n$4),i=/([.?@])?(.*)/.exec(s);v.push({type:1,index:r,name:i[2],strings:t,ctor:"."===i[1]?H:"?"===i[1]?L:"@"===i[1]?z:k});}else v.push({type:6,index:r});}for(const i of t)h.removeAttribute(i);}if(y$1.test(h.tagName)){const t=h.textContent.split(n$4),i=t.length-1;if(i>0){h.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)h.append(t[s],u$1()),C.nextNode(),v.push({type:2,index:++r});h.append(t[i],u$1());}}}else if(8===h.nodeType)if(h.data===l$2)v.push({type:2,index:r});else {let t=-1;for(;-1!==(t=h.data.indexOf(n$4,t+1));)v.push({type:7,index:r}),t+=n$4.length-1;}r++;}}static createElement(t,i){const s=r.createElement("template");return s.innerHTML=t,s}}function S(t,i,s=t,e){var o,n,l,h;if(i===T)return i;let r=void 0!==e?null===(o=s._$Co)||void 0===o?void 0:o[e]:s._$Cl;const u=d(i)?void 0:i._$litDirective$;return (null==r?void 0:r.constructor)!==u&&(null===(n=null==r?void 0:r._$AO)||void 0===n||n.call(r,!1),void 0===u?r=void 0:(r=new u(t),r._$AT(t,s,e)),void 0!==e?(null!==(l=(h=s)._$Co)&&void 0!==l?l:h._$Co=[])[e]=r:s._$Cl=r),void 0!==r&&(i=S(t,r._$AS(t,i.values),r,e)),i}class M{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){var i;const{el:{content:s},parts:e}=this._$AD,o=(null!==(i=null==t?void 0:t.creationScope)&&void 0!==i?i:r).importNode(s,!0);C.currentNode=o;let n=C.nextNode(),l=0,h=0,u=e[0];for(;void 0!==u;){if(l===u.index){let i;2===u.type?i=new R(n,n.nextSibling,this,t):1===u.type?i=new u.ctor(n,u.name,u.strings,this,t):6===u.type&&(i=new Z(n,this,t)),this._$AV.push(i),u=e[++h];}l!==(null==u?void 0:u.index)&&(n=C.nextNode(),l++);}return C.currentNode=r,o}v(t){let i=0;for(const s of this._$AV)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class R{constructor(t,i,s,e){var o;this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cp=null===(o=null==e?void 0:e.isConnected)||void 0===o||o;}get _$AU(){var t,i;return null!==(i=null===(t=this._$AM)||void 0===t?void 0:t._$AU)&&void 0!==i?i:this._$Cp}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===(null==t?void 0:t.nodeType)&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=S(this,t,i),d(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==T&&this._(t):void 0!==t._$litType$?this.g(t):void 0!==t.nodeType?this.$(t):v(t)?this.T(t):this._(t);}k(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}$(t){this._$AH!==t&&(this._$AR(),this._$AH=this.k(t));}_(t){this._$AH!==A&&d(this._$AH)?this._$AA.nextSibling.data=t:this.$(r.createTextNode(t)),this._$AH=t;}g(t){var i;const{values:s,_$litType$:e}=t,o="number"==typeof e?this._$AC(t):(void 0===e.el&&(e.el=N.createElement(P(e.h,e.h[0]),this.options)),e);if((null===(i=this._$AH)||void 0===i?void 0:i._$AD)===o)this._$AH.v(s);else {const t=new M(o,this),i=t.u(this.options);t.v(s),this.$(i),this._$AH=t;}}_$AC(t){let i=E.get(t.strings);return void 0===i&&E.set(t.strings,i=new N(t)),i}T(t){c(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const o of t)e===i.length?i.push(s=new R(this.k(u$1()),this.k(u$1()),this,this.options)):s=i[e],s._$AI(o),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,i){var s;for(null===(s=this._$AP)||void 0===s||s.call(this,!1,!0,i);t&&t!==this._$AB;){const i=t.nextSibling;t.remove(),t=i;}}setConnected(t){var i;void 0===this._$AM&&(this._$Cp=t,null===(i=this._$AP)||void 0===i||i.call(this,t));}}class k{constructor(t,i,s,e,o){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=o,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(t,i=this,s,e){const o=this.strings;let n=!1;if(void 0===o)t=S(this,t,i,0),n=!d(t)||t!==this._$AH&&t!==T,n&&(this._$AH=t);else {const e=t;let l,h;for(t=o[0],l=0;l<o.length-1;l++)h=S(this,e[s+l],i,l),h===T&&(h=this._$AH[l]),n||(n=!d(h)||h!==this._$AH[l]),h===A?t=A:t!==A&&(t+=(null!=h?h:"")+o[l+1]),this._$AH[l]=h;}n&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,null!=t?t:"");}}class H extends k{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}const I=s$1?s$1.emptyScript:"";class L extends k{constructor(){super(...arguments),this.type=4;}j(t){t&&t!==A?this.element.setAttribute(this.name,I):this.element.removeAttribute(this.name);}}class z extends k{constructor(t,i,s,e,o){super(t,i,s,e,o),this.type=5;}_$AI(t,i=this){var s;if((t=null!==(s=S(this,t,i,0))&&void 0!==s?s:A)===T)return;const e=this._$AH,o=t===A&&e!==A||t.capture!==e.capture||t.once!==e.once||t.passive!==e.passive,n=t!==A&&(e===A||o);o&&this.element.removeEventListener(this.name,this,e),n&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){var i,s;"function"==typeof this._$AH?this._$AH.call(null!==(s=null===(i=this.options)||void 0===i?void 0:i.host)&&void 0!==s?s:this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){S(this,t);}}const B=i$1.litHtmlPolyfillSupport;null==B||B(N,R),(null!==(t$1=i$1.litHtmlVersions)&&void 0!==t$1?t$1:i$1.litHtmlVersions=[]).push("2.8.0");const D=(t,i,s)=>{var e,o;const n=null!==(e=null==s?void 0:s.renderBefore)&&void 0!==e?e:i;let l=n._$litPart$;if(void 0===l){const t=null!==(o=null==s?void 0:s.renderBefore)&&void 0!==o?o:null;n._$litPart$=l=new R(i.insertBefore(u$1(),t),t,void 0,null!=s?s:{});}return l._$AI(t),l};
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var l$1,o$1;class s extends u$2{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){var t,e;const i=super.createRenderRoot();return null!==(t=(e=this.renderOptions).renderBefore)&&void 0!==t||(e.renderBefore=i.firstChild),i}update(t){const i=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(i,this.renderRoot,this.renderOptions);}connectedCallback(){var t;super.connectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!0);}disconnectedCallback(){var t;super.disconnectedCallback(),null===(t=this._$Do)||void 0===t||t.setConnected(!1);}render(){return T}}s.finalized=!0,s._$litElement$=!0,null===(l$1=globalThis.litElementHydrateSupport)||void 0===l$1||l$1.call(globalThis,{LitElement:s});const n$3=globalThis.litElementPolyfillSupport;null==n$3||n$3({LitElement:s});(null!==(o$1=globalThis.litElementVersions)&&void 0!==o$1?o$1:globalThis.litElementVersions=[]).push("3.3.3");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const i=(i,e)=>"method"===e.kind&&e.descriptor&&!("value"in e.descriptor)?{...e,finisher(n){n.createProperty(e.key,i);}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:e.key,initializer(){"function"==typeof e.initializer&&(this[e.key]=e.initializer.call(this));},finisher(n){n.createProperty(e.key,i);}},e=(i,e,n)=>{e.constructor.createProperty(n,i);};function n$2(n){return (t,o)=>void 0!==o?e(n,t,o):i(n,t)}
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */function t(t){return n$2({...t,state:!0})}
+
+/**
+ * @license
+ * Copyright 2021 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */var n$1;null!=(null===(n$1=window.HTMLSlotElement)||void 0===n$1?void 0:n$1.prototype.assignedElements)?(o,n)=>o.assignedElements(n):(o,n)=>o.assignedNodes(n).filter((o=>o.nodeType===Node.ELEMENT_NODE));
+
+var u;
+const o = /* @__PURE__ */ new WeakMap(), l = () => {
+}, n = class n {
+  constructor(s) {
+    this.subscribers = [], this.settlement = null, this[u] = "Unpromise", typeof s == "function" ? this.promise = new Promise(s) : this.promise = s;
+    const e = this.promise.then((t) => {
+      const { subscribers: r } = this;
+      this.subscribers = null, this.settlement = {
+        status: "fulfilled",
+        value: t
+      }, r == null || r.forEach(({ resolve: c }) => {
+        c(t);
+      });
+    });
+    "catch" in e && e.catch((t) => {
+      const { subscribers: r } = this;
+      this.subscribers = null, this.settlement = {
+        status: "rejected",
+        reason: t
+      }, r == null || r.forEach(({ reject: c }) => {
+        c(t);
+      });
+    });
+  }
+  /** Create a promise that mitigates uncontrolled subscription to a long-lived
+   * Promise via .then() and .catch() - otherwise a source of memory leaks.
+   *
+   * The returned promise has an `unsubscribe()` method which can be called when
+   * the Promise is no longer being tracked by application logic, and which
+   * ensures that there is no reference chain from the original promise to the
+   * new one, and therefore no memory leak.
+   *
+   * If original promise has not yet settled, this adds a new unique promise
+   * that listens to then/catch events, along with an `unsubscribe()` method to
+   * detach it.
+   *
+   * If original promise has settled, then creates a new Promise.resolve() or
+   * Promise.reject() and provided unsubscribe is a noop.
+   *
+   * If you call `unsubscribe()` before the returned Promise has settled, it
+   * will never settle.
+   */
+  subscribe() {
+    let s, e;
+    const { settlement: t } = this;
+    if (t === null) {
+      if (this.subscribers === null)
+        throw new Error("Unpromise settled but still has subscribers");
+      const r = h();
+      this.subscribers = f(this.subscribers, r), s = r.promise, e = () => {
+        this.subscribers !== null && (this.subscribers = y(this.subscribers, r));
+      };
+    } else {
+      const { status: r } = t;
+      r === "fulfilled" ? s = Promise.resolve(t.value) : s = Promise.reject(t.reason), e = l;
+    }
+    return Object.assign(s, { unsubscribe: e });
+  }
+  /** STANDARD PROMISE METHODS (but returning a SubscribedPromise) */
+  then(s, e) {
+    const t = this.subscribe(), { unsubscribe: r } = t;
+    return Object.assign(t.then(s, e), {
+      unsubscribe: r
+    });
+  }
+  catch(s) {
+    const e = this.subscribe(), { unsubscribe: t } = e;
+    return Object.assign(e.catch(s), {
+      unsubscribe: t
+    });
+  }
+  finally(s) {
+    const e = this.subscribe(), { unsubscribe: t } = e;
+    return Object.assign(e.finally(s), {
+      unsubscribe: t
+    });
+  }
+  /** Unpromise STATIC METHODS */
+  /** Create or Retrieve the proxy Unpromise (a re-used Unpromise for the VM lifetime
+   * of the provided Promise reference) */
+  static proxy(s) {
+    const e = n.getSubscribablePromise(s);
+    return typeof e < "u" ? e : n.createSubscribablePromise(s);
+  }
+  /** Create and store an Unpromise keyed by an original Promise. */
+  static createSubscribablePromise(s) {
+    const e = new n(s);
+    return o.set(s, e), o.set(e, e), e;
+  }
+  /** Retrieve a previously-created Unpromise keyed by an original Promise. */
+  static getSubscribablePromise(s) {
+    return o.get(s);
+  }
+  /** Promise STATIC METHODS */
+  /** Lookup the Unpromise for this promise, and derive a SubscribedPromise from
+   * it (that can be later unsubscribed to eliminate Memory leaks) */
+  static resolve(s) {
+    const e = typeof s == "object" && s !== null && "then" in s && typeof s.then == "function" ? s : Promise.resolve(s);
+    return n.proxy(e).subscribe();
+  }
+  static async any(s) {
+    const t = (Array.isArray(s) ? s : [...s]).map(n.resolve);
+    try {
+      return await Promise.any(t);
+    } finally {
+      t.forEach(({ unsubscribe: r }) => {
+        r();
+      });
+    }
+  }
+  static async race(s) {
+    const t = (Array.isArray(s) ? s : [...s]).map(n.resolve);
+    try {
+      return await Promise.race(t);
+    } finally {
+      t.forEach(({ unsubscribe: r }) => {
+        r();
+      });
+    }
+  }
+  /** Create a race of SubscribedPromises that will fulfil to a single winning
+   * Promise (in a 1-Tuple). Eliminates memory leaks from long-lived promises
+   * accumulating .then() and .catch() subscribers. Allows simple logic to
+   * consume the result, like...
+   * ```ts
+   * const [ winner ] = await Unpromise.race([ promiseA, promiseB ]);
+   * if(winner === promiseB){
+   *   const result = await promiseB;
+   *   // do the thing
+   * }
+   * ```
+   * */
+  static async raceReferences(s) {
+    const e = s.map(a);
+    try {
+      return await Promise.race(e);
+    } finally {
+      for (const t of e)
+        t.unsubscribe();
+    }
+  }
+};
+u = Symbol.toStringTag;
+let b = n;
+function a(i) {
+  return b.proxy(i).then(() => [i]);
+}
+function h() {
+  let i, s;
+  return {
+    promise: new Promise((t, r) => {
+      i = t, s = r;
+    }),
+    resolve: i,
+    reject: s
+  };
+}
+function f(i, s) {
+  return [...i, s];
+}
+function m(i, s) {
+  return [...i.slice(0, s), ...i.slice(s + 1)];
+}
+function y(i, s) {
+  const e = i.indexOf(s);
+  return e !== -1 ? m(i, e) : i;
+}
+
+const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
+async function await_element(el, hard = false) {
+    var _a;
+    if ((_a = el.localName) === null || _a === void 0 ? void 0 : _a.includes("-"))
+        await customElements.whenDefined(el.localName);
+    if (el.updateComplete)
+        await el.updateComplete;
+    if (hard) {
+        if (el.pageRendered)
+            await el.pageRendered;
+        if (el._panelState) {
+            let rounds = 0;
+            while (el._panelState !== "loaded" && rounds++ < 5)
+                await new Promise((r) => setTimeout(r, 100));
+        }
+    }
+}
+async function _selectTree(root, path, all = false) {
+    let el = [root];
+    if (typeof path === "string") {
+        path = path.split(/(\$| )/);
+    }
+    while (path[path.length - 1] === "")
+        path.pop();
+    for (const [i, p] of path.entries()) {
+        const e = el[0];
+        if (!e)
+            return null;
+        if (!p.trim().length)
+            continue;
+        await_element(e);
+        el = p === "$" ? [e.shadowRoot] : e.querySelectorAll(p);
+    }
+    return all ? el : el[0];
+}
+async function selectTree(root, path, all = false, timeout = 10000) {
+    return b.race([
+        _selectTree(root, path, all),
+        new Promise((_, reject) => setTimeout(() => reject(new Error(TIMEOUT_ERROR)), timeout)),
+    ]).catch((err) => {
+        if (!err.message || err.message !== TIMEOUT_ERROR)
+            throw err;
+        return null;
+    });
+}
+async function hass_base_el() {
+    var _a;
+    const customElement = (_a = customElements.get("home-assistant")) !== null && _a !== void 0 ? _a : customElements.get("hc-main");
+    if (customElement === undefined) {
+        await b.race([
+            customElements.whenDefined("home-assistant"),
+            customElements.whenDefined("hc-main"),
+        ]);
+    }
+    const element = customElements.get("home-assistant")
+        ? "home-assistant"
+        : "hc-main";
+    while (!document.querySelector(element))
+        await new Promise((r) => window.setTimeout(r, 100));
+    return document.querySelector(element);
+}
+async function provideHass(el) {
+    const base = await hass_base_el();
+    base.provideHass(el);
+}
+// Loads in ha-config-dashboard which is used to copy styling
+// Also provides ha-settings-row
+const loadConfigDashboard = async () => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    await customElements.whenDefined("partial-panel-resolver");
+    const ppResolver = document.createElement("partial-panel-resolver");
+    const routes = ppResolver._getRoutes([
+        {
+            component_name: "config",
+            url_path: "a",
+        },
+    ]);
+    await ((_c = (_b = (_a = routes === null || routes === void 0 ? void 0 : routes.routes) === null || _a === void 0 ? void 0 : _a.a) === null || _b === void 0 ? void 0 : _b.load) === null || _c === void 0 ? void 0 : _c.call(_b));
+    await customElements.whenDefined("ha-panel-config");
+    const configRouter = document.createElement("ha-panel-config");
+    await ((_g = (_f = (_e = (_d = configRouter === null || configRouter === void 0 ? void 0 : configRouter.routerOptions) === null || _d === void 0 ? void 0 : _d.routes) === null || _e === void 0 ? void 0 : _e.dashboard) === null || _f === void 0 ? void 0 : _f.load) === null || _g === void 0 ? void 0 : _g.call(_f)); // Load ha-config-dashboard
+    await ((_l = (_k = (_j = (_h = configRouter === null || configRouter === void 0 ? void 0 : configRouter.routerOptions) === null || _h === void 0 ? void 0 : _h.routes) === null || _j === void 0 ? void 0 : _j.general) === null || _k === void 0 ? void 0 : _k.load) === null || _l === void 0 ? void 0 : _l.call(_k)); // Load ha-settings-row
+    await ((_q = (_p = (_o = (_m = configRouter === null || configRouter === void 0 ? void 0 : configRouter.routerOptions) === null || _m === void 0 ? void 0 : _m.routes) === null || _o === void 0 ? void 0 : _o.entities) === null || _p === void 0 ? void 0 : _p.load) === null || _q === void 0 ? void 0 : _q.call(_p)); // Load ha-data-table
+    await customElements.whenDefined("ha-config-dashboard");
+};
+const loadDeveloperToolsTemplate = async () => {
+    var _a, _b, _c, _d, _e, _f, _g;
+    await customElements.whenDefined("partial-panel-resolver");
+    await customElements.whenDefined("partial-panel-resolver");
+    const ppResolver = document.createElement("partial-panel-resolver");
+    const routes = ppResolver._getRoutes([
+        {
+            component_name: "developer-tools",
+            url_path: "a",
+        },
+    ]);
+    await ((_c = (_b = (_a = routes === null || routes === void 0 ? void 0 : routes.routes) === null || _a === void 0 ? void 0 : _a.a) === null || _b === void 0 ? void 0 : _b.load) === null || _c === void 0 ? void 0 : _c.call(_b));
+    const dtRouter = document.createElement("developer-tools-router");
+    await ((_g = (_f = (_e = (_d = dtRouter === null || dtRouter === void 0 ? void 0 : dtRouter.routerOptions) === null || _d === void 0 ? void 0 : _d.routes) === null || _e === void 0 ? void 0 : _e.template) === null || _f === void 0 ? void 0 : _f.load) === null || _g === void 0 ? void 0 : _g.call(_f));
+    await customElements.whenDefined("developer-tools-template");
+};
+
+class BrowserModRegisteredBrowsersCard$1 extends s {
+    constructor() {
+        super(...arguments);
+        this.dirty = false;
+        this.narrow = false;
+    }
+    toggleRegister() {
+        var _a;
+        if (!((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.ready))
+            return;
+        window.browser_mod.registered = !window.browser_mod.registered;
+        this.dirty = true;
+    }
+    changeBrowserID(ev) {
+        window.browser_mod.browserID = ev.target.value;
+        this.dirty = true;
+    }
+    toggleCameraEnabled() {
+        window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
+        this.dirty = true;
+    }
+    firstUpdated() {
+        window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+    }
+    render() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+        return x `
       <ha-card outlined>
         <h1 class="card-header">
           <div class="name">This Browser</div>
-          ${(null===(e=window.browser_mod)||void 0===e?void 0:e.ready)?I`
+          ${((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.ready)
+            ? x `
                 <ha-icon
                   class="icon"
                   .icon=${"mdi:check-circle-outline"}
                   style="color: var(--success-color, green);"
                 ></ha-icon>
-              `:I`
+              `
+            : x `
                 <ha-icon
                   class="icon"
                   .icon=${"mdi:circle-outline"}
@@ -17,15 +387,18 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               `}
         </h1>
         <div class="card-content">
-          ${this.dirty?I`
+          ${this.dirty
+            ? x `
                 <ha-alert alert-type="warning">
                   It is strongly recommended to refresh your browser window
                   after changing any of the settings in this box.
                 </ha-alert>
-              `:""}
+              `
+            : ""}
         </div>
         <div class="card-content">
-          ${(null===(t=this.hass.user)||void 0===t?void 0:t.is_admin)?"":I`
+          ${!((_b = this.hass.user) === null || _b === void 0 ? void 0 : _b.is_admin)
+            ? x `
                 <ha-alert alert-type="info" title="Login as admin to edit">
                   Login as admin to change the settings of this Browser.
                   <br /><br />
@@ -34,7 +407,8 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
                   still need to login as admin on this Browser to change the
                   Browser ID from the auto-generated Browser ID.
                 </ha-alert>
-              `}
+              `
+            : ""}
         </div>
         <div class="card-content">
           <ha-settings-row>
@@ -43,9 +417,12 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               >Enable this browser as a Device in Home Assistant</span
             >
             <ha-switch
-              .checked=${null===(i=window.browser_mod)||void 0===i?void 0:i.registered}
+              .checked=${(_c = window.browser_mod) === null || _c === void 0 ? void 0 : _c.registered}
               @change=${this.toggleRegister}
-              .disabled=${(null===(s=window.browser_mod)||void 0===s?void 0:s.browser_locked)||(null===(o=window.browser_mod)||void 0===o?void 0:o.global_settings.autoRegister)||(null===(n=window.browser_mod)||void 0===n?void 0:n.global_settings.lockRegister)||!(null===(r=this.hass.user)||void 0===r?void 0:r.is_admin)}
+              .disabled=${((_d = window.browser_mod) === null || _d === void 0 ? void 0 : _d.browser_locked) ||
+            ((_e = window.browser_mod) === null || _e === void 0 ? void 0 : _e.global_settings["autoRegister"]) ||
+            ((_f = window.browser_mod) === null || _f === void 0 ? void 0 : _f.global_settings["lockRegister"]) ||
+            !((_g = this.hass.user) === null || _g === void 0 ? void 0 : _g.is_admin)}
             ></ha-switch>
           </ha-settings-row>
 
@@ -55,13 +432,15 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               >A unique identifier for this browser-device combination.</span
             >
             <ha-textfield
-              .value=${null===(a=window.browser_mod)||void 0===a?void 0:a.browserID}
+              .value=${(_h = window.browser_mod) === null || _h === void 0 ? void 0 : _h.browserID}
               @change=${this.changeBrowserID}
-              .disabled=${(null===(l=window.browser_mod)||void 0===l?void 0:l.browser_locked)||!(null===(d=this.hass.user)||void 0===d?void 0:d.is_admin)}
+              .disabled=${(((_j = window.browser_mod) === null || _j === void 0 ? void 0 : _j.browser_locked) ||
+            !((_k = this.hass.user) === null || _k === void 0 ? void 0 : _k.is_admin))}
             ></ha-textfield>
           </ha-settings-row>
 
-          ${(null===(h=window.browser_mod)||void 0===h?void 0:h.registered)?I`
+          ${((_l = window.browser_mod) === null || _l === void 0 ? void 0 : _l.registered)
+            ? x `
                 ${this._renderSuspensionAlert()}
                 <ha-settings-row>
                   <span slot="heading">Enable camera</span>
@@ -70,24 +449,32 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
                     dependent)</span
                   >
                   <ha-switch
-                    .checked=${null===(c=window.browser_mod)||void 0===c?void 0:c.cameraEnabled}
+                    .checked=${(_m = window.browser_mod) === null || _m === void 0 ? void 0 : _m.cameraEnabled}
                     @change=${this.toggleCameraEnabled}
-                    .disabled=${null===(u=window.browser_mod)||void 0===u?void 0:u.browser_locked}
+                    .disabled=${(_o = window.browser_mod) === null || _o === void 0 ? void 0 : _o.browser_locked}
                   ></ha-switch>
                 </ha-settings-row>
-                ${(null===(p=window.browser_mod)||void 0===p?void 0:p.cameraError)?I`
+                ${((_p = window.browser_mod) === null || _p === void 0 ? void 0 : _p.cameraError)
+                ? x `
                       <ha-alert alert-type="error">
                         Setting up the device camera failed. Make sure you are browsing
                         in a secure (https://) context and have
                         allowed use of the camera in your browser.
                       </ha-alert>
-                    `:""}
+                    `
+                : ""}
                 ${this._renderInteractionAlert()}
                 ${this._renderFKBSettingsInfo()}
-              `:""}
+              `
+            : ""}
         </div>
       </ha-card>
-    `}_renderSuspensionAlert(){return this.hass.suspendWhenHidden?I`
+    `;
+    }
+    _renderSuspensionAlert() {
+        if (!this.hass.suspendWhenHidden)
+            return x ``;
+        return x `
       <ha-alert alert-type="warning" title="Auto closing connection">
         Home Assistant will close the websocket connection to the server
         automatically after 5 minutes of inactivity.<br /><br />
@@ -102,9 +489,13 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
           >Profile Settings</a
         >
         and disabling the option
-        "${this.hass.localize("ui.panel.profile.suspend.header")||"Automatically close connection"}".
+        "${this.hass.localize("ui.panel.profile.suspend.header") ||
+            "Automatically close connection"}".
       </ha-alert>
-    `:I``}_renderInteractionAlert(){return I`
+    `;
+    }
+    _renderInteractionAlert() {
+        return x `
       <ha-alert title="Interaction requirement">
         For privacy reasons many browsers require the user to interact with a
         webpage before allowing audio playback or video capture. This may affect
@@ -120,33 +511,94 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
         symbol at the bottom right corner of the screen, please tap or click
         anywhere on the page. This should allow Browser Mod to work again.
       </ha-alert>
-    `}_renderFKBSettingsInfo(){var e,t;return(null===(e=window.browser_mod)||void 0===e?void 0:e.fully)&&this.getFullySettings()?I`
-      ${(null===(t=window.browser_mod)||void 0===t?void 0:t.fully)&&this.getFullySettings()?I` <ha-alert title="FullyKiosk Browser">
+    `;
+    }
+    _renderFKBSettingsInfo() {
+        var _a, _b;
+        if (!((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.fully) || !this.getFullySettings())
+            return x ``;
+        return x `
+      ${((_b = window.browser_mod) === null || _b === void 0 ? void 0 : _b.fully) && this.getFullySettings()
+            ? x ` <ha-alert title="FullyKiosk Browser">
             You are using FullyKiosk Browser. It is recommended to enable the
             following settings:
             <ul>
               ${this.getFullySettings()}
             </ul>
-          </ha-alert>`:""}
-    `:I``}getFullySettings(){if(!window.browser_mod.fully)return null;const e=[],t=[];"true"!==window.fully.getBooleanSetting("autoplayVideos")&&t.push(I`<li>Autoplay Videos</li>`),"true"!==window.fully.getBooleanSetting("autoplayAudio")&&t.push(I`<li>Autoplay Audio</li>`),"true"!==window.fully.getBooleanSetting("webcamAccess")&&t.push(I`<li>Enable Webcam Access (PLUS)</li>`),0!==t.length&&e.push(I`<li>Web Content Settings</li>
+          </ha-alert>`
+            : ""}
+    `;
+    }
+    getFullySettings() {
+        if (!window.browser_mod.fully)
+            return null;
+        const retval = [];
+        const wcs = [];
+        // Web Content Settings
+        // Autoplay Videos
+        if (window.fully.getBooleanSetting("autoplayVideos") !== "true")
+            wcs.push(x `<li>Autoplay Videos</li>`);
+        // Autoplay Audio
+        if (window.fully.getBooleanSetting("autoplayAudio") !== "true")
+            wcs.push(x `<li>Autoplay Audio</li>`);
+        // Enable Webcam Access (PLUS)
+        if (window.fully.getBooleanSetting("webcamAccess") !== "true")
+            wcs.push(x `<li>Enable Webcam Access (PLUS)</li>`);
+        if (wcs.length !== 0) {
+            retval.push(x `<li>Web Content Settings</li>
         <ul>
-          ${t}
-        </ul>`),"true"!==window.fully.getBooleanSetting("websiteIntegration")&&e.push(I`<li>Advanced Web Settings</li>
+          ${wcs}
+        </ul>`);
+        }
+        // Advanced Web Settings
+        // Enable JavaScript Interface (PLUS)
+        if (window.fully.getBooleanSetting("websiteIntegration") !== "true")
+            retval.push(x `<li>Advanced Web Settings</li>
         <ul>
           <li>Enable JavaScript Interface (PLUS)</li>
-        </ul>`),"true"!==window.fully.getBooleanSetting("keepScreenOn")&&e.push(I`<li>Device Management</li>
+        </ul>`);
+        // Device Management
+        // Keep Screen On
+        if (window.fully.getBooleanSetting("keepScreenOn") !== "true")
+            retval.push(x `<li>Device Management</li>
         <ul>
           <li>Keep Screen On</li>
-        </ul>`),"true"!==window.fully.getBooleanSetting("preventSleepWhileScreenOff")&&e.push(I`<li>Power Settings</li>
+        </ul>`);
+        // Power Settings
+        // Prevent from Sleep while Screen Off
+        if (window.fully.getBooleanSetting("preventSleepWhileScreenOff") !== "true")
+            retval.push(x `<li>Power Settings</li>
         <ul>
           <li>Prevent from Sleep while Screen Off</li>
-        </ul>`);const i=[];return"true"!==window.fully.getBooleanSetting("motionDetection")&&i.push(I`<li>Enable Visual Motion Detection</li>`),"true"!==window.fully.getBooleanSetting("screenOnOnMotion")&&i.push(I`<li>Turn Screen On on Motion</li>`),"true"!==window.fully.getBooleanSetting("stopScreensaverOnMotion")&&i.push(I`<li>Exit Screensaver on Motion</li>`),0!==i.length&&e.push(I`<li>Motion Detection (PLUS)</li>
+        </ul>`);
+        const md = [];
+        // Motion Detection (PLUS)
+        // Enable Visual Motion Detection
+        if (window.fully.getBooleanSetting("motionDetection") !== "true")
+            md.push(x `<li>Enable Visual Motion Detection</li>`);
+        // Turn Screen On on Motion
+        if (window.fully.getBooleanSetting("screenOnOnMotion") !== "true")
+            md.push(x `<li>Turn Screen On on Motion</li>`);
+        // Exit Screensaver on Motion
+        if (window.fully.getBooleanSetting("stopScreensaverOnMotion") !== "true")
+            md.push(x `<li>Exit Screensaver on Motion</li>`);
+        if (md.length !== 0) {
+            retval.push(x `<li>Motion Detection (PLUS)</li>
         <ul>
-          ${i}
-        </ul>`),"true"!==window.fully.getBooleanSetting("remoteAdmin")&&e.push(I`<li>Remote Administration (PLUS)</li>
+          ${md}
+        </ul>`);
+        }
+        // Remote Administration (PLUS)
+        // Enable Remote Administration
+        if (window.fully.getBooleanSetting("remoteAdmin") !== "true")
+            retval.push(x `<li>Remote Administration (PLUS)</li>
         <ul>
           <li>Enable Remote Administration</li>
-        </ul>`),e.length?e:null}static get styles(){return r`
+        </ul>`);
+        return retval.length ? retval : null;
+    }
+    static get styles() {
+        return i$2 `
       .card-header {
         display: flex;
         justify-content: space-between;
@@ -155,7 +607,101 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
         display: block;
         margin-top: 8px;
       }
-    `}}e([ae()],fe.prototype,"hass",void 0),e([ae()],fe.prototype,"dirty",void 0),e([ae({type:Boolean})],fe.prototype,"narrow",void 0),customElements.define("browser-mod-browser-settings-card",fe);class ye extends se{firstUpdated(){window.browser_mod.addEventListener("browser-mod-config-update",(()=>this.requestUpdate())),this._fetch_entity_registry()}async _fetch_entity_registry(){this._entity_registry||(this._entity_registry=await this.hass.callWS({type:"config/device_registry/list"}))}_find_entity(e){if(this._entity_registry)return this._entity_registry.find((t=>{var i;return JSON.stringify(null===(i=null==t?void 0:t.identifiers)||void 0===i?void 0:i[0])===JSON.stringify(["browser_mod",e])}))}unregister_browser(e){const t=e.currentTarget.browserID;window.browser_mod.showPopup({title:"Unregister browser",content:`Are you sure you want to unregister Browser ${t}?`,right_button:"Yes",right_button_action:()=>{t===window.browser_mod.browserID?window.browser_mod.registered=!1:window.browser_mod.connection.sendMessage({type:"browser_mod/unregister",browserID:t})},left_button:"No"})}toggle_lock_browser(e){const t=e.currentTarget.browserID,i=window.browser_mod.browsers[t];window.browser_mod.connection.sendMessage({type:"browser_mod/register",browserID:t,data:Object.assign(Object.assign({},i),{locked:!i.locked})})}toggle_auto_register(e){var t;(null===(t=window.browser_mod)||void 0===t?void 0:t.global_settings.autoRegister)?window.browser_mod.setSetting("global",null,{autoRegister:void 0}):window.browser_mod.setSetting("global",null,{autoRegister:!0})}toggle_lock_register(e){var t;(null===(t=window.browser_mod)||void 0===t?void 0:t.global_settings.lockRegister)?window.browser_mod.setSetting("global",null,{lockRegister:void 0}):window.browser_mod.setSetting("global",null,{lockRegister:!0,autoRegister:void 0})}register_cast(){window.browser_mod.connection.sendMessage({type:"browser_mod/register",browserID:"CAST"})}render(){var e,t;return I`
+    `;
+    }
+}
+__decorate([
+    n$2()
+], BrowserModRegisteredBrowsersCard$1.prototype, "hass", void 0);
+__decorate([
+    n$2()
+], BrowserModRegisteredBrowsersCard$1.prototype, "dirty", void 0);
+__decorate([
+    n$2({ type: Boolean })
+], BrowserModRegisteredBrowsersCard$1.prototype, "narrow", void 0);
+customElements.define("browser-mod-browser-settings-card", BrowserModRegisteredBrowsersCard$1);
+
+class BrowserModRegisteredBrowsersCard extends s {
+    firstUpdated() {
+        window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+        this._fetch_entity_registry();
+    }
+    async _fetch_entity_registry() {
+        if (this._entity_registry)
+            return;
+        this._entity_registry = await this.hass.callWS({
+            type: "config/device_registry/list",
+        });
+    }
+    _find_entity(browserID) {
+        if (!this._entity_registry)
+            return undefined;
+        return this._entity_registry.find((v) => {
+            var _a;
+            return JSON.stringify((_a = v === null || v === void 0 ? void 0 : v.identifiers) === null || _a === void 0 ? void 0 : _a[0]) ===
+                JSON.stringify(["browser_mod", browserID]);
+        });
+    }
+    unregister_browser(ev) {
+        const browserID = ev.currentTarget.browserID;
+        const unregisterCallback = () => {
+            if (browserID === window.browser_mod.browserID) {
+                window.browser_mod.registered = false;
+            }
+            else {
+                window.browser_mod.connection.sendMessage({
+                    type: "browser_mod/unregister",
+                    browserID,
+                });
+            }
+        };
+        window.browser_mod.showPopup({
+            title: "Unregister browser",
+            content: `Are you sure you want to unregister Browser ${browserID}?`,
+            right_button: "Yes",
+            right_button_action: unregisterCallback,
+            left_button: "No",
+        });
+    }
+    toggle_lock_browser(ev) {
+        const browserID = ev.currentTarget.browserID;
+        const browser = window.browser_mod.browsers[browserID];
+        window.browser_mod.connection.sendMessage({
+            type: "browser_mod/register",
+            browserID,
+            data: Object.assign(Object.assign({}, browser), { locked: !browser.locked }),
+        });
+    }
+    toggle_auto_register(ev) {
+        var _a;
+        if ((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.global_settings["autoRegister"])
+            window.browser_mod.setSetting("global", null, {
+                autoRegister: undefined,
+            });
+        else
+            window.browser_mod.setSetting("global", null, { autoRegister: true });
+    }
+    toggle_lock_register(ev) {
+        var _a;
+        if ((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.global_settings["lockRegister"])
+            window.browser_mod.setSetting("global", null, {
+                lockRegister: undefined,
+            });
+        else
+            window.browser_mod.setSetting("global", null, {
+                lockRegister: true,
+                autoRegister: undefined,
+            });
+    }
+    register_cast() {
+        window.browser_mod.connection.sendMessage({
+            type: "browser_mod/register",
+            browserID: "CAST",
+        });
+    }
+    render() {
+        var _a, _b;
+        return x `
       <ha-card header="Registered Browsers" outlined>
         <div class="card-content">
           <ha-settings-row>
@@ -164,7 +710,8 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               Automatically register all new Browsers
             </span>
             <ha-switch
-              .checked=${!0===(null===(e=window.browser_mod)||void 0===e?void 0:e.global_settings.autoRegister)}
+              .checked=${((_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.global_settings["autoRegister"]) ===
+            true}
               @change=${this.toggle_auto_register}
             ></ha-switch>
           </ha-settings-row>
@@ -174,43 +721,51 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               Disable registering or unregistering of all Browsers
             </span>
             <ha-switch
-              .checked=${!0===(null===(t=window.browser_mod)||void 0===t?void 0:t.global_settings.lockRegister)}
+              .checked=${((_b = window.browser_mod) === null || _b === void 0 ? void 0 : _b.global_settings["lockRegister"]) ===
+            true}
               @change=${this.toggle_lock_register}
             ></ha-switch>
           </ha-settings-row>
 
-          ${Object.keys(window.browser_mod.browsers).map((e=>{const t=window.browser_mod.browsers[e],i=this._find_entity(e);return I` <ha-settings-row>
+          ${Object.keys(window.browser_mod.browsers).map((d) => {
+            const browser = window.browser_mod.browsers[d];
+            const device = this._find_entity(d);
+            return x ` <ha-settings-row>
               <span slot="heading">
-                ${e} ${(null==i?void 0:i.name_by_user)?`(${i.name_by_user})`:""}
+                ${d} ${(device === null || device === void 0 ? void 0 : device.name_by_user) ? `(${device.name_by_user})` : ""}
               </span>
               <span slot="description">
                 Last connected:
                 <ha-relative-time
                   .hass=${this.hass}
-                  .datetime=${t.last_seen}
+                  .datetime=${browser.last_seen}
                 ></ha-relative-time>
               </span>
-              ${i?I`
-                    <a href="config/devices/device/${i.id}">
+              ${device
+                ? x `
+                    <a href="config/devices/device/${device.id}">
                       <ha-icon-button>
                         <ha-icon .icon=${"mdi:devices"}></ha-icon>
                       </ha-icon-button>
                     </a>
-                  `:""}
+                  `
+                : ""}
               <ha-icon-button
-                .browserID=${e}
+                .browserID=${d}
                 @click=${this.toggle_lock_browser}
               >
                 <ha-icon
-                  .icon=${t.locked?"mdi:lock":"mdi:lock-open-variant"}
+                  .icon=${browser.locked ? "mdi:lock" : "mdi:lock-open-variant"}
                 ></ha-icon>
               </ha-icon-button>
-              <ha-icon-button .browserID=${e} @click=${this.unregister_browser}>
+              <ha-icon-button .browserID=${d} @click=${this.unregister_browser}>
                 <ha-icon .icon=${"mdi:delete"}></ha-icon>
               </ha-icon-button>
-            </ha-settings-row>`}))}
+            </ha-settings-row>`;
+        })}
         </div>
-        ${void 0===window.browser_mod.browsers.CAST?I`
+        ${window.browser_mod.browsers["CAST"] === undefined
+            ? x `
               <div class="card-actions">
                 <ha-button
                   appearance="plain"
@@ -219,73 +774,653 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
                   Register CAST Browser
                 </ha-button>
               </div>
-            `:""}
+            `
+            : ""}
       </ha-card>
-    `}static get styles(){return r`
+    `;
+    }
+    static get styles() {
+        return i$2 `
       ha-icon-button > * {
         display: flex;
         color: var(--primary-text-color);
       }
-    `}}e([ae()],ye.prototype,"hass",void 0),e([ae()],ye.prototype,"_entity_registry",void 0),customElements.define("browser-mod-registered-browsers-card",ye);class $e{constructor(e){this._element=e,customElements.get("dialog-edit-sidebar")?this._dialogAvaliable=!0:(this._dialogAvaliable=!1,me(document.body,"home-assistant $ home-assistant-main $ ha-drawer ha-sidebar").then((e=>{if(e&&void 0===e.editMode){const t=e.shadowRoot.querySelector("div.menu");t&&(e.addEventListener("show-dialog",(e=>{var t,i,s;"dialog-edit-sidebar"===(null===(t=e.detail)||void 0===t?void 0:t.dialogTag)&&(e.stopPropagation(),null===(s=null===(i=e.detail)||void 0===i?void 0:i.dialogImport)||void 0===s||s.call(i))}),{once:!0}),t.dispatchEvent(new CustomEvent("action",{detail:{action:"hold"}})))}})),customElements.whenDefined("dialog-edit-sidebar").then((async()=>{this._dialogAvaliable=!0,await this._element.updateComplete.then((()=>this._element.requestUpdate()))})))}get dialogAvaliable(){return this._dialogAvaliable}get order(){var e,t;const i=null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.getSetting)||void 0===t?void 0:t.call(e,"sidebarPanelOrder");return"global"===this._type?i.global||"[]":i[this._type][this._target]||"[]"}get hidden(){var e,t;const i=null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.getSetting)||void 0===t?void 0:t.call(e,"sidebarHiddenPanels");return"global"===this._type?i.global||"[]":i[this._type][this._target]||"[]"}async setupDialog(){var e;if(!this._dialogAvaliable)return;this._dialogEditSidebar=document.createElement("dialog-edit-sidebar");const t=await _e();t&&this._dialogEditSidebar&&(await async function(e){(await _e()).provideHass(e)}(this._dialogEditSidebar),this._dialogEditSidebar._order=JSON.parse(this.order),this._dialogEditSidebar._hidden=JSON.parse(this.hidden),t.shadowRoot.appendChild(this._dialogEditSidebar),this._dialogEditSidebar._open=!0,this._dialogEditSidebar.focus(),window.addEventListener("popstate",(async e=>{var t,i;const s=null===(t=e.state)||void 0===t?void 0:t.sidebarSettingsCustomSelector;s&&(s.open||(null===(i=this._dialogEditSidebar)||void 0===i?void 0:i._open)&&await this._dialogEditSidebar.closeDialog())})),void 0===(null===(e=history.state)||void 0===e?void 0:e.sidebarSettingsCustomSelector)&&history.replaceState({sidebarSettingsCustomSelector:{open:!1}},""),history.pushState({sidebarSettingsCustomSelector:{open:!0}},""),this._dialogEditSidebar.addEventListener("dialog-closed",(e=>{var t;"dialog-edit-sidebar"==(null===(t=e.detail)||void 0===t?void 0:t.dialog)&&this._dialogEditSidebar&&(this._dialogEditSidebar.remove(),this._dialogEditSidebar=void 0)})))}async customiseDialog(){var e;if(!this._dialogEditSidebar)return;let t,i=0;for(;!t&&i++<5;)t=this._dialogEditSidebar.shadowRoot.querySelector("ha-md-dialog"),t||await new Promise((e=>setTimeout(e,500)));const s=await me(this._dialogEditSidebar.shadowRoot,"ha-md-dialog ha-dialog-header");if(s){const t=document.createElement("style");s.shadowRoot.append(t);const i="global"===this._type?"Global":this._type.charAt(0).toUpperCase()+this._type.slice(1)+" - ";let o="";if("user"===this._type){for(const e of this._allUsers)if(e.id===this._target){o=e.name;break}}else o=null!==(e=this._target)&&void 0!==e?e:"";t.innerHTML=`\n        .header-subtitle {\n          display: none;\n        }\n        .header-title::after {\n          content: "- ${i}${o}";\n        }\n      `}}async setupSaveHandler(){if(!this._dialogEditSidebar)return;const e=this._dialogEditSidebar.shadowRoot.querySelector('[slot="actions"] > ha-button:nth-child(2)');if(e){const t=e.shadowRoot.querySelector("button");t&&t.addEventListener("click",(e=>{e.stopImmediatePropagation(),e.stopPropagation(),e.preventDefault(),this._dialogEditSidebar.dispatchEvent(new CustomEvent("sidebar-settings-save"))}))}}async saveSettings(){if(!this._dialogEditSidebar)return;const e=this._dialogEditSidebar._order,t=this._dialogEditSidebar._hidden;window.browser_mod.setSetting(this._type,this._target,{sidebarHiddenPanels:JSON.stringify(t),sidebarPanelOrder:JSON.stringify(e)}),this._dialogEditSidebar.closeDialog()}async changeSetting(e,t,i){var s,o;this.dialogAvaliable?(this._type=e,this._target=t,this._allUsers=i,await this.setupDialog(),await this.customiseDialog(),await this.setupSaveHandler(),this._dialogEditSidebar.addEventListener("sidebar-settings-save",(async()=>{this.saveSettings()}))):null===(o=null===(s=window.browser_mod)||void 0===s?void 0:s.showPopup)||void 0===o||o.call(s,{title:"ERROR!",content:"Sidebar settings dialog unavailable.",right_button:"OK"})}}let Se;class Ae extends se{constructor(){super(...arguments),this.settingSelector={template:{}},this.tableData=[]}firstUpdated(){window.browser_mod.addEventListener("browser-mod-config-update",(()=>this.updateTable()))}updated(e){e.has("settingKey")&&this.updateTable(),e.has("hass")&&void 0===e.get("hass")&&this.updateTable()}async fetchUsers(){return void 0===Se&&(Se=await this.hass.callWS({type:"config/auth/list"})),Se}clearSetting(e,t){var i;null===(i=window.browser_mod)||void 0===i||i.showPopup({title:"Are you sure",content:"Do you wish to clear this setting?",right_button:"Yes",right_button_action:async()=>{if("sidebarPanelOrder"===this.settingKey)return await me(document.body,"home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"),window.browser_mod.setSetting(e,t,{sidebarHiddenPanels:"[]",sidebarPanelOrder:"[]"}),void window.browser_mod.setSetting(e,t,{sidebarHiddenPanels:void 0,sidebarPanelOrder:void 0});this.default&&window.browser_mod.setSetting(e,t,{[this.settingKey]:this.default}),window.browser_mod.setSetting(e,t,{[this.settingKey]:void 0})},left_button:"No"})}async changeSetting(e,t){var i;if(this.settingSelector.custom){const s=await this.fetchUsers();null===(i=this.settingSelector.custom)||void 0===i||i.changeSetting(e,t,s)}else this.changeSettingForm(e,t)}changeSettingForm(e,t){var i,s,o,n,r,a,l;const d=null===(s=null===(i=window.browser_mod)||void 0===i?void 0:i.getSetting)||void 0===s?void 0:s.call(i,this.settingKey),h=null!==(o="global"===e?d.global:d[e][t])&&void 0!==o?o:this.default,c=null!==(r=null!==(n=this.settingSelector.plaintext)&&void 0!==n?n:this.settingSelector.schema)&&void 0!==r?r:[{name:"value",label:null!==(a=this.settingSelector.label)&&void 0!==a?a:"",default:h,selector:this.settingSelector}];if(this.settingSelector.schema&&void 0!==h){function u(e,t){for(const i of e)i.schema?u(i.schema,t):void 0!==t[i.name]&&(i.default=t[i.name])}u(c,h)}null===(l=window.browser_mod)||void 0===l||l.showPopup({title:"Change setting",content:c,right_button:"OK",right_button_action:async i=>{var s;if("sidebarPanelOrder"===this.settingKey){const i=await me(document.body,"home-assistant $ home-assistant-main $ ha-drawer ha-sidebar");return void window.browser_mod.setSetting(e,t,{sidebarHiddenPanels:JSON.stringify(i._hiddenPanels),sidebarPanelOrder:JSON.stringify(i._panelOrder)})}let o=null!==(s=i.value)&&void 0!==s?s:i;window.browser_mod.setSetting(e,t,{[this.settingKey]:o})},left_button:"Cancel"})}addBrowserSetting(){var e,t;const i=null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.getSetting)||void 0===t?void 0:t.call(e,this.settingKey),s=window.browser_mod._data.browsers,o=[];for(const e of Object.keys(s))null==i.browser[e]&&o.push(e);0!==o.length?window.browser_mod.showPopup({title:"Select browser to configure",content:[{name:"browser",label:"",selector:{select:{options:o}}}],right_button:"Next",right_button_action:e=>this.changeSetting("browser",e.browser),left_button:"Cancel"}):window.browser_mod.showPopup({title:"No browsers to configure",content:"All registered browsers have already been configured.",right_button:"OK"})}async addUserSetting(){var e,t;const i=null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.getSetting)||void 0===t?void 0:t.call(e,this.settingKey),s=await this.fetchUsers(),o=[];for(const e of s)e.username&&null==i.user[e.id]&&o.push({label:e.name,value:e.id});0!==o.length?window.browser_mod.showPopup({title:"Select user to configure",content:[{name:"user",label:"",selector:{select:{options:o}}}],right_button:"Next",right_button_action:e=>this.changeSetting("user",e.user),left_button:"Cancel"}):window.browser_mod.showPopup({title:"No users to configure",content:"All users have already been configured.",right_button:"OK"})}async updateTable(){var e,t;if(void 0===this.hass)return;const i=await this.fetchUsers(),s=null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.getSetting)||void 0===t?void 0:t.call(e,this.settingKey),o=[];for(const[e,t]of Object.entries(s.user)){const s=i.find((t=>t.id===e));if(!s)continue;let n="object"==typeof t?"Config":String(t);n.length>=20&&(n=n.slice(0,20)+"..."),o.push({name:`User: ${s.name}`,value:n,controls:I`
+    `;
+    }
+}
+__decorate([
+    n$2()
+], BrowserModRegisteredBrowsersCard.prototype, "hass", void 0);
+__decorate([
+    n$2()
+], BrowserModRegisteredBrowsersCard.prototype, "_entity_registry", void 0);
+customElements.define("browser-mod-registered-browsers-card", BrowserModRegisteredBrowsersCard);
+
+class SidebarSettingsCustomSelector {
+    constructor(element) {
+        this._element = element;
+        if (customElements.get("dialog-edit-sidebar")) {
+            this._dialogAvaliable = true;
+            return;
+        }
+        this._dialogAvaliable = false;
+        selectTree(document.body, "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar").then((sidebar) => {
+            // Home Assistant 2025.6 removed editMode from sidebar
+            // so this is the best check to see if sidebar settings dialog is available
+            if (sidebar && sidebar.editMode === undefined) {
+                const menu = sidebar.shadowRoot.querySelector("div.menu");
+                if (menu) {
+                    // Simulate hold press on the menu to open the sidebar settings dialog.
+                    // Listen once and stop propagation of the show-dialog event
+                    // so the dialogImport can be called to make <dialog-edit-sidebar> available
+                    // An event method would be nice HA Team!
+                    sidebar.addEventListener("show-dialog", (ev) => {
+                        var _a, _b, _c;
+                        if (((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.dialogTag) === "dialog-edit-sidebar") {
+                            ev.stopPropagation();
+                            (_c = (_b = ev.detail) === null || _b === void 0 ? void 0 : _b.dialogImport) === null || _c === void 0 ? void 0 : _c.call(_b);
+                        }
+                    }, { once: true });
+                    menu.dispatchEvent(new CustomEvent("action", { detail: { action: "hold" } }));
+                }
+            }
+        });
+        customElements.whenDefined("dialog-edit-sidebar").then(async () => {
+            this._dialogAvaliable = true;
+            await this._element.updateComplete.then(() => this._element.requestUpdate());
+        });
+    }
+    get dialogAvaliable() {
+        return this._dialogAvaliable;
+    }
+    get order() {
+        var _a, _b;
+        const sidebarPanelOrder = (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.getSetting) === null || _b === void 0 ? void 0 : _b.call(_a, 'sidebarPanelOrder');
+        const order = (this._type === "global" ? sidebarPanelOrder.global || '[]' : sidebarPanelOrder[this._type][this._target] || '[]');
+        return order;
+    }
+    get hidden() {
+        var _a, _b;
+        const sidebarHiddenPanels = (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.getSetting) === null || _b === void 0 ? void 0 : _b.call(_a, 'sidebarHiddenPanels');
+        const hidden = (this._type === "global" ? sidebarHiddenPanels.global || '[]' : sidebarHiddenPanels[this._type][this._target] || '[]');
+        return hidden;
+    }
+    async setupDialog() {
+        var _a;
+        if (!this._dialogAvaliable)
+            return;
+        this._dialogEditSidebar = document.createElement("dialog-edit-sidebar");
+        const base = await hass_base_el();
+        if (base && this._dialogEditSidebar) {
+            await provideHass(this._dialogEditSidebar);
+            this._dialogEditSidebar._order = JSON.parse(this.order);
+            this._dialogEditSidebar._hidden = JSON.parse(this.hidden);
+            base.shadowRoot.appendChild(this._dialogEditSidebar);
+            this._dialogEditSidebar._open = true;
+            this._dialogEditSidebar.focus();
+            window.addEventListener("popstate", async (ev) => {
+                var _a, _b;
+                const sidebarSettingsCustomSelectorState = (_a = ev.state) === null || _a === void 0 ? void 0 : _a.sidebarSettingsCustomSelector;
+                if (sidebarSettingsCustomSelectorState) {
+                    if (!sidebarSettingsCustomSelectorState.open) {
+                        if ((_b = this._dialogEditSidebar) === null || _b === void 0 ? void 0 : _b._open)
+                            await this._dialogEditSidebar.closeDialog();
+                    }
+                }
+            });
+            if (((_a = history.state) === null || _a === void 0 ? void 0 : _a.sidebarSettingsCustomSelector) === undefined) {
+                history.replaceState({
+                    sidebarSettingsCustomSelector: {
+                        open: false,
+                    },
+                }, "");
+            }
+            history.pushState({
+                sidebarSettingsCustomSelector: {
+                    open: true,
+                },
+            }, "");
+            this._dialogEditSidebar.addEventListener("dialog-closed", (ev) => {
+                var _a;
+                if (((_a = ev.detail) === null || _a === void 0 ? void 0 : _a.dialog) == "dialog-edit-sidebar" && this._dialogEditSidebar) {
+                    this._dialogEditSidebar.remove();
+                    this._dialogEditSidebar = undefined;
+                }
+            });
+        }
+    }
+    async customiseDialog() {
+        var _a;
+        if (!this._dialogEditSidebar)
+            return;
+        let haMdDialog;
+        let cnt = 0;
+        while (!haMdDialog && cnt++ < 5) {
+            haMdDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-md-dialog");
+            if (!haMdDialog) {
+                await new Promise((resolve) => setTimeout(resolve, 500));
+            }
+        }
+        const dialogHeader = await selectTree(this._dialogEditSidebar.shadowRoot, "ha-md-dialog ha-dialog-header");
+        if (dialogHeader) {
+            const styleEl = document.createElement("style");
+            dialogHeader.shadowRoot.append(styleEl);
+            const typeText = (this._type === "global") ? "Global" : this._type.charAt(0).toUpperCase() + this._type.slice(1) + " - ";
+            let targetText = "";
+            if (this._type === "user") {
+                for (const user of this._allUsers) {
+                    if (user.id === this._target) {
+                        targetText = user.name;
+                        break;
+                    }
+                }
+            }
+            else {
+                targetText = (_a = this._target) !== null && _a !== void 0 ? _a : "";
+            }
+            // Hide subtitle message about sync
+            // Append Browser Mod details using ::after CSS styling
+            styleEl.innerHTML = `
+        .header-subtitle {
+          display: none;
+        }
+        .header-title::after {
+          content: "- ${typeText}${targetText}";
+        }
+      `;
+        }
+    }
+    async setupSaveHandler() {
+        if (!this._dialogEditSidebar)
+            return;
+        const haButtonSave = this._dialogEditSidebar.shadowRoot.querySelector('[slot="actions"] > ha-button:nth-child(2)');
+        if (haButtonSave) {
+            const buttonSave = haButtonSave.shadowRoot.querySelector("button");
+            if (buttonSave) {
+                buttonSave.addEventListener("click", (ev) => {
+                    ev.stopImmediatePropagation();
+                    ev.stopPropagation();
+                    ev.preventDefault();
+                    this._dialogEditSidebar.dispatchEvent(new CustomEvent("sidebar-settings-save"));
+                });
+            }
+        }
+    }
+    async saveSettings() {
+        if (!this._dialogEditSidebar)
+            return;
+        const order = this._dialogEditSidebar._order;
+        const hidden = this._dialogEditSidebar._hidden;
+        window.browser_mod.setSetting(this._type, this._target, {
+            sidebarHiddenPanels: JSON.stringify(hidden),
+            sidebarPanelOrder: JSON.stringify(order),
+        });
+        this._dialogEditSidebar.closeDialog();
+    }
+    async changeSetting(type, target, allUsers) {
+        var _a, _b;
+        if (!this.dialogAvaliable) {
+            (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.showPopup) === null || _b === void 0 ? void 0 : _b.call(_a, {
+                title: "ERROR!",
+                content: "Sidebar settings dialog unavailable.",
+                right_button: "OK",
+            });
+            return;
+        }
+        this._type = type;
+        this._target = target;
+        this._allUsers = allUsers;
+        await this.setupDialog();
+        await this.customiseDialog();
+        await this.setupSaveHandler();
+        this._dialogEditSidebar.addEventListener("sidebar-settings-save", async () => {
+            this.saveSettings();
+        });
+    }
+}
+
+let _users = undefined;
+class BrowserModSettingsTable extends s {
+    constructor() {
+        super(...arguments);
+        this.settingSelector = {
+            template: {}
+        };
+        this.tableData = [];
+    }
+    firstUpdated() {
+        window.browser_mod.addEventListener("browser-mod-config-update", () => this.updateTable());
+    }
+    updated(changedProperties) {
+        if (changedProperties.has("settingKey"))
+            this.updateTable();
+        if (changedProperties.has("hass") &&
+            changedProperties.get("hass") === undefined)
+            this.updateTable();
+    }
+    async fetchUsers() {
+        if (_users === undefined)
+            _users = await this.hass.callWS({ type: "config/auth/list" });
+        return _users;
+    }
+    clearSetting(type, target) {
+        var _a;
+        const clearSettingCallback = async () => {
+            if (this.settingKey === "sidebarPanelOrder") {
+                await selectTree(document.body, "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar");
+                window.browser_mod.setSetting(type, target, {
+                    sidebarHiddenPanels: "[]",
+                    sidebarPanelOrder: "[]",
+                });
+                window.browser_mod.setSetting(type, target, {
+                    sidebarHiddenPanels: undefined,
+                    sidebarPanelOrder: undefined,
+                });
+                return;
+            }
+            if (this.default)
+                window.browser_mod.setSetting(type, target, {
+                    [this.settingKey]: this.default,
+                });
+            window.browser_mod.setSetting(type, target, {
+                [this.settingKey]: undefined,
+            });
+        };
+        (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.showPopup({
+            title: "Are you sure",
+            content: "Do you wish to clear this setting?",
+            right_button: "Yes",
+            right_button_action: clearSettingCallback,
+            left_button: "No",
+        });
+    }
+    async changeSetting(type, target) {
+        var _a;
+        if (this.settingSelector.custom) {
+            const allUsers = await this.fetchUsers();
+            (_a = this.settingSelector.custom) === null || _a === void 0 ? void 0 : _a.changeSetting(type, target, allUsers);
+        }
+        else {
+            this.changeSettingForm(type, target);
+        }
+    }
+    changeSettingForm(type, target) {
+        var _a, _b, _c, _d, _e, _f, _g;
+        const changeSettingCallback = async (newValue) => {
+            var _a;
+            if (this.settingKey === "sidebarPanelOrder") {
+                const sideBar = await selectTree(document.body, "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar");
+                window.browser_mod.setSetting(type, target, {
+                    sidebarHiddenPanels: JSON.stringify(sideBar._hiddenPanels),
+                    sidebarPanelOrder: JSON.stringify(sideBar._panelOrder),
+                });
+                return;
+            }
+            let value = (_a = newValue.value) !== null && _a !== void 0 ? _a : newValue;
+            window.browser_mod.setSetting(type, target, { [this.settingKey]: value });
+        };
+        const settings = (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.getSetting) === null || _b === void 0 ? void 0 : _b.call(_a, this.settingKey);
+        const value = (_c = (type === "global" ? settings.global : settings[type][target])) !== null && _c !== void 0 ? _c : this.default;
+        const content = (_e = (_d = this.settingSelector.plaintext) !== null && _d !== void 0 ? _d : this.settingSelector.schema) !== null && _e !== void 0 ? _e : [
+            {
+                name: "value",
+                label: (_f = this.settingSelector.label) !== null && _f !== void 0 ? _f : "",
+                default: value,
+                selector: this.settingSelector,
+            },
+        ];
+        if (this.settingSelector.schema && value !== undefined) {
+            _setDefaults(content, value);
+            function _setDefaults(schema, data) {
+                for (const i of schema) {
+                    if (i["schema"]) {
+                        _setDefaults(i["schema"], data);
+                    }
+                    else if (data[i.name] !== undefined) {
+                        i.default = data[i.name];
+                    }
+                }
+            }
+        }
+        (_g = window.browser_mod) === null || _g === void 0 ? void 0 : _g.showPopup({
+            title: "Change setting",
+            content,
+            right_button: "OK",
+            right_button_action: changeSettingCallback,
+            left_button: "Cancel",
+        });
+    }
+    addBrowserSetting() {
+        var _a, _b;
+        const settings = (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.getSetting) === null || _b === void 0 ? void 0 : _b.call(_a, this.settingKey);
+        const allBrowsers = window.browser_mod._data.browsers;
+        const browsers = [];
+        for (const target of Object.keys(allBrowsers)) {
+            if (settings.browser[target] == null)
+                browsers.push(target);
+        }
+        if (browsers.length === 0) {
+            window.browser_mod.showPopup({
+                title: "No browsers to configure",
+                content: "All registered browsers have already been configured.",
+                right_button: "OK"
+            });
+            return;
+        }
+        window.browser_mod.showPopup({
+            title: "Select browser to configure",
+            content: [
+                {
+                    name: "browser",
+                    label: "",
+                    selector: {
+                        select: { options: browsers },
+                    },
+                },
+            ],
+            right_button: "Next",
+            right_button_action: (value) => this.changeSetting("browser", value.browser),
+            left_button: "Cancel",
+        });
+    }
+    async addUserSetting() {
+        var _a, _b;
+        const settings = (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.getSetting) === null || _b === void 0 ? void 0 : _b.call(_a, this.settingKey);
+        const allUsers = await this.fetchUsers();
+        const users = [];
+        for (const target of allUsers) {
+            if (target.username && settings.user[target.id] == null)
+                users.push({ label: target.name, value: target.id });
+        }
+        if (users.length === 0) {
+            window.browser_mod.showPopup({
+                title: "No users to configure",
+                content: "All users have already been configured.",
+                right_button: "OK"
+            });
+            return;
+        }
+        window.browser_mod.showPopup({
+            title: "Select user to configure",
+            content: [
+                {
+                    name: "user",
+                    label: "",
+                    selector: {
+                        select: { options: users },
+                    },
+                },
+            ],
+            right_button: "Next",
+            right_button_action: (value) => this.changeSetting("user", value.user),
+            left_button: "Cancel",
+        });
+    }
+    async updateTable() {
+        var _a, _b;
+        if (this.hass === undefined)
+            return;
+        const users = await this.fetchUsers();
+        const settings = (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.getSetting) === null || _b === void 0 ? void 0 : _b.call(_a, this.settingKey);
+        const data = [];
+        for (const [k, v] of Object.entries(settings.user)) {
+            const user = users.find((usr) => usr.id === k);
+            if (!user)
+                continue;
+            let val = (typeof (v) === "object") ? "Config" : String(v);
+            if (val.length >= 20)
+                val = val.slice(0, 20) + "...";
+            data.push({
+                name: `User: ${user.name}`,
+                value: val,
+                controls: x `
           <div>
-            <ha-icon-button @click=${()=>this.changeSetting("user",e)}>
+            <ha-icon-button @click=${() => this.changeSetting("user", k)}>
               <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
             </ha-icon-button>
-            <ha-icon-button @click=${()=>this.clearSetting("user",e)}>
+            <ha-icon-button @click=${() => this.clearSetting("user", k)}>
               <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
             </ha-icon-button>
           </div>
-        `})}o.push({name:"",value:I`
+        `,
+            });
+        }
+        data.push({
+            name: "",
+            value: x `
         <ha-button 
           appearance="plain"
-          @click=${()=>this.addUserSetting()}>
+          @click=${() => this.addUserSetting()}>
             <ha-icon 
               slot="start" 
               .icon=${"mdi:plus"}>
             </ha-icon>
             Add user setting
         </ha-button>
-      `});for(const[e,t]of Object.entries(s.browser)){let i="object"==typeof t?"Config":String(t);i.length>=20&&(i=i.slice(0,20)+"..."),o.push({name:`Browser: ${e}`,value:i,controls:I`
+      `,
+        });
+        for (const [k, v] of Object.entries(settings.browser)) {
+            let val = (typeof (v) === "object") ? "Config" : String(v);
+            if (val.length >= 20)
+                val = val.slice(0, 20) + "...";
+            data.push({
+                name: `Browser: ${k}`,
+                value: val,
+                controls: x `
           <div>
-            <ha-icon-button @click=${()=>this.changeSetting("browser",e)}>
+            <ha-icon-button @click=${() => this.changeSetting("browser", k)}>
               <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
             </ha-icon-button>
-            <ha-icon-button @click=${()=>this.clearSetting("browser",e)}>
+            <ha-icon-button @click=${() => this.clearSetting("browser", k)}>
               <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
             </ha-icon-button>
           </div>
-        `})}o.push({name:"",value:I`
+        `,
+            });
+        }
+        data.push({
+            name: "",
+            value: x `
         <ha-button
           appearance="plain" 
-          @click=${()=>this.addBrowserSetting()}>
+          @click=${() => this.addBrowserSetting()}>
             <ha-icon 
               slot="start" 
               .icon=${"mdi:plus"}>
             </ha-icon>
             Add browser setting
         </ha-button>
-      `});let n=s.global;null!=n&&("object"==typeof s.global?n="Config":(n=String(s.global),n.length>=20&&(n=n.slice(0,20)+"..."))),o.push({name:"GLOBAL",value:null!=n?n:I`<span style="color: var(--warning-color);">DEFAULT</span>`,controls:I`
+      `,
+        });
+        let globalSetting = settings.global;
+        if (globalSetting != null) {
+            if (typeof (settings.global) === "object") {
+                globalSetting = "Config";
+            }
+            else {
+                globalSetting = String(settings.global);
+                if (globalSetting.length >= 20)
+                    globalSetting = globalSetting.slice(0, 20) + "...";
+            }
+        }
+        data.push({
+            name: "GLOBAL",
+            value: globalSetting !== null && globalSetting !== void 0 ? globalSetting : x `<span style="color: var(--warning-color);">DEFAULT</span>`,
+            controls: x `
         <div>
-          <ha-icon-button @click=${()=>this.changeSetting("global",null)}>
+          <ha-icon-button @click=${() => this.changeSetting("global", null)}>
             <ha-icon .icon=${"mdi:pencil"} style="display:flex;"></ha-icon>
           </ha-icon-button>
-          <ha-icon-button @click=${()=>this.clearSetting("global",null)}>
+          <ha-icon-button @click=${() => this.clearSetting("global", null)}>
             <ha-icon .icon=${"mdi:delete"} style="display:flex;"></ha-icon>
           </ha-icon-button>
         </div>
-      `}),this.tableData=o}render(){var e,t;null===(t=null===(e=window.browser_mod)||void 0===e?void 0:e.global_settings)||void 0===t||t[this.settingKey];return I`
+      `,
+        });
+        this.tableData = data;
+    }
+    render() {
+        var _a, _b;
+        (_b = (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.global_settings) === null || _b === void 0 ? void 0 : _b[this.settingKey];
+        const columns = {
+            name: {
+                title: "Name",
+                grows: true,
+            },
+            value: {
+                title: "Value",
+                grows: true,
+                type: "overflow",
+            },
+            controls: {},
+        };
+        return x `
       <ha-data-table
         .hass=${this.hass}
-        .columns=${{name:{title:"Name",grows:!0},value:{title:"Value",grows:!0,type:"overflow"},controls:{}}}
+        .columns=${columns}
         .data=${this.tableData}
         auto-height
       >
       </ha-data-table>
-    `}static get styles(){return r`
+    `;
+    }
+    static get styles() {
+        return i$2 `
       :host {
         display: block;
       }
-    `}}e([ae()],Ae.prototype,"settingKey",void 0),e([ae()],Ae.prototype,"settingSelector",void 0),e([ae()],Ae.prototype,"hass",void 0),e([ae()],Ae.prototype,"default",void 0),e([ae()],Ae.prototype,"tableData",void 0),customElements.define("browser-mod-settings-table",Ae),(async()=>{var e,t,i,s,o,n,r;await customElements.whenDefined("partial-panel-resolver"),await customElements.whenDefined("partial-panel-resolver");const a=document.createElement("partial-panel-resolver")._getRoutes([{component_name:"developer-tools",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==a?void 0:a.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t));const l=document.createElement("developer-tools-router");await(null===(r=null===(n=null===(o=null===(s=null==l?void 0:l.routerOptions)||void 0===s?void 0:s.routes)||void 0===o?void 0:o.template)||void 0===n?void 0:n.load)||void 0===r?void 0:r.call(n)),await customElements.whenDefined("developer-tools-template")})();class Ee extends se{constructor(){super(...arguments),this._dashboards=[],this._panels={},this._editSidebar=!1,this._hassUserHasSidebarSettings=!1,this._savedSidebar={panelOrder:[],hiddenPanels:[]}}firstUpdated(){window.browser_mod.addEventListener("browser-mod-config-update",(()=>this.requestUpdate())),this._sidebarSettingsCustomSelector=new $e(this)}updated(e){e.has("hass")&&void 0===e.get("hass")&&(async()=>{this._dashboards=await this.hass.callWS({type:"lovelace/dashboards/list"}),this._panels=this.hass.panels,this.checkHassUserSidebarSettings()})()}async checkHassUserSidebarSettings(){var e,t;const i=await(null===(e=this.hass)||void 0===e?void 0:e.callWS({type:"frontend/get_user_data",key:"sidebar"}));this._hassUserHasSidebarSettings=i&&(null===(t=i.value)||void 0===t?void 0:t.panelOrder)}async clearHassUserSidebarSettings(){var e;null===(e=window.browser_mod)||void 0===e||e.showPopup({title:"Sidebar settings",content:"Clear sidebar settings synced in this user's Home Assistant profile?",right_button:"Yes",right_button_action:()=>{var e;this.hass.callWS({type:"frontend/set_user_data",key:"sidebar",value:{}}),this.checkHassUserSidebarSettings(),null===(e=window.browser_mod)||void 0===e||e.showPopup({title:"Sidebar settings",content:"Sidebar settings cleared",right_button:"OK"})},left_button:"No"})}async toggleEditSidebar(){var e,t;const i=await me(document.body,"home-assistant $ home-assistant-main $ ha-drawer ha-sidebar");i.editMode=!i.editMode,this._editSidebar=i.editMode,this._editSidebar?this._savedSidebar={panelOrder:i._panelOrder,hiddenPanels:i._hiddenPanels}:(i._panelOrder=null!==(e=this._savedSidebar.panelOrder)&&void 0!==e?e:[],i._hiddenPanels=null!==(t=this._savedSidebar.hiddenPanels)&&void 0!==t?t:[],this._savedSidebar={panelOrder:[],hiddenPanels:[]})}_toggle_afj(){window.setTimeout((()=>{var e;const t=this.shadowRoot.querySelector("#afj");if(t.checked=!0,t.count=(null!==(e=t.count)&&void 0!==e?e:0)+1,t.count&&t.count>5){t.disabled=!0,this.shadowRoot.querySelector("#afj_heading");this.shadowRoot.querySelector("#afj_description").innerHTML="Something went wrong. Please try again later."}}),500+2500*Math.random())}render(){var e,t,i;const s=this._dashboards.map((e=>({value:e.url_path,label:e.title}))),o={select:{options:[{value:"lovelace",label:"lovelace (default)"},...s],custom_value:!0}},n=Object.values(this._panels).filter((e=>!!e.title)).map((e=>{var t,i;return{value:e.url_path,label:(null===(i=(t=this.hass).localize)||void 0===i?void 0:i.call(t,`panel.${e.title}`))||e.title}})),r=[{value:"lovelace",label:(null===(t=(e=this.hass).localize)||void 0===t?void 0:t.call(e,"panel.states"))||"lovelace (default)"},...n];return I`
+    `;
+    }
+}
+__decorate([
+    n$2()
+], BrowserModSettingsTable.prototype, "settingKey", void 0);
+__decorate([
+    n$2()
+], BrowserModSettingsTable.prototype, "settingSelector", void 0);
+__decorate([
+    n$2()
+], BrowserModSettingsTable.prototype, "hass", void 0);
+__decorate([
+    n$2()
+], BrowserModSettingsTable.prototype, "default", void 0);
+__decorate([
+    n$2()
+], BrowserModSettingsTable.prototype, "tableData", void 0);
+customElements.define("browser-mod-settings-table", BrowserModSettingsTable);
+
+loadDeveloperToolsTemplate();
+class BrowserModFrontendSettingsCard extends s {
+    constructor() {
+        super(...arguments);
+        this._dashboards = [];
+        this._panels = {};
+        this._editSidebar = false;
+        this._hassUserHasSidebarSettings = false;
+        this._savedSidebar = { panelOrder: [], hiddenPanels: [] };
+    }
+    firstUpdated() {
+        window.browser_mod.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+        this._sidebarSettingsCustomSelector = new SidebarSettingsCustomSelector(this);
+    }
+    updated(changedProperties) {
+        if (changedProperties.has("hass") &&
+            changedProperties.get("hass") === undefined) {
+            (async () => {
+                this._dashboards = await this.hass.callWS({
+                    type: "lovelace/dashboards/list",
+                });
+                this._panels = this.hass.panels;
+                this.checkHassUserSidebarSettings();
+            })();
+        }
+    }
+    async checkHassUserSidebarSettings() {
+        var _a, _b;
+        const userData = await ((_a = this.hass) === null || _a === void 0 ? void 0 : _a.callWS({
+            type: 'frontend/get_user_data',
+            key: 'sidebar'
+        }));
+        this._hassUserHasSidebarSettings = (userData && ((_b = userData.value) === null || _b === void 0 ? void 0 : _b.panelOrder));
+    }
+    async clearHassUserSidebarSettings() {
+        var _a;
+        const clearSettings = () => {
+            var _a;
+            this.hass.callWS({
+                type: 'frontend/set_user_data',
+                key: 'sidebar',
+                value: {}
+            });
+            this.checkHassUserSidebarSettings();
+            (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.showPopup({
+                title: "Sidebar settings",
+                content: "Sidebar settings cleared",
+                right_button: "OK"
+            });
+        };
+        (_a = window.browser_mod) === null || _a === void 0 ? void 0 : _a.showPopup({
+            title: "Sidebar settings",
+            content: "Clear sidebar settings synced in this user's Home Assistant profile?",
+            right_button: "Yes",
+            right_button_action: clearSettings,
+            left_button: "No",
+        });
+    }
+    async toggleEditSidebar() {
+        var _a, _b;
+        const sideBar = await selectTree(document.body, "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar");
+        sideBar.editMode = !sideBar.editMode;
+        this._editSidebar = sideBar.editMode;
+        if (this._editSidebar) {
+            this._savedSidebar = {
+                panelOrder: sideBar._panelOrder,
+                hiddenPanels: sideBar._hiddenPanels,
+            };
+        }
+        else {
+            sideBar._panelOrder = (_a = this._savedSidebar.panelOrder) !== null && _a !== void 0 ? _a : [];
+            sideBar._hiddenPanels = (_b = this._savedSidebar.hiddenPanels) !== null && _b !== void 0 ? _b : [];
+            this._savedSidebar = { panelOrder: [], hiddenPanels: [] };
+        }
+    }
+    _toggle_afj() {
+        window.setTimeout(() => {
+            var _a;
+            const afj = this.shadowRoot.querySelector("#afj");
+            afj.checked = true;
+            afj.count = ((_a = afj.count) !== null && _a !== void 0 ? _a : 0) + 1;
+            if (afj.count && afj.count > 5) {
+                afj.disabled = true;
+                this.shadowRoot.querySelector("#afj_heading");
+                const afj_description = this.shadowRoot.querySelector("#afj_description");
+                afj_description.innerHTML =
+                    "Something went wrong. Please try again later.";
+            }
+        }, 500 + Math.random() * 2500);
+    }
+    render() {
+        var _a, _b, _c;
+        const db = this._dashboards.map((d) => {
+            return { value: d.url_path, label: d.title };
+        });
+        const dashboardSelector = {
+            select: {
+                options: [{ value: "lovelace", label: "lovelace (default)" }, ...db],
+                custom_value: true,
+            },
+        };
+        const pl = Object.values(this._panels)
+            .filter((p) => {
+            if (!p.title)
+                return false;
+            return true;
+        }).map((p) => {
+            var _a, _b;
+            return { value: p.url_path, label: ((_b = (_a = this.hass).localize) === null || _b === void 0 ? void 0 : _b.call(_a, `panel.${p.title}`)) || p.title };
+        });
+        const panels = [{ value: "lovelace", label: ((_b = (_a = this.hass).localize) === null || _b === void 0 ? void 0 : _b.call(_a, "panel.states")) || "lovelace (default)" }, ...pl];
+        return x `
       <ha-card header="Frontend Settings" outlined>
         <div class="card-content">
           <ha-alert alert-type="warning" title="Please note:">
@@ -306,7 +1441,8 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             DEFAULT.
           </p>
 
-          ${3==(new Date).getMonth()&&(new Date).getDate()<8?I`
+          ${new Date().getMonth() == 3 && new Date().getDate() < 8
+            ? x `
                 <ha-expansion-panel
                   .header=${"Extra boring settings"}
                   .secondary=${"Nothing to see here"}
@@ -328,12 +1464,13 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
                     ></span>
                     <ha-switch
                       id="afj"
-                      .checked=${!0}
+                      .checked=${true}
                       @change=${this._toggle_afj}
                     ></ha-switch>
                   </ha-settings-row>
                 </ha-expansion-panel>
-              `:""}
+              `
+            : ``}
 
           <ha-expansion-panel
             .header=${"Title template"}
@@ -365,7 +1502,7 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"hideSidebar"}
-              .settingSelector=${{boolean:{},label:"Hide sidebar"}}
+              .settingSelector=${{ boolean: {}, label: "Hide sidebar" }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -377,7 +1514,7 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"hideHeader"}
-              .settingSelector=${{boolean:{},label:"Hide header"}}
+              .settingSelector=${{ boolean: {}, label: "Hide header" }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -389,7 +1526,64 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"overlayIcon"}
-              .settingSelector=${{schema:[{name:"icon",label:"Icon",selector:{icon:{}}},{name:"title",label:"Title",selector:{text:{}}},{name:"action",label:"Action",selector:{object:{}}},{name:"panels",label:"Show on panels",selector:{select:{multiple:!0,options:r,mode:"dropdown"}}},{type:"grid",schema:[{name:"top",label:"Top (px)",selector:{number:{}}},{name:"left",label:"Left (px)",selector:{number:{}}},{name:"bottom",label:"Bottom (px)",selector:{number:{}}},{name:"right",label:"Right (px)",selector:{number:{}}}]},{name:"class",label:"Class",selector:{text:{}}},{name:"style",label:"CSS style",selector:{text:{multiline:!0}}}]}}
+              .settingSelector=${{ schema: [
+                {
+                    name: "icon",
+                    label: "Icon",
+                    selector: { icon: {} }
+                },
+                {
+                    name: "title",
+                    label: "Title",
+                    selector: { text: {} },
+                },
+                {
+                    name: "action",
+                    label: "Action",
+                    selector: { object: {} },
+                },
+                {
+                    name: "panels",
+                    label: "Show on panels",
+                    selector: { select: { multiple: true, options: panels, mode: "dropdown" } }
+                },
+                {
+                    type: "grid",
+                    schema: [
+                        {
+                            name: "top",
+                            label: "Top (px)",
+                            selector: { number: {} },
+                        },
+                        {
+                            name: "left",
+                            label: "Left (px)",
+                            selector: { number: {} },
+                        },
+                        {
+                            name: "bottom",
+                            label: "Bottom (px)",
+                            selector: { number: {} },
+                        },
+                        {
+                            name: "right",
+                            label: "Right (px)",
+                            selector: { number: {} },
+                        },
+                    ],
+                },
+                {
+                    name: "class",
+                    label: "Class",
+                    selector: { text: {} }
+                },
+                {
+                    name: "style",
+                    label: "CSS style",
+                    selector: { text: { multiline: true } },
+                },
+            ]
+        }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -401,31 +1595,33 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"defaultPanel"}
-              .settingSelector=${o}
+              .settingSelector=${dashboardSelector}
               .default=${"lovelace"}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
           <ha-expansion-panel
             .header=${"Default action"}
-            .secondary=${"Home Assistant action that executes when browser is opened or refreshed."}
+            .secondary=${`Home Assistant action that executes when browser is opened or refreshed.`}
             leftChevron
           >
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"defaultAction"}
-              .settingSelector=${{object:{}}}
+              .settingSelector=${{ object: {} }}
               .default=${{}}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
-          ${(null===(i=this._sidebarSettingsCustomSelector)||void 0===i?void 0:i.dialogAvaliable)?I`
+          ${((_c = this._sidebarSettingsCustomSelector) === null || _c === void 0 ? void 0 : _c.dialogAvaliable) ?
+            x `
             <ha-expansion-panel
               .header=${"Sidebar order"}
               .secondary=${"Order and visibility of sidebar items."}
               leftChevron
             >
-              ${this._hassUserHasSidebarSettings?I`
+              ${this._hassUserHasSidebarSettings ?
+                x `
                 <ha-settings-row >
                   <span slot="heading">Sidebar user settings</span>
                   <span slot="description">
@@ -436,16 +1632,21 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
                   </span>
                   <ha-button
                     appearance="plain"
-                    @click=${()=>this.clearHassUserSidebarSettings()}
+                    @click=${() => this.clearHassUserSidebarSettings()}
                   >Clear</ha-button>
-                </ha-settings-row>`:""}
+                </ha-settings-row>`
+                : ""}
               <browser-mod-settings-table
                 .hass=${this.hass}
                 .settingKey=${"sidebarPanelOrder"}
-                .settingSelector=${{custom:this._sidebarSettingsCustomSelector}}
+                .settingSelector=${{
+                custom: this._sidebarSettingsCustomSelector,
+            }}
                 .default=${"lovelace"}
               ></browser-mod-settings-table>
-            </ha-expansion-panel>`:I`
+            </ha-expansion-panel>`
+            :
+                x `
           <ha-expansion-panel
             .header=${"Sidebar order"}
             .secondary=${"Order and visibility of sidebar items."}
@@ -461,14 +1662,16 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               </ol>
               <ha-button
                 appearance="plain"
-                @click=${()=>this.toggleEditSidebar()}>
-                  ${this._editSidebar?"Restore":"Edit"}
+                @click=${() => this.toggleEditSidebar()}>
+                  ${this._editSidebar ? "Restore" : "Edit"}
               </ha-button>
             </ha-settings-row>
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"sidebarPanelOrder"}
-              .settingSelector=${{plaintext:"Press OK to store the current sidebar order"}}
+              .settingSelector=${{
+                    plaintext: "Press OK to store the current sidebar order",
+                }}
               .default=${"lovelace"}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
@@ -481,7 +1684,7 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"sidebarTitle"}
-              .settingSelector=${{text:{}}}
+              .settingSelector=${{ text: {} }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -492,7 +1695,24 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"hideInteractIcon"}
-              .settingSelector=${{boolean:{},label:"Hide interaction icon"}}
+              .settingSelector=${{
+            boolean: {},
+            label: "Hide interaction icon",
+        }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+          <ha-expansion-panel
+            .header=${"Full user interaction"}
+            .secondary=${"Use full user interaction if required."}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"fullInteraction"}
+              .settingSelector=${{
+            boolean: {},
+            label: "Use full user interaction",
+        }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -503,11 +1723,17 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"saveScreenState"}
-              .settingSelector=${{boolean:{},label:"Save screen state"}}
+              .settingSelector=${{
+            boolean: {},
+            label: "Save screen state",
+        }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>        </div>
       </ha-card>
-    `}static get styles(){return r`
+    `;
+    }
+    static get styles() {
+        return i$2 `
       .box {
         border: 1px solid var(--divider-color);
         padding: 8px;
@@ -525,7 +1751,76 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
         display: flex;
         align-items: center;
       }
-    `}}e([ae()],Ee.prototype,"hass",void 0),e([le()],Ee.prototype,"_dashboards",void 0),e([le()],Ee.prototype,"_panels",void 0),e([le()],Ee.prototype,"_editSidebar",void 0),e([le()],Ee.prototype,"_hassUserHasSidebarSettings",void 0),customElements.define("browser-mod-frontend-settings-card",Ee);var xe="2.5.1";(async()=>{var e,t,i,s,o,n,r,a,l,d,h,c,u,p,g;await customElements.whenDefined("partial-panel-resolver");const b=document.createElement("partial-panel-resolver")._getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==b?void 0:b.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const v=document.createElement("ha-panel-config");await(null===(r=null===(n=null===(o=null===(s=null==v?void 0:v.routerOptions)||void 0===s?void 0:s.routes)||void 0===o?void 0:o.dashboard)||void 0===n?void 0:n.load)||void 0===r?void 0:r.call(n)),await(null===(h=null===(d=null===(l=null===(a=null==v?void 0:v.routerOptions)||void 0===a?void 0:a.routes)||void 0===l?void 0:l.general)||void 0===d?void 0:d.load)||void 0===h?void 0:h.call(d)),await(null===(g=null===(p=null===(u=null===(c=null==v?void 0:v.routerOptions)||void 0===c?void 0:c.routes)||void 0===u?void 0:u.entities)||void 0===p?void 0:p.load)||void 0===g?void 0:g.call(p)),await customElements.whenDefined("ha-config-dashboard")})().then((()=>{class t extends se{firstUpdated(){window.addEventListener("browser-mod-config-update",(()=>this.requestUpdate()))}render(){var e;return window.browser_mod?I`
+    `;
+    }
+}
+__decorate([
+    n$2()
+], BrowserModFrontendSettingsCard.prototype, "hass", void 0);
+__decorate([
+    t()
+], BrowserModFrontendSettingsCard.prototype, "_dashboards", void 0);
+__decorate([
+    t()
+], BrowserModFrontendSettingsCard.prototype, "_panels", void 0);
+__decorate([
+    t()
+], BrowserModFrontendSettingsCard.prototype, "_editSidebar", void 0);
+__decorate([
+    t()
+], BrowserModFrontendSettingsCard.prototype, "_hassUserHasSidebarSettings", void 0);
+customElements.define("browser-mod-frontend-settings-card", BrowserModFrontendSettingsCard);
+
+var name = "browser_mod";
+var version = "2.5.2-alpha.1";
+var description = "";
+var scripts = {
+	build: "rollup -c",
+	watch: "rollup -c --watch"
+};
+var keywords = [
+];
+var author = "Thomas Lovén";
+var license = "MIT";
+var devDependencies = {
+	"@babel/core": "^7.21.4",
+	"@rollup/plugin-babel": "^5.3.1",
+	"@rollup/plugin-json": "^4.1.0",
+	"@rollup/plugin-node-resolve": "^13.3.0",
+	"@types/ungap__structured-clone": "^1.2.0",
+	"@ungap/structured-clone": "^1.3.0",
+	lit: "^2.7.2",
+	rollup: "^2.79.2",
+	"rollup-plugin-terser": "^7.0.2",
+	"rollup-plugin-typescript2": "^0.32.1",
+	typescript: "^4.9.5"
+};
+var dependencies = {
+	"@watchable/unpromise": "^1.0.2"
+};
+var pjson = {
+	name: name,
+	"private": true,
+	version: version,
+	description: description,
+	scripts: scripts,
+	keywords: keywords,
+	author: author,
+	license: license,
+	devDependencies: devDependencies,
+	dependencies: dependencies
+};
+
+loadConfigDashboard().then(() => {
+    class BrowserModPanel extends s {
+        firstUpdated() {
+            window.addEventListener("browser-mod-config-update", () => this.requestUpdate());
+        }
+        render() {
+            var _a;
+            if (!window.browser_mod)
+                return x ``;
+            return x `
         <ha-top-app-bar-fixed>
           <ha-menu-button
             slot="navigationIcon"
@@ -534,7 +1829,7 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
           ></ha-menu-button>
           <div slot="title">Browser Mod Settings</div>
           <div slot="actionItems">
-            (${xe})
+            (${pjson.version})
             <a
               href="https://github.com/thomasloven/hass-browser_mod/blob/master/README.md"
               target="_blank"
@@ -549,7 +1844,8 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
               .narrow=${this.narrow}
             ></browser-mod-browser-settings-card>
 
-            ${(null===(e=this.hass.user)||void 0===e?void 0:e.is_admin)?I`
+            ${((_a = this.hass.user) === null || _a === void 0 ? void 0 : _a.is_admin)
+                ? x `
                   <browser-mod-registered-browsers-card
                     .hass=${this.hass}
                   ></browser-mod-registered-browsers-card>
@@ -557,10 +1853,17 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
                   <browser-mod-frontend-settings-card
                     .hass=${this.hass}
                   ></browser-mod-frontend-settings-card>
-                `:""}
+                `
+                : ""}
           </ha-config-section>
         </ha-top-app-bar-fixed>
-      `:I``}static get styles(){var e,t;return[...null!==(t=null===(e=customElements.get("ha-config-dashboard"))||void 0===e?void 0:e.styles)&&void 0!==t?t:[],r`
+      `;
+        }
+        static get styles() {
+            var _a, _b;
+            return [
+                ...((_b = (_a = customElements.get("ha-config-dashboard")) === null || _a === void 0 ? void 0 : _a.styles) !== null && _b !== void 0 ? _b : []),
+                i$2 `
           :host {
             --app-header-background-color: var(--sidebar-background-color);
             --app-header-text-color: var(--sidebar-text-color);
@@ -575,4 +1878,18 @@ function e(e,t,i,s){var o,n=arguments.length,r=n<3?t:null===s?s=Object.getOwnPro
             color: var(--primary-text-color);
             text-decoration: none;
           }
-        `]}}e([ae()],t.prototype,"hass",void 0),e([ae()],t.prototype,"narrow",void 0),e([ae()],t.prototype,"connection",void 0),customElements.define("browser-mod-panel",t)}));
+        `,
+            ];
+        }
+    }
+    __decorate([
+        n$2()
+    ], BrowserModPanel.prototype, "hass", void 0);
+    __decorate([
+        n$2()
+    ], BrowserModPanel.prototype, "narrow", void 0);
+    __decorate([
+        n$2()
+    ], BrowserModPanel.prototype, "connection", void 0);
+    customElements.define("browser-mod-panel", BrowserModPanel);
+});
