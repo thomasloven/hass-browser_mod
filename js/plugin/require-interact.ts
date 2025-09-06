@@ -37,6 +37,7 @@ export const RequireInteractMixin = (SuperClass) => {
     }
 
     private _checkInteraction(onerror = undefined) {
+      if (!this._interactElement) return;
       // There may be two interaction levels, audio and video.
       // Muted video can usually be played without user interaction,
       // but unmuted audio requires user interaction.
