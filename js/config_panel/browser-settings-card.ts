@@ -104,7 +104,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                   index < 100 ? { id, name: id } : null
                 ))
                 .filter(item => item !== null)
-                .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1))
+                .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
               }
               item-id-path="id"
               item-value-path="id"
