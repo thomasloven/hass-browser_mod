@@ -198,6 +198,7 @@ export const ServicesMixin = (SuperClass) => {
             const { current_browser_id, new_browser_id, register, refresh } = data;
             if (current_browser_id === undefined && new_browser_id === undefined) {
               const title = "Change Browser ID";
+              const browsers = Object.keys(this.browsers);
               const content = [
                 { 
                   name: "current_browser_id", 
@@ -208,8 +209,10 @@ export const ServicesMixin = (SuperClass) => {
                 },
                 { 
                   name: "new_browser_id", 
-                  label: "New Browser ID", 
-                  selector: { text: null },
+                  label: "New Browser ID",
+                  selector: { 
+                    select: { options: browsers, custom_value: true, sort: true }
+                  },
                 },
                 {
                   name: "register",
