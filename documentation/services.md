@@ -153,7 +153,7 @@ data:
 
 | | |
 |---|---|
-|`current_browser_id`| The Browser ID of the Browser to change. This is not the usual `browser_id` parameter as only a single Browser ID is supported for `browser_modchange_browser_idr`. |
+|`current_browser_id`| The Browser ID of the Browser to change. This is not the usual `browser_id` parameter as only a single Browser ID is supported for `browser_mod.change_browser_id`. |
 |`new_browser_id`| The new Browser ID for the Browser. |
 |`register`| If true, register the Browser after rename. |
 |`refresh`| If true, refresh the browser after rename. |
