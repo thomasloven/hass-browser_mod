@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
+import { MAX_BROWSERS_TO_DISPLAY } from "../helpers";
 
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
@@ -101,7 +102,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               .allowCustomValue=${true}
               .items=${Object.keys(
                 window.browser_mod?.browsers).map((id, index) => (
-                  index < 100 ? { id, name: id } : null
+                  index < MAX_BROWSERS_TO_DISPLAY ? { id, name: id } : null
                 ))
                 .filter(item => item !== null)
                 .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
