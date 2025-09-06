@@ -247,7 +247,12 @@ export const ServicesMixin = (SuperClass) => {
                 match = true;
               } else {
                 const identifiers = this.hass?.devices[current_browser_id]?.identifiers;
-                if (Array.isArray(identifiers) && identifiers.length > 0 && typeof identifiers[0] === "string" && identifiers[0].includes(this.browserID)) {
+                if (
+                  Array.isArray(identifiers) &&
+                  identifiers.length > 0 &&
+                  Array.isArray(identifiers[0]) &&
+                  identifiers[0].includes(this.browserID)
+                ) {
                   match = true;
                 }
               }
