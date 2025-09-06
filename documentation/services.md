@@ -138,7 +138,7 @@ data:
   [user_id: <User IDs>]
 ```
 
-## `browser_mod.rename_browser`
+## `browser_mod.change_browser_id`
 
 Change a Browser ID.
 
