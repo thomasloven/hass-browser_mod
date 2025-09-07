@@ -19,7 +19,7 @@ jobs:
           operations-per-run: 25
           remove-stale-when-updated: true
           stale-issue-label: "stale"
-          exempt-issue-labels: "no-stale,pinned,feature-request,feature%20request"
+          exempt-issue-labels: "no-stale,pinned,feature-request,feature request"
           stale-issue-message: >
             This issue has been automatically marked as stale because it has not had recent activity. 
             It will be closed if no further activity occurs. 
