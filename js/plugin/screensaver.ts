@@ -61,6 +61,7 @@ export const ScreenSaverMixin = (SuperClass) => {
       }
 
       this.sendUpdate({ screen_on: this._screen_state, screen_brightness });
+      this._screen_save_state();
     }
 
     private _screen_save_state() {
