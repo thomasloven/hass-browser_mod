@@ -35,12 +35,16 @@ export const ScreenSaverMixin = (SuperClass) => {
         }
       `;
 
-      this.addEventListener("command-screen_off", () => this._screen_off());
-      this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
+      this.addEventListener("browser-mod-entities-update", () => {
+        if (this.screenEnabled) {
+          this.addEventListener("command-screen_off", () => this._screen_off());
+          this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
 
-      this.addEventListener("fully-update", () => this.send_screen_status());
-      this.addEventListener("browser-mod-disconnected", () => this._screen_save_state());
-      this.addEventListener("browser-mod-ready", () => this._screen_restore_state());
+          this.addEventListener("fully-update", () => this.send_screen_status());
+          this.addEventListener("browser-mod-disconnected", () => this._screen_save_state());
+          this.addEventListener("browser-mod-ready", () => this._screen_restore_state());
+        }
+      }, { once: true });
     }
 
     send_screen_status() {

@@ -126,21 +126,18 @@ export const RequireInteractMixin = (SuperClass) => {
       this._video.load();
       this._video.addEventListener("loadeddata", () => {
         this._video.setAttribute("controls", "");
-        this.fireBrowserEvent("command-screen_on", { brightness: 127 });
         this._interactElement.removeAttribute("minimal");
         this._interactElement.setAttribute("full", "");
       });
       this._video.addEventListener("play", () => {
         this._video.addEventListener("ended", () => {
           window.setTimeout(() => {
-            this.fireBrowserEvent("command-screen_on", { brightness: 255 });
             this._videoInteractionResolve();
             this._audioInteractionResolve();
           }, 250);
         });
       });
       this._video.addEventListener("error", (e) => {
-        this.fireBrowserEvent("command-screen_on", { brightness: 255 });
         this._clearInteract();
         const service = "browser_mod.notification";
         const message = "Browser Mod: error checking ability to play audio.";
@@ -186,6 +183,7 @@ export const RequireInteractMixin = (SuperClass) => {
         grid-template-rows: min-content 1fr min-content 1fr;
         --mdc-icon-size: 250px;
         opacity: 1.0;
+        background: rgba(0,0,0,0.5);
       }
       #tap {
         grid-area: icon;
