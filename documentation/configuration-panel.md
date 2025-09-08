@@ -17,6 +17,8 @@ Registering a _Browser_ as a device will create a Home Assistant Device associat
 - A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
 - A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
 
+> NOTE: Both the `media_player` and `light` functions can be disabled by disabling the entity in Home Assistant. If `media_player` is disabled no [User interaction](#user-interaction) check will take place. If `light` is disabled, there will be no setting of screen brightness from Home Assistant, which is useful if you are using adaptive light brightness on your device and mever want Browser Mod to override.
+
 Registering a browser also enables it to act as a target for Browser Mod _services_.
 
 ### Browser ID
