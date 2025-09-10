@@ -15,6 +15,7 @@ export const ServicesMixin = (SuperClass) => {
         "notification",
         "navigate",
         "refresh",
+        "change_browser_id",
         "set_theme",
         "console",
         "javascript",
@@ -188,6 +189,89 @@ export const ServicesMixin = (SuperClass) => {
               window.location.reload();
             } else {
               window.location.href = window.location.href;
+            }
+          }
+          break;
+
+        case "change_browser_id":
+          {
+            const { current_browser_id, new_browser_id, register, refresh } = data;
+            if (current_browser_id === undefined && new_browser_id === undefined) {
+              const title = "Change Browser ID";
+              const browsers = Object.keys(this.browsers);
+              const content = [
+                { 
+                  name: "current_browser_id", 
+                  label: "Current Browser ID", 
+                  selector: { text: null },
+                  default: this.browserID,
+                  disabled: true,
+                },
+                { 
+                  name: "new_browser_id", 
+                  label: "New Browser ID",
+                  selector: { 
+                    select: { options: browsers, custom_value: true, sort: true }
+                  },
+                },
+                {
+                  name: "register",
+                  label: "Register",
+                  selector: {
+                    boolean: null
+                  },
+                  default: this.registered,
+                },
+                {
+                  name: "refresh",
+                  label: "Refresh",
+                  selector: {
+                    boolean: null
+                  },
+                  default: refresh ?? true,
+                }
+              ];
+              const buttons = {
+                left_button: "Cancel",
+                right_button: "Change",
+                right_button_variant: "danger",
+                right_button_appearance: "accent",
+                right_button_action: (form_data) => {
+                  this.fireBrowserEvent("command-change_browser_id", form_data);
+                }
+              };
+              window.browser_mod?.showPopup({ title, content, ...buttons });
+            } else {
+              let match = false;
+              if (current_browser_id && this.browserID === current_browser_id) {
+                match = true;
+              } else {
+                const identifiers = this.hass?.devices[current_browser_id]?.identifiers;
+                if (
+                  Array.isArray(identifiers) &&
+                  identifiers.length > 0 &&
+                  Array.isArray(identifiers[0]) &&
+                  identifiers[0].includes(this.browserID)
+                ) {
+                  match = true;
+                }
+              }
+              if (match) {
+                if (new_browser_id && typeof new_browser_id === "string") {
+                  const trimmed_new_browser_id = new_browser_id.trim();
+                  if (trimmed_new_browser_id !== "" && trimmed_new_browser_id !== this.browserID) {
+                    this.browserID = trimmed_new_browser_id;
+                  }
+                }
+                if (register !== undefined && this.registered !== register) {
+                  this.registered = register;
+                }
+                if (refresh) {
+                  window.setTimeout(() => {
+                    this.fireBrowserEvent("command-refresh", {});
+                  }, 100);
+                }
+              }
             }
           }
           break;

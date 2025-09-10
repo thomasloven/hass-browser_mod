@@ -35,12 +35,21 @@ export const ScreenSaverMixin = (SuperClass) => {
         }
       `;
 
-      this.addEventListener("command-screen_off", () => this._screen_off());
-      this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
+      this.addEventListener("browser-mod-user-ready", () => {
+          this.entitiesReady().then(() => {
+            if (this.screenEnabled) {
+              this.addEventListener("command-screen_off", () => this._screen_off());
+              this.addEventListener("command-screen_on", (ev) => this._screen_on(ev));
 
-      this.addEventListener("fully-update", () => this.send_screen_status());
-      this.addEventListener("browser-mod-disconnected", () => this._screen_save_state());
-      this.addEventListener("browser-mod-ready", () => this._screen_restore_state());
+              this.addEventListener("fully-update", () => this.send_screen_status());
+              this.addEventListener("browser-mod-disconnected", () => this._screen_save_state());
+
+              this._screen_restore_state();
+            }
+          }).catch((err) => {
+            console.warn(`Browser Mod: ${err}. Timeout waiting for browser entities to be ready. Screen light sensor will not be available`);
+          });
+      }, { once: true });
     }
 
     send_screen_status() {
@@ -52,6 +61,7 @@ export const ScreenSaverMixin = (SuperClass) => {
       }
 
       this.sendUpdate({ screen_on: this._screen_state, screen_brightness });
+      this._screen_save_state();
     }
 
     private _screen_save_state() {

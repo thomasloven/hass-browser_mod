@@ -316,6 +316,11 @@ export const ConnectionMixin = (SuperClass) => {
       return (this.browserEntities as any)?.player?.enabled ?? false;
     }
 
+    get screenEnabled() {
+      if (!this.registered) return null;
+      return (this.browserEntities as any)?.screen?.enabled ?? false;
+    }
+
     sendUpdate(data) {
       if (!this.ready || !this.registered) return;
 
