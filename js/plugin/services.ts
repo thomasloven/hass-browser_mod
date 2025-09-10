@@ -12,6 +12,7 @@ export const ServicesMixin = (SuperClass) => {
         "popup",
         "more_info",
         "close_popup",
+        "set_popup_style",
         "notification",
         "navigate",
         "refresh",
@@ -171,6 +172,10 @@ export const ServicesMixin = (SuperClass) => {
 
         case "close_popup":
           await this.closePopup(data);
+          break;
+
+        case "set_popup_style":
+          this.setPopupStyle(data);
           break;
 
         case "navigate":

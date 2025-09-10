@@ -62,9 +62,84 @@ const configSchema = [
     ]
   },
   {
+    type: "expandable",
+    label: "Popup style",
+    schema: [
+      {
+        label: `Multiple popup styles can be applied for use with title tap or
+        \`browser_mod.set_popup_style\`. You may add styles for size \`normal\`, \`classic\`,
+        \`wide\`, \`fullscreen\` or add your own style. A special style \`card\`
+        is also available when the popup content is a card.`,
+        type: "constant",
+      },
+      {
+        name: "initial_style",
+        label: "Initial style",
+        selector: {
+          select: {
+            mode: "dropdown",
+            custom_value: true,
+            options: ["normal", "classic", "wide", "fullscreen"] },
+        }
+      },
+      {
+        name: "style_sequence",
+        label: "Style sequence",
+        selector: {
+          select: {
+            mode: "dropdown",
+            custom_value: true,
+            multiple: true,
+            options: ["initial", "normal", "classic", "wide", "fullscreen"] },
+        }
+      },
+      {
+        name: "popup_styles",
+        label: "Popup CSS styles",
+        selector: {
+          object: {
+            label_field: "style",
+            description_field: "include_styles",
+            multiple: true,
+            fields: {
+              style: {
+                label: "Style",
+                required: true,
+                selector: {
+                  select: {
+                    mode: "dropdown",
+                    custom_value: true,
+                    options: ["normal", "classic", "wide", "fullscreen", "card"] },
+                }
+              },
+              include_styles: {
+                label: "Also apply styles from...",
+                selector: {
+                  select: {
+                    mode: "dropdown",
+                    custom_value: true,
+                    multiple: true,
+                    options: ["normal", "classic", "wide", "fullscreen"]
+                  },
+                }
+              },
+              styles: {
+                label: "CSS Styles",
+                selector: { text: { multiline: true } }
+              }
+            }
+          }
+        },
+      }
+    ]
+  },
+  {
     name: "size",
+    label: "Popup size (deprecated, use popup style `initial_style` instead)",
     selector: {
-      select: { mode: "dropdown", options: ["normal", "classic", "wide", "fullscreen"] },
+      select: { 
+        mode: "dropdown", 
+        options: ["normal", "classic", "wide", "fullscreen"] },
     },
   },
   {
@@ -207,7 +282,7 @@ const configSchema = [
   },
   {
     name: "style",
-    label: "CSS style",
+    label: "CSS style (deprecated, use popup style `normal` instead)",
     selector: { text: { multiline: true } },
   },
   {
@@ -243,8 +318,6 @@ class PopupCardEditor extends LitElement {
   @query("hui-card-element-editor") private _cardEditorEl?;
 
   private _objectSelectorMonitor: ObjectSelectorMonitor;
-  private _schema: Object[];
-  private _schemaOldStyle: Object[];
 
   get settingsValid() {
     return this._settingsValid
@@ -266,8 +339,6 @@ class PopupCardEditor extends LitElement {
       (value: boolean) => { this._settingsValid = value },
       (value: boolean) => { this._showErrors = value }
     );
-    this._schemaOldStyle = configSchema;
-    this._schema = configSchema.filter((s => s.name !== "entity"));
   }
 
   firstUpdated(changedProperties: PropertyValues) {
@@ -414,11 +485,25 @@ class PopupCardEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._config.entity ? this._schemaOldStyle : this._schema}
+        .schema=${this._getSchema()}
         .computeLabel=${(s) => s.label ?? s.name}
         @value-changed=${this._configChanged}
       ></ha-form>
     </div>`;
+  }
+
+  _getSchema() {
+    var schema = configSchema;
+    if (!this._config.entity) {
+      schema = schema.filter((s => s.name !== "entity"));
+    }
+    if (!this._config.style) {
+      schema = schema.filter((s => s.name !== "style"));
+    }
+    if (!this._config.size) {
+      schema = schema.filter((s => s.name !== "size"));
+    }
+    return schema;
   }
 
   _renderCardEditor() {
