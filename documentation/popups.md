@@ -16,17 +16,17 @@ data:
 
 ![Screenshot illustrating the title, content and button placements of a popup](https://user-images.githubusercontent.com/1299821/182708739-f89e3b2b-199f-43e0-bf04-e1dfc7075b2a.png)
 
-## Size
+## Style
 
-The `size` parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity):
+The `style` parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity).
 
-![Screenshot of a normal size popup](https://github.com/user-attachments/assets/43865cf6-49c8-44d1-af9a-40638c440bc9)
+![Screenshot of a normal style popup](https://github.com/user-attachments/assets/43865cf6-49c8-44d1-af9a-40638c440bc9)
 
-![Screenshot of effect of classic size popup on small device](https://github.com/user-attachments/assets/926646dd-f254-44ed-b94c-f63dcc5a335c)
+![Screenshot of effect of classic style popup on small device](https://github.com/user-attachments/assets/926646dd-f254-44ed-b94c-f63dcc5a335c)
 
-![Screenshot of a wide size popup](https://github.com/user-attachments/assets/268d11b2-d6eb-4d13-b039-e01fa5b91bb4)
+![Screenshot of a wide style popup](https://github.com/user-attachments/assets/268d11b2-d6eb-4d13-b039-e01fa5b91bb4)
 
-![Screenshot of a fullscreen size popup](https://github.com/user-attachments/assets/3ef52e6f-17ee-4fd9-9f0b-4bbfbf7d2a54)
+![Screenshot of a fullscreen syle popup](https://github.com/user-attachments/assets/3ef52e6f-17ee-4fd9-9f0b-4bbfbf7d2a54)
 
 ## HTML content
 
