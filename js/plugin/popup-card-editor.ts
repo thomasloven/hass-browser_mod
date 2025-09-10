@@ -109,7 +109,7 @@ const configSchema = [
                   select: {
                     mode: "dropdown",
                     custom_value: true,
-                    options: ["normal", "classic", "wide", "fullscreen", "card"] },
+                    options: ["normal", "classic", "wide", "fullscreen", "card", "all"] },
                 }
               },
               include_styles: {
@@ -282,7 +282,7 @@ const configSchema = [
   },
   {
     name: "style",
-    label: "CSS style (deprecated, use popup style `normal` instead)",
+    label: "CSS style (deprecated, use popup style `all` instead)",
     selector: { text: { multiline: true } },
   },
   {

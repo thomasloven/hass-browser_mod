@@ -106,8 +106,10 @@ class PopupCard extends LitElement {
       </div>
       <style>
         :host {
-        ${this._config.style}
-        }
+        ${ifDefined(this._config.style)}
+        ${this._config.popup_styles?.map((style) => {
+          return style.style == "all" ? `${style.styles}` : '';
+        })}
       </style>
       ${this._config.right_button !== undefined ||
       this._config.left_button !== undefined
