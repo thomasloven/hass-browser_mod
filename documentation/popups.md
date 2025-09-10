@@ -20,13 +20,13 @@ data:
 
 The `style` parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity).
 
-![Screenshot of a normal style popup](https://github.com/user-attachments/assets/43865cf6-49c8-44d1-af9a-40638c440bc9)
+![Screenshot of a normal style popup](https://github.com/user-attachments/assets/f18371b3-1d51-41bf-988f-17f266b64e21)
 
 ![Screenshot of effect of classic style popup on small device](https://github.com/user-attachments/assets/926646dd-f254-44ed-b94c-f63dcc5a335c)
 
-![Screenshot of a wide style popup](https://github.com/user-attachments/assets/268d11b2-d6eb-4d13-b039-e01fa5b91bb4)
+![Screenshot of a wide style popup](https://github.com/user-attachments/assets/3c2bbd2e-cd44-4079-b2b7-94b0a4b196c0)
 
-![Screenshot of a fullscreen syle popup](https://github.com/user-attachments/assets/3ef52e6f-17ee-4fd9-9f0b-4bbfbf7d2a54)
+![Screenshot of a fullscreen syle popup](https://github.com/user-attachments/assets/b6421958-ac94-4179-befa-89a2de6c14a2)
 
 ## HTML content
 
