@@ -501,20 +501,21 @@ export class BrowserModPopup extends LitElement {
   }
 
   getDynamicStyles() {
-    return `
+    const styles = `
       :host {
         ${this._style ?? ""}
       }
       ${this._popupStyles?.map((style) => 
-        style.style == 'all' ? `
-        :host {
+        style.style == 'all' ?
+        `:host {
           ${style.styles}
         }` : 
         `:host([${style.style}]) {
           ${style.styles}
         }`
-      )}
+      ).join("\n")}
     `;
+    return styles;
   }
 
   static get styles() {
