@@ -4,6 +4,8 @@ import { hass_base_el, loadHaForm, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 import structuredClone from "@ungap/structured-clone";
 
+const STANDARD_POPUP_STYLES = ["normal", "classic", "wide", "fullscreen"]
+
 const configSchema = [
   {
     name: "popup_card_id",
@@ -68,8 +70,8 @@ const configSchema = [
       {
         label: `Multiple popup styles can be applied for use with title tap or
         \`browser_mod.set_popup_style\`. You may add styles for size \`normal\`, \`classic\`,
-        \`wide\`, \`fullscreen\` or add your own style. A special style \`card\`
-        is also available when the popup content is a card.`,
+        \`wide\`, \`fullscreen\` or add your own style. Two special styles of \`all\` and  \`card\`
+        are also available. \`all\` is always applied. \`card\` is applied when the popup content is a card.`,
         type: "constant",
       },
       {
@@ -79,7 +81,7 @@ const configSchema = [
           select: {
             mode: "dropdown",
             custom_value: true,
-            options: ["normal", "classic", "wide", "fullscreen"] },
+            options: STANDARD_POPUP_STYLES },
         }
       },
       {
@@ -90,7 +92,7 @@ const configSchema = [
             mode: "dropdown",
             custom_value: true,
             multiple: true,
-            options: ["initial", "normal", "classic", "wide", "fullscreen"] },
+            options: ["initial", ...STANDARD_POPUP_STYLES] },
         }
       },
       {
@@ -109,7 +111,7 @@ const configSchema = [
                   select: {
                     mode: "dropdown",
                     custom_value: true,
-                    options: ["normal", "classic", "wide", "fullscreen", "card", "all"] },
+                    options: [...STANDARD_POPUP_STYLES, "card", "all"] },
                 }
               },
               include_styles: {
@@ -119,7 +121,7 @@ const configSchema = [
                     mode: "dropdown",
                     custom_value: true,
                     multiple: true,
-                    options: ["normal", "classic", "wide", "fullscreen"]
+                    options: STANDARD_POPUP_STYLES
                   },
                 }
               },
@@ -139,7 +141,7 @@ const configSchema = [
     selector: {
       select: { 
         mode: "dropdown", 
-        options: ["normal", "classic", "wide", "fullscreen"] },
+        options: STANDARD_POPUP_STYLES },
     },
   },
   {
@@ -503,6 +505,22 @@ class PopupCardEditor extends LitElement {
     if (!this._config.size) {
       schema = schema.filter((s => s.name !== "size"));
     }
+    const customStyles = this._config.popup_styles?.filter((style) => {
+      return style.style !== "all" && !STANDARD_POPUP_STYLES.includes(style.style);
+    }).map((style) => style.style);
+    schema.forEach((entry) => {
+      if (entry.label === "Popup style") {
+        entry.schema.forEach((subEntry) => {
+          if (subEntry.name === "initial_style") {
+            subEntry.selector.select.options = [...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
+          } else if (subEntry.name === "style_sequence") {
+            subEntry.selector.select.options = ["initial", ...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
+          } else if (subEntry.name === "popup_styles") {
+            subEntry.selector.object.fields.include_styles.selector.select.options = [...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
+          }
+        })
+      }
+    });
     return schema;
   }
 
