@@ -591,6 +591,7 @@ export class BrowserModPopup extends LitElement {
         align-items: flex-start;
         -webkit-user-select: none;
         user-select: none;
+        color: var(--primary-text-color);
       }
 
       ha-icon-button > * {
