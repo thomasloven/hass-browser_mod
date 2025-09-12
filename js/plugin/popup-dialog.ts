@@ -566,7 +566,7 @@ export class BrowserModPopup extends LitElement {
         padding: 8px 16px 8px 24px;
         justify-content: space-between;
         padding-bottom: 8px;
-        background-color: var(--mdc-theme-surface, #fff);
+        background-color: var(--ha-dialog-surface-background, var(--mdc-theme-surface, #fff));
         border-top: 1px solid var(--divider-color);
         position: sticky;
         bottom: 0px;
