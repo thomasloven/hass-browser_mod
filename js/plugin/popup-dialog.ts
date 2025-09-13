@@ -505,9 +505,10 @@ export class BrowserModPopup extends LitElement {
       :host {
         ${this._style ?? ""}
       }
-      ${this._popupStyles?.map((style) => 
-        style.style == 'all' ?
-        `:host {
+      ${this._popupStyles?.filter((style) => style.styles)
+        .map((style) =>
+          style.style == 'all' ?
+            `:host {
           ${style.styles}
         }` : 
         `:host([${style.style}]) {
