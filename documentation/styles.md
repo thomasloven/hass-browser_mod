@@ -46,7 +46,7 @@ As well as the standard styles `normal`, `wide`, `fullscreen` and `classic`, two
 
 ## Setting styles for a popup
 
-In Home Assistant dashboard editor (UI mode) look for the _Popup Style_ section in the Popup card editor. In yaml use the paremeters refered to below.
+In Home Assistant dashboard editor (UI mode) look for the _Popup Styles_ section in the Popup card editor. In yaml use the paremeters refered to below.
 
 ### Initial style (`inital_style`)
 

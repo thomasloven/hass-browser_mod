@@ -65,7 +65,7 @@ const configSchema = [
   },
   {
     type: "expandable",
-    label: "Popup style",
+    label: "Popup styles",
     schema: [
       {
         label: `Multiple popup styles can be applied for use with title tap or
@@ -509,7 +509,7 @@ class PopupCardEditor extends LitElement {
       return style.style !== "all" && !STANDARD_POPUP_STYLES.includes(style.style);
     }).map((style) => style.style);
     schema.forEach((entry) => {
-      if (entry.label === "Popup style") {
+      if (entry.label === "Popup styles") {
         entry.schema.forEach((subEntry) => {
           if (subEntry.name === "initial_style") {
             subEntry.selector.select.options = [...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
