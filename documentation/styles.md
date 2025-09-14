@@ -50,13 +50,13 @@ In Home Assistant dashboard editor (UI mode) look for the _Popup Style_ section 
 
 ### Initial style (`inital_style`)
 
-This is the initial style of the popup. Perhaps just `style` would be suitable parametr name but as that was used prior to version 2.6.0 (and is still supported) a different parameter was required. Also, it is just the initial style as it can by changed tapping the popup title and using [`browser_mod.set_popup_style`](services.md#browser_modset_popup_style) service.
+This is the initial style of the popup. Perhaps just `style` would be suitable parameter name but as that was used prior to version 2.6.0 (and is still supported) a different parameter was required. Also, it is just the initial style as it can by changed tapping the popup title and using [`browser_mod.set_popup_style`](services.md#browser_modset_popup_style) service.
 
 Standard styles of `normal`, `wide`, `fullscreen` and `classic` can be selected. See [popups.md](popups.md#style) for examples of what each standard style looks like.
 
 You can also type in your own style. This needs to match a style in Popup styles (`popup_styles`) list.
 
-The [centered](#centered) example uses the custom style _centered_ as the intial style.
+The [centered](#example---centered) example uses the custom style _centered_ as the intial style.
 
 ### Style sequence (`style_sequence`)
 
@@ -64,7 +64,7 @@ This is an ordered list of popup styles. This list is used to define which style
 
 The default style sequence used, if not set, is `wide` - `normal`, mimicing the standard Home Assisant more-info dialog title tap funtionaility.
 
-The [centered](#centered) example uses a style sequence of `centered` - `centered-wide` - `fullscreen`.
+The [centered](#example---centered) example uses a style sequence of `centered` - `centered-wide` - `fullscreen`.
 
 ### Popup styles (`popup_styles`)
 
@@ -74,13 +74,13 @@ This is a list of customsied styles for the popup. You can customise the standar
 
 The name of the style to customise. You can customise the standard `normal`, `wide`, `fullscreen`, `classic` styles, the special `all` or `card` styles, or your own style. If you customise your own style, it can then be used for `initial_style` and/or included in `style_sequence`.
 
-The [centered](#centered) example uses custom style names of `centered` and `centered-wide`.
+The [centered](#example---centered) example uses custom style names of `centered` and `centered-wide`.
 
 #### Popup styles - Also apply styles from... (`popup_styles` > `include_styles`)
 
 A list of styles to include when the customised style is applied. Generally this would only be used for your own custom styles, to include other custom styles or a standard style.
 
-The [centered](#centered) example includes `classic` for `centered` and `wide` for `centered-wide`.
+The [centered](#example---centered) example includes `classic` for `centered` and `wide` for `centered-wide`.
 
 #### Poppu stlyles - styles (`popup_styles` > `styles`)
 
@@ -220,6 +220,7 @@ popup_styles:
         --ha-dialog-surface-background: red;
         --ha-card-background: red;
         --primary-text-color: white;
+        color: white;
       }
 ```
 
