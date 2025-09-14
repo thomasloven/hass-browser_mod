@@ -101,7 +101,7 @@ popup:
             - fullscreen
     style_sequence:
       name: Style Sequence
-      description: "Sequence of styles to cycle through when user clicks the title or with browser_mod.set_popup_style service"
+      description: "Sequence of styles to cycle through when user taps the title or with browser_mod.set_popup_style service"
       selector:
         select:
           mode: dropdown
@@ -349,13 +349,13 @@ set_popup_style:
             domain: "person"
     all:
       name: All popups
-      description: Set style for all Browser Mod popups on the browser
+      description: Set style for all open Browser Mod popups on the browser
       default: false
       selector:
         boolean:
     tag:
       name: Tag
-      description: Tag for popup to set style when using multiple popups
+      description: Tag for popup to set style for when using multiple popups
       selector:
         text:
     style:

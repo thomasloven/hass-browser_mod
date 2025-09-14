@@ -9,7 +9,7 @@
     - [Popup styles (`popup_styles`)](#popup-styles-popup_styles)
       - [Popup styles - style (`popup_styles` \> `style`)](#popup-styles---style-popup_styles--style)
       - [Popup styles - Also apply styles from... (`popup_styles` \> `include_styles`)](#popup-styles---also-apply-styles-from-popup_styles--include_styles)
-      - [Poppu stlyles - styles (`popup_styles` \> `styles`)](#poppu-stlyles---styles-popup_styles--styles)
+      - [Popup styles - styles (`popup_styles` \> `styles`)](#popup-styles---styles-popup_styles--styles)
   - [Example - Centered](#example---centered)
     - [Vertically centered style (`centered`)](#vertically-centered-style-centered)
     - [Vertically centered wide style (`centered-wide`)](#vertically-centered-wide-style-centered-wide)

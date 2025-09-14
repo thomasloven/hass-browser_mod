@@ -265,7 +265,7 @@ data:
 | `icon_close` or `icons` > `close` | Enable/disable popup closing when the icon is pressed. |
 | `icon_class` or  `icons` > `class` | CSS Class to apply to the icon. This allows for styling the icon directly using `style`. |
 | `initial_style` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices. You can event add your own style. See [styles.md](styles.md) |
-| `style_sequence` | Sequence of styles to cycle through when padding the popup title or when using the `browser_mod.set_popup_style` service. You can cycle through the standard styles and your own style. See [styles.md](styles.md). Defaults to a sequence of `wide`, `normal` to mimic a standard `more-info` dialog. |
+| `style_sequence` | Sequence of styles to cycle through when padding the popup title or when using the `browser_mod.set_popup_style` service. You can cycle through the standard styles and your own styles. See [styles.md](styles.md). Defaults to a sequence of `wide`, `normal` to mimic a standard `more-info` dialog. |
 | `popup_styles` | A list of styles to customise. You can customise the standard styles of `normal`, `wide`, `fullscreen`, `classic` or add your own. Two special styles are available to customise, `all` which is applied all of the time and `card` which is applied when the `content` is a card. See [styles.md](styles.md) |
 | `popup_styles` > `style` | The style to customise. This can be `normal`, `wide`, `fullscreen`, `classic`, `all`, `card` or your own style. See [styles.md](styles.md) |
 | `popup_styles` > `include styles` | Styles to include when this still is applied. This can be `normal`, `wide`, `fullscreen`, `classic` or your own style. [styles.md](styles.md) |
@@ -371,9 +371,9 @@ service: browser_mod.set_popup_style
 |||
 |---|---|
 | `all` | If true all the style will be change/cycled on all open Browser Mod popups |
-| `tag` | Popup tag of the popup to style/cycle. If neither `all` or `tag` is set, the service will target the topmost popup. See [Multiple popups](popups.md#multiple-popups) for more information. |
+| `tag` | Popup tag of the popup to style/cycle. If neither `all` or `tag` is set, the service will target the topmost open popup. See [Multiple popups](popups.md#multiple-popups) for more information. |
 | `style` | The style to set for the popup. Can be `normal`, `wide`, `fullscreen`, `classic` or your own. `style` takes precedence over `direction`. See [styles.md](styles.md) |
-| `direction` | Which direction to cycle the style sequence. Can be `forward` or `back`. `style` takes precedence ove direction. |
+| `direction` | Which direction to cycle the style sequence. Can be `forward` or `back`. `style` takes precedence over direction. |
 
 The example below is a `tap_action` on a button on a popup that does the same as clicking on the title of the popup.
 
@@ -454,7 +454,7 @@ data:
 |---|---|
 |`sequence` | List of actions to perform. |
 
-Note that if `browser_id` and `user_id` is omitted in the service calls listed in `sequence` the services will be performed on the Browser that's targeted as a whole rather than all browsers.
+Note that if `browser_id` and `user_id` is omitted in the service calls listed in `sequence`, the services will be performed on the Browser that's targeted as a whole rather than all browsers.
 
 TIP: To target browsers matching the current loggded in user ID you can use `user_id: THIS`. This may be useful when you have a number of panels logged in as a viewing account and wish for the sequence to be performed on all the panels.
 
