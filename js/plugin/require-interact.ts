@@ -33,7 +33,6 @@ export const RequireInteractMixin = (SuperClass) => {
       this._video = undefined;
       this._interactElement.remove();
       this._interactElement = undefined;
-      this.fireBrowserEvent("command-screen_on", { brightness: 255 });
     }
 
     private _checkInteraction(onerror = undefined) {
