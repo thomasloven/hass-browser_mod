@@ -372,12 +372,12 @@ class PopupCardEditor extends LitElement {
     return html`
       <div class="card-config">
         <div class="toolbar">
-          <sl-tab-group
-            @sl-tab-show=${this._handleSwitchTab}
+          <ha-tab-group
+            @wa-tab-show=${this._handleSwitchTab}
           >
-            <sl-tab slot="nav" .panel=${"settings"} .active=${this._selectedTab==0}>Settings</sl-tab>
-            <sl-tab slot="nav" .panel=${"card"} .active=${this._selectedTab==1} @click=${this._handleClickAwayFromSettings}>Card</sl-tab>
-          </sl-tab-group>
+            <ha-tab-group-tab slot="nav" .panel=${"settings"} .active=${this._selectedTab==0}>Settings</ha-tab-group-tab>
+            <ha-tab-group-tab slot="nav" .panel=${"card"} .active=${this._selectedTab==1} @click=${this._handleClickAwayFromSettings}>Card</ha-tab-group-tab>
+          </ha-tab-group>
         </div>
         <div id="editor">
           ${[this._renderSettingsEditor, this._renderCardEditor][
@@ -465,15 +465,15 @@ class PopupCardEditor extends LitElement {
 
   static get styles() {
     return css`
-      sl-tab-group {
+      ha-tab-group {
         margin-bottom: 16px;
       }
 
-      sl-tab {
+      ha-tab-group-tab {
         flex: 1;
       }
 
-      sl-tab::part(base) {
+      ha-tab-group-tab::part(base) {
         width: 100%;
         justify-content: center;
       }
