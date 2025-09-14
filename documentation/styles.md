@@ -82,7 +82,7 @@ A list of styles to include when the customised style is applied. Generally this
 
 The [centered](#example---centered) example includes `classic` for `centered` and `wide` for `centered-wide`.
 
-#### Poppu stlyles - styles (`popup_styles` > `styles`)
+#### Popup styles - styles (`popup_styles` > `styles`)
 
 CSS style rules for the customised style.
 
