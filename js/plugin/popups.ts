@@ -82,6 +82,27 @@ export const PopupMixin = (SuperClass) => {
         if (dialog) dialog.large = true;
       }
     }
+
+    setPopupStyle(args) {
+      const { all, tag, style, direction } = args;
+      if (all === true) {
+        this._popupElements.forEach((popup) => {
+          style ? popup._setStyleAttribute(style) : popup._cycleStyleAttributes(direction);
+        });
+      } else if (typeof tag === "string") {
+        const dialogTag =
+          tag != "" ?
+            `browser-mod-popup-${tag}` :
+            "browser-mod-popup";
+        const popup = this._popupElements.find(
+          (p) => p.nodeName.toLowerCase() === dialogTag
+        );
+        style ? popup?._setStyleAttribute(style) : popup?._cycleStyleAttributes(direction);
+      } else {
+        const popup = this._popupElements.slice(-1)[0];
+        style ? popup?._setStyleAttribute(style) : popup?._cycleStyleAttributes(direction);
+      }
+    }
   };
 };
 
