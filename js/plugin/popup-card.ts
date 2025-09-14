@@ -19,9 +19,7 @@ class PopupCard extends LitElement {
   }
 
   static getStubConfig(hass, entities) {
-    const entity = entities[0];
     return {
-      entity,
       title: "Custom popup",
       dismissable: true,
       card: { type: "markdown", content: "This card can be used in browser_mod.popup service or to replace the more-info dialog" },
