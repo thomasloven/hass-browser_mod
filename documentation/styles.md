@@ -135,7 +135,7 @@ To have the popup initially shown centered using our custom `centered` style we 
 
 Without setting a Style sequence, the default sequence of `wide` - `normal` would be used. So here we define a style sequence of `centered-wide` - `fullscreen` - `centered`.
 
-> TIP: When the popup is shown, Browser Mod will seek to find the `initial_style` in the Style sequence. If not found then the first sequence in the Style sequence list will be used when the popup title is tapped of `broswser_mod.set_ppopup_style` service with `direction: forward` is called.
+> TIP: When the popup is shown, Browser Mod will seek to find the `initial_style` in the Style sequence. If not found then the first sequence in the Style sequence list will be used when the popup title is tapped or `browser_mod.set_popup_style` service with `direction: forward` is called.
 
 ```yaml
 #... other popup config
