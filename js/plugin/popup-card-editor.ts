@@ -69,7 +69,7 @@ const configSchema = [
     schema: [
       {
         label: `Multiple popup styles can be applied for use with title tap or
-        \`browser_mod.set_popup_style\`. You may add styles for size \`normal\`, \`classic\`,
+        \`browser_mod.set_popup_style\`. You may add styles for \`normal\`, \`classic\`,
         \`wide\`, \`fullscreen\` or add your own style. Two special styles of \`all\` and  \`card\`
         are also available. \`all\` is always applied. \`card\` is applied when the popup content is a card.`,
         type: "constant",
