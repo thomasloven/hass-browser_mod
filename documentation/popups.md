@@ -18,7 +18,7 @@ data:
 
 ## Style
 
-The `style` parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity).
+The `initial_style` (previously `size`) parameter can be set to `normal`, `classic`, `wide` and `fullscreen` with results as below (background blur has been exagerated for clarity). For more informaion on styling popups see [styles.md](styles.md)
 
 ![Screenshot of a normal style popup](https://github.com/user-attachments/assets/f18371b3-1d51-41bf-988f-17f266b64e21)
 
@@ -105,7 +105,7 @@ Starting with Home Assistant 2025.8, popup left and right buttons can have a dif
 
 ![Button variant and appearance sample image](https://github.com/user-attachments/assets/7518310a-78b9-4793-98b5-54a3acf2c5bd)
 
-https://github.com/user-attachments/assets/936dc909-ddda-4ccf-bc5b-f5981d314088
+<https://github.com/user-attachments/assets/936dc909-ddda-4ccf-bc5b-f5981d314088>
 
 ## Actionable popups
 
@@ -178,35 +178,7 @@ data:
 
 ## Styling popups
 
-The default value for the `style` parameter is as follows:
-
-```yaml
-style: |
-  --popup-min-width: 400px;
-  --popup-max-width: 600px;
-  --popup-border-radius: 28px;
-```
-
-The same variables can also be set by a theme.
-
-Those variables should be enough for mostly everything, really. Try it.
-
-Otherwise, [card-mod](https://github.com/thomasloven/lovelace-card-mod) can also be used to style popups by adding a `card_mod:` parameter to the service call:
-
-```yaml
-service: browser_mod.popup
-data:
-  title: Teal background
-  content: Where did the dashboard go?
-  card_mod:
-    style:
-      ha-dialog$: |
-        div.mdc-dialog div.mdc-dialog__scrim {
-          background: rgba(0, 128, 128, 0.9);
-        }
-```
-
-Or through `card-mod-more-info` or `card-mod-more-info-yaml` in a card-mod theme.
+See [styles.md](styles.md)
 
 ## Multiple popups
 
@@ -274,7 +246,6 @@ tap_action:
 
 ![Screenshot of multiple popups](https://github.com/user-attachments/assets/84cf6b31-cfbd-4a16-9ae9-8ba06476be97)
 
-
 >NOTE: Popup dialog tags MUST be a lower case alphanumeric string. If using the UI popup card editor, quotes will be added when required. If using yaml directly, make sure to quote when required (e.g. numerals only string).
 
 See [`browser_mod.popup`](./services.md#browser_modpopup) for using `tag` and `dismiss_icon` yaml parameters.
@@ -289,6 +260,6 @@ When using [`browser_mod.close_popup`](./services.md#browser_modclose_popup) ser
 
 ### Multiple popups and card-mod themes
 
-For working with card-mod and themes see https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes.
+See [card-mod themes](https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes) for working with card-mod themes.
 
-Prior to supporting multiple popups, Browser Mod 2 registered a card-mod type `more-info` for popups allowing the popup to be styled in a theme via `card-mod-more-info`` or `card-mod-more-info-yaml`. For multiple popups, the card-mod type is constructed from the popup tag. For a popup dialog tag of `lights` the card-mod type is `browser-mod-popup-lights` allowing to the popup to be styled in a theme via `card-mod-browser-mod-popup-lights` or `card-mod-browser-mod-popup-lights-yaml`. Popups wih no popup tag retain the card-mod type `more-info`.
+Prior to supporting multiple popups, Browser Mod 2 registered a card-mod type `more-info` for popups allowing the popup to be styled in a theme via `card-mod-more-info` or `card-mod-more-info-yaml`. For multiple popups, the card-mod type is constructed from the popup tag. For a popup dialog tag of `lights` the card-mod type is `browser-mod-popup-lights` allowing to the popup to be styled in a theme via `card-mod-browser-mod-popup-lights` or `card-mod-browser-mod-popup-lights-yaml`. Popups wih no popup tag retain the card-mod type `more-info`.
