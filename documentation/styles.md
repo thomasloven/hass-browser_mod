@@ -347,12 +347,12 @@ card:
 popup_card_id: theme-background-red
 popup_styles:
   - style: background-red
-  - style: backround-red-wide
+  - style: background-red-wide
     include_styles:
       - background-red
       - wide
 style_sequence:
-  - backround-red-wide
+  - background-red-wide
   - background-red
 initial_style: background-red
 ```
