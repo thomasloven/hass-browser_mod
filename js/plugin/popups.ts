@@ -64,14 +64,14 @@ export const PopupMixin = (SuperClass) => {
       }
     }
 
-    async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {
+    async showMoreInfo(entityId, view = "info", large = false, ignore_popup_card = undefined) {
       const base = await hass_base_el();
       base.dispatchEvent(
         new CustomEvent("hass-more-info", {
           bubbles: true,
           composed: true,
           cancelable: false,
-          detail: { entityId, ignore_popup_card },
+          detail: { entityId, view, ignore_popup_card },
         })
       );
       if (large) {
