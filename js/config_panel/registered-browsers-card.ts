@@ -48,9 +48,13 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       {
         title: "Unregister browser",
         content: `Are you sure you want to unregister Browser ${browserID}?`,
-        right_button: "Yes",
+        right_button: "Unregister",
+        right_button_variant: "danger",
+        right_button_appearance: "accent",
         right_button_action: unregisterCallback,
-        left_button: "No",
+        left_button: "Cancel",
+        left_button_variant: "neutral",
+        left_button_appearance: "plain",
       }
     );
   }

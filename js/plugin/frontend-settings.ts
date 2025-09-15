@@ -352,8 +352,13 @@ export const AutoSettingsMixin = (SuperClass) => {
                     content: 'Browser Mod is installed. Edit sidebar settings with Browser Mod (recommended) or Continue to use the built-in editor.',
                     right_button: "Continue",
                     right_button_action: () => { main.dispatchEvent(evShowDialog) },
+                    right_button_variant: "brand",
+                    right_button_appearance: "plain",
+                    right_button_icon: "mdi:chevron-right",
                     left_button: "Edit with Browser Mod",
                     left_button_action: () => { this.browser_navigate('/browser-mod') },
+                    left_button_variant: "brand",
+                    left_button_appearance: "accent",
                     style: 'ha-dialog { position: fixed; z-index: 999; }' // Need to be above open drawer sidebar
                   }
                 )
