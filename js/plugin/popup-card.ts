@@ -244,7 +244,8 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   );
 
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
-    if (  ev.detail?.ignore_popup_card || 
+    if (  ev.detail?.ignore_popup_card ||
+          (ev.detail?.view && ev.detail?.view !== "info") ||
           (!ev.detail?.entityId && !ev.detail?.target) || 
           !lovelaceRoot
         ) return;

@@ -282,6 +282,17 @@ more_info:
       description: ""
       selector:
         text:
+    view:
+      name: View
+      description: More-info view to show
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - info
+            - history
+            - settings
+            - related
     large:
       name: Large size
       description: ""

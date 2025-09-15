@@ -185,6 +185,7 @@ Show a more-info dialog.
 service: browser_mod.more_info
 data:
   [entity: <string>]
+  [view: <INFO/history/settings/related]
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
@@ -194,10 +195,11 @@ data:
 | | |
 |---|---|
 |`entity`| The entity whose more-info dialog to display. |
+|`view`| The more-info view to open. The view opened will always have a close icon. Setting the view to anything other than `info` will always ignore custom popup-cards. |
 |`large`| If true, the dialog will be displayed wider, as if you had clicked the title of the dialog. |
 |`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card in the view/dashboard(*) which would override it. |
 
-*\*Dashboard when popup-card config has `popup_card_all_views: true`.*
+*\* Dashboard when popup-card config has `popup_card_all_views: true`.*
 
 > NOTE: You can close an open more-info dialog by calling `browser_mod.more_info` with no entity.
 
@@ -336,7 +338,7 @@ See [popups.md](popups.md) for more information and usage examples.
 
 ## `browser_mod.close_popup`
 
-Close any currently open popup or more-info dialog.
+Close any currently open popup.
 
 ```yaml
 service: browser_mod.close_popup
