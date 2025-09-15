@@ -141,7 +141,7 @@ class BrowserModSettingsTable extends LitElement {
         right_button_appearance: "accent",
         right_button_action: changeSettingCallback,
         left_button: "Cancel",
-        left_button_variant: "danger",
+        left_button_variant: "neutral",
         left_button_appearance: "plain",
       }
     );
@@ -184,7 +184,7 @@ class BrowserModSettingsTable extends LitElement {
         right_button_variant: "brand",
         right_button_appearance: "filled",
         left_button: "Cancel",
-        left_button_variant: "danger",
+        left_button_variant: "neutral",
         left_button_appearance: "plain",
       }
     );
@@ -227,7 +227,7 @@ class BrowserModSettingsTable extends LitElement {
         right_button_appearance: "filled",
         right_button_action: (value) => this.changeSetting("user", value.user),
         left_button: "Cancel",
-        left_button_variant: "danger",
+        left_button_variant: "neutral",
         left_button_appearance: "plain",
       }
     );
