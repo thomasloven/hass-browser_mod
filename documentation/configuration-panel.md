@@ -275,7 +275,7 @@ To allow for Full user interaction for a Browser, use the [Full user interaction
 
 To not have any user interaction, the user interaction icon may be hidden using a [Frontend user setting](#hide-interaction-icon). This does not remove the need for interaction. You can always check the need for interaction through the `video_interaction_required` and `audio_interaction_required` attributes of the `media_player` entity for the Browser.
 
-In some cases Browser Mod may not be able to detect the ability to play video/audio, but it works anyhow. In this case you may get warnings in Home Assistant logs. You can use one of the methods below to set logging levels and/or filters for these warnings. See Home Assistant [Logger](https://www.home-assistant.io/integrations/logger/) documentation for further information.
+In some cases Browser Mod may not be able to detect the ability to play video/audio, but it works anyhow. In this case you may get warnings in Home Assistant logs when using media_player services. You can use one of the methods below to set logging levels and/or filters for these warnings. See Home Assistant [Logger](https://www.home-assistant.io/integrations/logger/) documentation for further information.
 
 1. _Set logging level_
 
