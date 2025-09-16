@@ -68,9 +68,13 @@ class BrowserModFrontendSettingsCard extends LitElement {
       {
         title: "Sidebar settings",
         content: "Clear sidebar settings synced in this user's Home Assistant profile?",
-        right_button: "Yes",
+        right_button: "Clear",
+        right_button_variant: "danger",
+        right_button_appearance: "accent",
         right_button_action: clearSettings,
-        left_button: "No",
+        left_button: "Cancel",
+        left_button_variant: "neutral",
+        left_button_appearance: "plain",
       }
     );
   }
@@ -334,18 +338,21 @@ class BrowserModFrontendSettingsCard extends LitElement {
             >
               ${this._hassUserHasSidebarSettings ? 
                 html`
-                <ha-settings-row >
+                <ha-settings-row>
                   <span slot="heading">Sidebar user settings</span>
-                  <span slot="description">
+                  <div slot="description" style="display: flex;">
+                    <span>
                     This user has sidebar settings synced to Home Assistant user profile. 
                     It is recommend to clear these settings to allow Browser Mod settings to 
                     take precedence. To check other Home Assistant users, login as that user
                     and check back at this panel.
-                  </span>
-                  <ha-button
-                    appearance="plain"
-                    @click=${() => this.clearHassUserSidebarSettings()}
-                  >Clear</ha-button>
+                    </span>
+                    <ha-button
+                      variant="danger"
+                      appearance="filled"
+                      @click=${() => this.clearHassUserSidebarSettings()}
+                    >Clear</ha-button>
+                  </div>
                 </ha-settings-row>` 
                 : "" 
               }
