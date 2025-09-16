@@ -147,7 +147,7 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
     async def async_play_media(self, media_type, media_id, **kwargs):
         if media_type.startswith("video/"):
             if self._data.get("player", {}).get("extra", {}).get("videoInteractionRequired", True):
-               _LOGGER.warning(
+                _LOGGER.warning(
                     f"Playing video in browser: {self.browserID}. Interaction may be required."
                 )
         if media_type.startswith("audio/"):
