@@ -64,14 +64,14 @@ export const PopupMixin = (SuperClass) => {
       }
     }
 
-    async showMoreInfo(entityId, large = false, ignore_popup_card = undefined) {
+    async showMoreInfo(entityId, view = "info", large = false, ignore_popup_card = undefined) {
       const base = await hass_base_el();
       base.dispatchEvent(
         new CustomEvent("hass-more-info", {
           bubbles: true,
           composed: true,
           cancelable: false,
-          detail: { entityId, ignore_popup_card },
+          detail: { entityId, view, ignore_popup_card },
         })
       );
       if (large) {
@@ -80,6 +80,27 @@ export const PopupMixin = (SuperClass) => {
           "ha-more-info-dialog"
         );
         if (dialog) dialog.large = true;
+      }
+    }
+
+    setPopupStyle(args) {
+      const { all, tag, style, direction } = args;
+      if (all === true) {
+        this._popupElements.forEach((popup) => {
+          style ? popup._setStyleAttribute(style) : popup._cycleStyleAttributes(direction);
+        });
+      } else if (typeof tag === "string") {
+        const dialogTag =
+          tag != "" ?
+            `browser-mod-popup-${tag}` :
+            "browser-mod-popup";
+        const popup = this._popupElements.find(
+          (p) => p.nodeName.toLowerCase() === dialogTag
+        );
+        style ? popup?._setStyleAttribute(style) : popup?._cycleStyleAttributes(direction);
+      } else {
+        const popup = this._popupElements.slice(-1)[0];
+        style ? popup?._setStyleAttribute(style) : popup?._cycleStyleAttributes(direction);
       }
     }
   };

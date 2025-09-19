@@ -24,6 +24,7 @@ BROWSER_MOD_BROWSER_SERVICES = [
     "popup",
     "more_info",
     "close_popup",
+    "set_popup_style",
     "notification",
     "navigate",
     "refresh",

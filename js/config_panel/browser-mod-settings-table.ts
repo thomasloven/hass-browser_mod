@@ -65,9 +65,13 @@ class BrowserModSettingsTable extends LitElement {
       {
         title: "Are you sure",
         content: "Do you wish to clear this setting?",
-        right_button: "Yes",
+        right_button: "Clear",
+        right_button_variant: "danger",
+        right_button_appearance: "accent",
         right_button_action: clearSettingCallback,
-        left_button: "No",
+        left_button: "Cancel",
+        left_button_variant: "neutral",
+        left_button_appearance: "plain",
       }
     );
   }
@@ -132,9 +136,13 @@ class BrowserModSettingsTable extends LitElement {
       {
         title: "Change setting",
         content,
-        right_button: "OK",
+        right_button: "Save",
+        right_button_variant: "brand",
+        right_button_appearance: "accent",
         right_button_action: changeSettingCallback,
         left_button: "Cancel",
+        left_button_variant: "neutral",
+        left_button_appearance: "plain",
       }
     );
   }
@@ -173,7 +181,11 @@ class BrowserModSettingsTable extends LitElement {
         right_button: "Next",
         right_button_action: (value) =>
           this.changeSetting("browser", value.browser),
+        right_button_variant: "brand",
+        right_button_appearance: "filled",
         left_button: "Cancel",
+        left_button_variant: "neutral",
+        left_button_appearance: "plain",
       }
     );
   }
@@ -211,8 +223,12 @@ class BrowserModSettingsTable extends LitElement {
           },
         ],
         right_button: "Next",
+        right_button_variant: "brand",
+        right_button_appearance: "filled",
         right_button_action: (value) => this.changeSetting("user", value.user),
         left_button: "Cancel",
+        left_button_variant: "neutral",
+        left_button_appearance: "plain",
       }
     );
   }

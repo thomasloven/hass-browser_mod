@@ -5,12 +5,14 @@ x-anchors:
 
   desc: &desc
     type: markdown
-    style: |
-      code {
-        font-size: 8pt;
-        line-height: normal;
-        white-space: pre-wrap;
-        }
+    popup_styles:
+      - style: all
+        styles: |
+          code {
+            font-size: 8pt;
+            line-height: normal;
+            white-space: pre-wrap;
+            }
 
 title: Popup
 cards:
@@ -51,7 +53,7 @@ cards:
                 type: markdown
                 content: Popup!
 
-  # size: wide
+  # initial_style: wide
   - type: vertical-stack
     cards:
       - <<: *desc
@@ -60,7 +62,7 @@ cards:
           service: popup
           data:
             title: Wide
-            size: wide
+            initial_style: wide
             content:
               type: markdown
               content: Popup!
@@ -73,12 +75,12 @@ cards:
             service: popup
             data:
               title: Wide
-              size: wide
+              initial_style: wide
               content:
                 type: markdown
                 content: Popup!
 
-  # size: fullscreen
+  # initial_style: fullscreen
   - type: vertical-stack
     cards:
       - <<: *desc
@@ -87,7 +89,7 @@ cards:
           service: popup
           data:
             title: Fullscreen
-            size: fullscreen
+            initial_style: fullscreen
             content:
               type: markdown
               content: Popup!
@@ -100,7 +102,7 @@ cards:
             service: popup
             data:
               title: Fullscreen
-              size: fullscreen
+              initial_style: fullscreen
               content:
                 type: markdown
                 content: Popup!

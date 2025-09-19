@@ -4,6 +4,8 @@ import { hass_base_el, loadHaForm, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 import structuredClone from "@ungap/structured-clone";
 
+const STANDARD_POPUP_STYLES = ["normal", "classic", "wide", "fullscreen"]
+
 const configSchema = [
   {
     name: "popup_card_id",
@@ -62,9 +64,84 @@ const configSchema = [
     ]
   },
   {
+    type: "expandable",
+    label: "Popup styles",
+    schema: [
+      {
+        label: `Multiple popup styles can be applied for use with title tap or
+        \`browser_mod.set_popup_style\`. You may add styles for \`normal\`, \`classic\`,
+        \`wide\`, \`fullscreen\` or add your own style. Two special styles of \`all\` and  \`card\`
+        are also available. \`all\` is always applied. \`card\` is applied when the popup content is a card.`,
+        type: "constant",
+      },
+      {
+        name: "initial_style",
+        label: "Initial style",
+        selector: {
+          select: {
+            mode: "dropdown",
+            custom_value: true,
+            options: STANDARD_POPUP_STYLES },
+        }
+      },
+      {
+        name: "style_sequence",
+        label: "Style sequence",
+        selector: {
+          select: {
+            mode: "dropdown",
+            custom_value: true,
+            multiple: true,
+            options: ["initial", ...STANDARD_POPUP_STYLES] },
+        }
+      },
+      {
+        name: "popup_styles",
+        label: "Popup CSS styles",
+        selector: {
+          object: {
+            label_field: "style",
+            description_field: "include_styles",
+            multiple: true,
+            fields: {
+              style: {
+                label: "Style",
+                required: true,
+                selector: {
+                  select: {
+                    mode: "dropdown",
+                    custom_value: true,
+                    options: [...STANDARD_POPUP_STYLES, "card", "all"] },
+                }
+              },
+              include_styles: {
+                label: "Also apply styles from...",
+                selector: {
+                  select: {
+                    mode: "dropdown",
+                    custom_value: true,
+                    multiple: true,
+                    options: STANDARD_POPUP_STYLES
+                  },
+                }
+              },
+              styles: {
+                label: "CSS Styles",
+                selector: { text: { multiline: true } }
+              }
+            }
+          }
+        },
+      }
+    ]
+  },
+  {
     name: "size",
+    label: "Popup size (deprecated, use popup style `initial_style` instead)",
     selector: {
-      select: { mode: "dropdown", options: ["normal", "classic", "wide", "fullscreen"] },
+      select: { 
+        mode: "dropdown", 
+        options: STANDARD_POPUP_STYLES },
     },
   },
   {
@@ -207,7 +284,7 @@ const configSchema = [
   },
   {
     name: "style",
-    label: "CSS style",
+    label: "CSS style (deprecated, use popup style `all` instead)",
     selector: { text: { multiline: true } },
   },
   {
@@ -243,8 +320,6 @@ class PopupCardEditor extends LitElement {
   @query("hui-card-element-editor") private _cardEditorEl?;
 
   private _objectSelectorMonitor: ObjectSelectorMonitor;
-  private _schema: Object[];
-  private _schemaOldStyle: Object[];
 
   get settingsValid() {
     return this._settingsValid
@@ -266,8 +341,6 @@ class PopupCardEditor extends LitElement {
       (value: boolean) => { this._settingsValid = value },
       (value: boolean) => { this._showErrors = value }
     );
-    this._schemaOldStyle = configSchema;
-    this._schema = configSchema.filter((s => s.name !== "entity"));
   }
 
   firstUpdated(changedProperties: PropertyValues) {
@@ -414,11 +487,41 @@ class PopupCardEditor extends LitElement {
       <ha-form
         .hass=${this.hass}
         .data=${this._config}
-        .schema=${this._config.entity ? this._schemaOldStyle : this._schema}
+        .schema=${this._getSchema()}
         .computeLabel=${(s) => s.label ?? s.name}
         @value-changed=${this._configChanged}
       ></ha-form>
     </div>`;
+  }
+
+  _getSchema() {
+    var schema = configSchema;
+    if (!this._config.entity) {
+      schema = schema.filter((s => s.name !== "entity"));
+    }
+    if (!this._config.style) {
+      schema = schema.filter((s => s.name !== "style"));
+    }
+    if (!this._config.size) {
+      schema = schema.filter((s => s.name !== "size"));
+    }
+    const customStyles = this._config.popup_styles?.filter((style) => {
+      return style.style !== "all" && !STANDARD_POPUP_STYLES.includes(style.style);
+    }).map((style) => style.style);
+    schema.forEach((entry) => {
+      if (entry.label === "Popup styles") {
+        entry.schema.forEach((subEntry) => {
+          if (subEntry.name === "initial_style") {
+            subEntry.selector.select.options = [...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
+          } else if (subEntry.name === "style_sequence") {
+            subEntry.selector.select.options = ["initial", ...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
+          } else if (subEntry.name === "popup_styles") {
+            subEntry.selector.object.fields.include_styles.selector.select.options = [...STANDARD_POPUP_STYLES, ...(customStyles ?? [])];
+          }
+        })
+      }
+    });
+    return schema;
   }
 
   _renderCardEditor() {

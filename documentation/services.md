@@ -101,7 +101,7 @@ tap_action:
       entity: light.bed_light
 ```
 
-Services called via `fire-dom-event` or called as a part of a different service call will (by default) _only_ target the current Browser (even if it's not registered).
+Services called via `fire-dom-event` or called as a part of a different service call will (by default) *only* target the current Browser (even if it's not registered).
 
 ## Actions
 
@@ -125,7 +125,7 @@ data:
 
 | | |
 |---|---|
-|`path` | A Home Assistant path. <br/>E.x. `/lovelace/`, `/my-dashboard/bedroom`, `/browser_mod/`, `/config/devices/device/20911cc5a63b1caafa2089618545eb8a`...|
+|`path` | A Home Assistant path. E.g. `/lovelace/`, `/my-dashboard/bedroom`, `/browser_mod/`, `/config/devices/device/20911cc5a63b1caafa2089618545eb8a`...|
 
 ## `browser_mod.refresh`
 
@@ -158,12 +158,12 @@ data:
 |`register`| If true, register the Browser after rename. |
 |`refresh`| If true, refresh the browser after rename. |
 
-> NOTES: 
+> NOTES:
 >
-> - Browser IDs are changed on the Browser. 
-> - When this service is called as a [*Server* call](services.md#calling-services---server-call-vs-browser-call), it will send the change request to all registered Browsers and if `current_browser_id` matches the browser's Browser ID, it will perform the change. 
-> - When this service is called as a [*Browser* call](services.md#calling-services---server-call-vs-browser-call), `current_browser_id` is still required to confirm the Browser ID change. 
-> - If you wish for an interactive popup to change the Browser ID, call `browser_mod.change_browser_id` leaving all parameters empty. The popup will include existing Browser IDs for selection for `new_browser_id` which allows you to recover a Browser ID when it has been lost. 
+> - Browser IDs are changed on the Browser.
+> - When this service is called as a [*Server* call](services.md#calling-services---server-call-vs-browser-call), it will send the change request to all registered Browsers and if `current_browser_id` matches the browser's Browser ID, it will perform the change.
+> - When this service is called as a [*Browser* call](services.md#calling-services---server-call-vs-browser-call), `current_browser_id` is still required to confirm the Browser ID change.
+> - If you wish for an interactive popup to change the Browser ID, call `browser_mod.change_browser_id` leaving all parameters empty. The popup will include existing Browser IDs for selection for `new_browser_id` which allows you to recover a Browser ID when it has been lost.
 > - The interactive approach should only be taken when calling as a [*Browser* call](services.md#calling-services---server-call-vs-browser-call) as leaving all parameters empty with a [*Server* call](services.md#calling-services---server-call-vs-browser-call) will show the interactive Browser ID change popup on **ALL** registered Browsers.
 > - If the current Browser is **NOT** registered, this service will only work as a [*Browser* call](services.md#calling-services---server-call-vs-browser-call).
 
@@ -185,6 +185,7 @@ Show a more-info dialog.
 service: browser_mod.more_info
 data:
   [entity: <string>]
+  [view: <INFO/history/settings/related]
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
   [browser_id: <Browser IDs>]
@@ -194,10 +195,11 @@ data:
 | | |
 |---|---|
 |`entity`| The entity whose more-info dialog to display. |
+|`view`| The more-info view to open. The view opened will always have a close icon. Setting the view to anything other than `info` will always ignore custom popup-cards. |
 |`large`| If true, the dialog will be displayed wider, as if you had clicked the title of the dialog. |
 |`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card in the view/dashboard(*) which would override it. |
 
-_* Dashboard when popup-card config has `popup_card_all_views: true`._
+*\* Dashboard when popup-card config has `popup_card_all_views: true`.*
 
 > NOTE: You can close an open more-info dialog by calling `browser_mod.more_info` with no entity.
 
@@ -211,7 +213,16 @@ data:
   [popup_card_id: <string>]
   [title: <string>]
   [content: <string / Dashboard card configuration / ha-form schema>]
-  [size: <NORMAL/classic/wide/fullscreen>]
+  [initial_style: <NORMAL/classic/wide/fullscreen/(user)>]
+  [style_sequence: <list>]
+    [ - <normal/classic/wide/fullscreen/(user)>]
+    [ - <normal/classic/wide/fullscreen/(user)>]
+  [popup_styles: <list>]
+    [style: <normal/classic/wide/fullscreen/card/all/(user)>]
+    [include_styles: <list>]
+      [ - <normal/classic/wide/fullscreen/card/all/(user)>]
+      [ - <normal/classic/wide/fullscreen/card/all/(user)>]
+    [styles: <string>]
   [icon: <string>]
   [icon_title: <string>]
   [icon_action: <service call>]
@@ -240,7 +251,6 @@ data:
   [timeout: <number>]
   [timeout_action: <service call>]
   [timeout_hide_progress: <true/FALSE>]
-  [style: <string>]
   [tag: <string>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs]
@@ -256,7 +266,12 @@ data:
 | `icon_action` or `icons` > `action` | Action to perform when the icon is pressed. |
 | `icon_close` or `icons` > `close` | Enable/disable popup closing when the icon is pressed. |
 | `icon_class` or  `icons` > `class` | CSS Class to apply to the icon. This allows for styling the icon directly using `style`. |
-| `size` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices |
+| `initial_style` | `wide` will make the popup window wider. `fullscreen` will make it cover the entire screen. `classic` will keep popups non-fullheight on small devices. You can event add your own style. See [styles.md](styles.md) |
+| `style_sequence` | Sequence of styles to cycle through when padding the popup title or when using the `browser_mod.set_popup_style` service. You can cycle through the standard styles and your own styles. See [styles.md](styles.md). Defaults to a sequence of `wide`, `normal` to mimic a standard `more-info` dialog. |
+| `popup_styles` | A list of styles to customise. You can customise the standard styles of `normal`, `wide`, `fullscreen`, `classic` or add your own. Two special styles are available to customise, `all` which is applied all of the time and `card` which is applied when the `content` is a card. See [styles.md](styles.md) |
+| `popup_styles` > `style` | The style to customise. This can be `normal`, `wide`, `fullscreen`, `classic`, `all`, `card` or your own style. See [styles.md](styles.md) |
+| `popup_styles` > `include styles` | Styles to include when this still is applied. This can be `normal`, `wide`, `fullscreen`, `classic` or your own style. [styles.md](styles.md) |
+| `popup_styles` > `styles` | CSS style rules for the style. These rules are nested in a `:host([<style>]) { }` rule using `popup_styles` > `style`. See [styles.md](styles.md) |
 | `right_button`| The text of the right action button.|
 | `right_button_variant` | The right button variant. See [popups.md](popups.md#button-variant-and-appearance) for examples. |
 | `right_button_appearance` | The right button appearance. See [popups.md](popups.md#button-variant-and-appearance) for examples. |
@@ -274,7 +289,6 @@ data:
 | `timeout` | If set will close the dialog after `timeout` milliseconds. |
 | `timeout_action` | An action to perform if the dialog is closed by timeout. |
 | `timeout_hide_progress` | If true the timeout progress bar will be hidden. |
-| `style` | CSS styles to apply to the dialog. |
 | `tag` | A popup tag used to allow for multiple popups. Only one popup can be shown for each tag. See [Multiple popups](popups.md#multiple-popups) for more information. |
 
 Note that any Browser Mod services performed as `*_action`s here will be performed as a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call) ONLY on the same Browser as initiated the action UNLESS `browser_id` or `user_id` is given.
@@ -309,20 +323,22 @@ icons:
         message: Home action
     class: home-icon
 ...
-style: |-
-  .account-icon {
-    color: red;
-  }
-  .home-icon {
-    color: blue;
-  }
+popup_styles:
+  - style: all
+    styles: |-
+      .account-icon {
+        color: red;
+      }
+      .home-icon {
+        color: blue;
+      }
 ```
 
 See [popups.md](popups.md) for more information and usage examples.
 
 ## `browser_mod.close_popup`
 
-Close any currently open popup or more-info dialog.
+Close any currently open popup.
 
 ```yaml
 service: browser_mod.close_popup
@@ -339,6 +355,41 @@ data:
 | `tag` | Popup tag of the popup to close. See [Multiple popups](popups.md#multiple-popups) for more information. |
 
 > NOTE: To close an open more-info dialog, use `browser_mod.more_info` with no entity.
+
+## `browser_mod.set_popup_style`
+
+Set of cycle style sequence of a popup.
+
+```yaml
+service: browser_mod.set_popup_style
+  [browser_id: <Browser IDs>]
+  [user_id: <User IDs>]
+  [all: true|FALSE]
+  [tag: <string>]
+  [style: <string>]
+  [direction: <string>]
+```
+
+|||
+|---|---|
+| `all` | If true all the style will be change/cycled on all open Browser Mod popups |
+| `tag` | Popup tag of the popup to style/cycle. If neither `all` or `tag` is set, the service will target the topmost open popup. See [Multiple popups](popups.md#multiple-popups) for more information. |
+| `style` | The style to set for the popup. Can be `normal`, `wide`, `fullscreen`, `classic` or your own. `style` takes precedence over `direction`. See [styles.md](styles.md) |
+| `direction` | Which direction to cycle the style sequence. Can be `forward` or `back`. `style` takes precedence over direction. |
+
+The example below is a `tap_action` on a button on a popup that does the same as clicking on the title of the popup.
+
+```yaml
+...
+    type: button
+    name: Cycle Style Forward
+    tap_action:
+      action: fire-dom-event
+      browser_mod:
+        service: browser_mod.set_popup_style
+        data:
+          direction: forward
+```
 
 ## `browser_mod.notification`
 
@@ -405,7 +456,7 @@ data:
 |---|---|
 |`sequence` | List of actions to perform. |
 
-Note that if `browser_id` and `user_id` is omitted in the service calls listed in `sequence` the services will be performed on the Browser that's targeted as a whole rather than all browsers. 
+Note that if `browser_id` and `user_id` is omitted in the service calls listed in `sequence`, the services will be performed on the Browser that's targeted as a whole rather than all browsers.
 
 TIP: To target browsers matching the current loggded in user ID you can use `user_id: THIS`. This may be useful when you have a number of panels logged in as a viewing account and wish for the sequence to be performed on all the panels.
 
@@ -460,6 +511,7 @@ data:
 Only use this one if you know what you're doing.
 
 Some helpful functions that are available:
+
 - `hass` - The `hass` frontend object
 - `data` - Any data sent to the service (also form data from popups)
 - `service(service, data)` - Make a Browser Mod service call
