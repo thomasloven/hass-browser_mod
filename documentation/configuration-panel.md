@@ -270,7 +270,7 @@ Example: Get the first part of the Browser path
 
 Example: Know who initiated script action
 
-Here the script just returns the current user as a response. A funcional script would use the variable in some way.
+Here the script just returns the current user as a response. A functional script would use the variable in some way.
 
 > NOTE: This Frontend action needs to be a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call).
 
