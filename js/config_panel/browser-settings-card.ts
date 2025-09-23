@@ -67,9 +67,9 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                   Login as admin to change the settings of this Browser.
                   <br /><br />
                   You can set auto-register as admin on another Browser
-                  to register this Browser automatically. However you will
-                  still need to login as admin on this Browser to change the
-                  Browser ID from the auto-generated Browser ID.
+                  to register this Browser automatically. You can then either
+                  use <i>browser_mod.change_browser_id</i> service or login 
+                  as admin on this Browser to change the Browser ID.
                 </ha-alert>
               `
             : ""}
