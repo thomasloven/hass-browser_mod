@@ -80,7 +80,6 @@ This allows you to set and dynamically update the favicon of the browser tab/win
 
 Note that this _only_ applies to the current favicon of the page, not any manifest icons such as the loading icon or the icon you get if you save the page to your smartphones homescreen. For those, please see the [hass-favicon](https://github.com/thomasloven/hass-favicon) custom integration.
 
-
 ### Hide Sidebar
 
 This will hide the sidebar with the navigation links. You can still access all the pages via normal links.
@@ -136,7 +135,8 @@ __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT supp
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
 
-> *Note:* 
+> _Note:_
+>
 >1. This option sets the same local setting as Home Assistants' Dashboard setting in User Settings. If this setting does not provide exactly what you are after you may wish to use a Default action with `browser_mod.navigate`.
 >2. This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
 
@@ -144,33 +144,37 @@ Set the default dashboard that is shown when you access `https://<your home assi
 
 Set the default action to be run when Browser is loaded or refreshed. This setting accepts the same action Config as per `browser_mod.popup` actions. For more information see the examples actions included in [Actionable popups](./popups.md#actionable-popups). If you are using Browser Mod [SERVICES](./services.md), in most cases you would omit `browser_id` or `user_id` so the service runs on the loading Browser.
 
-__IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates. 
+__IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
 
-*Tips:*
+_Tips:_
+
 1. Multiple actions can be called by using a list of actions. These are called in parallel, matching actions for popups and notifications.
-```yaml
-- action: browser_mod.navigate
-  data:
-    path: /my-dashboard/second-view
-- action: browser_mod.notification
-  data:
-    message: Good Morning Dave
-```
-2. For fine grained control of timing, consider using `browser_mod.sequence`. Note here that only one top level action is used.
-```yaml
-action: browser_mod.sequence
-data:
-  sequence:
-    - service: browser_mod.navigate
+
+    ```yaml
+    - action: browser_mod.navigate
       data:
         path: /my-dashboard/second-view
-    - service: browser_mod.delay
-      data:
-        time: 5000
-    - service: browser_mod.notification
+    - action: browser_mod.notification
       data:
         message: Good Morning Dave
-```
+    ```
+
+2. For fine grained control of timing, consider using `browser_mod.sequence`. Note here that only one top level action is used.
+
+    ```yaml
+    action: browser_mod.sequence
+    data:
+      sequence:
+        - service: browser_mod.navigate
+          data:
+            path: /my-dashboard/second-view
+        - service: browser_mod.delay
+          data:
+            time: 5000
+        - service: browser_mod.notification
+          data:
+            message: Good Morning Dave
+    ```
 
 ### Sidebar order
 
@@ -214,7 +218,7 @@ This saves the screen state on browser disconnect and restores on browser reconn
 While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied. To be able to restore Browser ID and Frontend settings tied to the Browser ID you can follow the best practices listed below.
 
 1. Turn off auto-register. This allows to control the register order, and also limits many new Browser IDs being registered in your environment of changing Browser IDs.
-2. Don't lock the register but leave open to make the next step easy to accomplish. 
+2. Don't lock the register but leave open to make the next step easy to accomplish.
 3. When you need to change/revert the Browser ID, to restore Frontend settings, do the following in this exact order:
  a) Navigate to Browser Mod settings panel.
  b) Rename the automatically generated Browser ID string to be the same name as the Browser ID for existing Frontend settings you wish to apply.
@@ -226,9 +230,12 @@ Using this method means that the new random Browser ID never has sent informatio
 
 #### Browser Entities variable
 
-The variable `browser_entities` is available in templates. It is a dictionary of the entities for the Browser and includes the following.
+The variable `browser_entities` is available in Frontend settings templates. It is a special dictionary of the entities for the Browser and includes the following.
+
+`browser_entities` is also available to a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call) by setting the replacememt parameter `THIS` for `browser_entities`. See the script example below.
 
 > NOTE: If the Browser is not registered, `browser_entities` will be undefined. Your template should use `default()` to handle such a case.
+> __IMPORTANT__: `browser_entities` __IS NOT__ available in Developer tools tenplate editor. It is __ONLY__ available in the scenarios listed in this documentation.
 
 | Variable | Sensor | Example |
 |---|---|---|
@@ -247,27 +254,66 @@ The variable `browser_entities` is available in templates. It is a dictionary of
 | `browser_entities.charging` | Browser charging Sensor | _binary_sensor.browser_id_browser_charging_ |
 | `browser_entities.panel` | Browser panel Sensor | _sensor.browser_id_panel_ |
 
-Your template can use the `browser_entities` variable to query a sensor state or get attributes of the sensor.
+Your Frontend settings or script template can use the `browser_entities` variable to query a sensor state or get attributes of the sensor.
 
 Example: Get the current user name
+
 ```yaml
 {{ states(browser_entities.currentUser.entity_id) if 'currentUser' in browser_entities else 'unknown' }}
 ```
 
 Example: Get the first part of the Browser path
+
 ```yaml
 {{ state_attr(browser_entities.panel.entity_id, 'viewTitle') if 'panel' in browser_entities else 'unknown' }}
 ```
 
+Example: Know who initiated script action
+
+Here the script just returns the current user as a response. A funcional script would use the variable in some way.
+
+> NOTE: This Frontend action needs to be a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call).
+
+1. _Frontend action_
+
+    ```yaml
+    # ... other code
+    tap_action:
+      action: fire-dom-event # Browser call
+      browser_mod:
+        service:  browser_mod.sequence
+        data:
+          sequence:
+            - service: script.my_script
+              data:
+                browser_entities: THIS
+    ```
+
+2. _My Script_
+
+    ```yaml
+    sequence:
+      - variables:
+          currentUser: >-
+            {{ states(browser_entities.currentUser.entity_id) if 'currentUser' in
+            browser_entities else 'unknown' }}
+      - action: script.script_with_response
+        metadata: {}
+        data: {}
+        response_variable: currentUser
+    alias: My Script
+    description: ""
+    ```
+
 ---
 
-#### User interaction 
+#### User interaction
 
 Due to Browser restrictions users may need to interact with a Browser after refresh to be able to play video/audio automatically with the media player created by Browser Mod for the Browser. Generally muted video will play automatically without needing interaction, but less so unmuted video and/or audio. To facilitate having the Browser ready to play video/audio, Browser Mod carries out interaction tests on Browser refresh. First Browser Mod checks if muted video can be played. If successful, Browser Mod next checks if unmuted video can be played. If one of these checks is not successful, Browser Mod will display an icon in the lower left of the Browser to show that user interaction is required.
 
 ![Tablet device showing interaction is required](https://github.com/user-attachments/assets/b98935b3-86e3-44bf-b745-4e0c4b6ad459)
 
-When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required **directly** on an interactive element. If this is the case, a Frontend option is available to set [Full user interaction](#full-user-interaction) if required. When this Frontend setting is set for a Browser, and the need for Full user interaction is detected, users will see a full interaction screen like that shown below. To facilitate successful user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
+When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required __directly__ on an interactive element. If this is the case, a Frontend option is available to set [Full user interaction](#full-user-interaction) if required. When this Frontend setting is set for a Browser, and the need for Full user interaction is detected, users will see a full interaction screen like that shown below. To facilitate successful user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
 
 ![Tablet device showing full interaction](https://github.com/user-attachments/assets/a1ce01af-091e-4618-bd8e-c50ebd05f9cf)
 
