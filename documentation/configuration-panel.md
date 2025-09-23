@@ -235,7 +235,8 @@ The variable `browser_entities` is available in Frontend settings templates. It 
 `browser_entities` is also available to a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call) by setting the replacement parameter `THIS` for `browser_entities`. See the script example below.
 
 > NOTE: If the Browser is not registered, `browser_entities` will be undefined. Your template should use `default()` to handle such a case.
-> __IMPORTANT__: `browser_entities` __IS NOT__ available in Developer tools tenplate editor. It is __ONLY__ available in the scenarios listed in this documentation.
+>
+> __IMPORTANT__: `browser_entities` __IS NOT__ available in Developer tools template editor. It is __ONLY__ available in the scenarios listed in this documentation.
 
 | Variable | Sensor | Example |
 |---|---|---|
