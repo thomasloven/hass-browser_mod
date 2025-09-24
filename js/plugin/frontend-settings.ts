@@ -344,7 +344,7 @@ export const AutoSettingsMixin = (SuperClass) => {
             if (ev.detail?.dialogTag === "dialog-edit-sidebar") {
               if (ev.detail?.browser_mod_continue) return;
               ev.stopPropagation();
-              if (this.hass.user?.is_admin) {
+              if (this.hass.user?.is_admin || !this.registered) {
                 const evShowDialog = new CustomEvent("show-dialog", { bubbles: true, composed: true, detail: { browser_mod_continue: true, ...ev.detail } })
                 window.browser_mod?.showPopup(
                   {
