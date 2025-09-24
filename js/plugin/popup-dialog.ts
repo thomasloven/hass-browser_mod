@@ -1,9 +1,10 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, HTMLTemplateResult, PropertyValues } from "lit";
 import { property, query } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { repeat } from "lit/directives/repeat.js";
 import {ifDefined} from 'lit/directives/if-defined.js';
 import {
+  ensureArray,
   provideHass,
   selectTree,
 } from "../helpers";
@@ -31,11 +32,9 @@ export class BrowserModPopup extends LitElement {
   @property() tag;
   @property() dismiss_icon;
   @property({ reflect: true }) timeout_hide_progress;
-  @property({ reflect: true }) wide;
-  @property({ reflect: true }) fullscreen;
-  @property({ reflect: true }) classic;
   @property() _style;
   @property() _formDataValid;
+  @property({type: Array}) _styleAttributes: boolean [];
   @query("ha-dialog") dialog: any;
   _autoclose;
   _autocloseListener;
@@ -46,7 +45,11 @@ export class BrowserModPopup extends LitElement {
   _resolveClosed;
   _formdata;
   card_mod;
+  _popupStyles;
   _objectSelectorMonitor: ObjectSelectorMonitor;
+  _initialStyle: string;
+  _styleSequence: string[];
+  _styleSequenceIndex: number;
 
   connectedCallback() {
     super.connectedCallback();
@@ -54,6 +57,19 @@ export class BrowserModPopup extends LitElement {
       this,
       (value: boolean) => { this._formDataValid = value }
     );
+  }
+
+  updated(_changedProperties: PropertyValues): void {
+    super.updated(_changedProperties);
+    if (_changedProperties.has("_styleAttributes")) {
+      Object.keys(this._styleAttributes).forEach((key) => {
+        if (this._styleAttributes[key]) {
+          key.split(" ").forEach((k) => this.setAttribute(k, ""));
+        } else {
+          key.split(" ").forEach((k) => this.removeAttribute(k));
+        }
+      });
+    }
   }
 
   public async showDialog(args: BrowserModPopupParams): Promise<void> {
@@ -92,6 +108,11 @@ export class BrowserModPopup extends LitElement {
         }
       )
     );
+    Object.keys(this._styleAttributes).forEach((key) => {
+      key.split(" ").forEach((k) => this.removeAttribute(k));
+    });
+    this._styleAttributes = [];
+    this._styleSequenceIndex = undefined;
     return true;
   }
 
@@ -165,6 +186,39 @@ export class BrowserModPopup extends LitElement {
     );
   }
 
+  _updateStyleAttributes(newStyle) {
+    if (newStyle == "initial") newStyle = this._initialStyle;
+    // Clear previous style attributes
+    Object.keys(this._styleAttributes).forEach((key) => {
+      this._styleAttributes[key] = false;
+    });
+    this._styleAttributes[newStyle] = true;
+    this._popupStyles?.forEach((style) => {
+      if (style.style === newStyle) {
+        style.include_styles?.forEach((s) => {
+          this._styleAttributes[s] = true;
+        });
+      }
+    });
+    // Copy array so lit picks up change
+    this._styleAttributes = structuredClone(this._styleAttributes);
+  }
+
+  _setStyleAttribute(newStyle) {
+    this._updateStyleAttributes(newStyle);
+    this._styleSequenceIndex = this._styleSequence.indexOf(newStyle);
+  }
+
+  _cycleStyleAttributes(dir: string = "forward") {
+    if (dir === "forward") {
+      this._styleSequenceIndex = (this._styleSequenceIndex + 1) % this._styleSequence.length;
+    } else {
+      this._styleSequenceIndex = (this._styleSequenceIndex - 1 + this._styleSequence.length) % this._styleSequence.length;
+    }
+    this._updateStyleAttributes(this._styleSequence[this._styleSequenceIndex]);
+  }
+
+
   async _build_card(config) {
     const helpers = await window.loadCardHelpers();
     const card = await helpers.createCardElement(config);
@@ -211,6 +265,7 @@ export class BrowserModPopup extends LitElement {
       timeout_action = undefined,
       timeout_hide_progress = undefined,
       size = undefined,
+      initial_style = undefined,
       style = undefined,
       autoclose = false,
       card_mod = undefined,
@@ -221,7 +276,9 @@ export class BrowserModPopup extends LitElement {
       icon_class = undefined,
       icons = undefined,
       dismiss_icon = undefined,
-      tag = undefined
+      tag = undefined,
+      popup_styles = undefined,
+      style_sequence = undefined,
     } = {}
   ) {
     this._formdata = undefined;
@@ -229,6 +286,12 @@ export class BrowserModPopup extends LitElement {
     this.title = title;
     this.card = undefined;
     this.card_mod = card_mod;
+    this._initialStyle = initial_style ?? size ?? "normal";
+    this._styleAttributes = [];
+    this._popupStyles = popup_styles;
+    this._styleSequence = ensureArray(style_sequence ?? []);
+    this._styleSequence = this._styleSequence.length > 0 ? this._styleSequence : ["wide", "normal"];
+    this._setStyleAttribute(this._initialStyle);
     if (content && content instanceof HTMLElement) {
       // HTML Element content
       this.content = content;
@@ -284,9 +347,6 @@ export class BrowserModPopup extends LitElement {
       dismiss_action,
       timeout_action,
     };
-    this.wide = size === "wide" ? "" : undefined;
-    this.fullscreen = size === "fullscreen" ? "" : undefined;
-    this.classic = size === "classic" ? "" : undefined;
     this.tag = tag;
     this._style = style;
     this._autoclose = autoclose;
@@ -377,7 +437,12 @@ export class BrowserModPopup extends LitElement {
                       </ha-icon-button>
                     `
                   : ""}
-                <span slot="title" .title="${this.title}">${this.title}</span>
+                <span 
+                  slot="title" 
+                  @click=${() => { this._cycleStyleAttributes() }} 
+                  .title="${this.title}"
+                  class="title"
+                >${this.title}</span>
                 ${this.icons 
                   ?
                     repeat(
@@ -429,12 +494,29 @@ export class BrowserModPopup extends LitElement {
             : ""}
         </div>
         <style>
-          :host {
-            ${this._style}
-          }
+          ${this.getDynamicStyles()}
         </style>
       </ha-dialog>
     `;
+  }
+
+  getDynamicStyles() {
+    const styles = `
+      :host {
+        ${this._style ?? ""}
+      }
+      ${this._popupStyles?.filter((style) => style.styles)
+        .map((style) =>
+          style.style == 'all' ?
+            `:host {
+          ${style.styles}
+        }` : 
+        `:host([${style.style}]) {
+          ${style.styles}
+        }`
+      ).join("\n")}
+    `;
+    return styles;
   }
 
   static get styles() {
@@ -485,7 +567,7 @@ export class BrowserModPopup extends LitElement {
         padding: 8px 16px 8px 24px;
         justify-content: space-between;
         padding-bottom: 8px;
-        background-color: var(--mdc-theme-surface, #fff);
+        background-color: var(--ha-dialog-surface-background, var(--mdc-theme-surface, #fff));
         border-top: 1px solid var(--divider-color);
         position: sticky;
         bottom: 0px;
@@ -503,6 +585,14 @@ export class BrowserModPopup extends LitElement {
         height: 5px;
         background: var(--primary-color);
         z-index: 10;
+      }
+      .title {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        -webkit-user-select: none;
+        user-select: none;
+        color: var(--primary-text-color);
       }
 
       ha-icon-button > * {

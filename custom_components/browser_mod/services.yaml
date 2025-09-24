@@ -87,17 +87,71 @@ popup:
       description: "Popup content (Test or lovelace card configuration)"
       selector:
         object:
-    size:
-      name: Size
-      description: ""
+    initial_style:
+      name: Initial Style
+      description: "Initial style to apply to the popup"
       selector:
         select:
           mode: dropdown
+          custom_value: true
           options:
             - normal
             - classic
             - wide
             - fullscreen
+    style_sequence:
+      name: Style Sequence
+      description: "Sequence of styles to cycle through when user taps the title or with browser_mod.set_popup_style service"
+      selector:
+        select:
+          mode: dropdown
+          custom_value: true
+          multiple: true
+          options:
+            - initial
+            - normal
+            - classic
+            - wide
+            - fullscreen
+    popup_styles:
+      name: Popup Styles
+      description: "Popup styles to apply. Use 'all' to always apply the style. You can add to standard styles or create your own"
+      selector:
+        object:
+          label_field: style
+          description_field: include_styles
+          multiple: true
+          fields:
+            style:
+              label: Style
+              selector:
+                select:
+                  mode: dropdown
+                  custom_value: true
+                  options:
+                    - normal
+                    - classic
+                    - wide
+                    - fullscreen
+                    - card
+                    - all
+            include_styles:
+              label: Also apply styles from...
+              selector:
+                select:
+                  mode: dropdown
+                  custom_value: true
+                  multiple: true
+                  options:
+                    - normal
+                    - classic
+                    - wide
+                    - fullscreen
+            styles:
+              label: CSS Styles
+              selector:
+                text:
+                  multiline: true
     right_button:
       name: Right button
       description: Text of the right button
@@ -202,12 +256,6 @@ popup:
       description: Tag for managing multiple popups
       selector:
         text:
-    style:
-      name: Styles
-      description: CSS code to apply to the popup window
-      selector:
-        text:
-          multiline: true
 
 more_info:
   name: more_info
@@ -234,6 +282,17 @@ more_info:
       description: ""
       selector:
         text:
+    view:
+      name: View
+      description: More-info view to show
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - info
+            - history
+            - settings
+            - related
     large:
       name: Large size
       description: ""
@@ -278,6 +337,59 @@ close_popup:
       description: Tag for popup to close when using multiple popups
       selector:
         text:
+
+set_popup_style:
+  name: Set popup style
+  description: "Set the style of a popup"
+  fields:
+    browser_id:
+      name: Target Browser
+      description: ""
+      selector:
+        device:
+          multiple: true
+          filter:
+            integration: "browser_mod"
+    user_id:
+      name: Target User
+      description: ""
+      selector:
+        entity:
+          multiple: true
+          filter:
+            domain: "person"
+    all:
+      name: All popups
+      description: Set style for all open Browser Mod popups on the browser
+      default: false
+      selector:
+        boolean:
+    tag:
+      name: Tag
+      description: Tag for popup to set style for when using multiple popups
+      selector:
+        text:
+    style:
+      name: Style
+      description: Style to apply to the popup
+      selector:
+        select:
+          mode: dropdown
+          custom_value: true
+          options:
+            - normal
+            - classic
+            - wide
+            - fullscreen
+    direction:
+      name: Direction
+      description: Direction to cycle through style sequence
+      selector:
+        select:
+          mode: dropdown
+          options:
+            - forward
+            - back
 
 notification:
   name: notification
