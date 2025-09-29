@@ -15,6 +15,7 @@ import { PopupMixin } from "./popups";
 import pjson from "../../package.json";
 import "./popup-card";
 import "./popup-dialog"
+import "./dashboard-cards/tile-card";
 import { AutoSettingsMixin } from "./frontend-settings";
 import { BrowserIDMixin } from "./browserID";
 import { VersionMixin } from "./version.js";
