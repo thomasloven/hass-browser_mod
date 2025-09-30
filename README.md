@@ -196,6 +196,34 @@ type: custom:browser-player
 
 ## FAQ
 
+### **How can I make the video player show fullscreen?**
+
+The [`media_player.play_media`](https://www.home-assistant.io/integrations/media_player/#action-media_playerplay_media) service allows for `extra` configuration to be passed to the `media_player` entity. Browser Mod supports sending `media_player` popup configuration by adding a `popup` dictionary under `extra`. You can set any [`browser_mod.popup`](documentation/services.md#browser_modpopup) parameters apart from `content`.
+
+To show a the video player fullscreen, with no padding the to video and a black background, use the example below.
+
+```yaml
+action: media_player.play_media
+target:
+  entity_id: media_player.my_browser
+data:
+  extra:
+    popup:
+      initial_style: fullscreen
+      popup_styles:
+        - style: all
+          styles: |
+            ha-dialog {
+              --ha-dialog-surface-background: black;
+            }
+            ha-dialog .container {
+              padding: 0px;
+            }
+  media:
+    media_content_id: media-source://...
+    media_content_type: video/mp4
+```
+
 ### **How do I keep a device 'Alive'?**
 
 It all depends on what your outcome is. Browser Mod cannot control hardware so it can't put any devices to screen off mode. Browser Mod does have a light entity which can be used to simulate a dimmed screen with a dark overlay. If you do wish to have your device in a screen off state you need to be aware of issues that may arise with Browser Mod and Home Assistant losing connection if the device operating system decides to suspend the Browser/App. This is most prevalent on Android devices where Browser/App may be put into a doze state where it will ultimately be **frozen**. Browser Mod has no control over this. For a detailed write up of running Browser Mod with Android devices see the wiki article [Android Devices 'Always On'](https://github.com/thomasloven/hass-browser_mod/wiki/Android-Devices-'Always-On').
