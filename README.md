@@ -200,7 +200,7 @@ type: custom:browser-player
 
 The [`media_player.play_media`](https://www.home-assistant.io/integrations/media_player/#action-media_playerplay_media) service allows for `extra` configuration to be passed to the `media_player` entity. Browser Mod supports sending `media_player` popup configuration by adding a `popup` dictionary under `extra`. You can set any [`browser_mod.popup`](documentation/services.md#browser_modpopup) parameters apart from `content`.
 
-To show a the video player fullscreen, with no padding the to video and a black background, use the example below.
+To show the video player fullscreen, with no padding to the video and a black background, use the example below.
 
 ```yaml
 action: media_player.play_media
