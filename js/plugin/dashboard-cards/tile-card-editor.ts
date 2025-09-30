@@ -1,4 +1,4 @@
-import { html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
+import { css, html, LitElement, nothing, PropertyValues, TemplateResult } from "lit";
 import { property, queryAsync, state } from "lit/decorators.js";
 import { breakCamelCase, capitalize, selectTree } from "../../helpers";
 
@@ -107,6 +107,7 @@ export class BrowserModTileCardEditor extends LitElement {
       .hass=${this.hass}
       .schema=${entitySelectsSchema}
       .data=${this._config}
+      .computeLabel=${(s) => s.label ?? s.name}
       @value-changed=${this._entityChanged}
     ></ha-form>`;
   }
@@ -124,5 +125,13 @@ export class BrowserModTileCardEditor extends LitElement {
       this._config = { ...this._config, entity: newEntity };
       this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config } }));
     }
+  }
+
+  static get styles() {
+    return css`
+      .entity-select {
+        margin-bottom: 24px;
+      }
+    `;
   }
 }
