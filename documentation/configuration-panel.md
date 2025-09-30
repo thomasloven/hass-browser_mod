@@ -240,6 +240,7 @@ The variable `browser_entities` is available in Frontend settings templates. It 
 
 | Variable | Sensor | Example |
 |---|---|---|
+| `browser_entities.browserID` | Browser ID Sensor | _sensor.browser_id_ |
 | `browser_entities.path` | Browser path Sensor | _sensor.browser_id_browser_path_ |
 | `browser_entities.visibility` | Browser visibility Sensor | _sensor.browser_id_browser_visibility_ |
 | `browser_entities.userAgent` | Browser userAgent Sensor | _sensor.browser_id_browser_useragent_ |

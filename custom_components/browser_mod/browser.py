@@ -69,6 +69,7 @@ class BrowserModBrowser:
             adder([new])
             self.entities[name] = new
 
+        _assert_browser_sensor("sensor", "browserID", "Browser ID", icon="mdi:server")
         _assert_browser_sensor("sensor", "path", "Browser path", icon="mdi:web")
         _assert_browser_sensor("sensor", "visibility", "Browser visibility")
         _assert_browser_sensor(
