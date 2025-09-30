@@ -31,7 +31,7 @@ export class BrowserModTileCard extends LitElement {
   }
 
   static getStubConfig(hass, entities): Record<string, unknown> {
-    return {};
+    return { entity: "browser_entities.browserID" };
   }
 
   connectedCallback(): void {
@@ -174,7 +174,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
     (window as any).customCards.push({
       type: "browser-mod-tile-card",
       name: "Browser Mod Tile",
-      preview: false,
+      preview: true,
       description:
         "Provides access to local Browser Mod entities using a tile card.",
     });
