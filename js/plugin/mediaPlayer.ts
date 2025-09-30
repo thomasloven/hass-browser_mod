@@ -121,8 +121,9 @@ export const MediaPlayerMixin = (SuperClass) => {
           title: undefined,
           content: this._video_player,
           dismiss_action: () => this._video_player.pause(),
-          size: "wide",
+          initial_style: "wide",
           tag: "media_player",
+          ...this.extra?.popup
         });
       } else if (
         this.player !== this._video_player &&
