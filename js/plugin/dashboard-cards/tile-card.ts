@@ -119,7 +119,7 @@ export class BrowserModTileCard extends LitElement {
   }
   
   private _haveEntity(browserEntity: string): boolean {
-    if (!this._tileCardEntities) return false;
+    if (!browserEntity || !this._tileCardEntities) return false;
     const type = browserEntity.split(".")[1];
     if (!type) return false;
     return Object.keys(this._tileCardEntities).some((e) => e === type);

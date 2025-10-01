@@ -73,7 +73,7 @@ export class BrowserModBadge extends LitElement {
   }
   
   private _haveEntity(browserEntity: string): boolean {
-    if (!this._badgeEntities) return false;
+    if (!browserEntity || !this._badgeEntities) return false;
     const type = browserEntity.split(".")[1];
     if (!type) return false;
     return Object.keys(this._badgeEntities).some((e) => e === type);
