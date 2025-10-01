@@ -6,11 +6,11 @@ export class BrowserModBadgeEditor extends LitElement {
   @property() hass;
   @state() _config;
   @state() _tileCardEntities;
-  
-  @queryAsync("hui-tile-card-editor")
-  private _tileCardEditor: Promise<any>;
 
-  private _tileCardConfig;
+  @queryAsync("hui-entity-badge-editor")
+  private _badgeEditor: Promise<any>;
+
+  private _badgeConfig;
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -27,7 +27,7 @@ export class BrowserModBadgeEditor extends LitElement {
 
   protected firstUpdated(_changedProperties: PropertyValues): void {
     this.updateComplete.then(() => {
-      this._tileCardEditor?.then(async (editor) => {
+      this._badgeEditor?.then(async (editor) => {
         let selector = null;
         let attempts = 0;
         while (!selector && attempts < 10) {
@@ -44,12 +44,12 @@ export class BrowserModBadgeEditor extends LitElement {
 
   protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("_config")) {
-      this._tileCardEditor?.then((editor) => {
-        this._tileCardConfig = { 
+      this._badgeEditor?.then((editor) => {
+        this._badgeConfig = { 
           ...this._config, 
           entity: this._getEntity(this._config.entity)
         };
-        editor.setConfig(this._tileCardConfig);
+        editor.setConfig(this._badgeConfig);
       });
     }
   }
@@ -57,7 +57,7 @@ export class BrowserModBadgeEditor extends LitElement {
   private _getEntity(browserEntity: string): string | null {
     return this._haveEntity(browserEntity)
       ? this._tileCardEntities[browserEntity.split(".")[1]].entity_id
-      : null;
+      : "";
   }
   
   private _haveEntity(browserEntity: string): boolean {
@@ -70,17 +70,17 @@ export class BrowserModBadgeEditor extends LitElement {
   protected render(): unknown {
     if (!this._config) return nothing;
     const entitySelect = this._renderEntitySelect();
-    const tileCardEditor = html`<hui-tile-card-editor
+    const badgeEditor = html`<hui-entity-badge-editor
         .hass=${this.hass}
         .config=${this._config}
-        @config-changed=${this._tileCardConfigChanged}
-      ></hui-tile-card-editor>`;
+        @config-changed=${this._badgeConfigChanged}
+      ></hui-entity-badge-editor>`;
     return html`
       <div class="entity-select">
         ${entitySelect}
       </div>
-      <div class="tile-card-editor">
-        ${tileCardEditor}
+      <div class="badge-editor">
+        ${badgeEditor}
       </div>`;
   }
 
@@ -112,7 +112,7 @@ export class BrowserModBadgeEditor extends LitElement {
     ></ha-form>`;
   }
 
-  private _tileCardConfigChanged(ev: CustomEvent): void {
+  private _badgeConfigChanged(ev: CustomEvent): void {
     ev.stopPropagation();
     this._config = { ...ev.detail.config, entity: this._config.entity };
     this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config } }));

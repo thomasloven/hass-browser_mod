@@ -144,14 +144,12 @@ export class BrowserModTileCard extends LitElement {
 
   render(): unknown {
     if (!this._tileCard) return nothing;
-    if (!this._haveEntities()) return html`
+    const error = !this._haveEntities() ? 
+      "Browser entities unavailable" : 
+      !this._entitiesResolved ? "Entity not enabled for this Browser" : null;
+    if (error) return html`
         <hui-warning .hass=${this.hass}>
-          Browser entities unavailable.
-        </hui-warning>
-    `;
-    if (!this._entitiesResolved) return html`
-        <hui-warning .hass=${this.hass}>
-          Entity not enabled for this Browser.
+          ${error}
         </hui-warning>
     `;
     return html`${until(this._tileCard, html`<span>Loading...</span>`)}`;

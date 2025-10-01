@@ -1,4 +1,4 @@
-import { html, LitElement, nothing, PropertyValues } from "lit";
+import { css, html, LitElement, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property, state } from "lit/decorators.js";
 import { LovelaceGridOptions } from "../types";
@@ -98,17 +98,27 @@ export class BrowserModBadge extends LitElement {
 
   render(): unknown {
     if (!this._badge) return nothing;
-    if (!this._haveEntities()) return html`
-        <hui-warning .hass=${this.hass}>
-          Browser entities unavailable.
-        </hui-warning>
-    `;
-    if (!this._entitiesResolved) return html`
-        <hui-warning .hass=${this.hass}>
-          Entity not enabled for this Browser.
-        </hui-warning>
-    `;
+    const error = !this._haveEntities() ? 
+      "Browser entities unavailable" : 
+      !this._entitiesResolved ? "Entity not enabled for this Browser" : null;
+    if (error) return html`
+        <ha-badge
+        class="error"
+        .hass=${this.hass}
+        >
+          <ha-icon slot="icon" icon="mdi:alert-circle"></ha-icon>
+          <div class="content">${error}</div>
+        </ha-badge>
+      `;
     return html`${until(this._badge, html`<span>Loading...</span>`)}`;
+  }
+
+  static get styles() {
+    return css`
+      ha-badge.error {
+        --badge-color: red;
+      }
+    `;
   }
 }
 
