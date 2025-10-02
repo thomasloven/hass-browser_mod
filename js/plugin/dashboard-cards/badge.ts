@@ -67,9 +67,11 @@ export class BrowserModBadge extends LitElement {
   }
 
   private _getEntity(browserEntity: string): string | null {
-    return this._haveEntity(browserEntity)
-      ? this._badgeEntities[browserEntity.split(".")[1]].entity_id
-      : null;
+    if (this._haveEntity(browserEntity)) {
+      const entityKey = browserEntity.split(".")[1];
+      return entityKey && this._badgeEntities[entityKey].enabled ? this._badgeEntities[entityKey].entity_id : null;
+    }
+    return null;
   }
   
   private _haveEntity(browserEntity: string): boolean {

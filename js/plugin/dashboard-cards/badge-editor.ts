@@ -5,7 +5,7 @@ import { breakCamelCase, capitalize, selectTree } from "../../helpers";
 export class BrowserModBadgeEditor extends LitElement {
   @property() hass;
   @state() _config;
-  @state() _tileCardEntities;
+  @state() _badgeEntities;
 
   @queryAsync("hui-entity-badge-editor")
   private _badgeEditor: Promise<any>;
@@ -15,9 +15,9 @@ export class BrowserModBadgeEditor extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
 
-    this._tileCardEntities = window.browser_mod?.browserEntities || {};
+    this._badgeEntities = window.browser_mod?.browserEntities || {};
     this.addEventListener("browser-mod-entities-update", (ev: CustomEvent) => {
-      this._tileCardEntities = window.browser_mod?.browserEntities || {};
+      this._badgeEntities = window.browser_mod?.browserEntities || {};
     });
   }
   
@@ -46,7 +46,7 @@ export class BrowserModBadgeEditor extends LitElement {
     if (_changedProperties.has("_config")) {
       this._badgeEditor?.then((editor) => {
         this._badgeConfig = { 
-          ...this._config, 
+          ...this._config,
           entity: this._getEntity(this._config.entity)
         };
         editor.setConfig(this._badgeConfig);
@@ -55,16 +55,18 @@ export class BrowserModBadgeEditor extends LitElement {
   }
 
   private _getEntity(browserEntity: string): string | null {
-    return this._haveEntity(browserEntity)
-      ? this._tileCardEntities[browserEntity.split(".")[1]].entity_id
-      : "";
+    if (this._haveEntity(browserEntity)) {
+      const entityKey = browserEntity.split(".")[1];
+      return entityKey && this._badgeEntities[entityKey].enabled ? this._badgeEntities[entityKey].entity_id : "";
+    }
+    return "";
   }
   
   private _haveEntity(browserEntity: string): boolean {
-    if (!browserEntity || !this._tileCardEntities) return false;
+    if (!browserEntity || !this._badgeEntities) return false;
     const type = browserEntity.split(".")[1];
     if (!type) return false;
-    return Object.keys(this._tileCardEntities).some((e) => e === type);
+    return Object.keys(this._badgeEntities).some((e) => e === type);
   }
 
   protected render(): unknown {
@@ -93,7 +95,7 @@ export class BrowserModBadgeEditor extends LitElement {
           select: {
             mode: "dropdown",
             required: true,
-            options: Object.keys(this._tileCardEntities || {}).map((e) => {
+            options: Object.keys(this._badgeEntities || {}).map((e) => {
               return {
                 value: `browser_entities.${e}`, 
                 label: capitalize(breakCamelCase(e.replace(/_/g, " ")))

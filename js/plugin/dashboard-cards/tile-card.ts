@@ -113,9 +113,11 @@ export class BrowserModTileCard extends LitElement {
   }
 
   private _getEntity(browserEntity: string): string | null {
-    return this._haveEntity(browserEntity)
-      ? this._tileCardEntities[browserEntity.split(".")[1]].entity_id
-      : null;
+    if (this._haveEntity(browserEntity)) {
+      const entityKey = browserEntity.split(".")[1];
+      return entityKey && this._tileCardEntities[entityKey].enabled ? this._tileCardEntities[entityKey].entity_id : null;
+    }
+    return null;
   }
   
   private _haveEntity(browserEntity: string): boolean {
