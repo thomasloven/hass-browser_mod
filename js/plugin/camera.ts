@@ -1,6 +1,6 @@
 export const CameraMixin = (SuperClass) => {
   return class CameraMixinClass extends SuperClass {
-    private _cameraVideo?: HTMLVideoElement;
+    private _cameraVideo;
     private _canvas;
     private _framerate;
     public cameraError;
