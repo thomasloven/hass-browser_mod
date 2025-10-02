@@ -5,7 +5,7 @@ from homeassistant.helpers import device_registry, entity_registry
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.core import callback
 
-from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS
+from .const import DATA_BROWSERS, DOMAIN, DATA_ADDERS, DYNAMIC_ENTITIES
 from .sensor import BrowserSensor
 from .light import BrowserModLight
 from .binary_sensor import BrowserBinarySensor, ActivityBinarySensor
@@ -139,9 +139,14 @@ class BrowserModBrowser:
             adder([new])
             self.entities["panel"] = new
 
+        browserEntities = {k: {"entity_id": v.entity_id, "enabled": v.enabled} for k, v in self.entities.items()}
+        for entity in DYNAMIC_ENTITIES:
+            if entity not in browserEntities:
+                browserEntities[entity] = { "entity_id": None, "enabled": False }
+                
         hass.create_task(
             self.send(
-                None, browserEntities={k: {"entity_id": v.entity_id, "enabled": v.enabled} for k, v in self.entities.items()}
+                None, browserEntities=browserEntities
             )
         )
 

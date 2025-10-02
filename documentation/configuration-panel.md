@@ -230,7 +230,7 @@ Using this method means that the new random Browser ID never has sent informatio
 
 #### Browser Entities variable
 
-The variable `browser_entities` is available in Frontend settings templates. It is a special dictionary of the entities for the Browser and includes the following.
+The variable `browser_entities` is available in Frontend settings templates. It is a special dictionary of the entities for the Browser and includes those listed in the table below. Each entry has entry of `entity_id` and `enabled`. If an entity is disabled by user then `enabled` will be `false`. Entities listed in the table as __DYNAMIC__ may also not enabled due to Browser hardware restrictions of settings.
 
 `browser_entities` is also available to a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call) by setting the replacement parameter `THIS` for `browser_entities`. See the script example below.
 
@@ -238,7 +238,7 @@ The variable `browser_entities` is available in Frontend settings templates. It 
 >
 > __IMPORTANT__: `browser_entities` __IS NOT__ available in Developer tools template editor. It is __ONLY__ available in the scenarios listed in this documentation.
 
-| Variable | Sensor | Example |
+| Variable | Sensor | Example entity_id |
 |---|---|---|
 | `browser_entities.path` | Browser path Sensor | _sensor.browser_id_browser_path_ |
 | `browser_entities.visibility` | Browser visibility Sensor | _sensor.browser_id_browser_visibility_ |
@@ -251,9 +251,12 @@ The variable `browser_entities` is available in Frontend settings templates. It 
 | `browser_entities.activity` | Browser activity Sensor | _binary_sensor.browser_id_browser_ |
 | `browser_entities.screen` | Browser screen Sensor | _light.browser_id_browser_screen_ |
 | `browser_entities.player` | Browser player Sensor | _media_player.browser_id_ |
-| `browser_entities.battery_level` | Browser battery Sensor | _sensor.browser_id_browser_battery_ |
-| `browser_entities.charging` | Browser charging Sensor | _binary_sensor.browser_id_browser_charging_ |
 | `browser_entities.panel` | Browser panel Sensor | _sensor.browser_id_panel_ |
+| `browser_entities.battery_level` | Browser battery Sensor. __DYNAMIC__ - may not be enabled. | _sensor.browser_id_browser_battery_ |
+| `browser_entities.charging` | Browser charging Sensor. __DYNAMIC__ - may not be enabled.  | _binary_sensor.browser_id_browser_charging_ |
+| `browser_entities.camera` | Browser camera. __DYNAMIC__ - may not be enabled.  | _camera.browser_id_ |
+
+
 
 Your Frontend settings or script template can use the `browser_entities` variable to query a sensor state or get attributes of the sensor.
 
