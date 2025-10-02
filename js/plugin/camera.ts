@@ -1,6 +1,6 @@
 export const CameraMixin = (SuperClass) => {
   return class CameraMixinClass extends SuperClass {
-    private _video;
+    private _cameraVideo;
     private _canvas;
     private _framerate;
     public cameraError;
@@ -17,7 +17,7 @@ export const CameraMixin = (SuperClass) => {
     }
 
     async _setup_camera() {
-      if (this._video) return;
+      if (this._cameraVideo) return;
       await this.connectionPromise;
       await this.videoInteraction;
       if (!this.cameraEnabled) return;
@@ -35,7 +35,7 @@ export const CameraMixin = (SuperClass) => {
         display: none;
       }`;
 
-      const video = (this._video = document.createElement("video"));
+      const video = (this._cameraVideo = document.createElement("video"));
       div.shadowRoot.append(video);
       video.autoplay = true;
       video.playsInline = true;
@@ -71,10 +71,10 @@ export const CameraMixin = (SuperClass) => {
 
     async update_camera() {
       if (!this.cameraEnabled) {
-        const stream = this._video?.srcObject;
+        const stream = this._cameraVideo?.srcObject;
         if (stream) {
           stream.getTracks().forEach((t) => t.stop());
-          this._video.scrObject = undefined;
+          this._cameraVideo.srcObject = undefined;
         }
         return;
       }
@@ -82,8 +82,8 @@ export const CameraMixin = (SuperClass) => {
         this.sendUpdate({
           camera: this.fully_camera,
         });
-      } else {
-        const video = this._video;
+      } else if (this._cameraVideo?.videoWidth) {
+        const video = this._cameraVideo;
         const width = video.videoWidth;
         const height = video.videoHeight;
         this._canvas.width = width;
