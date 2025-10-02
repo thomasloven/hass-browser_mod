@@ -95,6 +95,7 @@ export class BrowserModBadgeEditor extends LitElement {
           select: {
             mode: "dropdown",
             required: true,
+            sort: true,
             options: Object.keys(this._badgeEntities || {}).map((e) => {
               return {
                 value: `browser_entities.${e}`, 

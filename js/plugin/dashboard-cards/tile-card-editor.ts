@@ -95,6 +95,7 @@ export class BrowserModTileCardEditor extends LitElement {
           select: {
             mode: "dropdown",
             required: true,
+            sort: true,
             options: Object.keys(this._tileCardEntities || {}).map((e) => {
               return {
                 value: `browser_entities.${e}`, 
