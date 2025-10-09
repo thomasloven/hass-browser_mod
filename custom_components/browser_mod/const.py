@@ -37,3 +37,9 @@ BROWSER_MOD_BROWSER_SERVICES = [
 BROWSER_MOD_COMPONENT_SERVICES = [
     "deregister_browser",
 ]
+
+DYNAMIC_ENTITIES = [
+    "camera",
+    "battery_level",
+    "charging",
+]
