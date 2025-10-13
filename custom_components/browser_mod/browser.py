@@ -140,6 +140,15 @@ class BrowserModBrowser:
             adder([new])
             self.entities["panel"] = new
 
+        if "userData" in self.data.get("browser", {}):
+            persons = hass.states.async_entity_ids("person")
+            userID = self.data.get("browser", {}).get("userData", {}).get("id")
+            if any(p for p in persons if hass.states.get(p).attributes.get("user_id") == userID):
+                person = next(p for p in persons if hass.states.get(p).attributes.get("user_id") == userID)
+                self.data["browser"]["person"] = person
+            else:
+                self.data["browser"]["person"] = None
+
         browserEntities = {k: {"entity_id": v.entity_id, "enabled": v.enabled} for k, v in self.entities.items()}
         for entity in DYNAMIC_ENTITIES:
             if entity not in browserEntities:
