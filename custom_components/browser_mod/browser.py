@@ -140,9 +140,9 @@ class BrowserModBrowser:
             adder([new])
             self.entities["panel"] = new
 
-        if "userData" in self.data.get("browser", {}):
-            persons = hass.states.async_entity_ids("person")
+        if "userData" in self.data.get("browser", {}) and self.data.get("browser", {}).get("userData", {}) is not None:
             userID = self.data.get("browser", {}).get("userData", {}).get("id")
+            persons = hass.states.async_entity_ids("person")
             person = next(
                 (
                     p
