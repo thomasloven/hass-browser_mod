@@ -143,7 +143,17 @@ class BrowserModBrowser:
         if "userData" in self.data.get("browser", {}):
             persons = hass.states.async_entity_ids("person")
             userID = self.data.get("browser", {}).get("userData", {}).get("id")
-            person = next((p for p in persons if hass.states.get(p).attributes.get("user_id") == userID), None)
+            person = next(
+                (
+                    p
+                    for p in persons
+                    if (
+                        (state := hass.states.get(p)) is not None
+                        and state.attributes.get("user_id") == userID
+                    )
+                ),
+                None,
+            )
             self.data["browser"]["person"] = person
 
         browserEntities = {k: {"entity_id": v.entity_id, "enabled": v.enabled} for k, v in self.entities.items()}
