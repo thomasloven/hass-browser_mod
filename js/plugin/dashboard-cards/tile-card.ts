@@ -1,9 +1,10 @@
 import { html, LitElement, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property, state } from "lit/decorators.js";
-import { LovelaceGridOptions } from "../types";
+import { LovelaceCard, LovelaceGridOptions } from "../types";
 import { BrowserModTileCardEditor } from "./tile-card-editor";
 import structuredClone from "@ungap/structured-clone";
+import { getLovelaceRoot } from "../../helpers";
 
 export class BrowserModTileCard extends LitElement {
   @property() hass;
@@ -13,6 +14,7 @@ export class BrowserModTileCard extends LitElement {
 
   private _tileCard : Promise<any>;
   private _entitiesResolved: Boolean;
+  private _privilegedUser: Boolean = false;
 
   constructor() {
     super();
@@ -34,6 +36,8 @@ export class BrowserModTileCard extends LitElement {
     return { entity: "browser_entities.browserID" };
   }
 
+  private get _registered (): boolean { return window.browser_mod?.registered ?? false; }
+
   connectedCallback(): void {
     super.connectedCallback();
 
@@ -42,8 +46,15 @@ export class BrowserModTileCard extends LitElement {
       this._tileCardEntities = window.browser_mod?.browserEntities || {};
       this._replaceEntities();
     });
+    const userReady = window.browser_mod?.userReady;
+    const lovelace = getLovelaceRoot(document);
+    Promise.all([userReady, lovelace]).then(([_, lovelace]) => {
+      const currentUser = window.browser_mod?.user;
+      const dashboardPrivilegedUsers = lovelace?.config?.browser_mod?.privileged_users ?? [];
+      this._privilegedUser = currentUser?.is_admin || dashboardPrivilegedUsers.includes(currentUser?.name) || false;
+    });
   }
-  
+
   setConfig(config): void {
     this._config = structuredClone(config);
     delete this._config.type;
@@ -79,6 +90,12 @@ export class BrowserModTileCard extends LitElement {
     if (this._config?.vertical) {
       rows++;
       min_columns = 3;
+    }
+    if (this.preview) {
+      const error = this._computeCardError();
+      if (error) {
+        rows = Math.max(2, rows);
+      }
     }
     return {
       columns,
@@ -144,16 +161,39 @@ export class BrowserModTileCard extends LitElement {
     this._config = JSON.parse(replacedConfigJSON);
   }
 
+  private _handleErrorClick() {
+    window.browser_mod?.service("browser_mod.change_browser_id", {});
+  }
+
+  private _computeCardError() {
+    if (!this._haveEntities()) {
+      return {severity: "error", error: "Browser entities unavailable"};
+    }
+    if (!this._registered) {
+      return {severity: "warning", error: "Browser not registered"};
+    }
+    if (!this._entitiesResolved) {
+      return {severity: "warning", error: "Entity not enabled for this Browser"};
+    }
+    return null;
+  }
+
   render(): unknown {
     if (!this._tileCard) return nothing;
-    const error = !this._haveEntities() ? 
-      "Browser entities unavailable" : 
-      !this._entitiesResolved ? "Entity not enabled for this Browser" : null;
-    if (error) return html`
-        <hui-warning .hass=${this.hass}>
-          ${error}
-        </hui-warning>
-    `;
+    const error = this._computeCardError();
+    if (error) {
+      const errorCard = document.createElement('hui-error-card') as LovelaceCard;
+      errorCard.setConfig({
+        severity: error.severity,
+        error: error.error,
+        message: `Entity: ${this._config?.entity}`,
+      });
+      errorCard.hass = this.hass;
+      errorCard.preview = this.preview;
+      errorCard.addEventListener("click", this._privilegedUser ? (() => this._handleErrorClick()) : null);
+      errorCard.style.cursor = this._privilegedUser ? "pointer" : "default";
+      return html`${errorCard}`;
+    }
     return html`${until(this._tileCard, html`<span>Loading...</span>`)}`;
   }
 }

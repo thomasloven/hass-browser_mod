@@ -4,6 +4,7 @@ import { property, state } from "lit/decorators.js";
 import { LovelaceGridOptions } from "../types";
 import structuredClone from "@ungap/structured-clone";
 import { BrowserModBadgeEditor } from "./badge-editor";
+import { getLovelaceRoot } from "../../helpers";
 
 export class BrowserModBadge extends LitElement {
   @property() hass;
@@ -13,6 +14,7 @@ export class BrowserModBadge extends LitElement {
 
   private _badge : Promise<any>;
   private _entitiesResolved: Boolean;
+  private _privilegedUser: Boolean = false;
 
   constructor() {
     super();
@@ -34,6 +36,8 @@ export class BrowserModBadge extends LitElement {
     return { entity: "browser_entities.browserID" };
   }
 
+  private get _registered (): boolean { return window.browser_mod?.registered ?? false; }
+
   connectedCallback(): void {
     super.connectedCallback();
 
@@ -41,6 +45,13 @@ export class BrowserModBadge extends LitElement {
     this.addEventListener("browser-mod-entities-update", (ev: CustomEvent) => {
       this._badgeEntities = window.browser_mod?.browserEntities || {};
       this._replaceEntities();
+    });
+    const userReady = window.browser_mod?.userReady;
+    const lovelace = getLovelaceRoot(document);
+    Promise.all([userReady, lovelace]).then(([_, lovelace]) => {
+      const currentUser = window.browser_mod?.user;
+      const dashboardPrivilegedUsers = lovelace?.config?.browser_mod?.privileged_users ?? [];
+      this._privilegedUser = currentUser?.is_admin || dashboardPrivilegedUsers.includes(currentUser?.name) || false;
     });
   }
   
@@ -98,18 +109,35 @@ export class BrowserModBadge extends LitElement {
     this._config = JSON.parse(replacedConfigJSON);
   }
 
+  private _handleErrorClick() {
+    window.browser_mod?.service("browser_mod.change_browser_id", {});
+  }
+
+  private _computeBadgeError() {
+    if (!this._haveEntities()) {
+      return {severity: "error", error: "Browser entities unavailable"};
+    }
+    if (!this._registered) {
+      return {severity: "warning", error: "Browser not registered"};
+    }
+    if (!this._entitiesResolved) {
+      return {severity: "warning", error: "Entity not enabled for this Browser"};
+    }
+    return null;
+  }
+
   render(): unknown {
     if (!this._badge) return nothing;
-    const error = !this._haveEntities() ? 
-      "Browser entities unavailable" : 
-      !this._entitiesResolved ? "Entity not enabled for this Browser" : null;
+    const error = this._computeBadgeError();
     if (error) return html`
         <ha-badge
-        class="error"
+        class=${error.severity}
+        .type=${this._privilegedUser ? "button" : ""}
         .hass=${this.hass}
+        @click=${this._privilegedUser ? (() => this._handleErrorClick()) : null}
         >
           <ha-icon slot="icon" icon="mdi:alert-circle"></ha-icon>
-          <div class="content">${error}</div>
+          <div class="content">${error.error}</div>
         </ha-badge>
       `;
     return html`${until(this._badge, html`<span>Loading...</span>`)}`;
@@ -118,7 +146,10 @@ export class BrowserModBadge extends LitElement {
   static get styles() {
     return css`
       ha-badge.error {
-        --badge-color: red;
+        --badge-color: var(--ha-color-fill-danger-loud-resting, --error-color);
+      }
+      ha-badge.warning {
+        --badge-color: var(--ha-color-fill-warning-loud-resting, --warning-color);
       }
     `;
   }

@@ -276,3 +276,13 @@ export interface LovelaceGridOptions {
   fixed_rows?: boolean;
   fixed_columns?: boolean;
 }
+
+export interface LovelaceCardConfig {
+  type?: string;
+  [key: string]: any;
+}
+export interface LovelaceCard extends HTMLElement {
+  hass?: any;
+  preview?: boolean;
+  setConfig(config: LovelaceCardConfig): void;
+}
