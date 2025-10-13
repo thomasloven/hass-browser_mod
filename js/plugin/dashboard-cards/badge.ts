@@ -46,12 +46,11 @@ export class BrowserModBadge extends LitElement {
       this._badgeEntities = window.browser_mod?.browserEntities || {};
       this._replaceEntities();
     });
-    const userReady = window.browser_mod?.userReady;
-    const lovelace = getLovelaceRoot(document);
-    Promise.all([userReady, lovelace]).then(([_, lovelace]) => {
+    getLovelaceRoot(document).then((lovelace) => {
       const currentUser = window.browser_mod?.user;
       const dashboardPrivilegedUsers = lovelace?.config?.browser_mod?.privileged_users ?? [];
       this._privilegedUser = currentUser?.is_admin || dashboardPrivilegedUsers.includes(currentUser?.name) || false;
+      this.requestUpdate();
     });
   }
   
@@ -114,14 +113,14 @@ export class BrowserModBadge extends LitElement {
   }
 
   private _computeBadgeError() {
-    if (!this._haveEntities()) {
-      return {severity: "error", error: "Browser entities unavailable"};
-    }
     if (!this._registered) {
-      return {severity: "warning", error: "Browser not registered"};
+      return {severity: "warning", error: "Browser not registered", handleChangeId: true};
+    }
+    if (!this._haveEntities()) {
+      return {severity: "error", error: "Browser entities unavailable", handleChangeId: true};
     }
     if (!this._entitiesResolved) {
-      return {severity: "warning", error: "Entity not enabled for this Browser"};
+      return {severity: "warning", error: "Entity not enabled for this Browser", handleChangeId: false};
     }
     return null;
   }
@@ -132,9 +131,9 @@ export class BrowserModBadge extends LitElement {
     if (error) return html`
         <ha-badge
         class=${error.severity}
-        .type=${this._privilegedUser ? "button" : ""}
+        .type=${this._privilegedUser && error.handleChangeId ? "button" : ""}
         .hass=${this.hass}
-        @click=${this._privilegedUser ? (() => this._handleErrorClick()) : null}
+        @click=${this._privilegedUser && error.handleChangeId ? (() => this._handleErrorClick()) : null}
         >
           <ha-icon slot="icon" icon="mdi:alert-circle"></ha-icon>
           <div class="content">${error.error}</div>

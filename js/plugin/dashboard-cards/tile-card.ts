@@ -47,11 +47,11 @@ export class BrowserModTileCard extends LitElement {
       this._replaceEntities();
     });
     const userReady = window.browser_mod?.userReady;
-    const lovelace = getLovelaceRoot(document);
-    Promise.all([userReady, lovelace]).then(([_, lovelace]) => {
+    getLovelaceRoot(document).then((lovelace) => {
       const currentUser = window.browser_mod?.user;
       const dashboardPrivilegedUsers = lovelace?.config?.browser_mod?.privileged_users ?? [];
       this._privilegedUser = currentUser?.is_admin || dashboardPrivilegedUsers.includes(currentUser?.name) || false;
+      this.requestUpdate();
     });
   }
 
@@ -166,14 +166,14 @@ export class BrowserModTileCard extends LitElement {
   }
 
   private _computeCardError() {
-    if (!this._haveEntities()) {
-      return {severity: "error", error: "Browser entities unavailable"};
-    }
     if (!this._registered) {
-      return {severity: "warning", error: "Browser not registered"};
+      return {severity: "warning", error: "Browser not registered", handleChangeId: true};
+    }
+    if (!this._haveEntities()) {
+      return {severity: "error", error: "Browser entities unavailable", handleChangeId: true};
     }
     if (!this._entitiesResolved) {
-      return {severity: "warning", error: "Entity not enabled for this Browser"};
+      return {severity: "warning", error: "Entity not enabled for this Browser", handleChangeId: false};
     }
     return null;
   }
@@ -190,8 +190,8 @@ export class BrowserModTileCard extends LitElement {
       });
       errorCard.hass = this.hass;
       errorCard.preview = this.preview;
-      errorCard.addEventListener("click", this._privilegedUser ? (() => this._handleErrorClick()) : null);
-      errorCard.style.cursor = this._privilegedUser ? "pointer" : "default";
+      errorCard.addEventListener("click", this._privilegedUser && error.handleChangeId ? (() => this._handleErrorClick()) : null);
+      errorCard.style.cursor = this._privilegedUser && error.handleChangeId ? "pointer" : "default";
       return html`${errorCard}`;
     }
     return html`${until(this._tileCard, html`<span>Loading...</span>`)}`;
