@@ -12,6 +12,7 @@ import { loadHaForm } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 import { icon } from "./types";
 import { BrowserModPopupParams } from "./popups";
+import structuredClone from "@ungap/structured-clone";
 
 export class BrowserModPopup extends LitElement {
   @property() open;
