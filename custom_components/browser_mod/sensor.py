@@ -59,6 +59,7 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
 
         if self.parameter == "currentUser":
             retval["userData"] = self._data.get("browser", {}).get("userData")
+            retval["person"] = self._data.get("browser", {}).get("person")
 
         if self.parameter == "path":
             retval["pathSegments"] = (
