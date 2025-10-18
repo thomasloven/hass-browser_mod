@@ -273,7 +273,9 @@ export function ensureArray(value) {
   return [value];
 }
 
-export const capitalize = (s: string): string => (s && String(s[0]).toUpperCase() + String(s).slice(1)) || ""
+export const capitalize = (s: string): string => (s && String(s[0]).toUpperCase() + String(s).slice(1)) || "";
+
+export const breakCamelCase = (s: string): string => (s && String(s).replace(/([a-z])([A-Z])/g, '$1 $2')) || "";
 
 export function compare_deep(a: any, b: any) {
   if (a === b) return true;
