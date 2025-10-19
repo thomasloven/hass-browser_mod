@@ -1,4 +1,3 @@
-import { LitElement } from "lit";
 import {
   loadLoadCardHelpers,
   hass_base_el,
@@ -17,6 +16,12 @@ export const PopupMixin = (SuperClass) => {
       this.addEventListener("browser-mod-popup-opened", this.popupStateListener);
       this.addEventListener("browser-mod-popup-closed", this.popupStateListener);
       this._popupState = false;
+    }
+
+    get openPopups() {
+      return this._popupElements.map((popup) => popup.open === true ? popup.tag : null)
+        .filter((tag) => tag !== null)
+        .map((tag) => tag !== undefined ? tag : "standard");
     }
 
     get popupState() {

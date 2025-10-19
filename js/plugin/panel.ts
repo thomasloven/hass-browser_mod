@@ -122,7 +122,8 @@ export const PanelStateMixin = (SuperClass) => {
               ...panelAttributes,
               ...viewAttributes,
               fullUrlPath: fullUrlPath,
-              popupOpen: window.browser_mod?.popupState
+              popupOpen: window.browser_mod?.popupState,
+              openPopups: window.browser_mod?.openPopups,
             }
           }
         });
