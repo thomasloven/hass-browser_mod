@@ -18,10 +18,10 @@ export const PopupMixin = (SuperClass) => {
       this._popupState = false;
     }
 
-    get openPopups() {
-      return this._popupElements.map((popup) => popup.open === true ? popup.tag : null)
-        .filter((tag) => tag !== null)
-        .map((tag) => tag !== undefined ? tag : "standard");
+    get openPopups(): string[] {
+      return this._popupElements
+        .filter((popup) => popup.open === true)
+        .map((popup) => popup.tag !== undefined ? popup.tag : "standard");
     }
 
     get popupState() {
