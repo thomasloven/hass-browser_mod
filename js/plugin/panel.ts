@@ -84,14 +84,22 @@ export const PanelStateMixin = (SuperClass) => {
     _panelAttributes(panel) {
       return {
         panelTitle: this._panelTitle(panel),
-        panelUrlPath: panel?.panel?.url_path || "",
+        panelUrlPath: panel?.route?.prefix?.replace(/^\/|\/$/g, "") || "",
         panelComponentName: panel?.panel?.component_name || "",
         panelIcon: panel?.panel?.icon || "",
+        panelNarrow: panel?.narrow || false,
+        panelRequireAdmin: panel?.panel?.require_admin || false,
       };
     }
 
     async _viewAttributes(panel) {
-      if (panel?.panel?.component_name !== "lovelace") return {};
+      if (panel?.panel?.component_name !== "lovelace") {
+        return {
+          viewTitle: "",
+          viewUrlPath: panel?.route?.path?.replace(/^\/|\/$/g, "") || "",
+          viewNarrow: panel?.narrow || false,
+        };
+      }
       let cnt = 0;
       while (!panel.shadowRoot?.querySelector("hui-root") && cnt < 10) {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -102,7 +110,7 @@ export const PanelStateMixin = (SuperClass) => {
       const _curView = lovelace._curView || 0;
       return {
         viewTitle: lovelace.config?.views?.[_curView]?.title || "",
-        viewUrlPath: lovelace.config?.views?.[_curView]?.path || "",
+        viewUrlPath: lovelace.config?.views?.[_curView]?.path || `${_curView}`,
         viewNarrow: lovelace.narrow,
       };
     }
@@ -113,15 +121,27 @@ export const PanelStateMixin = (SuperClass) => {
         const panel = await this._getPanel(document);
         const panelAttributes = this._panelAttributes(panel);
         const viewAttributes = await this._viewAttributes(panel);
-        const fullTitle = panelAttributes.panelTitle + (viewAttributes.viewTitle ? ` - ${viewAttributes.viewTitle}` : "");
-        const fullUrlPath = panelAttributes.panelUrlPath + (viewAttributes.viewUrlPath ? `/${viewAttributes.viewUrlPath}` : "");
+        const fullTitle = [];
+        if (panelAttributes.panelTitle) {
+          fullTitle.push(panelAttributes.panelTitle);
+        }
+        if (viewAttributes.viewTitle) {
+          fullTitle.push(viewAttributes.viewTitle);
+        }
+        const fullUrlPath = [];
+        if (panelAttributes.panelUrlPath) {
+          fullUrlPath.push(panelAttributes.panelUrlPath);
+        }
+        if (viewAttributes.viewUrlPath) {
+          fullUrlPath.push(viewAttributes.viewUrlPath);
+        }
         this.sendUpdate({
           panel: {
-            title: fullTitle,
+            title: fullTitle.join(" - "),
             attributes: {
               ...panelAttributes,
               ...viewAttributes,
-              fullUrlPath: fullUrlPath,
+              fullUrlPath: fullUrlPath.join("/"),
               popupOpen: window.browser_mod?.popupState,
               openPopups: window.browser_mod?.openPopups,
             }
