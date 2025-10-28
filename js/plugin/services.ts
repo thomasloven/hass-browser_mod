@@ -74,8 +74,8 @@ export const ServicesMixin = (SuperClass) => {
           break;
 
         case "more_info":
-          const { entity, view, large, ignore_popup_card } = data;
-          this.showMoreInfo(entity, view, large, ignore_popup_card);
+          const { entity, view, large, ignore_popup_card, close } = data;
+          this.showMoreInfo(entity, view, large, ignore_popup_card, close);
           break;
 
         case "popup":

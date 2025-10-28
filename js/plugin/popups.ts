@@ -69,8 +69,17 @@ export const PopupMixin = (SuperClass) => {
       }
     }
 
-    async showMoreInfo(entityId, view = "info", large = false, ignore_popup_card = undefined) {
+    async showMoreInfo(entityId, view = "info", large = false, ignore_popup_card = undefined, close = false) {
       const base = await hass_base_el();
+      if (close) {
+        // Provide a close option as the empty entity id method can cause issues
+        // with camera stream audio tracks staying active
+        const dialog: any = base.shadowRoot.querySelector(
+          "ha-more-info-dialog"
+        );
+        if (dialog) dialog.closeDialog();
+        return;
+      }
       base.dispatchEvent(
         new CustomEvent("hass-more-info", {
           bubbles: true,
