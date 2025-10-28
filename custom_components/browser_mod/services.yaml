@@ -84,7 +84,7 @@ popup:
     content:
       name: Content
       required: true
-      description: "Popup content (Test or lovelace card configuration)"
+      description: "Popup content (Text or lovelace card configuration)"
       selector:
         object:
     initial_style:
