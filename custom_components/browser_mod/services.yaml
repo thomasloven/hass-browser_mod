@@ -305,6 +305,12 @@ more_info:
       default: false
       selector:
         boolean:
+    close:
+      name: Close existing more-info dialog
+      description: Close the more-info dialog if open
+      default: false
+      selector:
+        boolean:
 
 close_popup:
   name: close_popup

@@ -188,6 +188,7 @@ data:
   [view: <INFO/history/settings/related]
   [large: <true/FALSE>]
   [ignore_popup_card: <true/FALSE>]
+  [close: true/FALSE>]
   [browser_id: <Browser IDs>]
   [user_id: <User IDs>]
 ```
@@ -198,10 +199,9 @@ data:
 |`view`| The more-info view to open. The view opened will always have a close icon. Setting the view to anything other than `info` will always ignore custom popup-cards. |
 |`large`| If true, the dialog will be displayed wider, as if you had clicked the title of the dialog. |
 |`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card in the view/dashboard(*) which would override it. |
+|`close` | If true the more-into dialog will be closed if open. All other parameters are ignored. |
 
 *\* Dashboard when popup-card config has `popup_card_all_views: true`.*
-
-> NOTE: You can close an open more-info dialog by calling `browser_mod.more_info` with no entity.
 
 ## `browser_mod.popup`
 
