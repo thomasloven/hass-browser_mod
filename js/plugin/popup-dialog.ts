@@ -51,6 +51,8 @@ export class BrowserModPopup extends LitElement {
   _initialStyle: string;
   _styleSequence: string[];
   _styleSequenceIndex: number;
+  _resizeObserver: ResizeObserver;
+  @property({ reflect: true, type: Boolean }) narrow: boolean = false;
 
   connectedCallback() {
     super.connectedCallback();
@@ -58,12 +60,16 @@ export class BrowserModPopup extends LitElement {
       this,
       (value: boolean) => { this._formDataValid = value }
     );
-    // When reopening popup, keep style attributes
-    // but make sure they are all set to false
-    this._styleAttributes = this._styleAttributes || [];
-    Object.keys(this._styleAttributes).forEach((key) => {
-      this._styleAttributes[key] = false;
-    });
+
+    // Setup resize observer for dynamic narrow detection
+    this._setupResizeObserver();
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
   }
 
   updated(_changedProperties: PropertyValues): void {
@@ -91,6 +97,10 @@ export class BrowserModPopup extends LitElement {
   async closeDialog() {
     if (!this.open) return true;
     this.open = false;
+
+    // Unlock body scroll when popup closes
+    this._unlockBodyScroll();
+
     this._objectSelectorMonitor.stopMonitoring();
     this.card?.remove?.();
     this.card = undefined;
@@ -118,6 +128,7 @@ export class BrowserModPopup extends LitElement {
     Object.keys(this._styleAttributes).forEach((key) => {
       key.split(" ").forEach((k) => this.removeAttribute(k));
     });
+    this._styleAttributes = [];
     this._styleSequenceIndex = undefined;
     return true;
   }
@@ -125,6 +136,14 @@ export class BrowserModPopup extends LitElement {
   openDialog() {
     this.open = true;
     this.dialog?.show();
+
+    // Lock body scroll when popup opens
+    this._lockBodyScroll();
+
+    this.updateComplete.then(() => {
+      this._checkViewportMargin();
+    });
+
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
       this._timeoutTimer = setInterval(() => {
@@ -224,6 +243,90 @@ export class BrowserModPopup extends LitElement {
     this._updateStyleAttributes(this._styleSequence[this._styleSequenceIndex]);
   }
 
+  private _lockBodyScroll() {
+    // Save current scroll position
+    const scrollY = window.scrollY;
+    const scrollX = window.scrollX;
+
+    // Lock body scroll
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = `-${scrollX}px`;
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
+
+    // Store scroll position for restoration
+    (this as any)._scrollY = scrollY;
+    (this as any)._scrollX = scrollX;
+  }
+
+  private _unlockBodyScroll() {
+    // Restore body scroll
+    const scrollY = (this as any)._scrollY || 0;
+    const scrollX = (this as any)._scrollX || 0;
+
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.overflow = '';
+
+    // Restore scroll position
+    window.scrollTo(scrollX, scrollY);
+  }
+
+  private _setupResizeObserver() {
+    // Check viewport margin on window resize
+    this._resizeObserver = new ResizeObserver(() => {
+      this._checkViewportMargin();
+    });
+
+    // Observe window size changes
+    this._resizeObserver.observe(document.body);
+
+    // Initial check
+    this._checkViewportMargin();
+  }
+
+  private _checkViewportMargin() {
+    if (!this.dialog) return;
+
+    const MARGIN_THRESHOLD = 50; // px
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    // Get the configured dialog width (not the current rendered width)
+    // This is important when narrow mode is active (dialog is 100vw)
+    const computedStyle = getComputedStyle(this.dialog);
+    let dialogMinWidth = 580; // default
+    let dialogMaxWidth = 580; // default
+
+    // Parse min/max width from CSS variables
+    const minWidthStr = computedStyle.getPropertyValue('--mdc-dialog-min-width').trim();
+    const maxWidthStr = computedStyle.getPropertyValue('--mdc-dialog-max-width').trim();
+
+    if (minWidthStr && minWidthStr !== '100vw') {
+      dialogMinWidth = parseFloat(minWidthStr);
+    }
+    if (maxWidthStr && maxWidthStr !== '100vw') {
+      dialogMaxWidth = parseFloat(maxWidthStr);
+    }
+
+    // Use the configured width (not 100vw when narrow is active)
+    const dialogWidth = Math.max(dialogMinWidth, dialogMaxWidth);
+    const dialogMaxHeight = windowHeight - 72; // calc(100% - 72px)
+
+    // Calculate actual available margins on both sides
+    const horizontalMargin = (windowWidth - dialogWidth) / 2;
+    const verticalMargin = windowHeight - dialogMaxHeight;
+
+    // Set narrow attribute if margin is too small (considering both sides)
+    const shouldBeNarrow = horizontalMargin <= MARGIN_THRESHOLD || verticalMargin <= MARGIN_THRESHOLD;
+
+    if (this.narrow !== shouldBeNarrow) {
+      this.narrow = shouldBeNarrow;
+    }
+  }
 
   async _build_card(config) {
     const helpers = await window.loadCardHelpers();
@@ -293,6 +396,7 @@ export class BrowserModPopup extends LitElement {
     this.card = undefined;
     this.card_mod = card_mod;
     this._initialStyle = initial_style ?? size ?? "normal";
+    this._styleAttributes = [];
     this._popupStyles = popup_styles;
     this._styleSequence = ensureArray(style_sequence ?? []);
     this._styleSequence = this._styleSequence.length > 0 ? this._styleSequence : ["wide", "normal"];
@@ -526,11 +630,52 @@ export class BrowserModPopup extends LitElement {
 
   static get styles() {
     return css`
-      /* Classes from haStyleDialog */
+      /* Styles adapted from Home Assistant more-info dialog */
+
+      /* Smooth transitions for responsive changes */
+      :host {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
       ha-dialog {
-        --mdc-dialog-min-width: var(--popup-min-width, 560px);
-        --mdc-dialog-max-width: var(--popup-max-width, 600px);
+        /* Dialog sizing - matching HA more-info */
+        --mdc-dialog-min-width: var(--popup-min-width, 580px);
+        --mdc-dialog-max-width: var(--popup-max-width, 580px);
+        --mdc-dialog-max-height: calc(100% - 72px);
+
+        /* Dialog positioning */
+        --dialog-surface-position: static;
+        --dialog-content-position: static;
+        --vertical-align-dialog: flex-start;
+        --dialog-surface-margin-top: max(40px, var(--safe-area-inset-top, 0px));
+        --dialog-content-padding: 0;
+
+        /* Dialog appearance */
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+        --padding-x: var(--popup-padding-x, 24px);
+        --padding-y: var(--popup-padding-y, 20px);
+
+        /* Action buttons */
         --justify-action-buttons: space-between;
+
+        /* Z-index */
+        --dialog-z-index: 8;
+
+        /* Smooth animations for size/position changes */
+        transition:
+          min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          min-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Animate dialog surface */
+      ha-dialog::part(surface) {
+        transition:
+          border-radius 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          margin 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       ha-dialog .form {
@@ -541,28 +686,56 @@ export class BrowserModPopup extends LitElement {
         color: var(--primary-color);
       }
 
-      ha-dialog {
-        --dialog-surface-position: static;
-        --dialog-content-position: static;
-        --vertical-align-dialog: flex-start;
-        --dialog-surface-margin-top: 40px;
-        --dialog-content-padding: 0;
-
-        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
-        --padding-x: var(--popup-padding-x, 24px);
-        --padding-y: var(--popup-padding-y, 20px);
+      /* Scrollbar styling - matching HA */
+      .ha-scrollbar::-webkit-scrollbar {
+        width: 0.4rem;
+        height: 0.4rem;
       }
+
+      .ha-scrollbar::-webkit-scrollbar-thumb {
+        border-radius: var(--ha-border-radius-sm, 4px);
+        background: var(--scrollbar-thumb-color);
+      }
+
       .content {
+        /* Content layout - matching HA more-info */
+        display: flex;
+        flex-direction: column;
+        outline: none;
+        flex: 1;
+        overflow: hidden;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
-        outline: none !important;
+
+        /* Smooth transitions for content */
+        transition:
+          width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+          height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
+
       .content .container {
         padding: 8px 24px 20px 24px;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
         outline: none !important;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        display: block;
+
+        /* Smooth padding animation */
+        transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
+
+      /* Child view layout - matching HA more-info */
+      .child-view {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
       }
@@ -592,12 +765,24 @@ export class BrowserModPopup extends LitElement {
         z-index: 10;
       }
       .title {
+        /* Title styling - matching HA more-info */
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         -webkit-user-select: none;
         user-select: none;
+      }
+
+      .title .main {
         color: var(--primary-text-color);
+        font-size: var(--ha-font-size-xl, 22px);
+        line-height: var(--ha-line-height-condensed, 1.2);
+      }
+
+      .title .breadcrumb {
+        color: var(--secondary-text-color);
+        font-size: var(--ha-font-size-m, 16px);
+        line-height: var(--ha-line-height-condensed, 1.2);
       }
 
       ha-icon-button > * {
@@ -642,24 +827,48 @@ export class BrowserModPopup extends LitElement {
         );
       }
 
-      @media all and (max-width: 450px), all and (max-height: 500px) {
-        ha-dialog {
-          --mdc-dialog-min-width: 97vw;
-          --mdc-dialog-max-width: 97vw;
-          --mdc-dialog-min-height: 100%;
-          --mdc-dialog-max-height: 100%;
-          --vertical-align-dialog: flex-end;
-          --ha-dialog-border-radius: 0;
+      /* Dynamic narrow mode - triggered when viewport margin <= 50px */
+      /* Animation applied automatically via ha-dialog transitions */
+      :host([narrow]) ha-dialog {
+        --mdc-dialog-min-width: 100vw;
+        --mdc-dialog-max-width: 100vw;
+        --mdc-dialog-min-height: 100%;
+        --mdc-dialog-max-height: 100%;
+        --vertical-align-dialog: flex-end;
+        --ha-dialog-border-radius: 0;
+        --dialog-surface-margin-top: 0px;
+      }
+
+      :host([narrow][wide]) .content {
+        width: 100vw;
+      }
+
+      /* Smooth scale animation for narrow transition */
+      @keyframes narrowEnter {
+        from {
+          transform: scale(0.95);
+          opacity: 0.9;
         }
-        :host([wide]) .content {
-          width: 100vw;
+        to {
+          transform: scale(1);
+          opacity: 1;
         }
       }
 
-      @media all and (min-width: 600px) and (min-height: 501px) {
-        ha-dialog {
-          --dialog-surface-margin-top: 40px;
+      @keyframes narrowExit {
+        from {
+          transform: scale(1);
+          opacity: 1;
         }
+        to {
+          transform: scale(0.95);
+          opacity: 0.9;
+        }
+      }
+
+      /* Apply subtle animation when entering narrow mode */
+      :host([narrow]) .content {
+        animation: narrowEnter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
     `;
   }
