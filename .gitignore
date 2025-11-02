@@ -3,5 +3,3 @@ node_modules/
 .vscode
 .env
 custom_components/hacs/
-package-lock.json
-yarn.lock
