@@ -2,7 +2,6 @@ import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { hass_base_el, loadHaForm, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
-import structuredClone from "@ungap/structured-clone";
 
 const STANDARD_POPUP_STYLES = ["normal", "classic", "wide", "fullscreen"]
 
