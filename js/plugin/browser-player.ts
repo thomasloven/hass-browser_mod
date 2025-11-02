@@ -2,9 +2,6 @@ import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 
 import "./browser-player-editor.ts";
-
-import "./types";
-
 class BrowserPlayer extends LitElement {
   @property() hass;
   @property({ attribute: "edit-mode", reflect: true }) editMode;

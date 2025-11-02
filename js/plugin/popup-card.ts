@@ -5,7 +5,7 @@ import "./popup-card-editor";
 import { getLovelaceRoot } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { icon } from "./types";
+import { IconProps } from "../types/types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 
 class PopupCard extends LitElement {
@@ -72,7 +72,7 @@ class PopupCard extends LitElement {
         ${this._config.icons
           ? repeat(
               this._config.icons,
-              (icon: icon, index) => html`
+              (icon: IconProps, index) => html`
               <ha-icon-button
                 .title=${icon.title ?? ""}
                 class=${ifDefined(icon.class)}

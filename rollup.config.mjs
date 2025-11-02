@@ -1,42 +1,103 @@
-import nodeResolve from "@rollup/plugin-node-resolve";
-import json from "@rollup/plugin-json";
-import typescript from "rollup-plugin-typescript2";
-import { terser } from "rollup-plugin-terser";
-import babel from "@rollup/plugin-babel";
+import { defineConfig } from 'rollup';
+import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import terser from '@rollup/plugin-terser';
+import json from '@rollup/plugin-json';
+import postcss from 'rollup-plugin-postcss';
 
-const dev = process.env.ROLLUP_WATCH;
-
-export default [
+export default defineConfig([
+  // Plugin build
   {
-    input: "js/plugin/main.ts",
+    input: 'js/plugin/main.ts',
     output: {
-      file: "custom_components/browser_mod/browser_mod.js",
-      format: "es",
+      file: 'custom_components/browser_mod/browser_mod.js',
+      format: 'iife',
+      name: 'BrowserMod',
+      sourcemap: false,
+      inlineDynamicImports: true
     },
     plugins: [
-      nodeResolve(),
       json(),
-      typescript(),
-      babel.babel({
-        exclude: "node_modules/**",
+      postcss({
+        inject: true,
+        minimize: true
       }),
-      !dev && terser({ format: { comments: false } }),
+      resolve({
+        browser: true,
+        preferBuiltins: false,
+        extensions: ['.js', '.ts', '.mjs', '.json']
+      }),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.json',
+        declaration: false,
+        sourceMap: true
+      }),
+      terser({
+        format: {
+          comments: false
+        },
+        compress: {
+          drop_console: false,
+          passes: 2
+        },
+        mangle: {
+          properties: false
+        }
+      })
     ],
+    onwarn(warning, warn) {
+      // Suppress certain warnings
+      if (warning.code === 'THIS_IS_UNDEFINED') return;
+      if (warning.code === 'CIRCULAR_DEPENDENCY') return;
+      warn(warning);
+    }
   },
+  // Config panel build
   {
-    input: "js/config_panel/main.ts",
+    input: 'js/config_panel/main.ts',
     output: {
-      file: "custom_components/browser_mod/browser_mod_panel.js",
-      format: "es",
+      file: 'custom_components/browser_mod/browser_mod_panel.js',
+      format: 'iife',
+      name: 'BrowserModPanel',
+      sourcemap: false,
+      inlineDynamicImports: true
     },
     plugins: [
-      nodeResolve(),
       json(),
-      typescript(),
-      babel.babel({
-        exclude: "node_modules/**",
+      postcss({
+        inject: true,
+        minimize: true
       }),
-      !dev && terser({ format: { comments: false } }),
+      resolve({
+        browser: true,
+        preferBuiltins: false,
+        extensions: ['.js', '.ts', '.mjs', '.json']
+      }),
+      commonjs(),
+      typescript({
+        tsconfig: './tsconfig.json',
+        declaration: false,
+        sourceMap: true
+      }),
+      terser({
+        format: {
+          comments: false
+        },
+        compress: {
+          drop_console: false,
+          passes: 2
+        },
+        mangle: {
+          properties: false
+        }
+      })
     ],
-  },
-];
+    onwarn(warning, warn) {
+      if (warning.code === 'THIS_IS_UNDEFINED') return;
+      if (warning.code === 'CIRCULAR_DEPENDENCY') return;
+      warn(warning);
+    }
+  }
+]);

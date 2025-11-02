@@ -99,7 +99,6 @@ export const ServicesMixin = (SuperClass) => {
           for (const [k, v] of Object.entries<any>(d)) {
             if (k.endsWith("_action")) {
               let actions = v; // Force Closure. See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures#creating_closures_in_loops_a_common_mistake
-              let key = k; // If required use key in anonymous function to avoid closure issue as per above comment
               d[k] = (ext_data?) => {
                 if (!Array.isArray(actions)) {
                   actions = [actions];
@@ -120,7 +119,7 @@ export const ServicesMixin = (SuperClass) => {
           if (d.icons) {
             // Need to clone to be able to update icons array
             d.icons = structuredClone(d.icons);
-            d.icons.forEach((icon, index) => {
+            d.icons.forEach((_icon, index) => {
               d.icons[index].action = d[`icon_${index}_action`];
               delete d[`icon_${index}_action`];
             });

@@ -53,7 +53,7 @@ export const PopupMixin = (SuperClass) => {
     async closePopup(args) {
       const { all, tag } = args;
       if (all === true) {
-        this._popupElements.forEach((popup) => popup.closeDialog());
+        this._popupElements.forEach((popup) => popup._close());
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
@@ -63,9 +63,9 @@ export const PopupMixin = (SuperClass) => {
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag
         );
-        popup?.closeDialog();
+        popup?._close();
       } else {
-        this._popupElements.pop()?.closeDialog();
+        this._popupElements.pop()?._close();
       }
     }
 
@@ -77,7 +77,7 @@ export const PopupMixin = (SuperClass) => {
         const dialog: any = base.shadowRoot.querySelector(
           "ha-more-info-dialog"
         );
-        if (dialog) dialog.closeDialog();
+        if (dialog) dialog._close();
         return;
       }
       base.dispatchEvent(

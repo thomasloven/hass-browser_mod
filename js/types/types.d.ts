@@ -1,6 +1,6 @@
 const a = {};
 
-import { BrowserMod } from "./main";
+import { BrowserMod } from "../plugin/main";
 interface FullyKiosk {
   // Types from https://www.fully-kiosk.com/de/#websiteintegration
 
@@ -258,10 +258,31 @@ declare global {
   }
 }
 
-export type icon = {
+export type IconProps = {
   icon: string,
   title: string,
-  action: any,
   close: boolean,
   class: string,
+  action?: (index?: number) => void;
+}
+
+export type HaButtonProps = {
+  label: string;
+  variant?: "brand" | "neutral" | "success" | "warning" | "danger";
+  size?: "small" | "medium";
+  appearance?: "accent" | "filled" | "outlined" | "plain";
+  loading?: boolean;
+  disabled?: boolean;
+  isCloseable?: boolean;
+  action?: (formdata?: any) => void;
+};
+
+export interface HaButtonElement extends HTMLElement, HaButtonProps { }
+
+export type DialogWidth = "small" | "medium" | "large" | "full";
+
+export interface PopupStyle {
+  include_styles?: string[];
+  style: string;
+  styles: string;
 }
