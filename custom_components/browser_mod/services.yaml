@@ -84,7 +84,7 @@ popup:
     content:
       name: Content
       required: true
-      description: "Popup content (Test or lovelace card configuration)"
+      description: "Popup content (Text or lovelace card configuration)"
       selector:
         object:
     initial_style:
@@ -302,6 +302,12 @@ more_info:
     ignore_popup_card:
       name: Ignore any active popup-card overrides
       description: ""
+      default: false
+      selector:
+        boolean:
+    close:
+      name: Close existing more-info dialog
+      description: Close the more-info dialog if open
       default: false
       selector:
         boolean:

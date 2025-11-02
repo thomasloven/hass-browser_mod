@@ -12,6 +12,7 @@ import { loadHaForm } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 import { icon } from "./types";
 import { BrowserModPopupParams } from "./popups";
+import structuredClone from "@ungap/structured-clone";
 
 export class BrowserModPopup extends LitElement {
   @property() open;
@@ -57,6 +58,12 @@ export class BrowserModPopup extends LitElement {
       this,
       (value: boolean) => { this._formDataValid = value }
     );
+    // When reopening popup, keep style attributes
+    // but make sure they are all set to false
+    this._styleAttributes = this._styleAttributes || [];
+    Object.keys(this._styleAttributes).forEach((key) => {
+      this._styleAttributes[key] = false;
+    });
   }
 
   updated(_changedProperties: PropertyValues): void {
@@ -111,7 +118,6 @@ export class BrowserModPopup extends LitElement {
     Object.keys(this._styleAttributes).forEach((key) => {
       key.split(" ").forEach((k) => this.removeAttribute(k));
     });
-    this._styleAttributes = [];
     this._styleSequenceIndex = undefined;
     return true;
   }
@@ -287,7 +293,6 @@ export class BrowserModPopup extends LitElement {
     this.card = undefined;
     this.card_mod = card_mod;
     this._initialStyle = initial_style ?? size ?? "normal";
-    this._styleAttributes = [];
     this._popupStyles = popup_styles;
     this._styleSequence = ensureArray(style_sequence ?? []);
     this._styleSequence = this._styleSequence.length > 0 ? this._styleSequence : ["wide", "normal"];
