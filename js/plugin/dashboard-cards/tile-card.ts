@@ -46,7 +46,6 @@ export class BrowserModTileCard extends LitElement {
       this._tileCardEntities = window.browser_mod?.browserEntities || {};
       this._replaceEntities();
     });
-    const userReady = window.browser_mod?.userReady;
     getLovelaceRoot(document).then((lovelace) => {
       const currentUser = window.browser_mod?.user;
       const dashboardPrivilegedUsers = lovelace?.config?.browser_mod?.privileged_users ?? [];
