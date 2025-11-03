@@ -12,8 +12,8 @@ export class BrowserModBadge extends LitElement {
   @state() _badgeEntities;
 
   private _badge : Promise<any>;
-  private _entitiesResolved: Boolean;
-  private _privilegedUser: Boolean = false;
+  private _entitiesResolved: boolean;
+  private _privilegedUser: boolean = false;
 
   constructor() {
     super();

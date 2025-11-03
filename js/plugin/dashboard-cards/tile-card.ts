@@ -13,8 +13,8 @@ export class BrowserModTileCard extends LitElement {
   @state() _tileCardEntities;
 
   private _tileCard : Promise<any>;
-  private _entitiesResolved: Boolean;
-  private _privilegedUser: Boolean = false;
+  private _entitiesResolved: boolean;
+  private _privilegedUser: boolean = false;
 
   constructor() {
     super();
