@@ -134,7 +134,7 @@ export class BrowserModBadge extends LitElement {
         class=${error.severity}
         .type=${this._privilegedUser && error.handleChangeId ? "button" : ""}
         .hass=${this.hass}
-        @click=${this._privilegedUser && error.handleChangeId ? (() => this._handleErrorClick()) : null}
+        @click=${this._privilegedUser && error.handleChangeId ? (() => this._handleErrorClick()) : nothing}
         >
           <ha-icon slot="icon" icon="mdi:alert-circle"></ha-icon>
           <div class="content">${error.error}</div>
