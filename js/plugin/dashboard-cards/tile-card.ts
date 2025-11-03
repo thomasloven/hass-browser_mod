@@ -113,6 +113,7 @@ export class BrowserModTileCard extends LitElement {
   }
 
   protected willUpdate(changedProperties: PropertyValues): void {
+    super.willUpdate(changedProperties);
     if (changedProperties.has("hass")) {
       if (this._tileCard) {
         this._tileCard.then((tileCard) => tileCard.hass = this.hass);

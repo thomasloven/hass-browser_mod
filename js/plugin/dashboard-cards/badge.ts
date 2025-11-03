@@ -60,6 +60,7 @@ export class BrowserModBadge extends LitElement {
   }
 
   protected willUpdate(changedProperties: PropertyValues): void {
+    super.willUpdate(changedProperties);
     if (changedProperties.has("hass")) {
       if (this._badge) {
         this._badge.then((badge) => badge.hass = this.hass);
