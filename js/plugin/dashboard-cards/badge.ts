@@ -1,7 +1,6 @@
 import { css, html, LitElement, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property, state } from "lit/decorators.js";
-import { LovelaceGridOptions } from "../types";
 import structuredClone from "@ungap/structured-clone";
 import { BrowserModBadgeEditor } from "./badge-editor";
 import { getLovelaceRoot } from "../../helpers";
