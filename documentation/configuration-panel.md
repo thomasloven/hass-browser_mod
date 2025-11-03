@@ -56,7 +56,7 @@ As settings here may mean you get yourself locked out of Browser Mod panel in so
 
 ### Title template
 
-This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
+This allows you to set and dynamically update the title text of the browser tab/window by means on a Jinja [template](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](./browser-entities.md) (undefined if Browser not registered).
 
 > Ex:
 >
@@ -66,7 +66,7 @@ This allows you to set and dynamically update the title text of the browser tab/
 
 ### Favicon template
 
-This allows you to set and dynamically update the favicon of the browser tab/window. I.e. the little icon next to the page title. Favicons can be .png or .ico files and should be placed in your `<config>/www` directory. The box here should then contain a jinja [template](https://www.home-assistant.io/docs/configuration/templating/) which resolves to the path of the icon with `<config>/www/` replaced by `/local/` (see [Hosting files](https://www.home-assistant.io/integrations/http/#hosting-files)). Vairables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
+This allows you to set and dynamically update the favicon of the browser tab/window. I.e. the little icon next to the page title. Favicons can be .png or .ico files and should be placed in your `<config>/www` directory. The box here should then contain a jinja [template](https://www.home-assistant.io/docs/configuration/templating/) which resolves to the path of the icon with `<config>/www/` replaced by `/local/` (see [Hosting files](https://www.home-assistant.io/integrations/http/#hosting-files)). Vairables available are `browser_id` and [`browser_entities`](./browser-entities.md) (undefined if Browser not registered).
 
 > Ex:
 >
@@ -197,7 +197,7 @@ Set the order and hidden items of the sidebar. To change this setting:
 ### Sidebar title
 
 This changes the "Home Assistant" text that is displayed at the top of the sidebar.
-Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](#browser-entities-variable) (undefined if Browser not registered).
+Accepts Jinja [templates](https://www.home-assistant.io/docs/configuration/templating/). Variables available are `browser_id` and [`browser_entities`](./browser-entities.md) (undefined if Browser not registered).
 
 ### Hide interaction icon
 
@@ -225,90 +225,6 @@ While Browser Mod does its best to retain a Browser ID for browsers, it may chan
  c) Enable Register toggle.
 
 Using this method means that the new random Browser ID never has sent information to Browser Mod integration so no random Browser IDs to tidy up (though you can tidy up any rogue Browser IDs with browser_mod.deregister_browser).
-
----
-
-#### Browser Entities variable
-
-The variable `browser_entities` is available in Frontend settings templates. It is a special dictionary of the entities for the Browser and includes those listed in the table below. Each entry has entry of `entity_id` and `enabled`. If an entity is disabled by user then `enabled` will be `false`. Entities listed in the table as __DYNAMIC__ may also not enabled due to Browser hardware restrictions of settings.
-
-`browser_entities` is also available to a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call) by setting the replacement parameter `THIS` for `browser_entities`. See the script example below.
-
-> NOTE: If the Browser is not registered, `browser_entities` will be undefined. Your template should use `default()` to handle such a case.
->
-> __IMPORTANT__: `browser_entities` __IS NOT__ available in Developer tools template editor. It is __ONLY__ available in the scenarios listed in this documentation.
-
-| Variable | Sensor | Example entity_id |
-|---|---|---|
-| `browser_entities.browserID` | Browser ID Sensor | _sensor.browser_id_ |
-| `browser_entities.path` | Browser path Sensor | _sensor.browser_id_browser_path_ |
-| `browser_entities.visibility` | Browser visibility Sensor | _sensor.browser_id_browser_visibility_ |
-| `browser_entities.userAgent` | Browser userAgent Sensor | _sensor.browser_id_browser_useragent_ |
-| `browser_entities.currentUser` | Browser user Sensor | _sensor.browser_id_browser_user_ |
-| `browser_entities.fullyKiosk` | Browser FullyKiosk Sensor | _binary_sensor.browser_id_browser_fullykiosk_ |
-| `browser_entities.width` | Browser width Sensor | _sensor.browser_id_browser_width_ |
-| `browser_entities.height` | Browser height Sensor | _sensor.browser_id_browser_height_ |
-| `browser_entities.darkMode` | Browser dark mode Sensor | _sensor.browser_id_browser_dark_mode_ |
-| `browser_entities.activity` | Browser activity Sensor | _binary_sensor.browser_id_browser_ |
-| `browser_entities.screen` | Browser screen Sensor | _light.browser_id_browser_screen_ |
-| `browser_entities.player` | Browser player Sensor | _media_player.browser_id_ |
-| `browser_entities.panel` | Browser panel Sensor | _sensor.browser_id_panel_ |
-| `browser_entities.battery_level` | Browser battery Sensor. __DYNAMIC__ - may not be enabled. | _sensor.browser_id_browser_battery_ |
-| `browser_entities.charging` | Browser charging Sensor. __DYNAMIC__ - may not be enabled.  | _binary_sensor.browser_id_browser_charging_ |
-| `browser_entities.camera` | Browser camera. __DYNAMIC__ - may not be enabled.  | _camera.browser_id_ |
-
-
-
-Your Frontend settings or script template can use the `browser_entities` variable to query a sensor state or get attributes of the sensor.
-
-Example: Get the current user name
-
-```yaml
-{{ states(browser_entities.currentUser.entity_id) if 'currentUser' in browser_entities else 'unknown' }}
-```
-
-Example: Get the first part of the Browser path
-
-```yaml
-{{ state_attr(browser_entities.panel.entity_id, 'viewTitle') if 'panel' in browser_entities else 'unknown' }}
-```
-
-Example: Know who initiated script action
-
-Here the script just returns the current user as a response. A functional script would use the variable in some way.
-
-> NOTE: This Frontend action needs to be a [_Browser_ call](services.md#calling-services---server-call-vs-browser-call).
-
-1. _Frontend action_
-
-    ```yaml
-    # ... other code
-    tap_action:
-      action: fire-dom-event # Browser call
-      browser_mod:
-        service:  browser_mod.sequence
-        data:
-          sequence:
-            - service: script.my_script
-              data:
-                browser_entities: THIS
-    ```
-
-2. _My Script_
-
-    ```yaml
-    sequence:
-      - variables:
-          currentUser: >-
-            {{ states(browser_entities.currentUser.entity_id) if 'currentUser' in
-            browser_entities else 'unknown' }}
-      - action: script.script_with_response
-        metadata: {}
-        data: {}
-        response_variable: currentUser
-    alias: My Script
-    description: ""
-    ```
 
 ---
 
