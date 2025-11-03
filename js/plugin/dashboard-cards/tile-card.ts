@@ -191,8 +191,12 @@ export class BrowserModTileCard extends LitElement {
       });
       errorCard.hass = this.hass;
       errorCard.preview = this.preview;
-      errorCard.addEventListener("click", this._privilegedUser && error.handleChangeId ? (() => this._handleErrorClick()) : null);
-      errorCard.style.cursor = this._privilegedUser && error.handleChangeId ? "pointer" : "default";
+      if (this._privilegedUser && error.handleChangeId) {
+        errorCard.addEventListener("click", () => this._handleErrorClick());
+        errorCard.style.cursor = "pointer";
+      } else {
+        errorCard.style.cursor = "default";
+      }
       return html`${errorCard}`;
     }
     return html`${until(this._tileCard, html`<span>Loading...</span>`)}`;
