@@ -5,5 +5,14 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true
-  }
+  },
+  "include": [
+    "js/**/*",
+    "js/types/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "custom_components"
+  ]
 }

@@ -44,8 +44,8 @@ export const PopupMixin = (SuperClass) => {
     showPopup(params: BrowserModPopupParams) {
       (async () => {
         const base: any = await hass_base_el();
-        const dialogTag = params.tag ? 
-          `browser-mod-popup-${params.tag}` : "browser-mod-popup";
+        const dialogTag = params.tag ?
+          `browser-mod-popup-${params.tag}`.toLowerCase() : "browser-mod-popup";
         showBrowserModPopup(base, dialogTag, params);
       })();
     }
@@ -53,7 +53,7 @@ export const PopupMixin = (SuperClass) => {
     async closePopup(args) {
       const { all, tag } = args;
       if (all === true) {
-        this._popupElements.forEach((popup) => popup.closeDialog());
+        this._popupElements.forEach((popup) => popup._close());
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
@@ -63,9 +63,9 @@ export const PopupMixin = (SuperClass) => {
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag
         );
-        popup?.closeDialog();
+        popup?._close();
       } else {
-        this._popupElements.pop()?.closeDialog();
+        this._popupElements.pop()?._close();
       }
     }
 
@@ -77,7 +77,7 @@ export const PopupMixin = (SuperClass) => {
         const dialog: any = base.shadowRoot.querySelector(
           "ha-more-info-dialog"
         );
-        if (dialog) dialog.closeDialog();
+        if (dialog) dialog._close();
         return;
       }
       base.dispatchEvent(
@@ -129,18 +129,15 @@ export interface BrowserModPopupParams {
 const customElementClassCache: Record<string, typeof BrowserModPopup> = {};
 
 export function setCustomElementClass(dialogTag: string): void {
-  if (customElementClassCache[dialogTag]) {
+  // Check if already registered in customElements registry (not just cache)
+  if (customElements.get(dialogTag)) {
     return;
   }
 
   // Dynamically create a new class extending BrowserModPopup
   class DynamicPopup extends BrowserModPopup {}
 
-  // Register the custom element if not already defined
-  if (!customElements.get(dialogTag)) {
-    customElements.define(dialogTag, DynamicPopup);
-  }
-
+  customElements.define(dialogTag, DynamicPopup);
   customElementClassCache[dialogTag] = DynamicPopup;
 }
 
@@ -150,11 +147,29 @@ export const showBrowserModPopup = (
   BrowserModPopupParams: BrowserModPopupParams
 ): void => {
   setCustomElementClass(dialogTag);
+  if (dialogTag !== 'browser-mod-popup') {
+    (async () => {
+      await customElements.whenDefined(dialogTag);
+      let dialogElement = document.body.querySelector(dialogTag) as BrowserModPopup;
+
+      if (!dialogElement) {
+        dialogElement = document.createElement(dialogTag) as BrowserModPopup;
+        document.body.appendChild(dialogElement);
+      }
+
+      await dialogElement.showDialog(BrowserModPopupParams);
+    })();
+    return;
+  }
+
   element.dispatchEvent(
     new CustomEvent("show-dialog", {
       detail: {
         dialogTag,
-        dialogImport: () => { return customElements.whenDefined(dialogTag) },
+        dialogImport: async () => {
+          await customElements.whenDefined(dialogTag);
+          return customElements.get(dialogTag);
+        },
         dialogParams: BrowserModPopupParams,
       }
     })
