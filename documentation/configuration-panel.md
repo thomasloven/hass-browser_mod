@@ -136,7 +136,7 @@ __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT supp
 **Using this Frontend setting is not recommended. See below for options which are recommended.**
 
 1. Global/System ⇒ (Since 2025.12) Set the Home Assistant default system dashboard in Dashboards.
-2. Browser/Device ⇒ Use Default action with `browser_mod.navigate`. This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
+2. Browser/Device ⇒ Use Default action with `browser_mod.navigate`. This also works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
 3. User ⇒ (Since 2025.12) Set Home Assistant default user Dashboard in user profile.
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
