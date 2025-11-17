@@ -131,14 +131,17 @@ See [Default action](#default-action) below for tips on calling multiple actions
 
 __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
 
-### Default dashboard
+### Default dashboard (legacy)
+
+**Using this Frontend setting is not recommended. See below for options which are recommended.**
+
+1. Gloabl/System ⇒ (Since 2025.12) Set Home Assistant default system dashboard in Dashboards.
+2. Browser/Device ⇒ Use Default action with `browser_mod.navigate`. This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
+3. User ⇒ (Since 2025.12) Set Home Assistant default user Dashboard in user profile.
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
 
-> _Note:_
->
->1. This option sets the same local setting as Home Assistants' Dashboard setting in User Settings. If this setting does not provide exactly what you are after you may wish to use a Default action with `browser_mod.navigate`.
->2. This also of works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
+> NOTE: This uses legacy method of storing default dashboard in localStorage. Home Assistant 2025.12 started storing default dashboard in system/user settings. If the default dashboard in set via Home Assistant at eithe system or user level, this overrides the legacy method and Browser Mod setting will be ignored.
 
 ### Default action
 
