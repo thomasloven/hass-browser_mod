@@ -1,6 +1,6 @@
 const a = {};
 
-import { BrowserMod } from "../plugin/main";
+import { BrowserMod } from "./main";
 interface FullyKiosk {
   // Types from https://www.fully-kiosk.com/de/#websiteintegration
 

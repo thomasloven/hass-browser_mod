@@ -129,13 +129,8 @@ export interface BrowserModPopupParams {
 const customElementClassCache: Record<string, typeof BrowserModPopup> = {};
 
 export function setCustomElementClass(dialogTag: string): void {
-  // Check if already registered in customElements registry (not just cache)
-  if (customElements.get(dialogTag)) {
-    return;
-  }
-
   // Dynamically create a new class extending BrowserModPopup
-  class DynamicPopup extends BrowserModPopup {}
+  class DynamicPopup extends BrowserModPopup { }
 
   customElements.define(dialogTag, DynamicPopup);
   customElementClassCache[dialogTag] = DynamicPopup;

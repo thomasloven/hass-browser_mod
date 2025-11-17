@@ -4,7 +4,7 @@ import { property, state } from "lit/decorators.js";
 import { BrowserModTileCardEditor } from "./tile-card-editor";
 import structuredClone from "@ungap/structured-clone";
 import { getLovelaceRoot } from "../../helpers";
-import { LovelaceGridOptions, LovelaceCard } from "../../types/types";
+import { LovelaceGridOptions, LovelaceCard } from "../types";
 
 export class BrowserModTileCard extends LitElement {
   @property() hass;

@@ -5,7 +5,7 @@ import "./popup-card-editor";
 import { getLovelaceRoot } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { IconProps } from "../types/types";
+import { IconProps } from "./types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 
 class PopupCard extends LitElement {
@@ -256,20 +256,14 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       ev.preventDefault();
       let properties = { ...cardConfig }
       delete properties.card;
-      window.browser_mod?.service("popup", {
-        content: cardConfig.card,
-        ...properties,
-      });
       setTimeout(
-        () =>
-          lovelaceRoot.dispatchEvent(
-            new CustomEvent("hass-more-info", {
-              bubbles: true,
-              composed: true,
-              cancelable: false,
-              detail: { entityId: "" },
-            })
-          ),
+        () => {
+          window.browser_mod?.showMoreInfo('', '', false, false, true);
+          window.browser_mod?.service("popup", {
+            content: cardConfig.card,
+            ...properties,
+          });
+        },
         10
       );
     }

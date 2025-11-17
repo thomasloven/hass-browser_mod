@@ -12,7 +12,7 @@ import {
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
-import { DialogWidth, HaButtonElement, IconProps, PopupStyle } from "../types/types";
+import { DialogWidth, HaButtonElement, IconProps, PopupStyle } from "./types";
 import { BrowserModPopupParams } from "./popups";
 export class BrowserModPopup extends LitElement {
   @property({ type: Boolean }) open: boolean = false;
@@ -186,13 +186,10 @@ export class BrowserModPopup extends LitElement {
   }
 
   _cycleStyleAttributes = (dir: string = "forward"): void => {
-    const length = this._styleSequence.length;
-    if (length === 0) return;
-
     if (dir === "forward") {
-      this._styleSequenceIndex = (this._styleSequenceIndex + 1) % length;
+      this._styleSequenceIndex = (this._styleSequenceIndex + 1) % this._styleSequence.length;
     } else {
-      this._styleSequenceIndex = (this._styleSequenceIndex - 1 + length) % length;
+      this._styleSequenceIndex = (this._styleSequenceIndex - 1 + this._styleSequence.length) % this._styleSequence.length;
     }
     this._updateStyleAttributes(this._styleSequence[this._styleSequenceIndex]);
   }
@@ -331,28 +328,23 @@ export class BrowserModPopup extends LitElement {
   }
 
   private _build_card = async (config: any): Promise<void> => {
-    try {
-      const helpers = await window.loadCardHelpers();
-      const card = await helpers.createCardElement(config);
-      card.hass = window.browser_mod.hass;
-      provideHass(card);
-      this.content = card;
+    const helpers = await window.loadCardHelpers();
+    const card = await helpers.createCardElement(config);
+    card.hass = window.browser_mod.hass;
+    provideHass(card);
+    this.content = card;
 
-      if (!customElements.get(card.localName)) {
-        customElements.whenDefined(card.localName).then(() => {
-          this._build_card(config);
-        });
-      }
-
-      card.addEventListener("ll-rebuild", () => {
+    if (!customElements.get(card.localName)) {
+      customElements.whenDefined(card.localName).then(() => {
         this._build_card(config);
       });
-    } catch (error) {
-      console.error("Failed to build card:", error);
-      this.content = unsafeHTML(`<p>Error loading card</p>`);
     }
+
+    card.addEventListener("ll-rebuild", () => {
+      this._build_card(config);
+    });
   }
-  
+
   private _handleBodyScroll = (ev: Event): void => {
     this._bodyScrolled = (ev.target as HTMLDivElement).scrollTop > 0;
   }
@@ -371,12 +363,10 @@ export class BrowserModPopup extends LitElement {
         }
       });
     }
-    if (changedProperties.has("_narrow")) {
-      if (this._narrow) {
-        this.setAttribute("narrow", "");
-      } else {
-        this.removeAttribute("narrow");
-      }
+    if (this._narrow) {
+      this.setAttribute("narrow", "");
+    } else {
+      this.removeAttribute("narrow");
     }
   }
 
@@ -665,7 +655,7 @@ export class BrowserModPopup extends LitElement {
     return `${baseStyle}\n${popupStyles}`;
   }
 
-    static get styles() {
+  static get styles() {
     return css`
       /* Styles adapted from Home Assistant more-info dialog */
 
@@ -773,7 +763,7 @@ export class BrowserModPopup extends LitElement {
         flex: 1;
       }
 
-      :host([card]) .content .container {
+      :host([_card]) .content .container {
         padding: 8px 8px 20px 8px;
       }
       .content .buttons {
