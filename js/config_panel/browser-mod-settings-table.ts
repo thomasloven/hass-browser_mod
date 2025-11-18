@@ -195,7 +195,7 @@ class BrowserModSettingsTable extends LitElement {
     const allUsers = await this.fetchUsers();
     const users = [];
     for (const target of allUsers) {
-      if (target.username && settings.user[target.id] == null)
+      if (!target.system_generated && settings.user[target.id] == null)
         users.push({ label: target.name, value: target.id });
     }
 
