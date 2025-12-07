@@ -18,7 +18,7 @@
 
 ## Browser Mod Popup
 
-Popup cards can be used to replace the more-info dialog of an entity, or to be used as a template for [`browser_mod.popup` service](documentation/services.md), or both! 
+Popup cards can be used to replace the more-info dialog of an entity, or to be used as a template for [`browser_mod.popup` service](documentation/services.md), or both!
 
 ### Popup card - replace more-info dialog of an entity
 
@@ -52,7 +52,7 @@ card:
 |---|---|
 |`type`| Always `custom:popup-card` |
 |`entity`| Old style single entity target. While using old style `entity` is fully supported, it will not show in the GUI editor if `entity` is not in the current popup card config. In this case add an entity to `target`. |
-|`target`| When configured in the UI, this uses the Home Assistant target selector. The popup card will be used for more-info replacement for an entity matching any of the target entitys, areas, labels or devices. |
+|`target`| When configured in the UI, this uses the Home Assistant target selector. The popup card will be used for more-info replacement for an entity matching any of the target entities, areas, labels or devices. |
 |`entity_id`| A single entity id or list of entity id's. The popup card will be used as an more-info replacement for all listed entities. |
 |`area_id`| A single area id or list of area id's. The popup card will be used as a more-info replacement for entities in these areas. |
 |`labels_id`| A single label id or list of label id's. The popup card will be used as a more-info replacement for entities with these labels. |
@@ -111,7 +111,7 @@ Usage: [_Browser_ call](documentation/services.md#calling-services---server-call
 2. Hover over sidebar links to reveal the dashboard url.
 3. Create a card with an action set to `Navigate` and check the dropdown which will show both dashboard name and url.
 
-When using a dashboard url, always remove the preceeding slash `/`
+When using a dashboard url, always remove the preceding slash `/`
 
 ### Browser Player
 
@@ -135,7 +135,7 @@ Browser Mod Tile supports all features of the regular Home Assistant Frontend [T
 
 Browser Mod Badge is an extension to standard Home Assistant Frontend [Badges](https://www.home-assistant.io/dashboards/badges/) that allows for selection of local [Browser entities](./browser-entities.md). For example, you can show the local Browser ID by using a Browser Mod Badge and selecting `Browser ID` as the entity which will set the `entity` in YAML to `browser_entities.browserID`.
 
-Browser Mod Badge supports all features of standard Home Assistant Frontend [Badges](https://www.home-assistant.io/dashboards/badges/) including name and state content to display entity attributes. While editing Browser Mod Badge the local Browser entity will be used
+Browser Mod Badge supports all features of standard Home Assistant Frontend [Badges](https://www.home-assistant.io/dashboards/badges/) including name and state content to display entity attributes. While editing Browser Mod Badge the local Browser entity will be used.
 
 ### Entity
 
@@ -143,7 +143,7 @@ In UI mode you can select the entity from a list showing Names of [Browser entit
 
 #### Entity replacement
 
-In YAML mode you can use any Variable of [Browser entities](./browser-entities.md) and it will be replaced before the Tile/Badge is rendered. If any string starting with `browser_entities.` does not resolve to a known Browser Mod entity variable, the generic error `Entity not enabled for this Browser` will be shown.
+In YAML mode you can use any variable of [Browser entities](./browser-entities.md) and it will be replaced before the Tile/Badge is rendered. If any string starting with `browser_entities.` does not resolve to a known Browser Mod entity variable, the generic error `Entity not enabled for this Browser` will be shown.
 
 #### Entity availability
 
@@ -151,15 +151,15 @@ If a Browser entity is not available for a Browser, like a dynamic entity or one
 
 #### Browser not registered
 
-If a Browser is not registered the generic error `Browser not registered` will be shown. If the user if is a [Privileged user](#privileged-users) then tapping the tile/badge will call `browser_mod.change_browser_id` with no parameters, allowing you to quickly change a Browser ID for a Browser that has lost its Browser ID. See [`browser_mod.change_browser_id`](./services.md#browser_modchange_browser_id) for more details the popup that will show in this scenario.
+If a Browser is not registered the generic error `Browser not registered` will be shown. If the user is a [Privileged user](#privileged-users) then tapping the tile/badge will call `browser_mod.change_browser_id` with no parameters, allowing you to quickly change a Browser ID for a Browser that has lost its Browser ID. See [`browser_mod.change_browser_id`](./services.md#browser_modchange_browser_id) for more details of the popup that will show in this scenario.
 
 #### Browser entities unavailable
 
-If the entities are not available for a browser, due to an unknown error of some sort that could be related to Browser ID, the generic error `Browser entities unavailable` will be shown. If the user if is a [Privileged user](#privileged-users) then tapping the tile/badge will call `browser_mod.change_browser_id` with no parameters, allowing you to quickly change a Browser ID for a Browser that has lost its Browser ID. See [`browser_mod.change_browser_id`](./services.md#browser_modchange_browser_id) for more details the popup that will show in this scenario.
+If the entities are not available for a browser, due to an unknown error of some sort that could be related to Browser ID, the generic error `Browser entities unavailable` will be shown. If the user if is a [Privileged user](#privileged-users) then tapping the tile/badge will call `browser_mod.change_browser_id` with no parameters, allowing you to quickly change a Browser ID for a Browser that has lost its Browser ID. See [`browser_mod.change_browser_id`](./services.md#browser_modchange_browser_id) for more details of the popup that will show in this scenario.
 
 #### Privileged users
 
-Only privileged users will be able to tap a generic error to call the action [`browser_mod.change_browser_id`](./services.md#browser_modchange_browser_id). Privileged users include users with owner/admin role. You can also set privileged users for a dashboard by setting a list under `browser_mod:` => `privileged_users:` in the dashboard config. You can do this using `Raw configuration editor` if using UI and storage mode, or directly in YAML is using YAML mode.
+Only privileged users will be able to tap a generic error to call the action [`browser_mod.change_browser_id`](./services.md#browser_modchange_browser_id). Privileged users include users with owner/admin role. You can also set privileged users for a dashboard by setting a list under `browser_mod:` => `privileged_users:` in the dashboard config. You can do this using `Raw configuration editor` if using UI and storage mode, or directly in YAML if using YAML mode.
 
 Example:
 
