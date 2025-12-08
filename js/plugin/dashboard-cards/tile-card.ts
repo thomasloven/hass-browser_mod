@@ -10,6 +10,7 @@ export class BrowserModTileCard extends LitElement {
   @property() hass;
   @state() _config;
   @property({ type: Boolean, reflect: true}) preview = false;
+  @property({ type: Boolean, reflect: false }) connectedWhileHidden = true;
   @state() _tileCardEntities;
 
   private _tileCard : Promise<any>;
@@ -55,6 +56,8 @@ export class BrowserModTileCard extends LitElement {
   }
 
   setConfig(config): void {
+    // If config is out updated config then ignore
+    if (config.browser_mod_tile) return;
     this._config = structuredClone(config);
     delete this._config.type;
   }
@@ -159,6 +162,9 @@ export class BrowserModTileCard extends LitElement {
     );
     this._entitiesResolved = !replacedConfigJSON.includes("browser_entities.");
     this._config = JSON.parse(replacedConfigJSON);
+    if (this.parentElement && (this.parentElement as any).config?.browser_mod_tile_card !== true) {
+      (this.parentElement as any).config = { ...this._config, browser_mod_tile_card: true, type: "custom:browser-mod-tile-card" };
+    }
   }
 
   private _handleErrorClick() {

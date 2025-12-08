@@ -49,7 +49,8 @@ export class BrowserModTileCardEditor extends LitElement {
           ...this._config, 
           entity: this._getEntity(this._config.entity)
         };
-        editor.setConfig(this._tileCardConfig);
+        // Set config directly to avoid StructError with any custom options like card_mod
+        editor._config = this._tileCardConfig;
       });
     }
   }

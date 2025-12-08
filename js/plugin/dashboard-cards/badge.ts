@@ -9,6 +9,7 @@ export class BrowserModBadge extends LitElement {
   @property() hass;
   @state() _config;
   @property({ type: Boolean, reflect: true}) preview = false;
+  @property({ type: Boolean, reflect: false }) connectedWhileHidden = true;
   @state() _badgeEntities;
 
   private _badge : Promise<any>;
@@ -54,6 +55,8 @@ export class BrowserModBadge extends LitElement {
   }
   
   setConfig(config): void {
+    // If config is out updated config then ignore
+    if (config.browser_mod_badge) return;
     this._config = structuredClone(config);
     delete this._config.type;
   }
@@ -106,6 +109,9 @@ export class BrowserModBadge extends LitElement {
     );
     this._entitiesResolved = !replacedConfigJSON.includes("browser_entities.");
     this._config = JSON.parse(replacedConfigJSON);
+    if (this.parentElement && (this.parentElement as any).config?.browser_mod_badge !== true) {
+      (this.parentElement as any).config = { ...this._config, browser_mod_badge: true, type: "custom:browser-mod-badge" };
+    }
   }
 
   private _handleErrorClick() {

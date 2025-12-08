@@ -2,6 +2,13 @@ import { css, html, LitElement, nothing, PropertyValues, TemplateResult } from "
 import { property, queryAsync, state } from "lit/decorators.js";
 import { breakCamelCase, capitalize, selectTree } from "../../helpers";
 
+const DEFAULT_CONFIG = {
+  type: "entity",
+  show_name: false,
+  show_state: true,
+  show_icon: true,
+};
+
 export class BrowserModBadgeEditor extends LitElement {
   @property() hass;
   @state() _config;
@@ -49,7 +56,8 @@ export class BrowserModBadgeEditor extends LitElement {
           ...this._config,
           entity: this._getEntity(this._config.entity)
         };
-        editor.setConfig(this._badgeConfig);
+        // Set config directly to avoid StructError with any custom options like card_mod
+        editor._config = { ...DEFAULT_CONFIG, ...this._badgeConfig};
       });
     }
   }
