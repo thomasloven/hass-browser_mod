@@ -1,6 +1,20 @@
 import { await_element, waitRepeat, runOnce, selectTree } from "../helpers";
 import { OverlayIcon } from "./overlay-icon"
 
+const NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY = "browser_mod-no-sidebar-edit-mode-prompt";
+const SIDEBAR_EDIT_MODE_PROMPT_SCHEMA = [ 
+  {
+    label: "Browser Mod is installed. Edit sidebar settings with Browser Mod (recommended) or Continue to use the built-in editor.",
+    type: "constant"
+  },
+  {
+    name: "ignore_sidebar_edit_mode_prompt",
+    label: "Do not show this prompt again",
+    default: false,
+    selector: { boolean: {} },
+  }
+]
+
 export const AutoSettingsMixin = (SuperClass) => {
   class AutoSettingsMixinClass extends SuperClass {
     _faviconTemplateSubscription;
@@ -342,21 +356,30 @@ export const AutoSettingsMixin = (SuperClass) => {
         if (main) {
           main.addEventListener("show-dialog", (ev: any) => {
             if (ev.detail?.dialogTag === "dialog-edit-sidebar") {
-              if (ev.detail?.browser_mod_continue) return;
+              if (
+                ev.detail?.browser_mod_continue ||
+                localStorage.getItem(NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY) === "true"
+              ) return;
               ev.stopPropagation();
               if (this.hass.user?.is_admin || !this.registered) {
                 const evShowDialog = new CustomEvent("show-dialog", { bubbles: true, composed: true, detail: { browser_mod_continue: true, ...ev.detail } })
                 window.browser_mod?.showPopup(
                   {
                     title: 'Edit sidebar',
-                    content: 'Browser Mod is installed. Edit sidebar settings with Browser Mod (recommended) or Continue to use the built-in editor.',
+                    content: SIDEBAR_EDIT_MODE_PROMPT_SCHEMA,
                     right_button: "Continue",
-                    right_button_action: () => { main.dispatchEvent(evShowDialog) },
+                    right_button_action: (data) => { 
+                      localStorage.setItem(NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY, data.ignore_sidebar_edit_mode_prompt ? "true" : "false");
+                      main.dispatchEvent(evShowDialog) 
+                    },
                     right_button_variant: "brand",
                     right_button_appearance: "plain",
                     right_button_icon: "mdi:chevron-right",
                     left_button: "Edit with Browser Mod",
-                    left_button_action: () => { this.browser_navigate('/browser-mod') },
+                    left_button_action: (data) => { 
+                      localStorage.setItem(NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY, data.ignore_sidebar_edit_mode_prompt ? "true" : "false");
+                      this.browser_navigate('/browser-mod') 
+                    },
                     left_button_variant: "brand",
                     left_button_appearance: "accent",
                     style: 'ha-dialog { position: fixed; z-index: 999; }' // Need to be above open drawer sidebar
