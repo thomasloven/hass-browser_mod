@@ -121,7 +121,7 @@ export const AutoSettingsMixin = (SuperClass) => {
               enable: true,
             }
           })
-        )
+        );
       }
 
       // Hide sidebar
