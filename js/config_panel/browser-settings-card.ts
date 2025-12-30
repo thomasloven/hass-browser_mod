@@ -11,13 +11,6 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     window.browser_mod.registered = !window.browser_mod.registered;
     this.dirty = true;
   }
-  changeBrowserID(ev) {
-    const value = ev.detail.value;
-    if (value !== window.browser_mod?.browserID) {
-      window.browser_mod.browserID = value;
-      this.dirty = true;
-    }
-  }
   toggleCameraEnabled() {
     window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
     this.dirty = true;
@@ -95,26 +88,40 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <span slot="description"
               >A unique identifier for this browser-device combination.</span
             >
-            <ha-combo-box
-              .value=${window.browser_mod?.browserID}
-              @value-changed=${this.changeBrowserID}
-              .allowCustomValue=${true}
-              .items=${Object.keys(
-                window.browser_mod?.browsers).map((id) => (
-                  { id, name: id }
-                ))
-                .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-              }
-              item-id-path="id"
-              item-value-path="id"
-              item-label-path="name"
-              .hideClearIcon=${true}
-              .helper=${'You can select an existing known Browser ID or enter new'}
+            <ha-form
+              .hass=${this.hass}
+              .schema=${[
+                {
+                  name: "browser_id",
+                  label: "Browser ID",
+                  helper: "Select an existing known Browser ID or enter new",
+                  required: true,
+                  selector: {
+                    select: {
+                      sort: true,
+                      custom_value: true,
+                      mode: "dropdown",
+                      options: Object.keys(window.browser_mod?.browsers) || []
+                    },
+                  },
+                },
+              ]}
+              .computeLabel=${(s) => s.label ?? s.name}
+              .computeHelper=${(s) => s.helper ?? ''}
+              .data=${{ browser_id: window.browser_mod?.browserID }}
               .disabled=${(
                 window.browser_mod?.browser_locked ||
                 !this.hass.user?.is_admin
               )}
-            ></ha-combo-box>
+              @value-changed=${(e) => {
+                const value = e.detail.value.browser_id;
+                if (value && value !== window.browser_mod?.browserID) {
+                  window.browser_mod.browserID = value;
+                  this.dirty = true;
+                }
+              }}
+            >
+            </ha-form>
           </ha-settings-row>
 
           ${window.browser_mod?.registered
@@ -156,7 +163,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       <ha-alert alert-type="warning" title="Auto closing connection">
         Home Assistant will close the websocket connection to the server
         automatically after 5 minutes of inactivity.<br /><br />
-        While decreasing network trafic and memory usage, this may cause
+        While decreasing network traffic and memory usage, this may cause
         problems for browser_mod operation.
         <br /><br />
         If you find that some things stop working for this Browser after a time,
