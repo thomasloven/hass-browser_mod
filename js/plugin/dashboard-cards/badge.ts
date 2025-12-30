@@ -173,6 +173,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
 
   if (!customElements.get("browser-mod-badge")) {
     customElements.define("browser-mod-badge", BrowserModBadge);
+    (window as any).customBadges = (window as any).customBadges || [];
     (window as any).customBadges.push({
       type: "browser-mod-badge",
       name: "Browser Mod Badge",
