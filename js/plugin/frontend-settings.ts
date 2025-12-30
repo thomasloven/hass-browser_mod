@@ -113,6 +113,17 @@ export const AutoSettingsMixin = (SuperClass) => {
         localStorage.setItem("defaultPanel", `"${settings.defaultPanel}"`);
       }
 
+      // Kiosk Mode built into Home Assistant since 2026.1
+      if (settings.kioskMode === true) {
+        window.dispatchEvent(
+          new CustomEvent("hass-kiosk-mode", {
+            detail: {
+              enable: true,
+            }
+          })
+        );
+      }
+
       // Hide sidebar
       if (settings.hideSidebar === true) {
         // Set sidebar to always hidden
