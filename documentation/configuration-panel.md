@@ -90,7 +90,7 @@ This will set Home Assistant Kiosk mode introduced in 2026.1. When launched, Kio
 
 This will hide the sidebar with the navigation links. You can still access all the pages via normal links.
 
-__IMPORTANT__: When this setting is cleared, the Browser will revert to a state in which the User Setting 'Always hide the sidebar' is in effect, with the sidebar menu icon showing. The 'Always hide the sidebar' user setting can be reset in User Settings. You may wish to use the [Kiosk Mode](#kiosk-mode) setting which does not affect 'Always hide the sidebar user setting'.
+__IMPORTANT__: When this setting is cleared, the Browser will revert to a state in which the User Setting 'Always hide the sidebar' is in effect, with the sidebar menu icon showing. The 'Always hide the sidebar' user setting can be reset in User Settings. You may wish to use the [Kiosk Mode](#kiosk-mode) setting which does not affect 'Always hide the sidebar' user setting.
 
 > Tip: add `/browser-mod` to the end of your home assistant URL when you need to turn this off again...
 
