@@ -11,13 +11,6 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     window.browser_mod.registered = !window.browser_mod.registered;
     this.dirty = true;
   }
-  changeBrowserID(ev) {
-    const value = ev.detail.value;
-    if (value !== window.browser_mod?.browserID) {
-      window.browser_mod.browserID = value;
-      this.dirty = true;
-    }
-  }
   toggleCameraEnabled() {
     window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
     this.dirty = true;
@@ -95,26 +88,34 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             <span slot="description"
               >A unique identifier for this browser-device combination.</span
             >
-            <ha-combo-box
-              .value=${window.browser_mod?.browserID}
-              @value-changed=${this.changeBrowserID}
-              .allowCustomValue=${true}
-              .items=${Object.keys(
-                window.browser_mod?.browsers).map((id) => (
-                  { id, name: id }
-                ))
-                .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-              }
-              item-id-path="id"
-              item-value-path="id"
-              item-label-path="name"
-              .hideClearIcon=${true}
-              .helper=${'You can select an existing known Browser ID or enter new'}
-              .disabled=${(
-                window.browser_mod?.browser_locked ||
-                !this.hass.user?.is_admin
-              )}
-            ></ha-combo-box>
+            <ha-form
+              .hass=${this.hass}
+              .schema=${[
+                {
+                  name: "browser_id",
+                  required: true,
+                  selector: {
+                    select: {
+                      sort: true,
+                      custom_value: true,
+                      mode: "dropdown",
+                      options: Object.keys(window.browser_mod?.browsers)
+                    },
+                  },
+                },
+              ]}
+              .computeLabel=${() => 'Browser ID'}
+              .computeHelper=${() => 'Select an existing known Browser ID or enter new'}
+              .data=${{ browser_id: window.browser_mod?.browserID }}
+              @value-changed=${(e) => {
+                const value = e.detail.value.browser_id;
+                if (value !== window.browser_mod?.browserID) {
+                  window.browser_mod.browserID = value;
+                  this.dirty = true;
+                }
+              }}
+            >
+            </ha-form>
           </ha-settings-row>
 
           ${window.browser_mod?.registered
