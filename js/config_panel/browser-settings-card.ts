@@ -93,6 +93,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               .schema=${[
                 {
                   name: "browser_id",
+                  label: "Browser ID",
+                  helper: "Select an existing known Browser ID or enter new",
                   required: true,
                   selector: {
                     select: {
@@ -104,8 +106,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                   },
                 },
               ]}
-              .computeLabel=${() => 'Browser ID'}
-              .computeHelper=${() => 'Select an existing known Browser ID or enter new'}
+              .computeLabel=${(s) => s.label ?? s.name}
+              .computeHelper=${(s) => s.helper ?? ''}
               .data=${{ browser_id: window.browser_mod?.browserID }}
               .disabled=${(
                 window.browser_mod?.browser_locked ||
@@ -161,7 +163,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       <ha-alert alert-type="warning" title="Auto closing connection">
         Home Assistant will close the websocket connection to the server
         automatically after 5 minutes of inactivity.<br /><br />
-        While decreasing network trafic and memory usage, this may cause
+        While decreasing network traffic and memory usage, this may cause
         problems for browser_mod operation.
         <br /><br />
         If you find that some things stop working for this Browser after a time,
