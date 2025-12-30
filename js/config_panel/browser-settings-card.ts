@@ -99,7 +99,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                       sort: true,
                       custom_value: true,
                       mode: "dropdown",
-                      options: Object.keys(window.browser_mod?.browsers)
+                      options: Object.keys(window.browser_mod?.browsers) || []
                     },
                   },
                 },
@@ -107,9 +107,13 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               .computeLabel=${() => 'Browser ID'}
               .computeHelper=${() => 'Select an existing known Browser ID or enter new'}
               .data=${{ browser_id: window.browser_mod?.browserID }}
+              .disabled=${(
+                window.browser_mod?.browser_locked ||
+                !this.hass.user?.is_admin
+              )}
               @value-changed=${(e) => {
                 const value = e.detail.value.browser_id;
-                if (value !== window.browser_mod?.browserID) {
+                if (value && value !== window.browser_mod?.browserID) {
                   window.browser_mod.browserID = value;
                   this.dirty = true;
                 }
