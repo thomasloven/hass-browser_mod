@@ -39,7 +39,7 @@ export const ServicesMixin = (SuperClass) => {
     }
 
     async _service_action({ service, data, target }) {
-      // Config is frozen by standards cards when called via fire-dom-event 
+      // Config is frozen by standard cards when called via fire-dom-event 
       // clone to allow modifications
       data = data === undefined ? {} : structuredClone(data);
       if (!service) {
