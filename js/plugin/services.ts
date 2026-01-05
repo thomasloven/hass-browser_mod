@@ -41,7 +41,7 @@ export const ServicesMixin = (SuperClass) => {
     async _service_action({ service, data, target }) {
       // Config is frozen by standards cards when called via fire-dom-event 
       // clone to allow modifications
-      data = data ? structuredClone(data) : {};
+      data = data === undefined ? {} : structuredClone(data);
       if (!service) {
         console.error(
           "Browser Mod: Service parameter not specified in service call."
