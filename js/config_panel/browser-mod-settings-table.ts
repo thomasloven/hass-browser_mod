@@ -1,4 +1,5 @@
 import { LitElement, html, css } from "lit";
+import { until } from 'lit/directives/until.js';
 import { property } from "lit/decorators.js";
 import { selectTree } from "../helpers";
 
@@ -14,6 +15,11 @@ class BrowserModSettingsTable extends LitElement {
   @property() default;
 
   @property() tableData = <any>[];
+
+  private _tableFirstUpdate: (() => void) | null = null;
+  private _tableUpdate = new Promise<void>((resolve) => {
+    this._tableFirstUpdate = resolve;
+  });
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -333,9 +339,17 @@ class BrowserModSettingsTable extends LitElement {
       `,
     });
     this.tableData = data;
+    this._tableFirstUpdate?.();
   }
 
-  render() {
+  private _renderTable() {
+    return this._tableUpdate.then(() => {
+      this._tableFirstUpdate = null;
+      return this._render();
+    });
+  }
+
+  private _render() {
     const global = window.browser_mod?.global_settings?.[this.settingKey];
     const columns = {
       name: {
@@ -359,6 +373,10 @@ class BrowserModSettingsTable extends LitElement {
       >
       </ha-data-table>
     `;
+  }
+
+  render() {
+    return html`${until(this._renderTable(), html`Loading...`)}`;
   }
 
   static get styles() {
