@@ -414,6 +414,7 @@ export const AutoSettingsMixin = (SuperClass) => {
 
     getSetting(key) {
       const retval = { global: undefined, browser: {}, user: {} };
+      if (!this._data) return retval;
       retval.global = this._data.settings?.[key];
       for (const [k, v] of Object.entries(this._data.browsers ?? {})) {
         if ((v as any).settings?.[key] != null)
