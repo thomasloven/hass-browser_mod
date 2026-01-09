@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property } from "lit/decorators.js";
 import { selectTree } from "../helpers";
@@ -16,6 +16,8 @@ class BrowserModSettingsTable extends LitElement {
 
   @property() tableData = <any>[];
 
+  private _firstUpdatedTimestamp = 0;
+
   private _tableFirstUpdate: (() => void) | null = null;
   private _tableUpdate = new Promise<void>((resolve) => {
     this._tableFirstUpdate = resolve;
@@ -25,11 +27,28 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.updateTable()
     );
+    this._firstUpdatedTimestamp = Date.now();
+  }
+
+  protected shouldUpdate(changedProperties: PropertyValues): boolean {
+    if ((changedProperties).has("settingKey") || changedProperties.has("tableData")) {
+      return true;
+    } else if (
+      changedProperties.has("hass") &&
+      changedProperties.get("hass") !== undefined && this.hass !== undefined
+    ) {
+      // ha-data-table needs initial update to render virtualizer correctly (??) 
+      // but then we can skip further updates on hass changes so not to force re-renders
+      // which will flicker the table
+      return Date.now() - this._firstUpdatedTimestamp < 1000;
+    }
+    return false;
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("settingKey")) this.updateTable();
-    if (
+    if (changedProperties.has("settingKey")) {
+      this.updateTable();
+    } else if (
       changedProperties.has("hass") &&
       changedProperties.get("hass") === undefined
     )
@@ -350,7 +369,6 @@ class BrowserModSettingsTable extends LitElement {
   }
 
   private _render() {
-    const global = window.browser_mod?.global_settings?.[this.settingKey];
     const columns = {
       name: {
         title: "Name",
