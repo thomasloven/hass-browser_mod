@@ -256,20 +256,14 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       ev.preventDefault();
       let properties = { ...cardConfig }
       delete properties.card;
-      window.browser_mod?.service("popup", {
-        content: cardConfig.card,
-        ...properties,
-      });
       setTimeout(
-        () =>
-          lovelaceRoot.dispatchEvent(
-            new CustomEvent("hass-more-info", {
-              bubbles: true,
-              composed: true,
-              cancelable: false,
-              detail: { entityId: "" },
-            })
-          ),
+        () => {
+          window.browser_mod?.showMoreInfo('', '', false, false, true);
+          window.browser_mod?.service("popup", {
+            content: cardConfig.card,
+            ...properties,
+          });
+        },
         10
       );
     }

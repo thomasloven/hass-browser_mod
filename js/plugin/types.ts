@@ -265,3 +265,24 @@ export type icon = {
   close: boolean,
   class: string,
 }
+
+export interface LovelaceGridOptions {
+  columns?: number | "full";
+  rows?: number | "auto";
+  max_columns?: number;
+  min_columns?: number;
+  min_rows?: number;
+  max_rows?: number;
+  fixed_rows?: boolean;
+  fixed_columns?: boolean;
+}
+
+export interface LovelaceCardConfig {
+  type?: string;
+  [key: string]: any;
+}
+export interface LovelaceCard extends HTMLElement {
+  hass?: any;
+  preview?: boolean;
+  setConfig(config: LovelaceCardConfig): void;
+}

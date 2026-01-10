@@ -4,7 +4,7 @@
   - [Using popup styles](#using-popup-styles)
   - [Special popup styles](#special-popup-styles)
   - [Setting styles for a popup](#setting-styles-for-a-popup)
-    - [Initial style (`inital_style`)](#initial-style-inital_style)
+    - [Initial style (`initial_style`)](#initial-style-initial_style)
     - [Style sequence (`style_sequence`)](#style-sequence-style_sequence)
     - [Popup styles (`popup_styles`)](#popup-styles-popup_styles)
       - [Popup styles - style (`popup_styles` \> `style`)](#popup-styles---style-popup_styles--style)
@@ -48,7 +48,7 @@ As well as the standard styles `normal`, `wide`, `fullscreen` and `classic`, two
 
 In Home Assistant dashboard editor (UI mode) look for the _Popup Styles_ section in the Popup card editor. In yaml use the paremeters refered to below.
 
-### Initial style (`inital_style`)
+### Initial style (`initial_style`)
 
 This is the initial style of the popup. Perhaps just `style` would be suitable parameter name but as that was used prior to version 2.6.0 (and is still supported) a different parameter was required. Also, it is just the initial style as it can by changed tapping the popup title and using [`browser_mod.set_popup_style`](services.md#browser_modset_popup_style) service.
 

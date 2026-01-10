@@ -1,6 +1,7 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing, PropertyValues } from "lit";
+import { until } from 'lit/directives/until.js';
 import { property } from "lit/decorators.js";
-import { selectTree } from "../helpers";
+import { debounce, selectTree } from "../helpers";
 
 let _users = undefined;
 
@@ -15,15 +16,40 @@ class BrowserModSettingsTable extends LitElement {
 
   @property() tableData = <any>[];
 
+  private _firstUpdatedTimestamp = 0;
+
+  private _tableFirstUpdate: (() => void) | null = null;
+  private _tableUpdate = new Promise<void>((resolve) => {
+    this._tableFirstUpdate = resolve;
+  });
+
   firstUpdated() {
-    window.browser_mod.addEventListener("browser-mod-config-update", () =>
-      this.updateTable()
+    window.browser_mod.addEventListener("browser-mod-config-update", () => {
+      debounce(() => this.updateTable(), 1000)();
+    }
     );
+    this._firstUpdatedTimestamp = Date.now();
+  }
+
+  protected shouldUpdate(changedProperties: PropertyValues): boolean {
+    if ((changedProperties).has("settingKey") || changedProperties.has("tableData")) {
+      return true;
+    } else if (
+      changedProperties.has("hass") &&
+      changedProperties.get("hass") !== undefined && this.hass !== undefined
+    ) {
+      // ha-data-table needs initial update to render virtualizer correctly (??) 
+      // but then we can skip further updates on hass changes so not to force re-renders
+      // which will flicker the table
+      return Date.now() - this._firstUpdatedTimestamp < 1000;
+    }
+    return false;
   }
 
   updated(changedProperties) {
-    if (changedProperties.has("settingKey")) this.updateTable();
-    if (
+    if (changedProperties.has("settingKey")) {
+      this.updateTable();
+    } else if (
       changedProperties.has("hass") &&
       changedProperties.get("hass") === undefined
     )
@@ -195,7 +221,7 @@ class BrowserModSettingsTable extends LitElement {
     const allUsers = await this.fetchUsers();
     const users = [];
     for (const target of allUsers) {
-      if (target.username && settings.user[target.id] == null)
+      if (!target.system_generated && settings.user[target.id] == null)
         users.push({ label: target.name, value: target.id });
     }
 
@@ -236,9 +262,9 @@ class BrowserModSettingsTable extends LitElement {
   async updateTable() {
     if (this.hass === undefined) return;
     const users = await this.fetchUsers();
-    const settings = window.browser_mod?.getSetting?.(this.settingKey);
+    const settings = window.browser_mod?.getSetting?.(this.settingKey) ?? { global: undefined, browser: {}, user: {} };
     const data = [];
-    for (const [k, v] of Object.entries(settings.user)) {
+    for (const [k, v] of Object.entries(settings.user ?? {})) {
       const user = users.find((usr) => usr.id === k);
       if (!user) continue;
       let val = (typeof(v) === "object") ? "Config" : String(v);
@@ -274,7 +300,7 @@ class BrowserModSettingsTable extends LitElement {
       `,
     });
 
-    for (const [k, v] of Object.entries(settings.browser)) {
+    for (const [k, v] of Object.entries(settings.browser ?? {})) {
       let val = (typeof(v) === "object") ? "Config" : String(v);
       if (val.length >= 20) val = val.slice(0, 20) + "...";
       data.push({
@@ -333,10 +359,17 @@ class BrowserModSettingsTable extends LitElement {
       `,
     });
     this.tableData = data;
+    this._tableFirstUpdate?.();
   }
 
-  render() {
-    const global = window.browser_mod?.global_settings?.[this.settingKey];
+  private _renderTable() {
+    return this._tableUpdate.then(() => {
+      this._tableFirstUpdate = null;
+      return this._render();
+    });
+  }
+
+  private _render() {
     const columns = {
       name: {
         title: "Name",
@@ -359,6 +392,10 @@ class BrowserModSettingsTable extends LitElement {
       >
       </ha-data-table>
     `;
+  }
+
+  render() {
+    return html`${until(this._renderTable(), html`Loading...`)}`;
   }
 
   static get styles() {
