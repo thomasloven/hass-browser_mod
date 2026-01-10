@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property } from "lit/decorators.js";
-import { selectTree } from "../helpers";
+import { debounce, selectTree } from "../helpers";
 
 let _users = undefined;
 
@@ -24,8 +24,9 @@ class BrowserModSettingsTable extends LitElement {
   });
 
   firstUpdated() {
-    window.browser_mod.addEventListener("browser-mod-config-update", () =>
-      this.updateTable()
+    window.browser_mod.addEventListener("browser-mod-config-update", () => {
+      debounce(() => this.updateTable(), 1000)();
+    }
     );
     this._firstUpdatedTimestamp = Date.now();
   }
