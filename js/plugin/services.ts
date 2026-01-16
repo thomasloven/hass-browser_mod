@@ -32,6 +32,28 @@ export const ServicesMixin = (SuperClass) => {
           this._service_action(ev.detail.browser_mod);
         }
       });
+
+      const interceptCallService = () => {
+        if (!this.hass || !this.hass.callService) {
+          setTimeout(interceptCallService, 100);
+          return;
+        }
+
+        const originalCallService = this.hass.callService.bind(this.hass);
+        this.hass.callService = async (domain: string, service: string, serviceData?: any, target?: any) => {
+          if (domain === "browser_mod") {
+            return this._service_action({
+              service: `browser_mod.${service}`,
+              data: serviceData || {},
+              target: target || {}
+            });
+          }
+
+          return originalCallService(domain, service, serviceData, target);
+        };
+      };
+
+      interceptCallService();
     }
 
     async service(service, data) {
@@ -87,7 +109,7 @@ export const ServicesMixin = (SuperClass) => {
             if (popupCard) {
               let properties = { ...popupCard };
               delete properties.card;
-              data = { content: popupCard.card, ...properties, ...data };
+              data = { ...data, content: popupCard.card, ...properties };
             }
           }
           // Promote icon actions to data so they can be made callable
@@ -109,6 +131,7 @@ export const ServicesMixin = (SuperClass) => {
                 actions.forEach((actionItem) => {
                   var { action, service, target, data } = actionItem as any;
                   service = (action === undefined || action === "call-service") ? service : action;
+                  if (!service) return;
                   this._service_action({
                     service,
                     target,
@@ -147,6 +170,7 @@ export const ServicesMixin = (SuperClass) => {
                     }
                     action_action.forEach((actionItem) => {
                       var { action, service, target, data } = actionItem;
+                      if (!service) return;
                       service = (action === undefined || action === "call-service") ? service : action;
                       this._service_action({
                         service,
