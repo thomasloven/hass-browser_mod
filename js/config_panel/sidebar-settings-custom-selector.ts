@@ -112,21 +112,22 @@ export class SidebarSettingsCustomSelector {
 
   async customiseDialog() {
     if (!this._dialogEditSidebar) return;
-    let haMdDialog;
+    let haWaDialog;
     let cnt = 0;
-    while (!haMdDialog && cnt++ < 5) {
-      haMdDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-md-dialog");
-      if (!haMdDialog) {
+    while (!haWaDialog && cnt++ < 5) {
+      haWaDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-wa-dialog");
+      if (!haWaDialog) {
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
+    await haWaDialog?.updateComplete;
     const dialogHeader = await selectTree(
       this._dialogEditSidebar.shadowRoot,
-      "ha-md-dialog ha-dialog-header",
+      "ha-wa-dialog $ ha-dialog-header",
     );
     if (dialogHeader) {
       const styleEl = document.createElement("style");
-      dialogHeader.shadowRoot.append(styleEl);
+      dialogHeader.append(styleEl);
       const typeText = (this._type === "global") ? "Global" : this._type.charAt(0).toUpperCase() + this._type.slice(1) + " - ";
       let targetText = "";
       if (this._type === "user") {
@@ -141,11 +142,15 @@ export class SidebarSettingsCustomSelector {
       }
       // Hide subtitle message about sync
       // Append Browser Mod details using ::after CSS styling
+      // Hide action items button which allows set to defaults
       styleEl.innerHTML = `
-        .header-subtitle {
+        slot[name="headerActionItems"] {
           display: none;
         }
-        .header-title::after {
+        span[slot="subtitle"] {
+          display: none;
+        }
+        .title::after {
           content: "- ${typeText}${targetText}";
         }
       `;
@@ -154,8 +159,17 @@ export class SidebarSettingsCustomSelector {
 
   async setupSaveHandler() {
     if (!this._dialogEditSidebar) return;
+    let haWaDialog;
+    let cnt = 0;
+    while (!haWaDialog && cnt++ < 5) {
+      haWaDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-wa-dialog");
+      if (!haWaDialog) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+    await haWaDialog?.updateComplete;
     const haButtonSave = this._dialogEditSidebar.shadowRoot.querySelector(
-        '[slot="actions"] > ha-button:nth-child(2)');   
+        'ha-wa-dialog > ha-dialog-footer > ha-button[slot="primaryAction"]');   
     if (haButtonSave) {
       const buttonSave = haButtonSave.shadowRoot.querySelector("button");
       if (buttonSave) {

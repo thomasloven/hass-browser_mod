@@ -17,7 +17,7 @@ The notable difference between the two is when no target (`browser_id` or `user_
 
 ---
 
-Finally, in *Browser* calls, there are `browser_id`, `user_id`, and `browser_entities` replacements of `THIS` available. A parameter `browser_id` with the value `THIS` will be replaced with the current Browser's browser ID. A parameter `user_id` with the value `THIS` will be replaced by the logged-in user ID. A parameter `browser_entities` with the value `THIS` will be replaced with a [`browser_entities`](./configuration-panel.md#browser-entities-variable) dictionary. These replacements allow for a *Browser* call to call a Home Assistant script without the need to hardcode a Browser ID, User ID or Browser entities in your *Browser* call.
+Finally, in *Browser* calls, there are `browser_id`, `user_id`, and `browser_entities` replacements of `THIS` available. A parameter `browser_id` with the value `THIS` will be replaced with the current Browser's browser ID. A parameter `user_id` with the value `THIS` will be replaced by the logged-in user ID. A parameter `browser_entities` with the value `THIS` will be replaced with a [`browser_entities`](./browser-entities.md) dictionary. These replacements allow for a *Browser* call to call a Home Assistant script without the need to hardcode a Browser ID, User ID or Browser entities in your *Browser* call.
 
 Ex:
 

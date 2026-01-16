@@ -210,6 +210,18 @@ class BrowserModFrontendSettingsCard extends LitElement {
           </ha-expansion-panel>
 
           <ha-expansion-panel
+            .header=${"Kiosk mode"}
+            .secondary=${"Use Home Assistant in kiosk mode."}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"kioskMode"}
+              .settingSelector=${{ boolean: {}, label: "Kiosk mode" }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+
+          <ha-expansion-panel
             .header=${"Hide sidebar"}
             .secondary=${"Hide sidebar and remove sidebar menu icon from all panels."}
             leftChevron
