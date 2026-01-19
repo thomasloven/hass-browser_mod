@@ -53,7 +53,7 @@ export const CameraMixin = (SuperClass) => {
 
       try {
         // Parse camera resolution from settings
-        let videoConstraints: any = true;
+        let videoConstraints: MediaTrackConstraints | boolean = true;
         if (this.settings?.cameraResolution) {
           const resMatch = this.settings.cameraResolution.match(/(\d+)\s*x\s*(\d+)/i);
           if (resMatch) {
