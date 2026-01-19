@@ -40,6 +40,18 @@ class BrowserModFrontendSettingsCard extends LitElement {
     }
   }
 
+  expandedChanged(ev) {
+    if (ev.detail.expanded) {
+      const target = ev.target;
+      target?.updateComplete.then(() => {
+        const table = target?.querySelector(
+          "browser-mod-settings-table"
+        ) as any;
+        table?.showTable();
+      });
+    }
+  }
+
   async checkHassUserSidebarSettings () {
     const userData = await this.hass?.callWS({
       type: 'frontend/get_user_data', 
@@ -190,6 +202,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Title template"}
             .secondary=${"Jinja template for the browser window/tab title"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -201,6 +214,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Favicon template"}
             .secondary=${"Jinja template for the browser favicon"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -212,6 +226,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Kiosk mode"}
             .secondary=${"Use Home Assistant in kiosk mode."}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -224,6 +239,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Hide sidebar"}
             .secondary=${"Hide sidebar and remove sidebar menu icon from all panels."}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -236,6 +252,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Hide header"}
             .secondary=${"Completely remove the header from all panels"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -248,6 +265,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Overlay icon"}
             .secondary=${"An overlay icon with action to show on selected panels."}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -318,6 +336,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Default dashboard"}
             .secondary=${`The dashboard that is shown when navigating to ${location.origin}`}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -331,6 +350,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Default action"}
             .secondary=${`Home Assistant action that executes when browser is opened or refreshed.`}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -346,6 +366,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
             <ha-expansion-panel
               .header=${"Sidebar order"}
               .secondary=${"Order and visibility of sidebar items."}
+              @expanded-changed=${this.expandedChanged}
               leftChevron
             >
               ${this._hassUserHasSidebarSettings ? 
@@ -384,6 +405,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Sidebar order"}
             .secondary=${"Order and visibility of sidebar items."}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <ha-settings-row>
@@ -413,6 +435,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Sidebar title"}
             .secondary=${"The title at the top of the sidebar"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -424,6 +447,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Hide interaction icon"}
             .secondary=${"Hide the icon showing that Browser Mod will not work fully until interacted with"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -438,6 +462,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Full user interaction"}
             .secondary=${"Use full user interaction if required."}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
@@ -452,6 +477,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Save screen state"}
             .secondary=${"Save screen state when browser is disconnected"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
