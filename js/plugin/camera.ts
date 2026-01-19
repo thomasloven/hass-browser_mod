@@ -13,7 +13,10 @@ export const CameraMixin = (SuperClass) => {
       this._framerate = 2;
       this.cameraError = false;
 
-      this._setup_camera();
+      // Wait for user settings to be ready before accessing this.settings
+      this.addEventListener("browser-mod-user-ready", () => {
+        this._setup_camera();
+      }, { once: true });
     }
 
     async _setup_camera() {
