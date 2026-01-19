@@ -52,8 +52,22 @@ export const CameraMixin = (SuperClass) => {
       }
 
       try {
+        // Parse camera resolution from settings
+        let videoConstraints: any = true;
+        if (this.settings?.cameraResolution) {
+          const resMatch = this.settings.cameraResolution.match(/(\d+)\s*x\s*(\d+)/i);
+          if (resMatch) {
+            const width = parseInt(resMatch[1], 10);
+            const height = parseInt(resMatch[2], 10);
+            videoConstraints = {
+              width: { ideal: width },
+              height: { ideal: height }
+            };
+          }
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: videoConstraints,
           audio: false,
         });
 

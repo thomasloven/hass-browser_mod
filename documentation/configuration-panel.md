@@ -33,6 +33,19 @@ Browser Mod is trying hard to keep the Browser ID constant. If you have an envir
 
 If your device has a camera, this will allow it to be forwarded as a `camera` entity to Home Assistant.
 
+### Camera resolution
+
+Set the desired resolution for the camera in pixels using the format `width x height` (e.g., `1920 x 1080`). This setting allows you to control the quality and bandwidth usage of the camera stream. If not set, the browser will use its default resolution (typically 640 x 480).
+
+Common resolutions:
+- `640 x 480` - VGA (default if not specified)
+- `1280 x 720` - HD (720p)
+- `1920 x 1080` - Full HD (1080p)
+- `2560 x 1440` - QHD (1440p)
+- `3840 x 2160` - 4K (2160p)
+
+> Note: The actual resolution used may depend on your camera's capabilities. The browser will try to use the closest available resolution to what you specify.
+
 ## Registered Browsers (admin only)
 
 This section shows all currently registered _Browsers_ and allows you to unregister them. This is useful e.g. if a `BrowserID` has changed or if you do not have access to a device anymore.
