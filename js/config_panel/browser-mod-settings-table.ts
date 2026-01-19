@@ -21,6 +21,16 @@ class BrowserModSettingsTable extends LitElement {
     this._tableFirstUpdate = resolve;
   });
 
+  private _tableFirstDisplay: (() => void) | null = null;
+  private _tableDisplay = new Promise<void>((resolve) => {
+    this._tableFirstDisplay = resolve;
+  })
+
+  showTable() {
+    this._tableFirstDisplay?.();
+    this._tableFirstDisplay = null;
+  }
+
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () => {
       this.updateTableDebounced();
@@ -30,33 +40,27 @@ class BrowserModSettingsTable extends LitElement {
 
   protected shouldUpdate(changedProperties: PropertyValues): boolean {
     if ((changedProperties).has("settingKey")) {
-      this.settingKey == "titleTemplate" && console.log("BrowserModSettingsTable(titleTemplate): shouldUpdate(): settingKey changed, should update", changedProperties, this.settingKey);
       return true;
     } else if (changedProperties.has("tableData")) {
       const oldTableData = changedProperties.get("tableData");
       if (oldTableData === undefined && this.tableData !== undefined && this.tableData.length > 0) {
-        this.settingKey == "titleTemplate" && console.log("BrowserModSettingsTable(titleTemplate): shouldUpdate(): tableData was undefined or empty, should update", changedProperties, this.tableData);
         return true;
       } else if (Array.isArray(oldTableData) && Array.isArray(this.tableData)) {
         if (!compare_deep(oldTableData, this.tableData)) {
-          this.settingKey == "titleTemplate" && console.log("BrowserModSettingsTable(titleTemplate): shouldUpdate(): tableData changed, should update", changedProperties, this.tableData);
           return true;
         }
       }
     }
-    this.settingKey == "titleTemplate" && console.log("BrowserModSettingsTable(titleTemplate): shouldUpdate(): should not update", changedProperties);
     return false;
   }
 
   updated(changedProperties) {
     if (changedProperties.has("settingKey")) {
-      this.settingKey == "titleTemplate" && console.log("BrowserModSettingsTable(titleTemplate): updated(): settingKey changed, updating table", changedProperties, this.settingKey);
       this.updateTableDebounced();
     } else if (
       changedProperties.has("hass") &&
       changedProperties.get("hass") === undefined
     ) {
-      this.settingKey == "titleTemplate" && console.log("BrowserModSettingsTable(titleTemplate): updated(): hass initialized, updating table", changedProperties, this.hass);
       this.updateTableDebounced();
     }
   }
@@ -367,11 +371,11 @@ class BrowserModSettingsTable extends LitElement {
     });
     this.tableData = data;
     this._tableFirstUpdate?.();
+    this._tableFirstUpdate = null;
   }
 
   private _renderTable() {
-    return this._tableUpdate.then(() => {
-      this._tableFirstUpdate = null;
+    return Promise.all([this._tableUpdate, this._tableDisplay]).then(() => {
       return this._render();
     });
   }
