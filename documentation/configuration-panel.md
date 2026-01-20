@@ -220,6 +220,19 @@ This allows for a Full [user interaction](#user-interaction) check if required.
 
 This saves the screen state on browser disconnect and restores on browser reconnect. The screen state (on/off) and brightness are both saved. The state will be saved and restored for all browsers that have this setting applied, including those running Fully Kiosk.
 
+### Camera resolution
+
+Set the desired resolution for the camera in pixels using the format `width x height` (e.g., `1920 x 1080`). This [Frontend setting](#frontend-settings-admin-only) allows you to control the quality and bandwidth usage of the camera stream. If not set, the browser will use its default resolution (typically 640 x 480).
+
+Common resolutions:
+- `640 x 480` - VGA (default if not specified)
+- `1280 x 720` - HD (720p)
+- `1920 x 1080` - Full HD (1080p)
+- `2560 x 1440` - QHD (1440p)
+- `3840 x 2160` - 4K (2160p)
+
+> Note: The actual resolution used may depend on your camera's capabilities. The browser will try to use the closest available resolution to what you specify.
+
 ---
 
 #### Browser ID updates

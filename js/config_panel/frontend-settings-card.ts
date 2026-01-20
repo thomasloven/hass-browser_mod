@@ -488,7 +488,23 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 label: "Save screen state",
               }}
             ></browser-mod-settings-table>
-          </ha-expansion-panel>        </div>
+          </ha-expansion-panel>
+          <ha-expansion-panel
+            .header=${"Camera resolution"}
+            .secondary=${"Set the resolution for the camera. Format: width x height (e.g., 1920 x 1080)"}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"cameraResolution"}
+              .settingSelector=${{
+                text: { 
+                  placeholder: "1920 x 1080",
+                },
+              }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+        </div>
       </ha-card>
     `;
   }
