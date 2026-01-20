@@ -278,9 +278,9 @@ style_sequence:
 
 ## Example - card_mod direct
 
-Browser Mod popups use Home Assistant dialog which uses mdc-dialog. Most styling can be accomplished by using [dialog styles](#dialog-styles). However the mdc-dialog scrim (backdrop) and container are in shadow dom so cannot be styled directly if there are no CSS variables available which pierce the shadow DOM. Also, there may be cases where cards used in popups have styling also not accessible. The prior example is one such case where the padding for the markdown card used for popup content cannot be styled directly.
+There may be cases where cards used in popups have styling also not accessible. The prior example is one such case where the padding for the markdown card used for popup content cannot be styled directly.
 
-The example below uses [card-mod](https://github.com/thomasloven/lovelace-card-mod) to both blur the background around the popup as well as reduce the generous padidng around the markdown card. The dialog scrim class is in the shadow root of `ha-dialog` (card-mod selector `ha-dialog $:`). The markdown element with padding is in teh shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
+The example below uses [card-mod](https://github.com/thomasloven/lovelace-card-mod) to reduce the generous padidng around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
 
 ```yaml
 type: custom:popup-card
@@ -288,16 +288,11 @@ dismissable: true
 card:
   type: markdown
   content: >-
-    This popup will have a blurred backdrop and redcued padding on markdown
+    This popup will have redcued padding on markdown
     content.
 popup_card_id: card-mod-popup
 title: Card-mod Popup
 card_mod:
-  style:
-    ha-dialog $: |
-      .mdc-dialog .mdc-dialog__scrim {
-        backdrop-filter: blur(10px);
-      }
     hui-markdown-card $: |
       ha-markdown {
         padding: 8px;
