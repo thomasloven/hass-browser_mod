@@ -29,6 +29,49 @@ class BrowserModSettingsTable extends LitElement {
   showTable() {
     this._tableFirstDisplay?.();
     this._tableFirstDisplay = null;
+    // Workaround for lit-virtualizer not updating items properly
+    // We adjust table height by 1px if detected rows are missing after some time
+    // This forces virtualizer to recalculate its size
+    this.updateComplete.then(() => {
+      const retries = 10;
+      let table: any = this.shadowRoot?.querySelector("ha-data-table");
+      let cnt = 0;
+      let interval = setInterval(() => {
+        cnt += 1;
+        table = this.shadowRoot?.querySelector("ha-data-table");
+        if (table) {
+          cnt = 0;
+          clearInterval(interval);
+          interval = setInterval(() => {
+            cnt += 1;
+            const virtualizer = table.shadowRoot?.querySelector("lit-virtualizer");
+            if (virtualizer) {
+              cnt = 0;
+              clearInterval(interval);
+              interval = setInterval(() => {
+                cnt += 1;
+                const rows = table.shadowRoot?.querySelectorAll(".mdc-data-table__row");
+                if (rows && rows.length === this.tableData.length) {
+                  clearInterval(interval);
+                } else if (cnt >= retries) {
+                  const mdcTable = table.shadowRoot?.querySelector(".mdc-data-table__table");
+                  if (mdcTable) {
+                    const height = window.getComputedStyle(mdcTable).getPropertyValue("height");
+                    mdcTable.style.height = `calc(${height} + 1px)`;
+                    console.log(`Browser Mod Panel: ${this.settingKey}: adjusted Frontend settings table height to force virtualizer update.`);
+                  }
+                  clearInterval(interval);
+                }
+              }, 100);
+            } else if (cnt >= retries) {
+              clearInterval(interval);
+            }
+          }, 100);
+        } else if (cnt >= retries) {
+          clearInterval(interval);
+        }
+      }, 100);
+    });
   }
 
   firstUpdated() {
