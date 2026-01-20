@@ -499,9 +499,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .hass=${this.hass}
               .settingKey=${"cameraResolution"}
               .settingSelector=${{
-                text: { 
-                  placeholder: "1920 x 1080",
-                },
+                text: {},
               }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
