@@ -492,6 +492,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           <ha-expansion-panel
             .header=${"Camera resolution"}
             .secondary=${"Set the resolution for the camera. Format: width x height (e.g., 1920 x 1080)"}
+            @expanded-changed=${this.expandedChanged}
             leftChevron
           >
             <browser-mod-settings-table
