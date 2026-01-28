@@ -13,7 +13,10 @@ export const CameraMixin = (SuperClass) => {
       this._framerate = 2;
       this.cameraError = false;
 
-      this._setup_camera();
+      // Wait for user settings to be ready before accessing this.settings
+      this.addEventListener("browser-mod-user-ready", () => {
+        this._setup_camera();
+      }, { once: true });
     }
 
     async _setup_camera() {
@@ -52,8 +55,22 @@ export const CameraMixin = (SuperClass) => {
       }
 
       try {
+        // Parse camera resolution from settings
+        let videoConstraints: MediaTrackConstraints | boolean = true;
+        if (this.settings?.cameraResolution) {
+          const resMatch = this.settings.cameraResolution.match(/(\d+)\s*x\s*(\d+)/i);
+          if (resMatch) {
+            const width = parseInt(resMatch[1], 10);
+            const height = parseInt(resMatch[2], 10);
+            videoConstraints = {
+              width: { ideal: width },
+              height: { ideal: height }
+            };
+          }
+        }
+
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: videoConstraints,
           audio: false,
         });
 
