@@ -15,6 +15,7 @@
       - [Browser entities unavailable](#browser-entities-unavailable)
       - [Privileged users](#privileged-users)
     - [Example](#example)
+  - [Quick Bar Plus Card](#quick-bar-plus-card)
 
 ## Browser Mod Popup
 
@@ -238,3 +239,31 @@ views:
 ```
 
 ![Browser Mod Badge and Tile Example](https://github.com/user-attachments/assets/6763acc2-c1a4-4a51-97e7-a5a266a84658)
+
+## Quick Bar Plus Card
+
+Quick Bar Plus is a customizable card that provides quick access to navigation paths and service calls through a clean, organized interface with categories.
+
+For detailed documentation, examples, and configuration options, see [Quick Bar Plus Card Documentation](quick-bar-plus-card.md).
+
+### Quick Example
+
+```yaml
+type: custom:quick-bar-plus-card
+title: Quick Actions
+show_search: true
+categories:
+  - name: Navigation
+    items:
+      - label: Dashboard
+        icon: mdi:view-dashboard
+        navigation_path: /lovelace/0
+  - name: Lights
+    items:
+      - label: All Lights Off
+        icon: mdi:lightbulb-off
+        service: light.turn_off
+        service_data:
+          entity_id: all
+```
+
