@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
+import { property, state, query } from "lit/decorators.js";
 import { LovelaceCard, LovelaceCardConfig } from "../types";
 import "./quick-bar-plus-card-editor";
 
@@ -30,8 +30,8 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
   @property() hass;
   @state() _config: QuickBarPlusConfig;
   @property({ type: Boolean, reflect: true }) preview = false;
-  @state() private _quickBar: any;
   @state() private _opened = false;
+  @query("ha-dialog") private _dialog: any;
   private _keyboardHandler?: (ev: KeyboardEvent) => void;
 
   static getConfigElement() {
@@ -158,14 +158,19 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
     this._openQuickBar();
   }
 
-  private _openQuickBar(): void {
+  private async _openQuickBar(): Promise<void> {
     this._opened = true;
-    this.requestUpdate();
+    await this.updateComplete;
+    this._dialog?.show();
   }
 
   private _closeQuickBar(): void {
     this._opened = false;
-    this.requestUpdate();
+    this._dialog?.close();
+  }
+
+  private _handleDialogClosed(): void {
+    this._opened = false;
   }
 
   private _handleSearch(ev: Event): void {
@@ -184,30 +189,43 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
     if (!this._opened) return html``;
 
     return html`
-      <div class="quick-bar-plus-dialog">
-        <div class="backdrop" @click=${this._closeQuickBar}></div>
+      <ha-dialog
+        open
+        @closed=${this._handleDialogClosed}
+        .heading=${true}
+        hideActions
+        .scrimClickAction=${"close"}
+        .escapeKeyAction=${"close"}
+      >
+        <ha-dialog-header slot="heading">
+          <ha-icon-button
+            slot="navigationIcon"
+            dialogAction="cancel"
+            @click=${this._closeQuickBar}
+          >
+            <ha-icon icon="mdi:close"></ha-icon>
+          </ha-icon-button>
+          <span slot="title">${this._config.title || "Quick Bar Plus"}</span>
+        </ha-dialog-header>
+
         <div class="dialog-content">
-          <div class="dialog-header">
-            <h2>${this._config.title || "Quick Bar Plus"}</h2>
-            <ha-icon-button @click=${this._closeQuickBar}>
-              <ha-icon icon="mdi:close"></ha-icon>
-            </ha-icon-button>
-          </div>
           ${this._config.show_search ? html`
             <div class="search-box">
               <ha-textfield
                 .placeholder=${this._config.placeholder}
                 @input=${this._handleSearch}
+                dialogInitialFocus
               >
                 <ha-icon slot="leadingIcon" icon="mdi:magnify"></ha-icon>
               </ha-textfield>
             </div>
           ` : ""}
+          
           <div class="categories">
             ${this._renderCategories()}
           </div>
         </div>
-      </div>
+      </ha-dialog>
     `;
   }
 
@@ -324,52 +342,15 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
         color: var(--secondary-text-color);
       }
 
-      .quick-bar-plus-dialog {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 1000;
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        padding-top: 100px;
-      }
-
-      .backdrop {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
+      ha-dialog {
+        --mdc-dialog-max-width: 600px;
       }
 
       .dialog-content {
-        position: relative;
-        background: var(--card-background-color);
-        border-radius: 8px;
-        width: 600px;
-        max-width: 90vw;
-        max-height: 80vh;
         display: flex;
         flex-direction: column;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-      }
-
-      .dialog-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px;
-        border-bottom: 1px solid var(--divider-color);
-      }
-
-      .dialog-header h2 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 500;
+        min-height: 200px;
+        max-height: calc(100vh - 200px);
       }
 
       .search-box {
@@ -457,7 +438,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
     // Store reference to card instances for global keyboard shortcut
     (window as any).quickBarPlusCards = (window as any).quickBarPlusCards || [];
     
-    // Set up global keyboard shortcut listener (Ctrl+K by default)
+    // Set up global keyboard shortcut listener (Ctrl+0 by default)
     let globalShortcutHandler: ((ev: KeyboardEvent) => void) | null = null;
     
     const setupGlobalShortcut = () => {
@@ -467,8 +448,8 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
       }
       
       globalShortcutHandler = (ev: KeyboardEvent) => {
-        // Check for Ctrl+K (or Cmd+K on Mac)
-        if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "k") {
+        // Check for Ctrl+0 (or Cmd+0 on Mac)
+        if ((ev.ctrlKey || ev.metaKey) && ev.key === "0") {
           ev.preventDefault();
           
           // Find the first quick bar card and open it

@@ -10,7 +10,7 @@ A customizable Home Assistant custom card that provides a quick action bar with 
 - **Visual Editor**: Easy-to-use GUI editor for configuration
 - **Custom Icons**: Set custom icons for each item
 - **Flexible Actions**: Navigate to dashboards or call services
-- **Keyboard Shortcuts**: Global (Ctrl+K) and per-card custom shortcuts
+- **Keyboard Shortcuts**: Global (Ctrl+0) and per-card custom shortcuts
 - **Service Integration**: Open cards programmatically via `browser_mod.quick_bar` service
 - **Global Access**: Reference cards from any dashboard using card IDs
 
@@ -31,7 +31,7 @@ This card is included as part of the Browser Mod integration.
 
 #### Global Shortcut
 
-Press **Ctrl+K** (or **Cmd+K** on Mac) anywhere in Home Assistant to open the first Quick Bar Plus card on the current dashboard.
+Press **Ctrl+0** (or **Cmd+0** on Mac) anywhere in Home Assistant to open the first Quick Bar Plus card on the current dashboard.
 
 #### Per-Card Shortcuts
 
@@ -50,7 +50,7 @@ categories:
 ```
 
 Supported shortcut formats:
-- `Ctrl+K` or `Control+K`
+- `Ctrl+0` or `Control+K`
 - `Alt+Q`
 - `Shift+B`
 - `Ctrl+Shift+A`
@@ -165,7 +165,7 @@ categories:
 | `show_search` | boolean | `true` | Show/hide the search box |
 | `placeholder` | string | "Search or select an action..." | Placeholder text for search box |
 | `quick_bar_card_id` | string | - | Optional ID to reference this card from service calls or other dashboards |
-| `keyboard_shortcut` | string | - | Optional keyboard shortcut (e.g., "Alt+Q"). Leave empty to use global Ctrl+K |
+| `keyboard_shortcut` | string | - | Optional keyboard shortcut (e.g., "Alt+Q"). Leave empty to use global Ctrl+0 |
 | `categories` | list | `[]` | List of category objects |
 
 ### Category Options
@@ -341,7 +341,7 @@ categories:
 3. **Search**: Enable search for quick bars with many items
 4. **Testing**: Test your service calls to ensure they work as expected
 5. **Compact View**: Use shorter labels for a cleaner look
-6. **Keyboard Shortcuts**: Use Ctrl+K for quick global access, or set custom shortcuts for specific cards
+6. **Keyboard Shortcuts**: Use Ctrl+0 for quick global access, or set custom shortcuts for specific cards
 7. **Card IDs**: Assign `quick_bar_card_id` to cards you want to open programmatically or from other dashboards
 8. **Service Calls**: Use the `browser_mod.quick_bar` service in automations to show contextual actions
 
@@ -353,9 +353,9 @@ categories:
 - Check the browser console for errors
 
 ### Keyboard shortcut doesn't work
-- Verify the shortcut format (e.g., "Ctrl+K", "Alt+Q")
+- Verify the shortcut format (e.g., "Ctrl+0", "Alt+Q")
 - Check for conflicts with browser or system shortcuts
-- Global Ctrl+K only works if at least one Quick Bar Plus card exists on the current dashboard
+- Global Ctrl+0 only works if at least one Quick Bar Plus card exists on the current dashboard
 
 ### Service call doesn't work
 - Verify the service exists in Developer Tools > Services
