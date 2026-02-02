@@ -3,5 +3,3 @@ node_modules/
 .vscode
 .env
 custom_components/hacs/
-custom_components/browser_mod/browser_mod.js
-custom_components/browser_mod/browser_mod_panel.js
