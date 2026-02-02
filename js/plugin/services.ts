@@ -160,11 +160,16 @@ export const ServicesMixin = (SuperClass) => {
                 document.body.appendChild(tempCard);
                 tempCard.openQuickBar();
                 
-                // Remove after dialog is closed
+                // Remove after dialog is closed with timeout protection
+                let checkCount = 0;
+                const maxChecks = 100; // 10 seconds max
                 const checkClosed = setInterval(() => {
-                  if (!tempCard._opened) {
+                  checkCount++;
+                  if (!tempCard._opened || checkCount >= maxChecks) {
                     clearInterval(checkClosed);
-                    document.body.removeChild(tempCard);
+                    if (document.body.contains(tempCard)) {
+                      document.body.removeChild(tempCard);
+                    }
                   }
                 }, 100);
               }

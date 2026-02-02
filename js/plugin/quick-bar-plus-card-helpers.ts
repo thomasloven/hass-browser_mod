@@ -42,21 +42,21 @@ function findQuickBarCardInConfig(config, card_id) {
 
 export async function findQuickBarCardConfigByID(lovelaceRoot, quick_bar_card_id) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
-  var card_id = undefined;
-  var url_path = undefined
+  let card_id = undefined;
+  let url_path = undefined;
   if (quick_bar_card_id.includes('/')) {
     [url_path, card_id] = quick_bar_card_id.split('/');
   } else {
     card_id = quick_bar_card_id;
   }
 
-  var card = null;
+  let card = null;
   if (lovelaceConfig && card_id && !url_path) {
     card = findQuickBarCardInConfig(lovelaceConfig, card_id);
   }
   else if (card_id && url_path) {
     if (window.browser_mod.connection) {
-      var response;
+      let response;
       try {
         response = await window.browser_mod.connection.sendMessagePromise({
           type: "lovelace/config",

@@ -125,13 +125,8 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
     const key = parts[parts.length - 1];
     const modifiers = parts.slice(0, -1);
     
-    // Check if the key matches (handle special keys)
-    const keyMatches = ev.key.toLowerCase() === key || 
-                       (key === "ctrl" && (ev.ctrlKey || ev.metaKey)) ||
-                       (key === "alt" && ev.altKey) ||
-                       (key === "shift" && ev.shiftKey);
-    
-    if (!keyMatches && ev.key.toLowerCase() !== key) return false;
+    // Check if the key matches
+    if (ev.key.toLowerCase() !== key) return false;
     
     // Check modifiers
     const ctrlRequired = modifiers.includes("ctrl") || modifiers.includes("control");
@@ -142,16 +137,16 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
     const ctrlPressed = ev.ctrlKey || (ctrlRequired && ev.metaKey);
     const altPressed = ev.altKey;
     const shiftPressed = ev.shiftKey;
-    const metaPressed = ev.metaKey;
     
     return (
       (!ctrlRequired || ctrlPressed) &&
       (!altRequired || altPressed) &&
       (!shiftRequired || shiftPressed) &&
-      (!metaRequired || metaPressed) &&
-      (ctrlRequired ? ctrlPressed : !ctrlPressed || metaPressed) &&
-      (altRequired ? altPressed : !altPressed) &&
-      (shiftRequired ? shiftPressed : !shiftPressed)
+      (!metaRequired || ev.metaKey) &&
+      (ctrlRequired || !ev.ctrlKey) &&
+      (altRequired || !ev.altKey) &&
+      (shiftRequired || !ev.shiftKey) &&
+      (metaRequired || !ev.metaKey)
     );
   }
 
