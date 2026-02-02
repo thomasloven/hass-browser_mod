@@ -88,47 +88,12 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
 
   private _openQuickBar(): void {
     this._opened = true;
-    this._createQuickBar();
-  }
-
-  private _createQuickBar(): void {
-    // Create and show a dialog with quick bar functionality
-    const dialog = document.createElement("div");
-    dialog.className = "quick-bar-plus-dialog";
-    dialog.innerHTML = `
-      <div class="backdrop" @click=${this._closeQuickBar}></div>
-      <div class="dialog-content">
-        <div class="dialog-header">
-          <h2>${this._config.title || "Quick Bar Plus"}</h2>
-          <ha-icon-button @click=${this._closeQuickBar}>
-            <ha-icon icon="mdi:close"></ha-icon>
-          </ha-icon-button>
-        </div>
-        ${this._config.show_search ? html`
-          <div class="search-box">
-            <ha-textfield
-              .placeholder=${this._config.placeholder}
-              @input=${this._handleSearch}
-            >
-              <ha-icon slot="leadingIcon" icon="mdi:magnify"></ha-icon>
-            </ha-textfield>
-          </div>
-        ` : ""}
-        <div class="categories">
-          ${this._renderCategories()}
-        </div>
-      </div>
-    `;
-    
-    this.shadowRoot?.appendChild(dialog);
+    this.requestUpdate();
   }
 
   private _closeQuickBar(): void {
     this._opened = false;
-    const dialog = this.shadowRoot?.querySelector(".quick-bar-plus-dialog");
-    if (dialog) {
-      dialog.remove();
-    }
+    this.requestUpdate();
   }
 
   private _handleSearch(ev: Event): void {
@@ -141,6 +106,37 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
       const label = item.textContent?.toLowerCase() || "";
       item.style.display = label.includes(searchTerm) ? "" : "none";
     });
+  }
+
+  private _renderDialog() {
+    if (!this._opened) return html``;
+
+    return html`
+      <div class="quick-bar-plus-dialog">
+        <div class="backdrop" @click=${this._closeQuickBar}></div>
+        <div class="dialog-content">
+          <div class="dialog-header">
+            <h2>${this._config.title || "Quick Bar Plus"}</h2>
+            <ha-icon-button @click=${this._closeQuickBar}>
+              <ha-icon icon="mdi:close"></ha-icon>
+            </ha-icon-button>
+          </div>
+          ${this._config.show_search ? html`
+            <div class="search-box">
+              <ha-textfield
+                .placeholder=${this._config.placeholder}
+                @input=${this._handleSearch}
+              >
+                <ha-icon slot="leadingIcon" icon="mdi:magnify"></ha-icon>
+              </ha-textfield>
+            </div>
+          ` : ""}
+          <div class="categories">
+            ${this._renderCategories()}
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   private _renderCategories() {
@@ -173,11 +169,17 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
       window.history.pushState(null, "", item.navigation_path);
       window.dispatchEvent(new Event("location-changed"));
     } else if (item.service) {
-      this.hass.callService(
-        item.service.split(".")[0],
-        item.service.split(".")[1],
-        item.service_data || {}
-      );
+      // Validate service format (domain.service)
+      const serviceParts = item.service.split(".");
+      if (serviceParts.length === 2) {
+        this.hass.callService(
+          serviceParts[0],
+          serviceParts[1],
+          item.service_data || {}
+        );
+      } else {
+        console.error(`Invalid service format: ${item.service}. Expected format: domain.service`);
+      }
     }
     this._closeQuickBar();
   }
@@ -188,6 +190,7 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
     }
 
     return html`
+      ${this._renderDialog()}
       <ha-card @click=${this._openQuickBar}>
         <div class="card-content">
           <div class="icon-container">
