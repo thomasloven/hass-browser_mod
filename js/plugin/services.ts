@@ -1,6 +1,7 @@
 import { getLovelaceRoot, hass_base_el } from "../helpers";
 import structuredClone from "@ungap/structured-clone";
 import { findPopupCardConfigByID } from "./popup-card-helpers";
+import { findQuickBarCardConfigByID } from "./quick-bar-plus-card-helpers";
 
 export const ServicesMixin = (SuperClass) => {
   return class ServicesMixinClass extends SuperClass {
@@ -20,6 +21,7 @@ export const ServicesMixin = (SuperClass) => {
         "set_theme",
         "console",
         "javascript",
+        "quick_bar",
       ];
       for (const service of cmds) {
         this.addEventListener(`command-${service}`, (ev) => {
@@ -128,6 +130,46 @@ export const ServicesMixin = (SuperClass) => {
             });
           }
           this.showPopup({ title, content, ...d });
+          break;
+
+        case "quick_bar":
+          if (data.quick_bar_card_id) {
+            const lovelaceRoot = await getLovelaceRoot(document);
+            const quickBarCard = await findQuickBarCardConfigByID(lovelaceRoot, data.quick_bar_card_id);
+            if (quickBarCard) {
+              // Find the quick bar card element and open it programmatically
+              // or create a temporary one with the config
+              const cards = document.querySelectorAll("quick-bar-plus-card");
+              let foundCard = null;
+              
+              for (const card of Array.from(cards)) {
+                const cardConfig = (card as any)._config;
+                if (cardConfig?.quick_bar_card_id === data.quick_bar_card_id) {
+                  foundCard = card;
+                  break;
+                }
+              }
+              
+              if (foundCard) {
+                (foundCard as any).openQuickBar();
+              } else {
+                // Create a temporary card with the config
+                const tempCard = document.createElement("quick-bar-plus-card") as any;
+                tempCard.setConfig(quickBarCard);
+                tempCard.hass = this.hass;
+                document.body.appendChild(tempCard);
+                tempCard.openQuickBar();
+                
+                // Remove after dialog is closed
+                const checkClosed = setInterval(() => {
+                  if (!tempCard._opened) {
+                    clearInterval(checkClosed);
+                    document.body.removeChild(tempCard);
+                  }
+                }, 100);
+              }
+            }
+          }
           break;
 
         case "notification":

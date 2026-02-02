@@ -128,6 +128,18 @@ export class QuickBarPlusCardEditor extends LitElement {
         name: "placeholder",
         label: "Search Placeholder",
         selector: { text: {} }
+      },
+      {
+        name: "quick_bar_card_id",
+        label: "Quick Bar Card ID",
+        helper: "Optional ID to reference this card from service calls or other dashboards",
+        selector: { text: {} }
+      },
+      {
+        name: "keyboard_shortcut",
+        label: "Keyboard Shortcut",
+        helper: "e.g., 'Ctrl+K' or 'Alt+Q'. Leave empty to use global Ctrl+K",
+        selector: { text: {} }
       }
     ];
 

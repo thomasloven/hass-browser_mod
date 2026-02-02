@@ -22,6 +22,8 @@ interface QuickBarPlusConfig extends LovelaceCardConfig {
   categories?: QuickBarCategory[];
   show_search?: boolean;
   placeholder?: string;
+  quick_bar_card_id?: string;
+  keyboard_shortcut?: string;
 }
 
 export class QuickBarPlusCard extends LitElement implements LovelaceCard {
@@ -30,6 +32,7 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
   @property({ type: Boolean, reflect: true }) preview = false;
   @state() private _quickBar: any;
   @state() private _opened = false;
+  private _keyboardHandler?: (ev: KeyboardEvent) => void;
 
   static getConfigElement() {
     return document.createElement("quick-bar-plus-card-editor");
@@ -82,8 +85,82 @@ export class QuickBarPlusCard extends LitElement implements LovelaceCard {
     };
   }
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this._setupKeyboardShortcut();
+    
+    // Listen for programmatic open events
+    this.addEventListener("quick-bar-open", () => {
+      this._openQuickBar();
+    });
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._removeKeyboardShortcut();
+  }
+
+  private _setupKeyboardShortcut(): void {
+    if (!this._config?.keyboard_shortcut) return;
+    
+    this._keyboardHandler = (ev: KeyboardEvent) => {
+      if (this._matchesShortcut(ev, this._config.keyboard_shortcut!)) {
+        ev.preventDefault();
+        this._openQuickBar();
+      }
+    };
+    
+    window.addEventListener("keydown", this._keyboardHandler);
+  }
+
+  private _removeKeyboardShortcut(): void {
+    if (this._keyboardHandler) {
+      window.removeEventListener("keydown", this._keyboardHandler);
+      this._keyboardHandler = undefined;
+    }
+  }
+
+  private _matchesShortcut(ev: KeyboardEvent, shortcut: string): boolean {
+    const parts = shortcut.toLowerCase().split("+").map(p => p.trim());
+    const key = parts[parts.length - 1];
+    const modifiers = parts.slice(0, -1);
+    
+    // Check if the key matches (handle special keys)
+    const keyMatches = ev.key.toLowerCase() === key || 
+                       (key === "ctrl" && (ev.ctrlKey || ev.metaKey)) ||
+                       (key === "alt" && ev.altKey) ||
+                       (key === "shift" && ev.shiftKey);
+    
+    if (!keyMatches && ev.key.toLowerCase() !== key) return false;
+    
+    // Check modifiers
+    const ctrlRequired = modifiers.includes("ctrl") || modifiers.includes("control");
+    const altRequired = modifiers.includes("alt");
+    const shiftRequired = modifiers.includes("shift");
+    const metaRequired = modifiers.includes("meta") || modifiers.includes("cmd");
+    
+    const ctrlPressed = ev.ctrlKey || (ctrlRequired && ev.metaKey);
+    const altPressed = ev.altKey;
+    const shiftPressed = ev.shiftKey;
+    const metaPressed = ev.metaKey;
+    
+    return (
+      (!ctrlRequired || ctrlPressed) &&
+      (!altRequired || altPressed) &&
+      (!shiftRequired || shiftPressed) &&
+      (!metaRequired || metaPressed) &&
+      (ctrlRequired ? ctrlPressed : !ctrlPressed || metaPressed) &&
+      (altRequired ? altPressed : !altPressed) &&
+      (shiftRequired ? shiftPressed : !shiftPressed)
+    );
+  }
+
   getCardSize(): number {
     return 1;
+  }
+
+  public openQuickBar(): void {
+    this._openQuickBar();
   }
 
   private _openQuickBar(): void {
@@ -381,5 +458,35 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
       preview: true,
       description: "A customizable quick bar with categories and custom actions."
     });
+
+    // Store reference to card instances for global keyboard shortcut
+    (window as any).quickBarPlusCards = (window as any).quickBarPlusCards || [];
+    
+    // Set up global keyboard shortcut listener (Ctrl+K by default)
+    let globalShortcutHandler: ((ev: KeyboardEvent) => void) | null = null;
+    
+    const setupGlobalShortcut = () => {
+      // Remove old handler if exists
+      if (globalShortcutHandler) {
+        window.removeEventListener("keydown", globalShortcutHandler);
+      }
+      
+      globalShortcutHandler = (ev: KeyboardEvent) => {
+        // Check for Ctrl+K (or Cmd+K on Mac)
+        if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === "k") {
+          ev.preventDefault();
+          
+          // Find the first quick bar card and open it
+          const cards = document.querySelectorAll("quick-bar-plus-card");
+          if (cards.length > 0) {
+            (cards[0] as any).openQuickBar();
+          }
+        }
+      };
+      
+      window.addEventListener("keydown", globalShortcutHandler);
+    };
+    
+    setupGlobalShortcut();
   }
 });
