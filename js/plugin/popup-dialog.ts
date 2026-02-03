@@ -529,7 +529,9 @@ export class BrowserModPopup extends LitElement {
       /* Classes from haStyleDialog */
       ha-dialog {
         --mdc-dialog-min-width: var(--popup-min-width, 560px);
+        --mdc-dialog-min-width: var(--popup-min-width, min(560px, 95vw));
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
+        --mdc-dialog-max-width: var(--popup-max-width, min(600px, 95vw));
         --justify-action-buttons: space-between;
       }
 
