@@ -544,8 +544,6 @@ export class BrowserModPopup extends LitElement {
       }
 
       ha-dialog {
-        --dialog-surface-position: static;
-        --dialog-content-position: static;
         --vertical-align-dialog: flex-start;
         --dialog-surface-margin-top: 40px;
         --dialog-content-padding: 0;
@@ -616,7 +614,7 @@ export class BrowserModPopup extends LitElement {
         --mdc-dialog-max-width: 90vw;
       }
       :host([wide]) .content {
-        width: calc(90vw - 2 * var(--padding-x));
+        width: max(var(--mdc-dialog-min-width), calc(var(--mdc-dialog-max-width) - 2 * var(--padding-x)));
       }
 
       :host([classic]) ha-dialog {
