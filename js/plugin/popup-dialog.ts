@@ -529,7 +529,9 @@ export class BrowserModPopup extends LitElement {
       /* Classes from haStyleDialog */
       ha-dialog {
         --mdc-dialog-min-width: var(--popup-min-width, 560px);
+        --mdc-dialog-min-width: var(--popup-min-width, min(560px, 95vw));
         --mdc-dialog-max-width: var(--popup-max-width, 600px);
+        --mdc-dialog-max-width: var(--popup-max-width, min(600px, 95vw));
         --justify-action-buttons: space-between;
       }
 
@@ -542,8 +544,6 @@ export class BrowserModPopup extends LitElement {
       }
 
       ha-dialog {
-        --dialog-surface-position: static;
-        --dialog-content-position: static;
         --vertical-align-dialog: flex-start;
         --dialog-surface-margin-top: 40px;
         --dialog-content-padding: 0;
@@ -614,7 +614,7 @@ export class BrowserModPopup extends LitElement {
         --mdc-dialog-max-width: 90vw;
       }
       :host([wide]) .content {
-        width: calc(90vw - 2 * var(--padding-x));
+        width: max(var(--mdc-dialog-min-width), calc(var(--mdc-dialog-max-width) - 2 * var(--padding-x)));
       }
 
       :host([classic]) ha-dialog {
@@ -644,8 +644,12 @@ export class BrowserModPopup extends LitElement {
 
       @media all and (max-width: 450px), all and (max-height: 500px) {
         ha-dialog {
-          --mdc-dialog-min-width: 97vw;
-          --mdc-dialog-max-width: 97vw;
+          --mdc-dialog-min-width: calc(
+            100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+          );
+          --mdc-dialog-max-width: calc(
+            100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+          );
           --mdc-dialog-min-height: 100%;
           --mdc-dialog-max-height: 100%;
           --vertical-align-dialog: flex-end;
