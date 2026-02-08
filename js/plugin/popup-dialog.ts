@@ -542,6 +542,7 @@ export class BrowserModPopup extends LitElement {
       ha-dialog {
         --vertical-align-dialog: flex-start;
         --dialog-surface-margin-top: 40px;
+        --mdc-dialog-max-height: calc(100% - 80px);
         --dialog-content-padding: 0;
 
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
@@ -552,14 +553,12 @@ export class BrowserModPopup extends LitElement {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
         outline: none !important;
-        display: contents;
       }
       .content .container {
         padding: 8px 24px 20px 24px;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
         outline: none !important;
-        flex-grow: 1;
       }
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
@@ -607,7 +606,7 @@ export class BrowserModPopup extends LitElement {
       :host([classic]) ha-dialog {
         --dialog-surface-margin-top: 40px;
         --mdc-dialog-min-height: 10%;
-        --mdc-dialog-max-height: 100%;
+        --mdc-dialog-max-height: calc(100% - 80px);
         --vertical-align-dialog: flex-start;
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
       }
@@ -650,6 +649,7 @@ export class BrowserModPopup extends LitElement {
       @media all and (min-width: 600px) and (min-height: 501px) {
         ha-dialog {
           --dialog-surface-margin-top: 40px;
+          --mdc-dialog-max-height: calc(100% - 80px);
         }
       }
     `;
