@@ -541,8 +541,8 @@ export class BrowserModPopup extends LitElement {
 
       ha-dialog {
         --vertical-align-dialog: flex-start;
-        --dialog-surface-margin-top: 40px;
-        --mdc-dialog-max-height: calc(100% - 80px);
+        --dialog-surface-margin-top: var(--ha-space-10, 40px);
+        --mdc-dialog-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
         --dialog-content-padding: 0;
 
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
