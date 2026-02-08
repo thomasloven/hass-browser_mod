@@ -395,7 +395,10 @@ class BrowserModSettingsTable extends LitElement {
       <div
         aria-rowindex=${index + 2}
         role="row"
-        class="mdc-data-table__row"
+        class=${classMap({
+          "mdc-data-table__row": true,
+          "mdc-data-table__row--overflow": row['name'] !== "",
+        })}
       >
       ${Object.entries(columns).map(([key, column]) => {
         return html`
@@ -515,6 +518,10 @@ class BrowserModSettingsTable extends LitElement {
         background-color: rgba(var(--rgb-primary-color), 0.04);
       }
 
+      .mdc-data-table__row--overflow {
+        overflow-x: auto;
+      }
+
       .mdc-data-table__row {
         display: flex;
         height: var(--data-table-row-height, 52px);
@@ -550,7 +557,7 @@ class BrowserModSettingsTable extends LitElement {
         height: 56px;
         display: flex;
         border-bottom: 1px solid var(--divider-color);
-        overflow: auto;
+        overflow: hidden;
       }
 
       /* Hide scrollbar for Chrome, Safari and Opera */

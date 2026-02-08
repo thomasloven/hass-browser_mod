@@ -419,7 +419,7 @@ export class BrowserModPopup extends LitElement {
         open
         @closed=${this.closeDialog}
         .heading=${this.title !== undefined}
-        hideActions
+        .hideActions=${this.left_button === undefined && this.right_button === undefined}
         flexContent
         .scrimClickAction=${this.dismissable ? "close" : ""}
         .escapeKeyAction=${this.dismissable ? "close" : ""}
@@ -470,34 +470,30 @@ export class BrowserModPopup extends LitElement {
 
         <div class="content" tabindex="-1" dialogInitialFocus>
           <div class="container">${this.content}</div>
-          ${this.right_button !== undefined || this.left_button !== undefined
-            ? html`
-                <div class="buttons">
-                  ${this.left_button !== undefined
-                    ? html`
-                        <ha-button
-                          variant=${this.left_button_variant}
-                          appearance=${this.left_button_appearance}
-                          @click=${this._secondary}
-                          class="action-button"
-                        >${this.left_button}</ha-button>
-                      `
-                    : html`<div></div>`}
-                  ${this.right_button !== undefined
-                    ? html`
-                        <ha-button
-                          variant=${this.right_button_variant}
-                          appearance=${this.right_button_appearance}
-                          @click=${this._primary}
-                          class="action-button"
-                          ?disabled=${!this._formDataValid}
-                        >${this.right_button}</ha-button>
-                      `
-                    : ""}
-                </div>
-              `
-            : ""}
         </div>
+        ${this.left_button !== undefined
+          ? html`
+              <ha-button
+                slot="secondaryAction"
+                variant=${this.left_button_variant}
+                appearance=${this.left_button_appearance}
+                @click=${this._secondary}
+                class="action-button"
+              >${this.left_button}</ha-button>
+            `
+          : html`<div></div>`}
+        ${this.right_button !== undefined
+          ? html`
+              <ha-button
+                slot="primaryAction"
+                variant=${this.right_button_variant}
+                appearance=${this.right_button_appearance}
+                @click=${this._primary}
+                class="action-button"
+                ?disabled=${!this._formDataValid}
+              >${this.right_button}</ha-button>
+            `
+          : ""}
         <style>
           ${this.getDynamicStyles()}
         </style>
@@ -556,26 +552,17 @@ export class BrowserModPopup extends LitElement {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
         outline: none !important;
+        display: contents;
       }
       .content .container {
         padding: 8px 24px 20px 24px;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
         outline: none !important;
+        flex-grow: 1;
       }
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
-      }
-      .content .buttons {
-        box-sizing: border-box;
-        display: flex;
-        padding: 8px 16px 8px 24px;
-        justify-content: space-between;
-        padding-bottom: 8px;
-        background-color: var(--ha-dialog-surface-background, var(--mdc-theme-surface, #fff));
-        border-top: 1px solid var(--divider-color);
-        position: sticky;
-        bottom: 0px;
       }
       .progress {
         position: relative;
