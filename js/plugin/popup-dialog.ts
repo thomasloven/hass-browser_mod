@@ -644,6 +644,14 @@ export class BrowserModPopup extends LitElement {
         :host([wide]) .content {
           width: 100vw;
         }
+        :host([classic]) ha-dialog {
+          --mdc-dialog-min-width: calc(
+            97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+          );
+          --mdc-dialog-max-width: calc(
+            97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+          );
+        }
       }
 
       @media all and (min-width: 600px) and (min-height: 501px) {
