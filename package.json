@@ -1,7 +1,7 @@
 {
   "name": "browser_mod",
   "private": true,
-  "version": "2.7.2",
+  "version": "2.7.3-beta.1",
   "description": "",
   "scripts": {
     "build": "rollup -c",
