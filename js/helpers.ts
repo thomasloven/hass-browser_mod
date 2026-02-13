@@ -143,7 +143,7 @@ export const loadHaForm = async () => {
 };
 
 // Loads in ha-config-dashboard which is used to copy styling
-// Also provides ha-settings-row
+// Also provides ha-md-list-item
 export const loadConfigDashboard = async () => {
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
@@ -157,8 +157,7 @@ export const loadConfigDashboard = async () => {
   await customElements.whenDefined("ha-panel-config");
   const configRouter: any = document.createElement("ha-panel-config");
   await configRouter?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
-  await configRouter?.routerOptions?.routes?.general?.load?.(); // Load ha-settings-row
-  await configRouter?.routerOptions?.routes?.entities?.load?.(); // Load ha-data-table
+  await configRouter?.routerOptions?.routes?.network?.load?.(); // Load ha-md-list-item
   await customElements.whenDefined("ha-config-dashboard");
 };
 
