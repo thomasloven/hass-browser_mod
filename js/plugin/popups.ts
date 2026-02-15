@@ -44,6 +44,8 @@ export const PopupMixin = (SuperClass) => {
     showPopup(params: BrowserModPopupParams) {
       (async () => {
         const base: any = await hass_base_el();
+        // Close any existing popup with the same tag to allow open to work
+        await this.closePopup({ tag: params.tag ?? "" });
         const dialogTag = params.tag ? 
           `browser-mod-popup-${params.tag}` : "browser-mod-popup";
         showBrowserModPopup(base, dialogTag, params);
@@ -53,7 +55,9 @@ export const PopupMixin = (SuperClass) => {
     async closePopup(args) {
       const { all, tag } = args;
       if (all === true) {
-        this._popupElements.forEach((popup) => popup.closeDialog());
+        this._popupElements.forEach(async (popup) => await popup.closeDialog());
+        // Wait to allow popups to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
+        await new Promise((resolve) => setTimeout(resolve, 100));
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
@@ -63,9 +67,16 @@ export const PopupMixin = (SuperClass) => {
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag
         );
-        popup?.closeDialog();
+        await popup?.closeDialog();
+        // Wait to allow popup to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        await popup?.updateComplete;
       } else {
-        this._popupElements.pop()?.closeDialog();
+        const popup = this._popupElements.pop();
+        await popup?.closeDialog();
+        // Wait to allow popup to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        await popup?.updateComplete;
       }
     }
 
