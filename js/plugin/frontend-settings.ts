@@ -1,4 +1,4 @@
-import { await_element, waitRepeat, runOnce, selectTree } from "../helpers";
+import { await_element, waitRepeat, runOnce, selectTree, debounce } from "../helpers";
 import { OverlayIcon } from "./overlay-icon"
 
 const NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY = "browser_mod-no-sidebar-edit-mode-prompt";
@@ -57,6 +57,8 @@ export const AutoSettingsMixin = (SuperClass) => {
         return;
       }
 
+      this.updateSidebarPanelsDebounced = debounce(this._updateSidebarPanels.bind(this), 1000);
+
       this._auto_settings_setup();
       this.addEventListener("browser-mod-config-update", () => {
         this._auto_settings_setup();
@@ -107,6 +109,8 @@ export const AutoSettingsMixin = (SuperClass) => {
       } else if (this._removeLegacySidebarSettings){
         localStorage.removeItem("sidebarHiddenPanels");
       }
+
+      this.updateSidebarPanelsDebounced();
 
       // Default panel
       if (settings.defaultPanel) {
@@ -409,6 +413,19 @@ export const AutoSettingsMixin = (SuperClass) => {
         // flag to remove legacy sidebar settings which hass may have left over
         this._removeLegacySidebarSettings = true;
         this._auto_settings_setup();
+      }
+    }
+
+    async _updateSidebarPanels() {
+      const sidebar = await selectTree(
+        document.body,
+        "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
+      );
+      if (sidebar) {
+        // force sidebar to re-apply panels with new settings
+        // this is both debounced and only when Browser Mod settings change
+        sidebar.__ubsubs?.forEach((unsub) => unsub());
+        sidebar.hassSubscribe && sidebar.hassSubscribe();
       }
     }
 
