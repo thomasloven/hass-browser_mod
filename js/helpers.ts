@@ -178,6 +178,27 @@ export const loadDeveloperToolsTemplate = async () => {
   await customElements.whenDefined("developer-tools-template");
 };
 
+export const loadHaWaDialog = async () => {
+  if (customElements.get("ha-wa-dialog")) return;
+  const root = await getLovelaceRoot(document);
+  if (!root) return;
+  const ch = await window.loadCardHelpers();
+  root.addEventListener("show-dialog", _showDialogHandler, { once: true });
+  ch.showAlertDialog(root, {});
+  
+  async function _showDialogHandler(ev) {
+    if (ev.detail?.dialogTag === "dialog-box") {
+      ev.stopPropagation();
+      ev.detail?.dialogImport?.();
+      window.setTimeout(() => {
+        if (!customElements.get("ha-wa-dialog")) {
+          console.warn("Browser Mod: Failed to load ha-wa-dialog, popups will not work");
+        }
+      }, 1000);
+    }
+  }
+}
+
 export function throttle(timeout) {
   return function (target, propertyKey, descriptor) {
     const fn = descriptor.value;

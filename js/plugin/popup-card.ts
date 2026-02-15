@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { getLovelaceRoot } from "../helpers";
+import { getLovelaceRoot, loadHaWaDialog } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
@@ -236,7 +236,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
 
   // popstate will get fired on window.browser_mod?.service("popup", ...) but as this popstate
   // is not currently cleared there is no way to distinguish this event properly at this time.
-  // Hence, setting lovelaceRoot on all popstate which captures, for examople, UI back from History Panel.
+  // Hence, setting lovelaceRoot on all popstate which captures, for example, UI back from History Panel.
   ['popstate','location-changed'].forEach(event => 
     window.addEventListener(event, async (ev) => {
       lovelaceRoot = await getLovelaceRoot(document);
@@ -268,4 +268,6 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       );
     }
   });
+
+  await loadHaWaDialog();
 });
