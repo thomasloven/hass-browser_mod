@@ -15,7 +15,7 @@ export const PopupMixin = (SuperClass) => {
 
       this.addEventListener("browser-mod-popup-opened", this.popupStateListener);
       this.addEventListener("browser-mod-popup-closed", this.popupStateListener);
-      window.addEventListener("keydown", this.keydownListener, true);
+      window.addEventListener("keydown", this.keydownListener, { capture: true, passive: true });
       this._popupState = false;
     }
 
