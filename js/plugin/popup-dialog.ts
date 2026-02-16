@@ -1,4 +1,4 @@
-import { LitElement, html, css, PropertyValues, nothing } from "lit";
+import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { repeat } from "lit/directives/repeat.js";
