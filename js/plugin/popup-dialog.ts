@@ -603,10 +603,6 @@ export class BrowserModPopup extends LitElement {
         cursor: default;
       }
 
-      ha-dialog-footer {
-        --justify-action-buttons: space-between;
-      }
-
       :host([wide]) ha-dialog {
         --popup-width: var(--popup-wide-width, 90vw);
       }
