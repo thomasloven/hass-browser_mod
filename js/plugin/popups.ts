@@ -1,3 +1,4 @@
+import { Unpromise } from "@watchable/unpromise";
 import {
   loadLoadCardHelpers,
   hass_base_el,
@@ -36,7 +37,8 @@ export const PopupMixin = (SuperClass) => {
         this._popupElements = this._popupElements.filter(
           (p) => p !== popup
         );
-        // Set the last popup to have background false if any popups remain
+        // Reset dismissable state of the last popup in the stack as the top popup has been closed 
+        // and if there is another popup below it, it should be able to close again if it is dismissable
         if (this._popupElements.length > 0) {
           const lastIndex = this._popupElements.length - 1;
           const lastPopup = this._popupElements[lastIndex];
@@ -81,11 +83,31 @@ export const PopupMixin = (SuperClass) => {
     }
 
     async closePopup(args) {
+      async function _closePopup(popup) {
+        const tag = popup.tag !== undefined && popup.tag !== "" ? popup.tag : "standard";
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+        const result = await Unpromise.race([
+          new Promise<void>((resolve) => {
+            const onClose = () => {
+              popup.dialog?.removeEventListener('closed', onClose);
+              if (timeoutId !== undefined) clearTimeout(timeoutId);
+              resolve();
+            };
+            popup.dialog.addEventListener('closed', onClose, { once: true });
+            popup.closeDialog();
+          }),
+          new Promise<void>((resolve) => {
+            timeoutId = setTimeout(() => {
+              console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
+              resolve();
+            }, 5000);
+          })
+        ]);
+      }
+
       const { all, tag } = args;
       if (all === true) {
-        await Promise.all(this._popupElements.map((popup) => popup.closeDialog()));
-        // Wait to allow popups to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await Promise.all(this._popupElements.map((popup) => _closePopup(popup)));
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
@@ -95,16 +117,16 @@ export const PopupMixin = (SuperClass) => {
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag
         );
-        await popup?.closeDialog();
-        // Wait to allow popup to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        await popup?.updateComplete;
+        // Wait for the popup's dialog to close before proceeding
+        if (popup?.dialog) {
+          await _closePopup(popup);
+        }
       } else {
         const popup = this._popupElements.pop();
-        await popup?.closeDialog();
-        // Wait to allow popup to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        await popup?.updateComplete;
+        // Wait for the popup's dialog to close before proceeding
+        if (popup?.dialog) {
+            await _closePopup(popup);
+        }
       }
     }
 
