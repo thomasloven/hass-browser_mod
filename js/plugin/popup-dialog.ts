@@ -674,7 +674,7 @@ export class BrowserModPopup extends LitElement {
       @media all and (min-width: 600px) and (min-height: 501px) {
         ha-wa-dialog {
           --dialog-surface-margin-top: 40px;
-          --popup-max-height: calc(100% - 80px);
+          --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
         }
       }
     `;
