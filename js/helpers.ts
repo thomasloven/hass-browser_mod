@@ -180,12 +180,11 @@ export const loadDeveloperToolsTemplate = async () => {
 
 export const loadHaDialog = async () => {
   if (customElements.get("ha-dialog")) return;
-  const root = await getLovelaceRoot(document);
-  if (!root) return;
+  const haEl = await hass_base_el();
+  if (!haEl) return;
   const ch = await window.loadCardHelpers();
-  root.addEventListener("show-dialog", _showDialogHandler, { once: true });
-  ch.showAlertDialog(root, {});
-  
+  window.addEventListener("show-dialog", _showDialogHandler, { once: true, capture: true});
+  ch.showAlertDialog(haEl, {});
   async function _showDialogHandler(ev) {
     if (ev.detail?.dialogTag === "dialog-box") {
       ev.stopPropagation();

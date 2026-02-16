@@ -83,7 +83,7 @@ export const PopupMixin = (SuperClass) => {
     async closePopup(args) {
       const { all, tag } = args;
       if (all === true) {
-        this._popupElements.forEach(async (popup) => await popup.closeDialog());
+        await Promise.all(this._popupElements.map((popup) => popup.closeDialog()));
         // Wait to allow popups to be removed from DOM before proceeding to avoid issues with multiple popups and same tag
         await new Promise((resolve) => setTimeout(resolve, 100));
         this._popupElements = [];
