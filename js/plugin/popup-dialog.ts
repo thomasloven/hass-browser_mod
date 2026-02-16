@@ -38,6 +38,7 @@ export class BrowserModPopup extends LitElement {
   @property() _formDataValid;
   @property({type: Array}) _styleAttributes: boolean [];
   @query("ha-wa-dialog") dialog: any;
+  @query("ha-dialog-footer") footer: any;
   _autoclose;
   _autocloseListener;
   _actions;
@@ -77,6 +78,12 @@ export class BrowserModPopup extends LitElement {
           key.split(" ").forEach((k) => this.removeAttribute(k));
         }
       });
+    }
+    if (this.left_button !== undefined && this.footer) {
+      const footerEl = this.footer.shadowRoot?.querySelector("footer");
+      if (footerEl?.style.getPropertyValue("justify-content") !== "space-between"){
+        footerEl?.style.setProperty("justify-content", "space-between");
+      }
     }
   }
 
@@ -669,10 +676,6 @@ export class BrowserModPopup extends LitElement {
           --dialog-surface-margin-top: 40px;
           --popup-max-height: calc(100% - 80px);
         }
-      }
-
-      ::slotted([slot="footer"]) .footer {
-        justify-content: space-between;
       }
     `;
   }
