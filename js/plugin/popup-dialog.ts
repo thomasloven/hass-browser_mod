@@ -392,7 +392,7 @@ export class BrowserModPopup extends LitElement {
   async do_close() {
     const action = this._actions?.dismiss_action;
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.closeDialog();
+    this.open = false;
     action?.(this._formdata);
     this._objectSelectorMonitor.stopMonitoring();
   }
