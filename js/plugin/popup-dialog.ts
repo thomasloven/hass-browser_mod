@@ -1,5 +1,5 @@
-import { LitElement, html, css, HTMLTemplateResult, PropertyValues } from "lit";
-import { property, query } from "lit/decorators.js";
+import { LitElement, html, css, PropertyValues } from "lit";
+import { property, query, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { repeat } from "lit/directives/repeat.js";
 import {ifDefined} from 'lit/directives/if-defined.js';
@@ -15,7 +15,8 @@ import { BrowserModPopupParams } from "./popups";
 import structuredClone from "@ungap/structured-clone";
 
 export class BrowserModPopup extends LitElement {
-  @property() open;
+  @state() open = false;
+  @property({ attribute: false }) public hass;
   @property() content;
   @property() title;
   @property({ reflect: true }) actions;
@@ -37,6 +38,7 @@ export class BrowserModPopup extends LitElement {
   @property() _formDataValid;
   @property({type: Array}) _styleAttributes: boolean [];
   @query("ha-dialog") dialog: any;
+  @query("ha-dialog-footer") footer: any;
   _autoclose;
   _autocloseListener;
   _actions;
@@ -76,6 +78,12 @@ export class BrowserModPopup extends LitElement {
           key.split(" ").forEach((k) => this.removeAttribute(k));
         }
       });
+    }
+    if (this.left_button !== undefined && this.footer) {
+      const footerEl = this.footer.shadowRoot?.querySelector("footer");
+      if (footerEl?.style.getPropertyValue("justify-content") !== "space-between"){
+        footerEl?.style.setProperty("justify-content", "space-between");
+      }
     }
   }
 
@@ -124,7 +132,6 @@ export class BrowserModPopup extends LitElement {
 
   openDialog() {
     this.open = true;
-    this.dialog?.show();
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
       this._timeoutTimer = setInterval(() => {
@@ -141,7 +148,7 @@ export class BrowserModPopup extends LitElement {
     }
     this._autocloseListener = undefined;
     if (this._autoclose) {
-      this._autocloseListener = () => this.dialog.close();
+      this._autocloseListener = () => this.do_close();
       window.browser_mod.addEventListener(
         "browser-mod-activity",
         this._autocloseListener,
@@ -155,7 +162,7 @@ export class BrowserModPopup extends LitElement {
         this.tag ? `browser-mod-popup-${this.tag}` : "more-info",
         this.card_mod?.style ?
           { style: this.card_mod.style, debug: this.card_mod?.debug ?? false } :
-          { style: "{}", debug: this.card_mod?.debug ?? false },
+          { style: {}, debug: this.card_mod?.debug ?? false },
         {},
         true,
         "browser_mod-card_mod"
@@ -385,7 +392,7 @@ export class BrowserModPopup extends LitElement {
   async do_close() {
     const action = this._actions?.dismiss_action;
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.dialog?.close();
+    this.open = false;
     action?.(this._formdata);
     this._objectSelectorMonitor.stopMonitoring();
   }
@@ -412,28 +419,27 @@ export class BrowserModPopup extends LitElement {
   }
 
   render() {
-    if (!this.open) return html``;
-
+    // Type is set to "" so we don't get "standard" dialog CSS
     return html`
       <ha-dialog
-        open
+        .hass=${this.hass}
+        .open=${this.open}
+        type=""
         @closed=${this.closeDialog}
-        .heading=${this.title !== undefined}
-        .hideActions=${this.left_button === undefined && this.right_button === undefined}
+        header-title=${this.title}
+        ?prevent-scrim-close=${!this.dismissable}
         flexContent
-        .scrimClickAction=${this.dismissable ? "close" : ""}
-        .escapeKeyAction=${this.dismissable ? "close" : ""}
       >
         ${this.timeout && !this.timeout_hide_progress
-          ? html` <div slot="heading" class="progress"></div> `
+          ? html` <div slot="header" class="progress"></div> `
           : ""}
         ${this.title
           ? html`
-              <ha-dialog-header slot="heading">
+              <ha-dialog-header slot="header">
                 ${this.dismissable
                   ? html`
                       <ha-icon-button
-                        dialogAction="cancel"
+                        data-dialog="close"
                         slot="navigationIcon"
                       >
                         <ha-icon 
@@ -471,29 +477,33 @@ export class BrowserModPopup extends LitElement {
         <div class="content" tabindex="-1" dialogInitialFocus>
           <div class="container">${this.content}</div>
         </div>
-        ${this.left_button !== undefined
-          ? html`
-              <ha-button
-                slot="secondaryAction"
-                variant=${this.left_button_variant}
-                appearance=${this.left_button_appearance}
-                @click=${this._secondary}
-                class="action-button"
-              >${this.left_button}</ha-button>
-            `
-          : html`<div></div>`}
-        ${this.right_button !== undefined
-          ? html`
-              <ha-button
-                slot="primaryAction"
-                variant=${this.right_button_variant}
-                appearance=${this.right_button_appearance}
-                @click=${this._primary}
-                class="action-button"
-                ?disabled=${!this._formDataValid}
-              >${this.right_button}</ha-button>
-            `
-          : ""}
+        ${this.left_button !== undefined || this.right_button !== undefined ?
+          html`
+          <ha-dialog-footer slot="footer">
+            ${this.left_button !== undefined
+              ? html`
+                  <ha-button
+                    slot="secondaryAction"
+                    variant=${this.left_button_variant}
+                    appearance=${this.left_button_appearance}
+                    @click=${this._secondary}
+                    class="action-button"
+                  >${this.left_button}</ha-button>
+                `
+              : html`<div></div>`}
+            ${this.right_button !== undefined
+              ? html`
+                  <ha-button
+                    slot="primaryAction"
+                    variant=${this.right_button_variant}
+                    appearance=${this.right_button_appearance}
+                    @click=${this._primary}
+                    class="action-button"
+                    ?disabled=${!this._formDataValid}
+                  >${this.right_button}</ha-button>
+                `
+              : ""}
+            </ha-dialog-footer>` : "" }
         <style>
           ${this.getDynamicStyles()}
         </style>
@@ -522,15 +532,6 @@ export class BrowserModPopup extends LitElement {
 
   static get styles() {
     return css`
-      /* Classes from haStyleDialog */
-      ha-dialog {
-        --mdc-dialog-min-width: var(--popup-min-width, 560px);
-        --mdc-dialog-min-width: var(--popup-min-width, min(560px, 95vw));
-        --mdc-dialog-max-width: var(--popup-max-width, 600px);
-        --mdc-dialog-max-width: var(--popup-max-width, min(600px, 95vw));
-        --justify-action-buttons: space-between;
-      }
-
       ha-dialog .form {
         color: var(--primary-text-color);
       }
@@ -540,15 +541,21 @@ export class BrowserModPopup extends LitElement {
       }
 
       ha-dialog {
-        --vertical-align-dialog: flex-start;
         --dialog-surface-margin-top: var(--ha-space-10, 40px);
-        --mdc-dialog-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
-        --dialog-content-padding: 0;
-
-        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+        --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
         --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
+        --popup-width: var(--popup-min-width, 580px);
+        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+        --ha-dialog-width-md: var(--popup-width);
+        --ha-dialog-width-full: var(--popup-width-full, 95vw);
+        --ha-dialog-max-width: var(--popup-max-width, 600px);
+        --ha-dialog-min-height: var(--popup-min-height);
+        --ha-dialog-max-height: var(--popup-max-height);
+        --dialog-content-padding: 0;
+        z-index: 8;
       }
+
       .content {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
@@ -597,30 +604,30 @@ export class BrowserModPopup extends LitElement {
       }
 
       :host([wide]) ha-dialog {
-        --mdc-dialog-max-width: 90vw;
+        --popup-width: var(--popup-wide-width, 90vw);
       }
       :host([wide]) .content {
-        width: max(var(--mdc-dialog-min-width), calc(var(--mdc-dialog-max-width) - 2 * var(--padding-x)));
+        width: max(var(--popup-width, 580px), calc(var(--popup-width, 580px) - 2 * var(--padding-x)));
       }
 
       :host([classic]) ha-dialog {
         --dialog-surface-margin-top: 40px;
-        --mdc-dialog-min-height: 10%;
-        --mdc-dialog-max-height: calc(100% - 80px);
-        --vertical-align-dialog: flex-start;
-        --ha-dialog-border-radius: var(--popup-border-radius, 28px);
+        --popup-border-radius: var(--popup-border-radius, 28px);
+        --popup-min-height: 10%;
+        --popup-max-height: calc(100% - 80px);
       }
 
       :host([fullscreen]) ha-dialog {
-        --mdc-dialog-min-width: 100vw;
-        --mdc-dialog-max-width: 100vw;
-        --mdc-dialog-min-height: 100%;
-        --mdc-dialog-max-height: 100%;
-        --mdc-shape-medium: 0px;
-        --vertical-align-dialog: flex-end;
-        --ha-dialog-border-radius: 0px;
+        --popup-min-height: 100%;
+        --popup-max-height: 100%;
         --dialog-surface-margin-top: 0px;
+        --popup-border-radius: 0px;
+        --dialog-surface-margin-top: 0px;
+        --popup-width: 100vw;
+        --popup-max-width: 100vw;
+        --popup-width-full: 100vw;
       }
+
       :host([fullscreen]) .content {
         height: calc(
           100vh - var(--header-height) - var(--footer-height) - 2 *
@@ -630,25 +637,31 @@ export class BrowserModPopup extends LitElement {
 
       @media all and (max-width: 450px), all and (max-height: 500px) {
         ha-dialog {
-          --mdc-dialog-min-width: calc(
+          --popup-width: calc(
             100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
           );
-          --mdc-dialog-max-width: calc(
+          --popup-max-width: calc(
             100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
           );
-          --mdc-dialog-min-height: 100%;
-          --mdc-dialog-max-height: 100%;
-          --vertical-align-dialog: flex-end;
-          --ha-dialog-border-radius: 0;
+          --popup-width-full: calc(
+            100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+          );
+          --popup-min-height: 100%;
+          --popup-max-height: 100%;
+          --dialog-surface-margin-top: 0;
+          --popup-border-radius: 0;
         }
         :host([wide]) .content {
           width: 100vw;
         }
         :host([classic]) ha-dialog {
-          --mdc-dialog-min-width: calc(
+          --popup-width: calc(
             97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
           );
-          --mdc-dialog-max-width: calc(
+          --popup-max-width: calc(
+            97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+          );
+          --popup-width-full: calc(
             97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
           );
         }
@@ -657,7 +670,7 @@ export class BrowserModPopup extends LitElement {
       @media all and (min-width: 600px) and (min-height: 501px) {
         ha-dialog {
           --dialog-surface-margin-top: 40px;
-          --mdc-dialog-max-height: calc(100% - 80px);
+          --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
         }
       }
     `;

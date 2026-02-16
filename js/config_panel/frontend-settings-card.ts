@@ -362,7 +362,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
-          ${this._sidebarSettingsCustomSelector?.dialogAvaliable ?
+          ${this._sidebarSettingsCustomSelector?.dialogAvailable ?
             html`
             <ha-expansion-panel
               .header=${"Sidebar order"}

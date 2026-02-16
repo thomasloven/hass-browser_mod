@@ -177,6 +177,26 @@ export const loadDeveloperToolsTemplate = async () => {
   await customElements.whenDefined("developer-tools-template");
 };
 
+export const loadHaDialog = async () => {
+  if (customElements.get("ha-dialog")) return;
+  const haEl = await hass_base_el();
+  if (!haEl) return;
+  const ch = await window.loadCardHelpers();
+  window.addEventListener("show-dialog", _showDialogHandler, { once: true, capture: true});
+  ch.showAlertDialog(haEl, {});
+  async function _showDialogHandler(ev) {
+    if (ev.detail?.dialogTag === "dialog-box") {
+      ev.stopPropagation();
+      ev.detail?.dialogImport?.();
+      window.setTimeout(() => {
+        if (!customElements.get("ha-dialog")) {
+          console.warn("Browser Mod: Failed to load ha-dialog, popups will not work");
+        }
+      }, 1000);
+    }
+  }
+}
+
 export function throttle(timeout) {
   return function (target, propertyKey, descriptor) {
     const fn = descriptor.value;
