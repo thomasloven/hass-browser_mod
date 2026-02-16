@@ -15,6 +15,7 @@ export const PopupMixin = (SuperClass) => {
 
       this.addEventListener("browser-mod-popup-opened", this.popupStateListener);
       this.addEventListener("browser-mod-popup-closed", this.popupStateListener);
+      window.addEventListener("keydown", this.keydownListener, true);
       this._popupState = false;
     }
 
@@ -35,11 +36,31 @@ export const PopupMixin = (SuperClass) => {
         this._popupElements = this._popupElements.filter(
           (p) => p !== popup
         );
+        // Set the last popup to have background false if any popups remain
+        if (this._popupElements.length > 0) {
+          const lastIndex = this._popupElements.length - 1;
+          this._popupElements[lastIndex].dialog.preventScrimClose = !(this._popupElements[lastIndex].dismissable ?? true);
+        }
       }
       if (ev.type === "browser-mod-popup-opened") {
+        this._popupElements.forEach((p) => { p.dialog.preventScrimClose = true; });
         this._popupElements.push(popup);
       }
     };
+
+    private keydownListener = (ev: KeyboardEvent) => {
+      // Make sure all popups with preventScrimClose set to true receive the escape key event to allow them 
+      // to prevent default as multiple popups in the background do not get the event but rely on having
+      // seen the escape key event to know to prevent default when wa-dialog fires hide event
+      if (ev.key === "Escape" && this._popupElements.length > 0) {
+        this._popupElements.forEach((p, index) => {
+          if (p.dialog?.preventScrimClose && index !== this._popupElements.length - 1) {
+            const waDialog = p.dialog?.shadowRoot?.querySelector("wa-dialog");
+            waDialog?.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: false }))
+          }
+        });
+      }
+    }
 
     showPopup(params: BrowserModPopupParams) {
       (async () => {
