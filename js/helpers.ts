@@ -178,8 +178,8 @@ export const loadDeveloperToolsTemplate = async () => {
   await customElements.whenDefined("developer-tools-template");
 };
 
-export const loadHaWaDialog = async () => {
-  if (customElements.get("ha-wa-dialog")) return;
+export const loadHaDialog = async () => {
+  if (customElements.get("ha-dialog")) return;
   const root = await getLovelaceRoot(document);
   if (!root) return;
   const ch = await window.loadCardHelpers();
@@ -191,8 +191,8 @@ export const loadHaWaDialog = async () => {
       ev.stopPropagation();
       ev.detail?.dialogImport?.();
       window.setTimeout(() => {
-        if (!customElements.get("ha-wa-dialog")) {
-          console.warn("Browser Mod: Failed to load ha-wa-dialog, popups will not work");
+        if (!customElements.get("ha-dialog")) {
+          console.warn("Browser Mod: Failed to load ha-dialog, popups will not work");
         }
       }, 1000);
     }

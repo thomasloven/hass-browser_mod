@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { getLovelaceRoot, loadHaWaDialog } from "../helpers";
+import { getLovelaceRoot, loadHaDialog } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
@@ -269,5 +269,5 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
     }
   });
 
-  await loadHaWaDialog();
+  await loadHaDialog();
 });

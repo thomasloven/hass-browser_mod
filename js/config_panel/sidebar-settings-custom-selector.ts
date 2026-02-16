@@ -3,7 +3,7 @@ import { selectTree, provideHass, hass_base_el } from "../helpers";
 
 export class SidebarSettingsCustomSelector {
   _element: LitElement;
-  _dialogAvaliable: boolean;
+  _dialogAvailable: boolean;
   _dialogEditSidebar: any;
   _type: string;
   _target: string;
@@ -12,10 +12,10 @@ export class SidebarSettingsCustomSelector {
   constructor(element) {
     this._element = element;
     if (customElements.get("dialog-edit-sidebar")) {
-        this._dialogAvaliable = true;
+        this._dialogAvailable = true;
         return;
     }
-    this._dialogAvaliable = false;
+    this._dialogAvailable = false;
     selectTree(
       document.body,
       "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
@@ -40,13 +40,13 @@ export class SidebarSettingsCustomSelector {
       }
     });
     customElements.whenDefined("dialog-edit-sidebar").then(async () => {
-      this._dialogAvaliable = true;
+      this._dialogAvailable = true;
       await this._element.updateComplete.then(() => this._element.requestUpdate());
     });
   }
     
-  get dialogAvaliable() {
-    return this._dialogAvaliable;
+  get dialogAvailable() {
+    return this._dialogAvailable;
   }
 
   get order() {
@@ -64,7 +64,7 @@ export class SidebarSettingsCustomSelector {
   }   
 
   async setupDialog() {
-    if (!this._dialogAvaliable) return;
+    if (!this._dialogAvailable) return;
     this._dialogEditSidebar = document.createElement("dialog-edit-sidebar");
     const base = await hass_base_el();
     if (base && this._dialogEditSidebar) {
@@ -112,18 +112,18 @@ export class SidebarSettingsCustomSelector {
 
   async customiseDialog() {
     if (!this._dialogEditSidebar) return;
-    let haWaDialog;
+    let haDialog;
     let cnt = 0;
-    while (!haWaDialog && cnt++ < 5) {
-      haWaDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-wa-dialog");
-      if (!haWaDialog) {
+    while (!haDialog && cnt++ < 5) {
+      haDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-dialog");
+      if (!haDialog) {
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
-    await haWaDialog?.updateComplete;
+    await haDialog?.updateComplete;
     const dialogHeader = await selectTree(
       this._dialogEditSidebar.shadowRoot,
-      "ha-wa-dialog $ ha-dialog-header",
+      "ha-dialog $ ha-dialog-header",
     );
     if (dialogHeader) {
       const styleEl = document.createElement("style");
@@ -159,17 +159,17 @@ export class SidebarSettingsCustomSelector {
 
   async setupSaveHandler() {
     if (!this._dialogEditSidebar) return;
-    let haWaDialog;
+    let haDialog;
     let cnt = 0;
-    while (!haWaDialog && cnt++ < 5) {
-      haWaDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-wa-dialog");
-      if (!haWaDialog) {
+    while (!haDialog && cnt++ < 5) {
+      haDialog = this._dialogEditSidebar.shadowRoot.querySelector("ha-dialog");
+      if (!haDialog) {
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
     }
-    await haWaDialog?.updateComplete;
+    await haDialog?.updateComplete;
     const haButtonSave = this._dialogEditSidebar.shadowRoot.querySelector(
-        'ha-wa-dialog > ha-dialog-footer > ha-button[slot="primaryAction"]');   
+        'ha-dialog > ha-dialog-footer > ha-button[slot="primaryAction"]');   
     if (haButtonSave) {
       const buttonSave = haButtonSave.shadowRoot.querySelector("button");
       if (buttonSave) {
@@ -198,7 +198,7 @@ export class SidebarSettingsCustomSelector {
   }
 
   async changeSetting(type, target, allUsers) {
-    if (!this.dialogAvaliable) {
+    if (!this.dialogAvailable) {
       window.browser_mod?.showPopup?.(
         { 
           title: "ERROR!",
