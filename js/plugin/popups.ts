@@ -39,11 +39,18 @@ export const PopupMixin = (SuperClass) => {
         // Set the last popup to have background false if any popups remain
         if (this._popupElements.length > 0) {
           const lastIndex = this._popupElements.length - 1;
-          this._popupElements[lastIndex].dialog.preventScrimClose = !(this._popupElements[lastIndex].dismissable ?? true);
+          const lastPopup = this._popupElements[lastIndex];
+          if (lastPopup.dialog) {
+            lastPopup.dialog.preventScrimClose = !(lastPopup.dismissable ?? true);
+          }
         }
       }
       if (ev.type === "browser-mod-popup-opened") {
-        this._popupElements.forEach((p) => { p.dialog.preventScrimClose = true; });
+        this._popupElements.forEach((p) => {
+          if (p.dialog) {
+            p.dialog.preventScrimClose = true;
+          }
+        });
         this._popupElements.push(popup);
       }
     };
