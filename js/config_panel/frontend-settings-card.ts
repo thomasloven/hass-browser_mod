@@ -175,11 +175,11 @@ class BrowserModFrontendSettingsCard extends LitElement {
                   .secondary=${"Nothing to see here"}
                   leftChevron
                 >
-                  <ha-settings-row>
-                    <span slot="heading" id="afj_heading"
+                  <ha-md-list-item>
+                    <span slot="headline" id="afj_heading"
                       >Allow April Fool's jokes</span
                     >
-                    <span slot="description" id="afj_description">
+                    <span slot="supporting-text" id="afj_description">
                       By enabling this, I consent to any April Fool's Jokes
                       messing with my frontend.
                     </span>
@@ -190,11 +190,12 @@ class BrowserModFrontendSettingsCard extends LitElement {
                       It's just a toggle connected to nothing."
                     ></span>
                     <ha-switch
+                      slot="end"
                       id="afj"
                       .checked=${true}
                       @change=${this._toggle_afj}
                     ></ha-switch>
-                  </ha-settings-row>
+                  </ha-md-list-item>
                 </ha-expansion-panel>
               `
             : ``}
@@ -371,22 +372,23 @@ class BrowserModFrontendSettingsCard extends LitElement {
             >
               ${this._hassUserHasSidebarSettings ? 
                 html`
-                <ha-settings-row>
-                  <span slot="heading">Sidebar user settings</span>
-                  <div slot="description" style="display: flex;">
+                <ha-md-list-item>
+                  <span slot="headline">Sidebar user settings</span>
+                  <div slot="supporting-text" style="display: flex;">
                     <span>
                     This user has sidebar settings synced to Home Assistant user profile. 
                     It is recommend to clear these settings to allow Browser Mod settings to 
                     take precedence. To check other Home Assistant users, login as that user
                     and check back at this panel.
                     </span>
-                    <ha-button
-                      variant="danger"
-                      appearance="filled"
-                      @click=${() => this.clearHassUserSidebarSettings()}
-                    >Clear</ha-button>
                   </div>
-                </ha-settings-row>` 
+                  <ha-button
+                    slot="end"
+                    variant="danger"
+                    appearance="filled"
+                    @click=${() => this.clearHassUserSidebarSettings()}
+                  >Clear</ha-button>
+                </ha-md-list-item>` 
                 : "" 
               }
               <browser-mod-settings-table
@@ -408,8 +410,8 @@ class BrowserModFrontendSettingsCard extends LitElement {
             @expanded-changed=${this.expandedChanged}
             leftChevron
           >
-            <ha-settings-row>
-              <ol slot="heading">
+            <ha-md-list-item>
+              <ol slot="headline">
                 <li>Click EDIT</li>
                 <li>Set up the sidebar as you want it</li>
                 <li>Do NOT click DONE</li>
@@ -417,11 +419,12 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 <li>Click RESTORE</li>
               </ol>
               <ha-button
+                slot="end"
                 appearance="plain"
                 @click=${() => this.toggleEditSidebar()}>
                   ${this._editSidebar ? "Restore" : "Edit"}
               </ha-button>
-            </ha-settings-row>
+            </ha-md-list-item>
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"sidebarPanelOrder"}
