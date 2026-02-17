@@ -8,6 +8,7 @@ import { BrowserModPopup } from "./popup-dialog";
 export const PopupMixin = (SuperClass) => {
   return class PopupMixinClass extends SuperClass {
     private _popupElements: BrowserModPopup[] = [];
+    private _otherDialogOpen = false;
 
     constructor() {
       super();
@@ -15,7 +16,9 @@ export const PopupMixin = (SuperClass) => {
       loadLoadCardHelpers();
 
       this.addEventListener("browser-mod-popup-opened", this.popupStateListener);
-      this.addEventListener("browser-mod-popup-closed", this.popupStateListener);
+      this.addEventListener("browser-mod-popup-closed", this.popupStateListener);      
+      window.addEventListener("opened", this.dialogStateListener);
+      window.addEventListener("closed", this.dialogStateListener);
       window.addEventListener("keydown", this.keydownListener, { capture: true, passive: true });
       this._popupState = false;
     }
@@ -30,10 +33,47 @@ export const PopupMixin = (SuperClass) => {
       return this._popupElements.some((popup) => popup.open === true);
     }
 
+    private dialogStateListener = (ev: CustomEvent) => {
+      if (ev.type === "opened") {
+        const composedPath = ev.composedPath();
+        const dialog = composedPath.find((el) => (el as HTMLElement).nodeName.toLowerCase() === "ha-dialog");
+        if (dialog) {
+          const popup = this._popupElements.find((p) => p.dialog === dialog);
+          if (!popup) {
+            // Not a Browser Mod popup so we set last popup to prevent scrim close 
+            this._otherDialogOpen = true;
+            if (this._popupElements.length > 0) {
+              const lastIndex = this._popupElements.length - 1;
+              const lastPopup = this._popupElements[lastIndex];
+              if (lastPopup.dialog) {
+                lastPopup.dialog.preventScrimClose = true;
+              }
+            }
+          }
+        }
+      } else if (ev.type === "closed") {
+        const composedPath = ev.composedPath();
+        const dialog = composedPath.find((el) => [ "ha-dialog", "ha-adaptive-dialog"].includes((el as HTMLElement).nodeName.toLowerCase()));
+        if (dialog) {
+          const popup = this._popupElements.find((p) => p.dialog === dialog);
+          if (!popup) {
+            // Not a Browser Mod popup so we reset prevent scrim close for all last popup
+            this._otherDialogOpen = false;
+            if (this._popupElements.length > 0) {
+              const lastIndex = this._popupElements.length - 1;
+              const lastPopup = this._popupElements[lastIndex];
+              if (lastPopup.dialog) {
+                lastPopup.dialog.preventScrimClose = !(lastPopup.dismissable ?? true);
+              }
+            }
+          }
+        }
+      }
+    }
+
     private popupStateListener = (ev: CustomEvent) => {
       const popup = ev.detail?.popup;
-      if (!popup) return;
-      if (ev.type === "browser-mod-popup-closed" || this._popupElements.includes(popup)) {
+      if (ev.type === "browser-mod-popup-closed" && this._popupElements.includes(popup)) {
         this._popupElements = this._popupElements.filter(
           (p) => p !== popup
         );
@@ -63,7 +103,7 @@ export const PopupMixin = (SuperClass) => {
       // seen the escape key event to know to prevent default when wa-dialog fires hide event
       if (ev.key === "Escape" && this._popupElements.length > 0) {
         this._popupElements.forEach((p, index) => {
-          if (p.dialog?.preventScrimClose && index !== this._popupElements.length - 1) {
+          if (p.dialog?.preventScrimClose && (index !== this._popupElements.length - 1 || this._otherDialogOpen)) {
             const waDialog = p.dialog?.shadowRoot?.querySelector("wa-dialog");
             waDialog?.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: false }))
           }
