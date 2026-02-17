@@ -13,7 +13,7 @@
   - [Example - Centered](#example---centered)
     - [Vertically centered style (`centered`)](#vertically-centered-style-centered)
     - [Vertically centered wide style (`centered-wide`)](#vertically-centered-wide-style-centered-wide)
-    - [Intial style and Style sequence](#intial-style-and-style-sequence)
+    - [Initial style and Style sequence](#initial-style-and-style-sequence)
     - [All style](#all-style)
   - [Example - Change background color](#example---change-background-color)
   - [Example - using media query](#example---using-media-query)
@@ -23,11 +23,11 @@
     - [ha-dialog](#ha-dialog)
     - [mdc-dialog](#mdc-dialog)
 
-This document desribes various styling techniques for Browser Mod popups.
+This document describes various styling techniques for Browser Mod popups.
 
 > NOTE: Prior to version 2.6.0, popups had set `size` and `style` parameters which are now deprecated in favour of styling described in this document.
 
-Popup styling has envolved out of setting size appearance of popups. Since version 2.6.0, styling has been extended. As well as the standard styles of `normal`, `wide`, `fullscreen` and `classic`, you can also add your own custom styles. Custom styles can be fully independent of the standard styles, or include a standard style, or one or more of your own custom styles. In this way you can build styling to suit your needs.
+Popup styling has evolved out of setting size appearance of popups. Since version 2.6.0, styling has been extended. As well as the standard styles of `normal`, `wide`, `fullscreen` and `classic`, you can also add your own custom styles. Custom styles can be fully independent of the standard styles, or include a standard style, or one or more of your own custom styles. In this way you can build styling to suit your needs.
 
 ## Using popup styles
 
@@ -46,7 +46,7 @@ As well as the standard styles `normal`, `wide`, `fullscreen` and `classic`, two
 
 ## Setting styles for a popup
 
-In Home Assistant dashboard editor (UI mode) look for the _Popup Styles_ section in the Popup card editor. In yaml use the paremeters refered to below.
+In Home Assistant dashboard editor (UI mode) look for the _Popup Styles_ section in the Popup card editor. In yaml use the parameters referred to below.
 
 ### Initial style (`initial_style`)
 
@@ -56,19 +56,19 @@ Standard styles of `normal`, `wide`, `fullscreen` and `classic` can be selected.
 
 You can also type in your own style. This needs to match a style in Popup styles (`popup_styles`) list.
 
-The [centered](#example---centered) example uses the custom style _centered_ as the intial style.
+The [centered](#example---centered) example uses the custom style _centered_ as the initial style.
 
 ### Style sequence (`style_sequence`)
 
 This is an ordered list of popup styles. This list is used to define which styles to cycle through when the popup title is tapped, or when using the `direction` parameter of `browser_mod.set_popup_style`.
 
-The default style sequence used, if not set, is `wide` - `normal`, mimicing the standard Home Assisant more-info dialog title tap funtionaility.
+The default style sequence used, if not set, is `wide` - `normal`, mimicking the standard Home Assistant more-info dialog title tap functionality.
 
 The [centered](#example---centered) example uses a style sequence of `centered` - `centered-wide` - `fullscreen`.
 
 ### Popup styles (`popup_styles`)
 
-This is a list of customsied styles for the popup. You can customise the standard `normal`, `wide`, `fullscreen`, `classic` styles, the special `all` or `card` styles, or customise your own.
+This is a list of customised styles for the popup. You can customise the standard `normal`, `wide`, `fullscreen`, `classic` styles, the special `all` or `card` styles, or customise your own.
 
 #### Popup styles - style (`popup_styles` > `style`)
 
@@ -90,11 +90,11 @@ CSS style rules for the customised style.
 
 This example shows how to apply popup card configuration so that the popup cycles through styles of vertically centered, vertically centered wide and fullscreen.
 
-> TIP: For CSS style variables available for dialog see [dialog syles](#dialog-styles)
+> TIP: For CSS style variables available for dialog see [dialog styles](#dialog-styles)
 
 ### Vertically centered style (`centered`)
 
-Here ths CSS variable `--vertical-align-dialog` is used to center the popup. As `classic` also defines this property at the same secificity, `!important` must be added.
+Here ths CSS variable `--vertical-align-dialog` is used to center the popup. As `classic` also defines this property at the same specificity, `!important` must be added.
 
 ```yaml
 ...
@@ -129,9 +129,9 @@ popup_styles:
       - centered
 ```
 
-### Intial style and Style sequence
+### Initial style and Style sequence
 
-To have the popup initially shown centered using our custom `centered` style we need to set Intial style to `centered`.
+To have the popup initially shown centered using our custom `centered` style we need to set Initial style to `centered`.
 
 Without setting a Style sequence, the default sequence of `wide` - `normal` would be used. So here we define a style sequence of `centered-wide` - `fullscreen` - `centered`.
 
@@ -163,7 +163,7 @@ popup_styles:
 
 If the popup requires styles to always be applied, the special popup style `all` can be customised. The `centered` popup has two `icons` with classes set as `home-icon` and `account-icon`. To allow for these icons to be styled we can add a Popup style of `all` and add CSS rules to style the icon.
 
-> TIP: As `all` is always applied, it **does not** need to be incuded in any other style.
+> TIP: As `all` is always applied, it **does not** need to be included in any other style.
 
 ```yaml
 #... other popup config
@@ -233,7 +233,7 @@ Notes:
 - Included style is `classic`. `card` will also be applied as the content is a markdown card.
 - `--ha-dialog-border-radius` needs `!important` as it is at same specificity of same variable included in `classic`
 - Padding for `.container .content` needs `important!` as it is at the same specificity of selector included in `card`.
-- The generous padidng for the markdown card cannot be styled here as it is in a shadow DOM and does not provide styling variables. See [Example - card_mod direct](#example---card_mod-direct) for styling using card-mod where this exmample will be extended to reduce the generous markdown card padding.
+- The generous padding for the markdown card cannot be styled here as it is in a shadow DOM and does not provide styling variables. See [Example - card_mod direct](#example---card_mod-direct) for styling using card-mod where this example will be extended to reduce the generous markdown card padding.
 - Style sequence (`style_sequence`) is set to be only the initial style.
 
 ```yaml
@@ -280,7 +280,7 @@ style_sequence:
 
 There may be cases where cards used in popups have styling also not accessible. The prior example is one such case where the padding for the markdown card used for popup content cannot be styled directly.
 
-The example below uses [card-mod](https://github.com/thomasloven/lovelace-card-mod) to reduce the generous padidng around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
+The example below uses [card-mod](https://github.com/thomasloven/lovelace-card-mod) to reduce the generous padding around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
 
 ```yaml
 type: custom:popup-card
@@ -288,7 +288,7 @@ dismissable: true
 card:
   type: markdown
   content: >-
-    This popup will have redcued padding on markdown
+    This popup will have reduced padding on markdown
     content.
 popup_card_id: card-mod-popup
 title: Card-mod Popup
@@ -303,7 +303,7 @@ card_mod:
 
 For simplicity or working with styling like animation where card-mod application is need to be early, you can use [card-mod themes](https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes).
 
-Browser Mod 2 has clasically supported card-mod theme tags of `card-mod-more-info` or `card-mod-more-info-yaml` which rertained for backwards compatability and are used in the examples below. If you are using multiple popup tags see [Multiple popups and card-mod themes](popups.md#multiple-popups-and-card-mod-themes) for more information.
+Browser Mod 2 has classically supported card-mod theme tags of `card-mod-more-info` or `card-mod-more-info-yaml` which retained for backwards compatibility and are used in the examples below. If you are using multiple popup tags see [Multiple popups and card-mod themes](popups.md#multiple-popups-and-card-mod-themes) for more information.
 
 This first example uses a popup style `background-red` for which a theme CSS rule for `card-mod-more-info` sets the background of popup and cards to red with white text and icon.
 
@@ -352,14 +352,14 @@ style_sequence:
 initial_style: background-red
 ```
 
-This second example uses animation to slide the popup in from the right. It uses a multiple popup tag as this is the only way to be able to separate popup theming as popup style targetting is not possible in the shadow dom. The theme also shows the use of yaml for card-mod theming which is also required as we are styling the shadow DOM.
+This second example uses animation to slide the popup in from the right. It uses a multiple popup tag as this is the only way to be able to separate popup theming as popup style targeting is not possible in the shadow dom. The theme also shows the use of yaml for card-mod theming which is also required as we are styling the shadow DOM.
 
 > NOTE: The theme section here is `card-mod-browser-mod-popup-slide-in-yaml`. This is built up based on:
 >
 > - all card-mod theme sections start with `card-mod`
-> - all Browser Mod card-mod popup theme sctions continue with `-browser-mod-popup`
-> - as the popup has a multiple popup tag of `slide-in` this ass `-slide-in`
-> - as the mutilie sting is yaml, with shadown dom tagertting, this adss `-yaml`
+> - all Browser Mod card-mod popup theme sections continue with `-browser-mod-popup`
+> - as the popup has a multiple popup tag of `slide-in` this adds `-slide-in`
+> - as the multiple style is yaml, with shadow dom targeting, this adds `-yaml`
 
 _Theme yaml_:
 
@@ -391,7 +391,7 @@ tag: slide-in
 
 ## Dialog styles
 
-The following is a list of CSS variables that are available for using in popup styles. These lists may not be comprehensive nor do they include information about styling directly in the shadown dom.
+The following is a list of CSS variables that are available for using in popup styles. These lists may not be comprehensive nor do they include information about styling directly in the shadow dom.
 
 > NOTE: Any updates to this list due to changes in Home Assistant Frontend will be part of future release notes.
 
