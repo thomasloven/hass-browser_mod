@@ -553,7 +553,6 @@ export class BrowserModPopup extends LitElement {
         --ha-dialog-min-height: var(--popup-min-height);
         --ha-dialog-max-height: var(--popup-max-height);
         --dialog-content-padding: 0;
-        z-index: 8;
       }
 
       .content {
