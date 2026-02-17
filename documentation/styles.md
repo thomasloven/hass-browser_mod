@@ -20,8 +20,8 @@
   - [Example - card\_mod direct](#example---card_mod-direct)
   - [Example - card\_mod theme](#example---card_mod-theme)
   - [Dialog styles](#dialog-styles)
+    - [Browser Mod](#browser-mod)
     - [ha-dialog](#ha-dialog)
-    - [mdc-dialog](#mdc-dialog)
 
 This document describes various styling techniques for Browser Mod popups.
 
@@ -94,7 +94,7 @@ This example shows how to apply popup card configuration so that the popup cycle
 
 ### Vertically centered style (`centered`)
 
-Here ths CSS variable `--vertical-align-dialog` is used to center the popup. As `classic` also defines this property at the same specificity, `!important` must be added.
+Here ths CSS variable `--dialog-surface-margin-top: auto !important;` is used to center the popup. As `classic` also defines this property at the same specificity, `!important` must be added.
 
 ```yaml
 ...
@@ -104,7 +104,7 @@ popup_styles:
       - classic
     styles: |
       ha-dialog {
-        --vertical-align-dialog: center !important;
+        --dialog-surface-margin-top: auto !important;
       }
 ```
 
@@ -120,7 +120,7 @@ popup_styles:
       - classic
     styles: |
       ha-dialog {
-        --vertical-align-dialog: center !important;
+        --dialog-surface-margin-top: auto !important;
       }
   - style: centered-wide
     include_styles:
@@ -150,7 +150,7 @@ popup_styles:
       - classic
     styles: |
       ha-dialog {
-        --vertical-align-dialog: center !important;
+        --dialog-surface-margin-top: auto !important;
       }
   - style: centered-wide
     include_styles:
@@ -185,7 +185,7 @@ popup_styles:
       - classic
     styles: |
       ha-dialog {
-        --vertical-align-dialog: center !important;
+        --dialog-surface-margin-top: auto !important;
       }
   - style: centered-wide
     include_styles:
@@ -204,7 +204,7 @@ popup_styles:
 
 ## Example - Change background color
 
-A simple example of `all` style for changing background color of a popup. The CSS variables to style the background here are two Home Assistant variables, one for dialog background and one for card background. Text color is also changed to white by setting `--primary-text-color`. For more available styling see [Dialog styles](#dialog-styles).
+A simple example of `all` style for changing background color of a popup. The CSS variables to style the background here are two Home Assistant variables, `--card-background-color` for dialog background and `--ha-card-background` for card background. Text color is also changed to white by setting `--primary-text-color`.
 
 ```yaml
 type: custom:popup-card
@@ -217,7 +217,7 @@ popup_styles:
   - style: all
     styles: |-
       ha-dialog {
-        --ha-dialog-surface-background: red;
+        --card-background-color: red;
         --ha-card-background: red;
         --primary-text-color: white;
         color: white;
@@ -244,7 +244,7 @@ card:
   type: markdown
   content: >-
     This text will be smaller due to the markdown card not specifying typography 
-    styling hence inheriting from the mdc dialog component.
+    styling hence inheriting from the content element.
 popup_card_id: mobile-small-header
 popup_styles:
   - style: mobile-small-header
@@ -252,9 +252,6 @@ popup_styles:
       @media (max-width: 450px), (max-height: 500px) {
         ha-dialog {
           --ha-dialog-border-radius: 0px !important;
-          --mdc-typography-body1-font-size: 0.9em;
-          --mdc-typography-body1-font-weight: 300;
-          --mdc-typography-body1-line-height: 1.3em;
         }
         ha-dialog-header {
           --ha-font-weight-normal: 300;
@@ -264,6 +261,11 @@ popup_styles:
         }
         ha-dialog-header > ha-icon-button {
           padding: 8px;
+        }
+        .content {
+          font-size: 0.9em;
+          font-weight: 300;
+          line-height: 1.3em;
         }
         .content .container {
           padding: 0px !important; 
@@ -293,6 +295,7 @@ card:
 popup_card_id: card-mod-popup
 title: Card-mod Popup
 card_mod:
+  style:
     hui-markdown-card $: |
       ha-markdown {
         padding: 8px;
@@ -318,7 +321,7 @@ Browser Mod Theme:
   card-mod-more-info: |
     :host([background-red]){
       ha-dialog {
-        --ha-dialog-surface-background: red;
+        --card-background-color: red;
         --ha-card-background: red;
         --primary-text-color: white;
         color: white;
@@ -352,7 +355,7 @@ style_sequence:
 initial_style: background-red
 ```
 
-This second example uses animation to slide the popup in from the right. It uses a multiple popup tag as this is the only way to be able to separate popup theming as popup style targeting is not possible in the shadow dom. The theme also shows the use of yaml for card-mod theming which is also required as we are styling the shadow DOM.
+This second example uses animation to slide the popup in from the right. It uses a multiple popup tag as this is the only way to be able to separate popup theming as popup style targeting is not possible in the shadow DOM. The theme also shows the use of yaml for card-mod theming which is also required as we are styling the shadow DOM.
 
 > NOTE: The theme section here is `card-mod-browser-mod-popup-slide-in-yaml`. This is built up based on:
 >
@@ -368,12 +371,19 @@ Browser Mod Theme 2:
   card-mod-theme: Browser Mod Theme 2
 
   card-mod-browser-mod-popup-slide-in-yaml: |
-    ha-dialog $: |
-      .mdc-dialog__surface {
+    .: |
+      ha-dialog {
+        --dialog-surface-margin-top: auto !important;
+        --ha-dialog-show-duration: 1ms;
+        --ha-dialog-hide-duration: 1ms;
+      }
+    ha-dialog $ wa-dialog $: |
+      @keyframes slide-in { from { transform:translateX(100%) } to {
+      transform: translateX(0); } }
+
+      dialog {
         animation: slide-in 0.3s forwards;
       }
-      @keyframes slide-in { from { transform:
-      translateX(100%); } to { transform: translateX(0); } }
 ```
 
 _Popup yaml_:
@@ -395,24 +405,21 @@ The following is a list of CSS variables that are available for using in popup s
 
 > NOTE: Any updates to this list due to changes in Home Assistant Frontend will be part of future release notes.
 
+### Browser Mod
+
+- --padding-x
+- --padding-y
+- --popup-width
+- --popup-border-radius
+- --popup-min-width
+- --popup-max-width
+- --popup-width-full
+- --popup-min-height
+- --popup-max-height
+
 ### ha-dialog
 
-- --ha-dialog-scrim-backdrop-filter
-- --ha-dialog-surface-background
+- --card-background-color
 - --ha-dialog-border-radius
-
-### mdc-dialog
-
-- --vertical-align-dialog
 - --dialog-content-padding
-- --dialog-surface-position
-- --dialog-content-position
-- --mdc-dialog-min-width
-- --mdc-dialog-max-width
-- --mdc-dialog-min-height
-- --mdc-dialog-max-height
 - --dialog-surface-margin-top
-- --mdc-dialog-box-shadow
-- --mdc-typography-headline6-font-weight
-- --mdc-typography-headline6-font-size
-- --mdc-dialog-scroll-divider-color
