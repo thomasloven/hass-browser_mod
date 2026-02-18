@@ -36,7 +36,7 @@ export const PopupMixin = (SuperClass) => {
     private dialogStateListener = (ev: CustomEvent) => {
       if (ev.type === "opened") {
         const composedPath = ev.composedPath();
-        const dialog = composedPath.find((el) => (el as HTMLElement).nodeName.toLowerCase() === "ha-dialog");
+        const dialog = composedPath.find((el) => [ "ha-dialog", "ha-adaptive-dialog"].includes((el as HTMLElement).nodeName?.toLowerCase()));
         if (dialog) {
           const popup = this._popupElements.find((p) => p.dialog === dialog);
           if (!popup) {
@@ -53,7 +53,7 @@ export const PopupMixin = (SuperClass) => {
         }
       } else if (ev.type === "closed") {
         const composedPath = ev.composedPath();
-        const dialog = composedPath.find((el) => [ "ha-dialog", "ha-adaptive-dialog"].includes((el as HTMLElement).nodeName.toLowerCase()));
+        const dialog = composedPath.find((el) => [ "ha-dialog", "ha-adaptive-dialog"].includes((el as HTMLElement).nodeName?.toLowerCase()));
         if (dialog) {
           const popup = this._popupElements.find((p) => p.dialog === dialog);
           if (!popup) {
