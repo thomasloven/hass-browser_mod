@@ -256,7 +256,7 @@ popup_styles:
         ha-dialog-header {
           --ha-font-weight-normal: 300;
           --ha-font-size-xl: 1.2em;
-          --mdc-icon-button-size: 24px;
+          --ha-icon-button-size: 24px;
           --mdc-icon-size: 16px;
         }
         ha-dialog-header > ha-icon-button {
