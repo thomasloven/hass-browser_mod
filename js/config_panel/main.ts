@@ -41,25 +41,26 @@ loadConfigDashboard().then(() => {
               <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
             </a>
           </div>
+          <div class="content ha-scrollbar">
+            <ha-config-section .narrow=${this.narrow} full-width>
+              <browser-mod-browser-settings-card
+                .hass=${this.hass}
+                .narrow=${this.narrow}
+              ></browser-mod-browser-settings-card>
 
-          <ha-config-section .narrow=${this.narrow} full-width>
-            <browser-mod-browser-settings-card
-              .hass=${this.hass}
-              .narrow=${this.narrow}
-            ></browser-mod-browser-settings-card>
+              ${this.hass.user?.is_admin
+                ? html`
+                    <browser-mod-registered-browsers-card
+                      .hass=${this.hass}
+                    ></browser-mod-registered-browsers-card>
 
-            ${this.hass.user?.is_admin
-              ? html`
-                  <browser-mod-registered-browsers-card
-                    .hass=${this.hass}
-                  ></browser-mod-registered-browsers-card>
-
-                  <browser-mod-frontend-settings-card
-                    .hass=${this.hass}
-                  ></browser-mod-frontend-settings-card>
-                `
-              : ""}
-          </ha-config-section>
+                    <browser-mod-frontend-settings-card
+                      .hass=${this.hass}
+                    ></browser-mod-frontend-settings-card>
+                  `
+                : ""}
+            </ha-config-section>
+          </div>
         </ha-top-app-bar-fixed>
       `;
     }
