@@ -123,10 +123,6 @@ export class BrowserModPopup extends LitElement {
         }
       )
     );
-    Object.keys(this._styleAttributes).forEach((key) => {
-      key.split(" ").forEach((k) => this.removeAttribute(k));
-    });
-    this._styleSequenceIndex = undefined;
     return true;
   }
 
@@ -197,6 +193,14 @@ export class BrowserModPopup extends LitElement {
         }
       )
     );
+    const afterClose = () => {
+      // Only remove style attributes after close to not force an update during closing animation
+      Object.keys(this._styleAttributes).forEach((key) => {
+        key.split(" ").forEach((k) => this.removeAttribute(k));
+      });
+      this._styleSequenceIndex = undefined;  
+    }
+    this.addEventListener("closed", () => afterClose(), { once: true });
   }
 
   _updateStyleAttributes(newStyle) {
@@ -424,7 +428,7 @@ export class BrowserModPopup extends LitElement {
       <ha-dialog
         .hass=${this.hass}
         .open=${this.open}
-        type=""
+        type=${this._styleAttributes["classic"] ? "" : "standard"}
         @closed=${this.closeDialog}
         header-title=${this.title}
         ?prevent-scrim-close=${!this.dismissable}
@@ -542,13 +546,13 @@ export class BrowserModPopup extends LitElement {
 
       ha-dialog {
         --dialog-surface-margin-top: var(--ha-space-10, 40px);
-        --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
+        --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-bottom, 0px));
         --padding-x: var(--popup-padding-x, 24px);
         --padding-y: var(--popup-padding-y, 20px);
         --popup-width: var(--popup-min-width, 580px);
         --ha-dialog-border-radius: var(--popup-border-radius, 28px);
         --ha-dialog-width-md: var(--popup-width);
-        --ha-dialog-width-full: var(--popup-width-full, 95vw);
+        --ha-dialog-width-full: var(--popup-width-full, min(95vw, var(--safe-width)));
         --ha-dialog-max-width: var(--popup-max-width, 600px);
         --ha-dialog-min-height: var(--popup-min-height);
         --ha-dialog-max-height: var(--popup-max-height);
@@ -610,7 +614,7 @@ export class BrowserModPopup extends LitElement {
       }
 
       :host([classic]) ha-dialog {
-        --dialog-surface-margin-top: 40px;
+        --dialog-surface-margin-top: var(--ha-space-10, 40px);
         --popup-border-radius: var(--popup-border-radius, 28px);
         --popup-min-height: 10%;
         --popup-max-height: calc(100% - 80px);
@@ -637,13 +641,13 @@ export class BrowserModPopup extends LitElement {
       @media all and (max-width: 450px), all and (max-height: 500px) {
         ha-dialog {
           --popup-width: calc(
-            100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+            100vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
           --popup-max-width: calc(
-            100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+            100vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
           --popup-width-full: calc(
-            100vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+            100vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
           --popup-min-height: 100%;
           --popup-max-height: 100%;
@@ -655,21 +659,26 @@ export class BrowserModPopup extends LitElement {
         }
         :host([classic]) ha-dialog {
           --popup-width: calc(
-            97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+            97vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
           --popup-max-width: calc(
-            97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+            97vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
           --popup-width-full: calc(
-            97vw - env(safe-area-inset-right) - env(safe-area-inset-left)
+            97vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
+          );
+          /* ha-dialog does a transform of that is only reset for standard type which class style does not use */
+          /* So adjust by the opposite of the transform as we can't easily set transform none as wa-dialog is in shadow DOM */
+          --dialog-surface-margin-top: calc(var(--ha-space-10, 40px) + var(--safe-area-inset-top) +             
+            calc(var(--safe-area-offset-bottom, 0px) - var(--safe-area-offset-top, 0px))
           );
         }
       }
 
       @media all and (min-width: 600px) and (min-height: 501px) {
         ha-dialog {
-          --dialog-surface-margin-top: 40px;
-          --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-y, 0px));
+          --dialog-surface-margin-top: calc(var(--ha-space-10, 40px));
+          --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-bottom, 0px));
         }
       }
     `;
