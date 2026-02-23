@@ -1015,7 +1015,7 @@ function e(e,t,i,s){var o,a=arguments.length,n=a<3?t:null===s?s=Object.getOwnPro
         display: flex;
         align-items: center;
       }
-    `}}e([ce()],qe.prototype,"hass",void 0),e([he()],qe.prototype,"_dashboards",void 0),e([he()],qe.prototype,"_panels",void 0),e([he()],qe.prototype,"_editSidebar",void 0),e([he()],qe.prototype,"_hassUserHasSidebarSettings",void 0),customElements.define("browser-mod-frontend-settings-card",qe);var We="2.8.0-alpha.5";(async()=>{var e,t,i,s,o,a,n,r,l,d,c;await customElements.whenDefined("partial-panel-resolver");const h=document.createElement("partial-panel-resolver")._getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==h?void 0:h.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const u=document.createElement("ha-panel-config");await(null===(n=null===(a=null===(o=null===(s=null==u?void 0:u.routerOptions)||void 0===s?void 0:s.routes)||void 0===o?void 0:o.dashboard)||void 0===a?void 0:a.load)||void 0===n?void 0:n.call(a)),await(null===(c=null===(d=null===(l=null===(r=null==u?void 0:u.routerOptions)||void 0===r?void 0:r.routes)||void 0===l?void 0:l.network)||void 0===d?void 0:d.load)||void 0===c?void 0:c.call(d)),await customElements.whenDefined("ha-config-dashboard")})().then(()=>{class t extends ne{firstUpdated(){window.addEventListener("browser-mod-config-update",()=>this.requestUpdate())}render(){var e;return window.browser_mod?K`
+    `}}e([ce()],qe.prototype,"hass",void 0),e([he()],qe.prototype,"_dashboards",void 0),e([he()],qe.prototype,"_panels",void 0),e([he()],qe.prototype,"_editSidebar",void 0),e([he()],qe.prototype,"_hassUserHasSidebarSettings",void 0),customElements.define("browser-mod-frontend-settings-card",qe);var We="2.8.0-beta.1";(async()=>{var e,t,i,s,o,a,n,r,l,d,c;await customElements.whenDefined("partial-panel-resolver");const h=document.createElement("partial-panel-resolver")._getRoutes([{component_name:"config",url_path:"a"}]);await(null===(i=null===(t=null===(e=null==h?void 0:h.routes)||void 0===e?void 0:e.a)||void 0===t?void 0:t.load)||void 0===i?void 0:i.call(t)),await customElements.whenDefined("ha-panel-config");const u=document.createElement("ha-panel-config");await(null===(n=null===(a=null===(o=null===(s=null==u?void 0:u.routerOptions)||void 0===s?void 0:s.routes)||void 0===o?void 0:o.dashboard)||void 0===a?void 0:a.load)||void 0===n?void 0:n.call(a)),await(null===(c=null===(d=null===(l=null===(r=null==u?void 0:u.routerOptions)||void 0===r?void 0:r.routes)||void 0===l?void 0:l.network)||void 0===d?void 0:d.load)||void 0===c?void 0:c.call(d)),await customElements.whenDefined("ha-config-dashboard")})().then(()=>{class t extends ne{firstUpdated(){window.addEventListener("browser-mod-config-update",()=>this.requestUpdate())}render(){var e;return window.browser_mod?K`
         <ha-top-app-bar-fixed>
           <ha-menu-button
             slot="navigationIcon"
@@ -1032,23 +1032,24 @@ function e(e,t,i,s){var o,a=arguments.length,n=a<3?t:null===s?s=Object.getOwnPro
               <ha-icon class="icon" .icon=${"mdi:help-circle"}></ha-icon>
             </a>
           </div>
+          <div class="content ha-scrollbar">
+            <ha-config-section .narrow=${this.narrow} full-width>
+              <browser-mod-browser-settings-card
+                .hass=${this.hass}
+                .narrow=${this.narrow}
+              ></browser-mod-browser-settings-card>
 
-          <ha-config-section .narrow=${this.narrow} full-width>
-            <browser-mod-browser-settings-card
-              .hass=${this.hass}
-              .narrow=${this.narrow}
-            ></browser-mod-browser-settings-card>
+              ${(null===(e=this.hass.user)||void 0===e?void 0:e.is_admin)?K`
+                    <browser-mod-registered-browsers-card
+                      .hass=${this.hass}
+                    ></browser-mod-registered-browsers-card>
 
-            ${(null===(e=this.hass.user)||void 0===e?void 0:e.is_admin)?K`
-                  <browser-mod-registered-browsers-card
-                    .hass=${this.hass}
-                  ></browser-mod-registered-browsers-card>
-
-                  <browser-mod-frontend-settings-card
-                    .hass=${this.hass}
-                  ></browser-mod-frontend-settings-card>
-                `:""}
-          </ha-config-section>
+                    <browser-mod-frontend-settings-card
+                      .hass=${this.hass}
+                    ></browser-mod-frontend-settings-card>
+                  `:""}
+            </ha-config-section>
+          </div>
         </ha-top-app-bar-fixed>
       `:K``}static get styles(){var e,t;return[...null!==(t=null===(e=customElements.get("ha-config-dashboard"))||void 0===e?void 0:e.styles)&&void 0!==t?t:[],n`
           :host {
