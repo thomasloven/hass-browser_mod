@@ -48,6 +48,7 @@ export class BrowserModPopup extends LitElement {
   _resolveClosed;
   _formdata;
   card_mod;
+  uix;
   _popupStyles;
   _objectSelectorMonitor: ObjectSelectorMonitor;
   _initialStyle: string;
@@ -114,6 +115,9 @@ export class BrowserModPopup extends LitElement {
     if ((this as any)._cardMod?.[0]) {
       (this as any)._cardMod[0].styles = "";
     }
+    if ((this as any)._uix?.[0]) {
+      (this as any)._uix[0].styles = "";
+    }
     window.browser_mod.dispatchEvent(
       new CustomEvent("browser-mod-popup-closed",
         {
@@ -162,6 +166,19 @@ export class BrowserModPopup extends LitElement {
         {},
         true,
         "browser_mod-card_mod"
+      );
+    });
+
+    customElements.whenDefined("uix-node").then(() => {
+      (customElements.get("uix-node") as any)?.applyToElement?.(
+        this,
+        this.tag ? `browser-mod-popup-${this.tag}` : "more-info",
+        (this.uix?.style ?? this.card_mod?.style) ?
+          { style: this.uix?.style ?? this.card_mod.style, debug: this.uix?.debug ?? this.card_mod?.debug ?? false } :
+          { style: {}, debug: this.uix?.debug ?? this.card_mod?.debug ?? false },
+        {},
+        true,
+        "browser_mod-uix"
       );
     });
 
@@ -286,6 +303,7 @@ export class BrowserModPopup extends LitElement {
       style = undefined,
       autoclose = false,
       card_mod = undefined,
+      uix = undefined,
       icon = undefined,
       icon_title = undefined,
       icon_action = undefined,
@@ -303,6 +321,7 @@ export class BrowserModPopup extends LitElement {
     this.title = title;
     this.card = undefined;
     this.card_mod = card_mod;
+    this.uix = uix;
     this._initialStyle = initial_style ?? size ?? "normal";
     this._popupStyles = popup_styles;
     this._styleSequence = ensureArray(style_sequence ?? []);

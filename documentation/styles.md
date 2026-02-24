@@ -17,8 +17,8 @@
     - [All style](#all-style)
   - [Example - Change background color](#example---change-background-color)
   - [Example - using media query](#example---using-media-query)
-  - [Example - card\_mod direct](#example---card_mod-direct)
-  - [Example - card\_mod theme](#example---card_mod-theme)
+  - [Example - UIX direct](#example---uix-direct)
+  - [Example - UIX theme](#example---uix-theme)
   - [Dialog styles](#dialog-styles)
     - [Browser Mod](#browser-mod)
     - [ha-dialog](#ha-dialog)
@@ -233,7 +233,7 @@ Notes:
 - Included style is `classic`. `card` will also be applied as the content is a markdown card.
 - `--ha-dialog-border-radius` needs `!important` as it is at same specificity of same variable included in `classic`
 - Padding for `.container .content` needs `important!` as it is at the same specificity of selector included in `card`.
-- The generous padding for the markdown card cannot be styled here as it is in a shadow DOM and does not provide styling variables. See [Example - card_mod direct](#example---card_mod-direct) for styling using card-mod where this example will be extended to reduce the generous markdown card padding.
+- The generous padding for the markdown card cannot be styled here as it is in a shadow DOM and does not provide styling variables. See [Example - UIX direct](#example---uix-direct) for styling using card-mod where this example will be extended to reduce the generous markdown card padding.
 - Style sequence (`style_sequence`) is set to be only the initial style.
 
 ```yaml
@@ -278,11 +278,11 @@ style_sequence:
   - mobile-small-header
 ```
 
-## Example - card_mod direct
+## Example - UIX direct
 
 There may be cases where cards used in popups have styling also not accessible. The prior example is one such case where the padding for the markdown card used for popup content cannot be styled directly.
 
-The example below uses [card-mod](https://github.com/thomasloven/lovelace-card-mod) to reduce the generous padding around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
+The example below uses [UIX](https://github.com/Lint-Free-Technology/uix) to reduce the generous padding around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
 
 ```yaml
 type: custom:popup-card
@@ -294,7 +294,7 @@ card:
     content.
 popup_card_id: card-mod-popup
 title: Card-mod Popup
-card_mod:
+uix:
   style:
     hui-markdown-card $: |
       ha-markdown {
@@ -302,13 +302,13 @@ card_mod:
       }
 ```
 
-## Example - card_mod theme
+## Example - UIX theme
 
-For simplicity or working with styling like animation where card-mod application is need to be early, you can use [card-mod themes](https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes).
+For simplicity or working with styling like animation where card-mod application is need to be early, you can use [UIX themes](https://uix.lf.technology/using/themes/).
 
-Browser Mod 2 has classically supported card-mod theme tags of `card-mod-more-info` or `card-mod-more-info-yaml` which retained for backwards compatibility and are used in the examples below. If you are using multiple popup tags see [Multiple popups and card-mod themes](popups.md#multiple-popups-and-card-mod-themes) for more information.
+Browser Mod 2 supports `uix-more-info` or `uix-more-info-yaml` for backwards compatibility and are used in the examples below. If you are using multiple popup tags see [Multiple popups and UIX themes](popups.md#multiple-popups-and-card-mod-themes) for more information.
 
-This first example uses a popup style `background-red` for which a theme CSS rule for `card-mod-more-info` sets the background of popup and cards to red with white text and icon.
+This first example uses a popup style `background-red` for which a theme CSS rule for `uix-more-info` sets the background of popup and cards to red with white text and icon.
 
 > NOTE: In the theme yaml we need to include `:host([background-red]) { }` outer selector which is done automatically when using popup styles for popup configuration.
 
@@ -316,9 +316,9 @@ _Theme yaml_:
 
 ```yaml
 Browser Mod Theme:
-  card-mod-theme: Browser Mod Theme
+  uix-theme: Browser Mod Theme
 
-  card-mod-more-info: |
+  uix-more-info: |
     :host([background-red]){
       ha-dialog {
         --card-background-color: red;
@@ -355,11 +355,11 @@ style_sequence:
 initial_style: background-red
 ```
 
-This second example uses animation to slide the popup in from the right. It uses a multiple popup tag as this is the only way to be able to separate popup theming as popup style targeting is not possible in the shadow DOM. The theme also shows the use of yaml for card-mod theming which is also required as we are styling the shadow DOM.
+This second example uses animation to slide the popup in from the right. It uses a multiple popup tag as this is the only way to be able to separate popup theming as popup style targeting is not possible in the shadow DOM. The theme also shows the use of yaml for UIX theming which is also required as we are styling the shadow DOM.
 
-> NOTE: The theme section here is `card-mod-browser-mod-popup-slide-in-yaml`. This is built up based on:
+> NOTE: The theme section here is `uix-browser-mod-popup-slide-in-yaml`. This is built up based on:
 >
-> - all card-mod theme sections start with `card-mod`
+> - all card-mod theme sections start with `uix`
 > - all Browser Mod card-mod popup theme sections continue with `-browser-mod-popup`
 > - as the popup has a multiple popup tag of `slide-in` this adds `-slide-in`
 > - as the multiple style is yaml, with shadow dom targeting, this adds `-yaml`
@@ -368,9 +368,9 @@ _Theme yaml_:
 
 ```yaml
 Browser Mod Theme 2:
-  card-mod-theme: Browser Mod Theme 2
+  uix-theme: Browser Mod Theme 2
 
-  card-mod-browser-mod-popup-slide-in-yaml: |
+  uix-browser-mod-popup-slide-in-yaml: |
     .: |
       ha-dialog {
         --dialog-surface-margin-top: auto !important;
@@ -395,7 +395,7 @@ card:
   type: markdown
   content: This popup will slide in from the right.
 popup_card_id: theme-slide-in
-title: Card-mod Theme Slide In
+title: UIX Theme Slide In
 tag: slide-in
 ```
 
