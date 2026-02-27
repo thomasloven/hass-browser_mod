@@ -260,7 +260,11 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
             content: cardConfig.card,
             ...properties,
           });
+        } else {
+          console.warn(`Browser Mod: No popup card config found for ID ${popupCardId}`);
         }
+       }).catch((err) => {
+         console.warn(`Browser Mod: Error finding popup card config by ID ${popupCardId}`, err);
        });
     } else {
       const cardConfig = findPopupCardConfigByEntity(lovelaceRoot, ev.detail?.entityId);
