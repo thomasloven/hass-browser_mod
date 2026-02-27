@@ -217,7 +217,7 @@ popup_styles:
   - style: all
     styles: |-
       ha-dialog {
-        --card-background-color: red;
+        --ha-dialog-surface-background: red;
         --ha-card-background: red;
         --primary-text-color: white;
         color: white;
@@ -321,7 +321,7 @@ Browser Mod Theme:
   uix-more-info: |
     :host([background-red]){
       ha-dialog {
-        --card-background-color: red;
+        --ha-dialog-surface-background: red;
         --ha-card-background: red;
         --primary-text-color: white;
         color: white;
@@ -374,8 +374,8 @@ Browser Mod Theme 2:
     .: |
       ha-dialog {
         --dialog-surface-margin-top: auto !important;
-        --ha-dialog-show-duration: 1ms;
-        --ha-dialog-hide-duration: 1ms;
+        --ha-dialog-show-duration: 0ms;
+        --ha-dialog-hide-duration: 0ms;
       }
     ha-dialog $ wa-dialog $: |
       @keyframes slide-in { from { transform:translateX(100%) } to {
@@ -419,7 +419,10 @@ The following is a list of CSS variables that are available for using in popup s
 
 ### ha-dialog
 
-- --card-background-color
+- --ha-dialog-surface-background
 - --ha-dialog-border-radius
+- --ha-dialog-surface-backdrop-filter
+- --ha-dialog-scrim-backdrop-filter
+- --dialog-box-shadow
 - --dialog-content-padding
 - --dialog-surface-margin-top
