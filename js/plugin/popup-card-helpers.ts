@@ -117,7 +117,6 @@ function findCardInConfig(config, card_id) {
 }
 
 export async function findPopupCardConfigByID(lovelaceRoot, popup_card_id) {
-  const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   var card_id = undefined;
   var url_path = undefined
   if (popup_card_id.includes('/')) {
@@ -127,10 +126,12 @@ export async function findPopupCardConfigByID(lovelaceRoot, popup_card_id) {
   }
 
   var card = null;
-  if (lovelaceConfig && card_id && !url_path) {
-    card = findCardInConfig(lovelaceConfig, card_id);
-  }
-  else if (card_id && url_path) {
+  if (card_id && !url_path) {
+    const lovelaceConfig = lovelaceRoot?.lovelace?.config;
+    if (lovelaceConfig) {
+      card = findCardInConfig(lovelaceConfig, card_id);
+    }
+  } else if (card_id && url_path) {
     if (window.browser_mod.connection) {
       var response;
       try {
