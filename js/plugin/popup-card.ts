@@ -6,7 +6,7 @@ import { getLovelaceRoot, loadHaDialog } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
-import { findPopupCardConfigByEntity, findPopupCardConfigByID } from "./popup-card-helpers";
+import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -246,38 +246,20 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   window.addEventListener("hass-more-info", (ev: CustomEvent) => {
     if (  ev.detail?.ignore_popup_card ||
           (ev.detail?.view && ev.detail?.view !== "info") ||
-          (!ev.detail?.entityId && !ev.detail?.target)
+          (!ev.detail?.entityId && !ev.detail?.target) || 
+          !lovelaceRoot
         ) return;
-    if (ev.detail?.entityId?.toLowerCase()?.startsWith("popup.")) {
+    const target = { entity_id: ev.detail?.entityId };
+    const cardConfig = findPopupCardConfigByEntity(lovelaceRoot, ev.detail?.entityId);
+    if (cardConfig) {
       ev.stopPropagation();
       ev.preventDefault();
-      const popupCardId = ev.detail.entityId.split(/\.(.*)/)[1];
-      findPopupCardConfigByID(lovelaceRoot, popupCardId).then((cardConfig) => {
-        if (cardConfig) {
-          let properties = { ...cardConfig }
-          delete properties.card;
-          window.browser_mod?.service("popup", {
-            content: cardConfig.card,
-            ...properties,
-          });
-        } else {
-          console.warn(`Browser Mod: No popup card config found for ID ${popupCardId}`);
-        }
-       }).catch((err) => {
-         console.warn(`Browser Mod: Error finding popup card config by ID ${popupCardId}`, err);
-       });
-    } else {
-      const cardConfig = findPopupCardConfigByEntity(lovelaceRoot, ev.detail?.entityId);
-      if (cardConfig) {
-        ev.stopPropagation();
-        ev.preventDefault();
-        let properties = { ...cardConfig }
-        delete properties.card;
-        window.browser_mod?.service("popup", {
-          content: cardConfig.card,
-          ...properties,
-        });
-      }
+      let properties = { ...cardConfig }
+      delete properties.card;
+      window.browser_mod?.service("popup", {
+        content: cardConfig.card,
+        ...properties,
+      });
     }
   }, { capture: true });
 
