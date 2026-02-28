@@ -78,28 +78,6 @@ card:
 [any parameter from the browser_mod.popup service call except "content"]
 ```
 
-Usage: more-info action using entity
-
-```yaml
-show_name: true
-show_icon: true
-type: button
-name: Popup card via more-info
-tap_action:
-  action: more-info
-  entity: popup.my-awesome-dashboard/my-awesome-popup
-```
-
-Usage: more-info-entity-id via URL search parameter. This can be used with Android actionable notification.
-
-```url
-<base-ha-url>/?more-info-entity-id=popup.my-awesome-dashboard/my-awesome-popup
-```
-
-|||
-|-|-|
-|`entity`, `more-info-entity-id`| Starts `popup.` which Browser Mod will remove then use the rest of the entity for the `popup_card_id` (refer next table)|
-
 Usage: [_Server_ call](documentation/services.md#calling-services---server-call-vs-browser-call)
 
 ```yaml
