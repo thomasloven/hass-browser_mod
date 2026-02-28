@@ -72,7 +72,7 @@ Usage: URL search parameter.
 Here the standard Home Assistant `more-info-entity-id=<entity_id>` won't work as Browser Mod is not loaded early enough. However you can use `popup-more-info-entity-id=<entity_id>`.
 
 ```url
-/lovelace/popup-more-info-entity-id=<entity_id>
+/lovelace/?popup-more-info-entity-id=<entity_id>
 ```
 
 #### Popup card - template for popup service
