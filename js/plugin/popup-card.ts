@@ -267,6 +267,8 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   }, { capture: true });
 
   // Check for popup-more-info-entity-id URL parameter
+  // Note: The parameter is cleared immediately after reading to ensure this logic
+  // only executes once, even if the browser-mod-bootstrap event fires multiple times
   const entityId = getSearchParam(POPUP_ENTITY_PARAM);
   if (entityId) {
     // Clear the search parameter from the URL
