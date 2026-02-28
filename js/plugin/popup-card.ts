@@ -202,6 +202,8 @@ class PopupCard extends LitElement {
   }
 }
 
+const POPUP_ENTITY_PARAM = 'popup-more-info-entity-id';
+
 window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   ev.stopPropagation();
   while (!window.browser_mod) {
@@ -265,10 +267,10 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   }, { capture: true });
 
   // Check for popup-more-info-entity-id URL parameter
-  const entityId = getSearchParam('popup-more-info-entity-id');
+  const entityId = getSearchParam(POPUP_ENTITY_PARAM);
   if (entityId) {
     // Clear the search parameter from the URL
-    clearSearchParam('popup-more-info-entity-id');
+    clearSearchParam(POPUP_ENTITY_PARAM);
     
     // Wait for an animation frame then fire hass-more-info event
     requestAnimationFrame(() => {
