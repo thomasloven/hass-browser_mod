@@ -9,19 +9,25 @@ export function getSearchParam(paramName: string): string | null {
 }
 
 /**
+ * Helper to build a new URL from search parameters
+ * @param searchParams - The URLSearchParams object
+ * @returns The constructed URL
+ */
+function buildUrl(searchParams: URLSearchParams): string {
+  const newSearch = searchParams.toString();
+  return newSearch 
+    ? `${window.location.pathname}?${newSearch}${window.location.hash}`
+    : `${window.location.pathname}${window.location.hash}`;
+}
+
+/**
  * Helper to clear a specific search parameter from the URL
  * @param paramName - The name of the search parameter to clear
  */
 export function clearSearchParam(paramName: string): void {
   const searchParams = new URLSearchParams(window.location.search);
   searchParams.delete(paramName);
-  
-  const newSearch = searchParams.toString();
-  const newUrl = newSearch 
-    ? `${window.location.pathname}?${newSearch}${window.location.hash}`
-    : `${window.location.pathname}${window.location.hash}`;
-  
-  replaceUrlInHistory(newUrl);
+  replaceUrlInHistory(buildUrl(searchParams));
 }
 
 /**
