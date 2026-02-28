@@ -7,6 +7,7 @@ import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
+import { getSearchParam, clearSearchParam } from "./url-helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -201,6 +202,8 @@ class PopupCard extends LitElement {
   }
 }
 
+const POPUP_ENTITY_PARAM = 'popup-more-info-entity-id';
+
 window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   ev.stopPropagation();
   while (!window.browser_mod) {
@@ -262,6 +265,22 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       });
     }
   }, { capture: true });
+
+  // Check for popup-more-info-entity-id URL parameter
+  // Note: The parameter is cleared immediately after reading to ensure this logic
+  // only executes once, even if the browser-mod-bootstrap event fires multiple times
+  const entityId = getSearchParam(POPUP_ENTITY_PARAM);
+  if (entityId) {
+    // Clear the search parameter from the URL
+    clearSearchParam(POPUP_ENTITY_PARAM);
+    
+    // Wait for an animation frame then fire hass-more-info event
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new CustomEvent('hass-more-info', {
+        detail: { entityId }
+      }));
+    });
+  }
 
   await loadHaDialog();
 });
