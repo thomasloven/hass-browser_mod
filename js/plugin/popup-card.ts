@@ -7,6 +7,7 @@ import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
+import { getSearchParam, clearSearchParam } from "./url-helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -262,6 +263,20 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       });
     }
   }, { capture: true });
+
+  // Check for popup-more-info-entity-id URL parameter
+  const entityId = getSearchParam('popup-more-info-entity-id');
+  if (entityId) {
+    // Clear the search parameter from the URL
+    clearSearchParam('popup-more-info-entity-id');
+    
+    // Wait for an animation frame then fire hass-more-info event
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new CustomEvent('hass-more-info', {
+        detail: { entityId }
+      }));
+    });
+  }
 
   await loadHaDialog();
 });
