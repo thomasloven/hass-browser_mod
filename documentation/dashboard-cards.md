@@ -58,6 +58,23 @@ card:
 |`labels_id`| A single label id or list of label id's. The popup card will be used as a more-info replacement for entities with these labels. |
 |`device_id`| A single device id or list of devices id's. The popup card will be used as a more-info replacement for entities of these devices. |
 
+Usage: more-info
+
+```yaml
+type: tile
+entity: <entity_id>
+tap_action:
+  action: more-info
+```
+
+Usage: URL search parameter.
+
+Here the standard Home Assistant `more-info-entity-id=<entity_id>` won't work as Browser Mod is not loaded early enough. However you can use `popup-more-info-entity-id=<entity_id>`.
+
+```url
+/lovelace/?popup-more-info-entity-id=<entity_id>
+```
+
 #### Popup card - template for popup service
 
 A popup card can be used as a template for [`browser_mod.popup` service](documentation/services.md).

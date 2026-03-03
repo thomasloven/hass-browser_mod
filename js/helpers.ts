@@ -143,7 +143,7 @@ export const loadHaForm = async () => {
 };
 
 // Loads in ha-config-dashboard which is used to copy styling
-// Also provides ha-settings-row
+// Also provides ha-md-list-item
 export const loadConfigDashboard = async () => {
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
@@ -157,8 +157,7 @@ export const loadConfigDashboard = async () => {
   await customElements.whenDefined("ha-panel-config");
   const configRouter: any = document.createElement("ha-panel-config");
   await configRouter?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
-  await configRouter?.routerOptions?.routes?.general?.load?.(); // Load ha-settings-row
-  await configRouter?.routerOptions?.routes?.entities?.load?.(); // Load ha-data-table
+  await configRouter?.routerOptions?.routes?.network?.load?.(); // Load ha-md-list-item
   await customElements.whenDefined("ha-config-dashboard");
 };
 
@@ -177,6 +176,26 @@ export const loadDeveloperToolsTemplate = async () => {
   await dtRouter?.routerOptions?.routes?.template?.load?.();
   await customElements.whenDefined("developer-tools-template");
 };
+
+export const loadHaDialog = async () => {
+  if (customElements.get("ha-dialog")) return;
+  const haEl = await hass_base_el();
+  if (!haEl) return;
+  const ch = await window.loadCardHelpers();
+  window.addEventListener("show-dialog", _showDialogHandler, { once: true, capture: true});
+  ch.showAlertDialog(haEl, {});
+  async function _showDialogHandler(ev) {
+    if (ev.detail?.dialogTag === "dialog-box") {
+      ev.stopPropagation();
+      ev.detail?.dialogImport?.();
+      window.setTimeout(() => {
+        if (!customElements.get("ha-dialog")) {
+          console.warn("Browser Mod: Failed to load ha-dialog, popups will not work");
+        }
+      }, 1000);
+    }
+  }
+}
 
 export function throttle(timeout) {
   return function (target, propertyKey, descriptor) {

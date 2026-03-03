@@ -1,3 +1,4 @@
+import { Unpromise } from "@watchable/unpromise";
 import {
   loadLoadCardHelpers,
   hass_base_el,
@@ -14,7 +15,7 @@ export const PopupMixin = (SuperClass) => {
       loadLoadCardHelpers();
 
       this.addEventListener("browser-mod-popup-opened", this.popupStateListener);
-      this.addEventListener("browser-mod-popup-closed", this.popupStateListener);
+      this.addEventListener("browser-mod-popup-closed", this.popupStateListener);      
       this._popupState = false;
     }
 
@@ -30,8 +31,7 @@ export const PopupMixin = (SuperClass) => {
 
     private popupStateListener = (ev: CustomEvent) => {
       const popup = ev.detail?.popup;
-      if (!popup) return;
-      if (ev.type === "browser-mod-popup-closed" || this._popupElements.includes(popup)) {
+      if (ev.type === "browser-mod-popup-closed" && this._popupElements.includes(popup)) {
         this._popupElements = this._popupElements.filter(
           (p) => p !== popup
         );
@@ -44,6 +44,8 @@ export const PopupMixin = (SuperClass) => {
     showPopup(params: BrowserModPopupParams) {
       (async () => {
         const base: any = await hass_base_el();
+        // Close any existing popup with the same tag to allow open to work
+        await this.closePopup({ tag: params.tag ?? "" });
         const dialogTag = params.tag ? 
           `browser-mod-popup-${params.tag}` : "browser-mod-popup";
         showBrowserModPopup(base, dialogTag, params);
@@ -51,9 +53,31 @@ export const PopupMixin = (SuperClass) => {
     }
 
     async closePopup(args) {
+      async function _closePopup(popup) {
+        const tag = popup.tag !== undefined && popup.tag !== "" ? popup.tag : "standard";
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+        const result = await Unpromise.race([
+          new Promise<void>((resolve) => {
+            const onClose = () => {
+              popup.dialog?.removeEventListener('closed', onClose);
+              if (timeoutId !== undefined) clearTimeout(timeoutId);
+              resolve();
+            };
+            popup.dialog.addEventListener('closed', onClose, { once: true });
+            popup.closeDialog();
+          }),
+          new Promise<void>((resolve) => {
+            timeoutId = setTimeout(() => {
+              console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
+              resolve();
+            }, 5000);
+          })
+        ]);
+      }
+
       const { all, tag } = args;
       if (all === true) {
-        this._popupElements.forEach((popup) => popup.closeDialog());
+        await Promise.all(this._popupElements.map((popup) => _closePopup(popup)));
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
@@ -63,9 +87,16 @@ export const PopupMixin = (SuperClass) => {
         const popup = this._popupElements.find(
           (p) => p.nodeName.toLowerCase() === dialogTag
         );
-        popup?.closeDialog();
+        // Wait for the popup's dialog to close before proceeding
+        if (popup?.dialog) {
+          await _closePopup(popup);
+        }
       } else {
-        this._popupElements.pop()?.closeDialog();
+        const popup = this._popupElements.pop();
+        // Wait for the popup's dialog to close before proceeding
+        if (popup?.dialog) {
+            await _closePopup(popup);
+        }
       }
     }
 

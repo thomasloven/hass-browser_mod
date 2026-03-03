@@ -2,11 +2,12 @@ import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import "./popup-card-editor";
-import { getLovelaceRoot } from "../helpers";
+import { getLovelaceRoot, loadHaDialog } from "../helpers";
 import { repeat } from "lit/directives/repeat.js";
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
+import { getSearchParam, clearSearchParam } from "./url-helpers";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -201,6 +202,8 @@ class PopupCard extends LitElement {
   }
 }
 
+const POPUP_ENTITY_PARAM = 'popup-more-info-entity-id';
+
 window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   ev.stopPropagation();
   while (!window.browser_mod) {
@@ -236,7 +239,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
 
   // popstate will get fired on window.browser_mod?.service("popup", ...) but as this popstate
   // is not currently cleared there is no way to distinguish this event properly at this time.
-  // Hence, setting lovelaceRoot on all popstate which captures, for examople, UI back from History Panel.
+  // Hence, setting lovelaceRoot on all popstate which captures, for example, UI back from History Panel.
   ['popstate','location-changed'].forEach(event => 
     window.addEventListener(event, async (ev) => {
       lovelaceRoot = await getLovelaceRoot(document);
@@ -256,16 +259,28 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       ev.preventDefault();
       let properties = { ...cardConfig }
       delete properties.card;
-      setTimeout(
-        () => {
-          window.browser_mod?.showMoreInfo('', '', false, false, true);
-          window.browser_mod?.service("popup", {
-            content: cardConfig.card,
-            ...properties,
-          });
-        },
-        10
-      );
+      window.browser_mod?.service("popup", {
+        content: cardConfig.card,
+        ...properties,
+      });
     }
-  });
+  }, { capture: true });
+
+  // Check for popup-more-info-entity-id URL parameter
+  // Note: The parameter is cleared immediately after reading to ensure this logic
+  // only executes once, even if the browser-mod-bootstrap event fires multiple times
+  const entityId = getSearchParam(POPUP_ENTITY_PARAM);
+  if (entityId) {
+    // Clear the search parameter from the URL
+    clearSearchParam(POPUP_ENTITY_PARAM);
+    
+    // Wait for an animation frame then fire hass-more-info event
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new CustomEvent('hass-more-info', {
+        detail: { entityId }
+      }));
+    });
+  }
+
+  await loadHaDialog();
 });

@@ -3,7 +3,7 @@ import { property, state } from "lit/decorators.js";
 
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
-  @property() dirty = false;
+  @property({ type: Boolean }) dirty = false;
   @property({ type: Boolean }) public narrow = false;
 
   toggleRegister() {
@@ -68,12 +68,13 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             : ""}
         </div>
         <div class="card-content">
-          <ha-settings-row>
-            <span slot="heading">Register</span>
-            <span slot="description"
+          <ha-md-list-item>
+            <span slot="headline">Register</span>
+            <span slot="supporting-text"
               >Enable this browser as a Device in Home Assistant</span
             >
             <ha-switch
+              slot="end"
               .checked=${window.browser_mod?.registered}
               @change=${this.toggleRegister}
               .disabled=${window.browser_mod?.browser_locked ||
@@ -81,14 +82,15 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               window.browser_mod?.global_settings["lockRegister"] ||
               !this.hass.user?.is_admin }
             ></ha-switch>
-          </ha-settings-row>
+          </ha-md-list-item>
 
-          <ha-settings-row .narrow=${this.narrow}>
-            <span slot="heading">Browser ID</span>
-            <span slot="description"
+          <ha-md-list-item ?narrow=${this.narrow}>
+            <span slot="headline">Browser ID</span>
+            <span slot="supporting-text"
               >A unique identifier for this browser-device combination.</span
             >
             <ha-form
+              slot="end"
               .hass=${this.hass}
               .schema=${[
                 {
@@ -122,23 +124,24 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               }}
             >
             </ha-form>
-          </ha-settings-row>
+          </ha-md-list-item>
 
           ${window.browser_mod?.registered
             ? html`
                 ${this._renderSuspensionAlert()}
-                <ha-settings-row>
-                  <span slot="heading">Enable camera</span>
-                  <span slot="description"
+                <ha-md-list-item>
+                  <span slot="headline">Enable camera</span>
+                  <span slot="supporting-text"
                     >Get camera input from this browser (hardware
                     dependent)</span
                   >
                   <ha-switch
+                    slot="end"
                     .checked=${window.browser_mod?.cameraEnabled}
                     @change=${this.toggleCameraEnabled}
                     .disabled=${window.browser_mod?.browser_locked}
                   ></ha-switch>
-                </ha-settings-row>
+                </ha-md-list-item>
                 ${window.browser_mod?.cameraError
                   ? html`
                       <ha-alert alert-type="error">
@@ -300,6 +303,9 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       ha-textfield {
         display: block;
         margin-top: 8px;
+      }
+      ha-md-list-item[narrow] > ha-form {
+        flex: 2;
       }
     `;
   }
