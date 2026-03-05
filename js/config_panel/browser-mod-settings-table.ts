@@ -180,6 +180,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod?.showPopup(
       {
         title: "Change setting",
+        tag: "change-setting",
         content,
         right_button: "Save",
         right_button_variant: "brand",
@@ -214,6 +215,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod.showPopup(
       {
         title: "Select browser to configure",
+        tag: "select-browser",
         content: [
           {
             name: "browser",
@@ -258,6 +260,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod.showPopup(
       {
         title: "Select user to configure",
+        tag: "select-user",
         content: [
           {
             name: "user",
