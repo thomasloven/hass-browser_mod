@@ -233,7 +233,7 @@ Notes:
 - Included style is `classic`. `card` will also be applied as the content is a markdown card.
 - `--ha-dialog-border-radius` needs `!important` as it is at same specificity of same variable included in `classic`
 - Padding for `.container .content` needs `important!` as it is at the same specificity of selector included in `card`.
-- The generous padding for the markdown card cannot be styled here as it is in a shadow DOM and does not provide styling variables. See [Example - UIX direct](#example---uix-direct) for styling using card-mod where this example will be extended to reduce the generous markdown card padding.
+- The generous padding for the markdown card cannot be styled here as it is in a shadow DOM and does not provide styling variables. See [Example - UIX direct](#example---uix-direct) for styling using Uix where this example will be extended to reduce the generous markdown card padding.
 - Style sequence (`style_sequence`) is set to be only the initial style.
 
 ```yaml
@@ -282,7 +282,7 @@ style_sequence:
 
 There may be cases where cards used in popups have styling also not accessible. The prior example is one such case where the padding for the markdown card used for popup content cannot be styled directly.
 
-The example below uses [UIX](https://github.com/Lint-Free-Technology/uix) to reduce the generous padding around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (card-mod selector `hui-markdown-card $:`).
+The example below uses [UIX](https://github.com/Lint-Free-Technology/uix) to reduce the generous padding around the markdown card. The markdown element with padding is in the shadow root of `hui-markdown-card` (uix selector `hui-markdown-card $:`).
 
 ```yaml
 type: custom:popup-card
@@ -292,8 +292,8 @@ card:
   content: >-
     This popup will have reduced padding on markdown
     content.
-popup_card_id: card-mod-popup
-title: Card-mod Popup
+popup_card_id: uix-popup
+title: UIX Popup
 uix:
   style:
     hui-markdown-card $: |
@@ -304,9 +304,9 @@ uix:
 
 ## Example - UIX theme
 
-For simplicity or working with styling like animation where card-mod application is need to be early, you can use [UIX themes](https://uix.lf.technology/using/themes/).
+For simplicity or working with styling like animation where Uix application is need to be early, you can use [UIX themes](https://uix.lf.technology/using/themes/).
 
-Browser Mod 2 supports `uix-more-info` or `uix-more-info-yaml` for backwards compatibility and are used in the examples below. If you are using multiple popup tags see [Multiple popups and UIX themes](popups.md#multiple-popups-and-card-mod-themes) for more information.
+Browser Mod 2 supports `uix-more-info` or `uix-more-info-yaml` for backwards compatibility and are used in the examples below. If you are using multiple popup tags see [Multiple popups and UIX themes](popups.md#multiple-popups-and-uix-themes) for more information.
 
 This first example uses a popup style `background-red` for which a theme CSS rule for `uix-more-info` sets the background of popup and cards to red with white text and icon.
 
@@ -359,8 +359,8 @@ This second example uses animation to slide the popup in from the right. It uses
 
 > NOTE: The theme section here is `uix-browser-mod-popup-slide-in-yaml`. This is built up based on:
 >
-> - all card-mod theme sections start with `uix`
-> - all Browser Mod card-mod popup theme sections continue with `-browser-mod-popup`
+> - all uix theme sections start with `uix`
+> - all Browser Mod uix popup theme sections continue with `-browser-mod-popup`
 > - as the popup has a multiple popup tag of `slide-in` this adds `-slide-in`
 > - as the multiple style is yaml, with shadow dom targeting, this adds `-yaml`
 

@@ -258,8 +258,8 @@ When using [`browser_mod.close_popup`](./services.md#browser_modclose_popup) ser
 2. Close popup by tag
 3. Closing top most popup
 
-### Multiple popups and card-mod themes
+### Multiple popups and Uix themes
 
-See [card-mod themes](https://github.com/thomasloven/lovelace-card-mod/wiki/Card-mod-Themes) for working with card-mod themes.
+See [Uix themes](https://uix.lf.technology/using/themes/) for working with Uixthemes.
 
-Prior to supporting multiple popups, Browser Mod 2 registered a card-mod type `more-info` for popups allowing the popup to be styled in a theme via `card-mod-more-info` or `card-mod-more-info-yaml`. For multiple popups, the card-mod type is constructed from the popup tag. For a popup dialog tag of `lights` the card-mod type is `browser-mod-popup-lights` allowing to the popup to be styled in a theme via `card-mod-browser-mod-popup-lights` or `card-mod-browser-mod-popup-lights-yaml`. Popups wih no popup tag retain the card-mod type `more-info`.
+Prior to supporting multiple popups, Browser Mod 2 registered a Uix type `more-info` for popups allowing the popup to be styled in a theme via `uix-more-info` or `uix-more-info-yaml`. For multiple popups, the uix type is constructed from the popup tag. For a popup dialog tag of `lights` the uix type is `browser-mod-popup-lights` allowing to the popup to be styled in a theme via `uix-browser-mod-popup-lights` or `uix-browser-mod-popup-lights-yaml`. Popups wih no popup tag retain the uix type `more-info`.
