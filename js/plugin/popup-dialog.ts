@@ -451,6 +451,7 @@ export class BrowserModPopup extends LitElement {
         @closed=${this.closeDialog}
         header-title=${this.title}
         ?prevent-scrim-close=${!this.dismissable}
+        ?without-header=${!this.title}
         flexContent
       >
         ${this.timeout && !this.timeout_hide_progress
