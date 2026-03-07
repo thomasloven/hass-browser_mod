@@ -28,6 +28,32 @@ const configSchema = [
   },
   {
     type: "expandable",
+    label: "Adaptive dialog",
+    schema: [
+      {
+        type: "grid",
+        schema: [
+          {
+            name: "adaptive",
+            label: "Use adaptive dialog",
+            selector: { boolean: {} },
+          },
+          {
+            name: "adaptive_allow_mode_change",
+            label: "Allow mode change when using adaptive dialog",
+            selector: { boolean: {} },
+          },
+          {
+            name: "adaptive_force_bottom_sheet",
+            label: "Force bottom sheet mode for adaptive dialog",
+            selector: { boolean: {} },
+          }
+        ],
+      }
+    ]
+  }, 
+  {
+    type: "expandable",
     label: "Header icon",
     schema: [
       {
