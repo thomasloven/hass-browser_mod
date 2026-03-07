@@ -212,6 +212,9 @@ service: browser_mod.popup
 data:
   [popup_card_id: <string>]
   [title: <string>]
+  [adaptive: <true/FALSE>]
+  [adaptive_allow_mode_change: <true/FALSE>]
+  [adaptive_force_bottom_sheet: <true/FALSE>]
   [content: <string / Dashboard card configuration / ha-form schema>]
   [initial_style: <NORMAL/classic/wide/fullscreen/(user)>]
   [style_sequence: <list>]
@@ -261,6 +264,9 @@ data:
 |`popup_card_id` | The Popup-card ID of a `custom:popup-card` which exists in a dashboard. If calling via a [*Browser* call](documentation/services.md#calling-services---server-call-vs-browser-call) you can use the Popup-card ID of the card directly if the card exists in the same dashboard the *Browser* call is being made from. In all other cases, including all *Server* calls, you need to specify both the dashboard url(*) and the Popup-card ID using the format `<dashboard-url/popup_card_id>`. e.g. For a `custom:popup-card` with a Popup-card ID of `my-awesome-popup` in the dashboard with url `my-awesome-dashboard` use `my-awesome-dashboard/my-awesome-popup` |
 |`title` | The title of the popup window.|
 |`content`| HTML, a dashboard card configuration or ha-form schema to display.|
+|`adaptive`| Enable the popup to be an adaptive. A regular popup dialog will be used on larger screens while a bottom sheet will be used om smaller devices. NOTE: `classic` style is not compatible with adaptive dialog as it will never be used.|
+|`adaptive_allow_mode_change`| When set the adaptive dialog will remain responsive to screen size changes. This can be used to make the popup responsive to screen size changes while open but may cause issues with content or styles. Otherwise the adaptive mode is set only on open (recommended).|
+|`adaptive_force_bottom_sheet`| If `true` force the adaptive dialog to be in bottom sheet mode when created. If `adaptive_allow_mode_change` is `true` then the mode will continue to adapt on size change, though this is not a recommended combination. |
 | `icon` | An mdi icon which will appear in the popup header. e.g. mdi:home. `title` must be set for the header to show. |
 | `icon_title` or `icons` > `title` | Tooltip for the icon. |
 | `icon_action` or `icons` > `action` | Action to perform when the icon is pressed. |
