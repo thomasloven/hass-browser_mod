@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property } from "lit/decorators.js";
-import { compare_deep, debounce, selectTree } from "../helpers";
+import { compare_deep, debounce, frontendSettingsAdaptiveDialogStyle, selectTree } from "../helpers";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { classMap } from 'lit/directives/class-map.js';
 
@@ -109,6 +109,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod?.showPopup(
       {
         title: "Are you sure",
+        adaptive: true,
         content: "Do you wish to clear this setting?",
         right_button: "Clear",
         right_button_variant: "danger",
@@ -117,6 +118,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
+        style: frontendSettingsAdaptiveDialogStyle,
       }
     );
   }
@@ -180,6 +182,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod?.showPopup(
       {
         title: "Change setting",
+        adaptive: true,
         tag: "change-setting",
         content,
         right_button: "Save",
@@ -189,6 +192,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
+        style: frontendSettingsAdaptiveDialogStyle,
       }
     );
   }
@@ -205,8 +209,10 @@ class BrowserModSettingsTable extends LitElement {
       window.browser_mod.showPopup(
         {
           title: "No browsers to configure",
+          adaptive: true,
           content: "All registered browsers have already been configured.",
-          right_button: "OK"
+          right_button: "OK",
+          style: frontendSettingsAdaptiveDialogStyle,
         }
       );
       return;
@@ -215,6 +221,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod.showPopup(
       {
         title: "Select browser to configure",
+        adaptive: true,
         tag: "select-browser",
         content: [
           {
@@ -233,6 +240,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
+        style: frontendSettingsAdaptiveDialogStyle,
       }
     );
   }
@@ -250,8 +258,10 @@ class BrowserModSettingsTable extends LitElement {
       window.browser_mod.showPopup(
         {
           title: "No users to configure",
+          adaptive: true,
           content: "All users have already been configured.",
-          right_button: "OK"
+          right_button: "OK",
+          style: frontendSettingsAdaptiveDialogStyle,
         }
       );
       return;
@@ -260,6 +270,7 @@ class BrowserModSettingsTable extends LitElement {
     window.browser_mod.showPopup(
       {
         title: "Select user to configure",
+        adaptive: true,
         tag: "select-user",
         content: [
           {
@@ -277,6 +288,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
+        style: frontendSettingsAdaptiveDialogStyle,
       }
     );
   }

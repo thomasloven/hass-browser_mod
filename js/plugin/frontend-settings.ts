@@ -1,4 +1,4 @@
-import { await_element, waitRepeat, runOnce, selectTree, debounce } from "../helpers";
+import { await_element, waitRepeat, runOnce, selectTree, debounce, frontendSettingsAdaptiveDialogStyle } from "../helpers";
 import { OverlayIcon } from "./overlay-icon"
 
 const NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY = "browser_mod-no-sidebar-edit-mode-prompt";
@@ -381,6 +381,7 @@ export const AutoSettingsMixin = (SuperClass) => {
                 window.browser_mod?.showPopup(
                   {
                     title: 'Edit sidebar',
+                    adaptive: true,
                     content: SIDEBAR_EDIT_MODE_PROMPT_SCHEMA,
                     right_button: "Continue",
                     right_button_action: (data) => { 
@@ -397,7 +398,7 @@ export const AutoSettingsMixin = (SuperClass) => {
                     },
                     left_button_variant: "brand",
                     left_button_appearance: "accent",
-                    style: 'ha-dialog { position: fixed; z-index: 999; }' // Need to be above open drawer sidebar
+                    style: `${frontendSettingsAdaptiveDialogStyle} ha-dialog { position: fixed; z-index: 999; }` // Need to be above open drawer sidebar
                   }
                 )
               } else {

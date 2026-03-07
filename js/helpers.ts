@@ -313,3 +313,14 @@ export function compare_deep(a: any, b: any) {
   }
   return true;
 }
+
+export const frontendSettingsAdaptiveDialogStyle = 
+  `ha-adaptive-dialog {
+    --ha-bottom-sheet-height: calc(
+      100vh - max(var(--safe-area-inset-top), 100vh / 3)
+    );
+    --ha-bottom-sheet-height: calc(
+      100dvh - max(var(--safe-area-inset-top), 100dvh / 3)
+    );
+    --ha-bottom-sheet-max-height: var(--ha-bottom-sheet-height);
+  }`;
