@@ -135,9 +135,11 @@ export class BrowserModPopup extends LitElement {
 
   openDialog() {
     this.open = true;
-    if (this.adaptive && (this.adaptive_force_bottom_sheet)) {
-      this.dialog._mode = "bottom-sheet";
-      this.dialog._modeSet = true;
+    if (this.adaptive && this.adaptive_force_bottom_sheet) {
+      this.updateComplete.then(() => {
+        this.dialog._mode = "bottom-sheet";
+        this.dialog._modeSet = true;
+      });
     }
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
