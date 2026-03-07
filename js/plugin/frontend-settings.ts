@@ -398,7 +398,7 @@ export const AutoSettingsMixin = (SuperClass) => {
                     },
                     left_button_variant: "brand",
                     left_button_appearance: "accent",
-                    style: `${frontendSettingsAdaptiveDialogStyle} ha-dialog { position: fixed; z-index: 999; }` // Need to be above open drawer sidebar
+                    style: `${frontendSettingsAdaptiveDialogStyle} ha-dialog, ha-adaptive-dialog { position: fixed; z-index: 999; }` // Need to be above open drawer sidebar
                   }
                 )
               } else {
