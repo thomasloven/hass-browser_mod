@@ -1,7 +1,7 @@
 
 # Popups
 
-NOTE: This guide on Browser Mod popups shows general methods of `browser_mod.popup`. If you are new to Browser Mod, make sure to read the [Popup card](../README.md#popup-card) section in the main README document. You will also need to be familiar with the diffference between a [*Browser* call](services.md#calling-services---server-call-vs-browser-call) and a [*Server* call](services.md#calling-services---server-call-vs-browser-call) for Browser Mod services including `browser_mod.popup`. Most examples shown here are *Server* calls.
+NOTE: This guide on Browser Mod popups shows general methods of `browser_mod.popup`. If you are new to Browser Mod, make sure to read the [Popup card](../README.md#popup-card) section in the main README document. You will also need to be familiar with the difference between a [*Browser* call](services.md#calling-services---server-call-vs-browser-call) and a [*Server* call](services.md#calling-services---server-call-vs-browser-call) for Browser Mod services including `browser_mod.popup`. Most examples shown here are *Server* calls.
 
 ## Anatomy of a popup
 
@@ -175,6 +175,28 @@ data:
 ![Screenshot of a popup allowing the user to choose which rooms to vacuum](https://user-images.githubusercontent.com/1299821/182713714-ef4149b1-217a-4d41-9737-714f5320c25c.png)
 
 **NOTE:** If you use an Object Selector (yaml) together with a right button, the right button will be disabled and an error displayed when the yaml has a parsing error. This is due to the way the underlying Home Assistant yaml editor works to provide the output yaml as an object. While there is a yaml parsing error, the parsed yaml cannot be provied and nothing would be returned if the user was allowed to continue.
+
+## Adaptive dialog
+
+Adaptive dialogs use the Home Assistant bottom sheet element when on small screens. To use adaptive dialog for popups set `adaptive: true`.
+
+> NOTE: `classic` style is not compatible with adaptive dialog as it will never be used.
+
+```yaml
+service: browser_mod.popup
+data:
+  title: The title
+  content: The content
+  adaptive: true
+  adaptive_allow_mode_change: false
+  adaptive_force_bottom_sheet: true
+```
+
+| | |
+|-|-|
+| `adaptive` | Set to `true` to use adaptive dialog. |
+| `adaptive_allow_mode_change` | Set to `true` to make the popup responsive to screen size changes while open but may cause issues with content or styles. Otherwise the adaptive mode is set only on open (recommended).|
+| `adaptive_force_bottom_sheet` | If `true` force the adaptive dialog to be in bottom sheet mode when created. If `adaptive_allow_mode_change` is `true` then the adaptive mode will continue to adapt on screen size change, though this is not a recommended combination. When forcing bottom sheet, the width will be 100%. To limit width set the CSS variable `--popup-max-width` in your style for the popup. |
 
 ## Styling popups
 
