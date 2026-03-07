@@ -74,7 +74,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           adaptive: true,
           content: "Sidebar settings cleared",
           right_button: "OK",
-          style: frontendSettingsAdaptiveDialogStyle,
+          popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
         }
       )
     };
@@ -90,7 +90,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
-        style: frontendSettingsAdaptiveDialogStyle,
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }

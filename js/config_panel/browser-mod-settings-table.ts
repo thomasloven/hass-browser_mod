@@ -118,7 +118,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
-        style: frontendSettingsAdaptiveDialogStyle,
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }
@@ -192,7 +192,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
-        style: frontendSettingsAdaptiveDialogStyle,
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }
@@ -212,7 +212,7 @@ class BrowserModSettingsTable extends LitElement {
           adaptive: true,
           content: "All registered browsers have already been configured.",
           right_button: "OK",
-          style: frontendSettingsAdaptiveDialogStyle,
+          popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
         }
       );
       return;
@@ -240,7 +240,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
-        style: frontendSettingsAdaptiveDialogStyle,
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }
@@ -261,7 +261,7 @@ class BrowserModSettingsTable extends LitElement {
           adaptive: true,
           content: "All users have already been configured.",
           right_button: "OK",
-          style: frontendSettingsAdaptiveDialogStyle,
+          popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
         }
       );
       return;
@@ -288,7 +288,7 @@ class BrowserModSettingsTable extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
-        style: frontendSettingsAdaptiveDialogStyle,
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }

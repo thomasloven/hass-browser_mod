@@ -205,7 +205,7 @@ export class SidebarSettingsCustomSelector {
           adaptive: true,
           content: "Sidebar settings dialog unavailable.",
           right_button: "OK",
-          style: frontendSettingsAdaptiveDialogStyle,
+          popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
         }
       );
       return;

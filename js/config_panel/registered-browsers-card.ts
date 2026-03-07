@@ -57,7 +57,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
-        style: frontendSettingsAdaptiveDialogStyle,
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }
