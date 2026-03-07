@@ -4,6 +4,12 @@
 
 * Adaptive dialog support ([ad1b1ca](https://github.com/thomasloven/hass-browser_mod/commit/ad1b1cadea5a544b7cf1c7599feb97d900e0827c)), closes [#1175](https://github.com/thomasloven/hass-browser_mod/issues/1175)
 
+## [2.8.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.8.1...v2.8.2) (2026-03-06)
+
+### 🐞 Bug Fixes
+
+* Popup with no title still displays popup header ([9244cd7](https://github.com/thomasloven/hass-browser_mod/commit/9244cd7567d81a7725c9384cb19780e96f96e6c9))
+
 ## [2.8.2-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.8.1...v2.8.2-beta.1) (2026-03-06)
 
 ### 🐞 Bug Fixes
