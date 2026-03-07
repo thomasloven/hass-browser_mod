@@ -196,7 +196,7 @@ data:
 |-|-|
 | `adaptive` | Set to `true` to use adaptive dialog. |
 | `adaptive_allow_mode_change` | Set to `true` to make the popup responsive to screen size changes while open but may cause issues with content or styles. Otherwise the adaptive mode is set only on open (recommended).|
-| `adaptive_force_bottom_sheet` | If `true` force the adaptive dialog to be in bottom sheet mode when created. If `adaptive_allow_mode_change` is `true` then the adaptive mode will continue to adapt on screen size change, though this is not a recommended combination. |
+| `adaptive_force_bottom_sheet` | If `true` force the adaptive dialog to be in bottom sheet mode when created. If `adaptive_allow_mode_change` is `true` then the adaptive mode will continue to adapt on screen size change, though this is not a recommended combination. When forcing bottom sheet, the width will be 100%. To limit width set the CSS variable `--popup-max-width` in your style for the popup. |
 
 ## Styling popups
 
