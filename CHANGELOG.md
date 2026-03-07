@@ -1,3 +1,9 @@
+## [2.9.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0-beta.1...v2.9.0-beta.2) (2026-03-07)
+
+### ⭐ New Features
+
+* Use adaptive dialogs for Browser Mod Frontend settings popups. ([#1207](https://github.com/thomasloven/hass-browser_mod/issues/1207)) ([59d0784](https://github.com/thomasloven/hass-browser_mod/commit/59d07842d46a31aee00581f96031c61e81b2e7a0))
+
 ## [2.9.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.8.2-beta.1...v2.9.0-beta.1) (2026-03-07)
 
 ### ⭐ New Features
