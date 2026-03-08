@@ -152,6 +152,7 @@ export const loadHuiCardPicker = async () => {
     type: "vertical-stack",
     cards: [],
   });
+  if (!verticalStackCard) return;
   // get its editor class once hui-vertical-stack-card is defined
   // we need check hui-vertical-stack-card is defined as it is lazily loaded
   await customElements.whenDefined("hui-vertical-stack-card");
