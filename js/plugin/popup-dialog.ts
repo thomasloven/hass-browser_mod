@@ -225,12 +225,14 @@ export class BrowserModPopup extends LitElement {
         key.split(" ").forEach((k) => this.removeAttribute(k));
       });
       this._styleSequenceIndex = undefined;
-      // Workaround for bottom-sheet mode getting stuck 
-      if (this.adaptive && this.dialog && this.dialog._mode === "bottom-sheet") {
-        const bottomSheet = this.dialog.shadowRoot?.querySelector("ha-bottom-sheet");
-        bottomSheet?.style.removeProperty("--dialog-transform");
-        bottomSheet?.style.removeProperty("--dialog-transition");
-      }  
+      // Workaround for bottom-sheet mode getting stuck
+      if (this.adaptive && this.dialog) {
+        const bottomSheet = this.dialog.shadowRoot?.querySelector("ha-bottom-sheet") as HTMLElement | null;
+        if (bottomSheet) {
+          bottomSheet.style.removeProperty("--dialog-transform");
+          bottomSheet.style.removeProperty("--dialog-transition");
+        }
+      }
     }
     this.addEventListener("closed", () => afterClose(), { once: true });
   }
