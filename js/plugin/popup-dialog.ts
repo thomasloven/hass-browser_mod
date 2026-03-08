@@ -224,7 +224,13 @@ export class BrowserModPopup extends LitElement {
       Object.keys(this._styleAttributes).forEach((key) => {
         key.split(" ").forEach((k) => this.removeAttribute(k));
       });
-      this._styleSequenceIndex = undefined;  
+      this._styleSequenceIndex = undefined;
+      // Workaround for bottom-sheet mode getting stuck if dialog is closed while in transitionend event before it can remove the bottom-sheet class
+      if (this.adaptive && this.dialog && this.dialog._mode === "bottom-sheet") {
+        const bottomSheet = this.dialog.shadowRoot?.querySelector("ha-bottom-sheet");
+        bottomSheet?.style.removeProperty("--dialog-transform");
+        bottomSheet?.style.removeProperty("--dialog-transition");
+      }  
     }
     this.addEventListener("closed", () => afterClose(), { once: true });
   }
