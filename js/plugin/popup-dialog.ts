@@ -225,7 +225,7 @@ export class BrowserModPopup extends LitElement {
         key.split(" ").forEach((k) => this.removeAttribute(k));
       });
       this._styleSequenceIndex = undefined;
-      // Workaround for bottom-sheet mode getting stuck if dialog is closed while in transitionend event before it can remove the bottom-sheet class
+      // Workaround for bottom-sheet mode getting stuck 
       if (this.adaptive && this.dialog && this.dialog._mode === "bottom-sheet") {
         const bottomSheet = this.dialog.shadowRoot?.querySelector("ha-bottom-sheet");
         bottomSheet?.style.removeProperty("--dialog-transform");
