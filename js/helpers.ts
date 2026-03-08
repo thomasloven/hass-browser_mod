@@ -148,12 +148,15 @@ export const loadHuiCardPicker = async () => {
   const helpers = await window.loadCardHelpers();
   if (!helpers) return;
   // vertical-stack is used to load hui-card-picker
-  const verticalStackCard = await helpers.createCardElement({ type: 'vertical-stack', cards: [] });
+  const verticalStackCard = await helpers.createCardElement({
+    type: "vertical-stack",
+    cards: [],
+  });
   // get its editor class once hui-vertical-stack-card is defined
   // we need check hui-vertical-stack-card is defined as it is lazily loaded
-  await customElements.whenDefined('hui-vertical-stack-card')
-      .then(() => verticalStackCard.constructor.getConfigElement());
-}
+  await customElements.whenDefined("hui-vertical-stack-card");
+  await verticalStackCard.constructor.getConfigElement();
+};
 
 // Loads in ha-config-dashboard which is used to copy styling
 // Also provides ha-md-list-item
