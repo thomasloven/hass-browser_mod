@@ -1,3 +1,9 @@
+## [2.9.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0-beta.3...v2.9.0-beta.4) (2026-03-08)
+
+### 🐞 Bug Fixes
+
+* Card picker on popup card editor may not show ([#1210](https://github.com/thomasloven/hass-browser_mod/issues/1210)) ([26e0e3a](https://github.com/thomasloven/hass-browser_mod/commit/26e0e3afcfcde877939e670e7a3c872a5752122a))
+
 ## [2.9.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0-beta.2...v2.9.0-beta.3) (2026-03-08)
 
 ### 🐞 Bug Fixes
