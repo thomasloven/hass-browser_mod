@@ -1,6 +1,6 @@
 import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
-import { hass_base_el, loadHaForm, selectTree } from "../helpers";
+import { hass_base_el, loadHaForm, loadHuiCardPicker, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 
 const STANDARD_POPUP_STYLES = ["normal", "classic", "wide", "fullscreen"]
@@ -361,6 +361,7 @@ class PopupCardEditor extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     loadHaForm();
+    loadHuiCardPicker();
     this._objectSelectorMonitor = new ObjectSelectorMonitor(
       this,
       (value: boolean) => { this._settingsValid = value },
