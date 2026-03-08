@@ -1,3 +1,9 @@
+## [2.9.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0-beta.2...v2.9.0-beta.3) (2026-03-08)
+
+### 🐞 Bug Fixes
+
+* Workaround for bottom-sheet sticking to a reduced height when same popup opened again ([#1208](https://github.com/thomasloven/hass-browser_mod/issues/1208)) ([3622f39](https://github.com/thomasloven/hass-browser_mod/commit/3622f399ede114558d92914d73011082d012e1e9))
+
 ## [2.9.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0-beta.1...v2.9.0-beta.2) (2026-03-07)
 
 ### ⭐ New Features
