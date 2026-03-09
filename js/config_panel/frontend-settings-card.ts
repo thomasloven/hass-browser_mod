@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
-import { loadDeveloperToolsTemplate, selectTree } from "../helpers";
+import { frontendSettingsAdaptiveDialogStyle, loadDeveloperToolsTemplate, selectTree } from "../helpers";
 import { SidebarSettingsCustomSelector } from "./sidebar-settings-custom-selector";
 
 import "./browser-mod-settings-table";
@@ -71,14 +71,17 @@ class BrowserModFrontendSettingsCard extends LitElement {
       window.browser_mod?.showPopup(
         {
           title: "Sidebar settings",
+          adaptive: true,
           content: "Sidebar settings cleared",
-          right_button: "OK"
+          right_button: "OK",
+          popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
         }
       )
     };
     window.browser_mod?.showPopup(
       {
         title: "Sidebar settings",
+        adaptive: true,
         content: "Clear sidebar settings synced in this user's Home Assistant profile?",
         right_button: "Clear",
         right_button_variant: "danger",
@@ -87,6 +90,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }

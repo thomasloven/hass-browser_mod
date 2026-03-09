@@ -1,5 +1,5 @@
 import { LitElement } from "lit";
-import { selectTree, provideHass, hass_base_el } from "../helpers";
+import { selectTree, provideHass, hass_base_el, frontendSettingsAdaptiveDialogStyle } from "../helpers";
 
 export class SidebarSettingsCustomSelector {
   _element: LitElement;
@@ -202,8 +202,10 @@ export class SidebarSettingsCustomSelector {
       window.browser_mod?.showPopup?.(
         { 
           title: "ERROR!",
+          adaptive: true,
           content: "Sidebar settings dialog unavailable.",
           right_button: "OK",
+          popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
         }
       );
       return;

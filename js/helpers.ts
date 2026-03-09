@@ -142,6 +142,23 @@ export const loadHaForm = async () => {
   await card.constructor.getConfigElement();
 };
 
+export const loadHuiCardPicker = async () => {
+  if (customElements.get("hui-card-picker")) return;
+  await loadLoadCardHelpers();
+  const helpers = await window.loadCardHelpers();
+  if (!helpers) return;
+  // vertical-stack is used to load hui-card-picker
+  const verticalStackCard = await helpers.createCardElement({
+    type: "vertical-stack",
+    cards: [],
+  });
+  if (!verticalStackCard) return;
+  // get its editor class once hui-vertical-stack-card is defined
+  // we need check hui-vertical-stack-card is defined as it is lazily loaded
+  await customElements.whenDefined("hui-vertical-stack-card");
+  await verticalStackCard.constructor.getConfigElement();
+};
+
 // Loads in ha-config-dashboard which is used to copy styling
 // Also provides ha-md-list-item
 export const loadConfigDashboard = async () => {
@@ -313,3 +330,14 @@ export function compare_deep(a: any, b: any) {
   }
   return true;
 }
+
+export const frontendSettingsAdaptiveDialogStyle = 
+  `ha-adaptive-dialog {
+    --ha-bottom-sheet-height: calc(
+      100vh - max(var(--safe-area-inset-top), 100vh / 3)
+    );
+    --ha-bottom-sheet-height: calc(
+      100dvh - max(var(--safe-area-inset-top), 100dvh / 3)
+    );
+    --ha-bottom-sheet-max-height: var(--ha-bottom-sheet-height);
+  }`;

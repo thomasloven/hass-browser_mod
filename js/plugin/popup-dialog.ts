@@ -21,6 +21,9 @@ export class BrowserModPopup extends LitElement {
   @property() title;
   @property({ reflect: true }) actions;
   @property({ reflect: true }) card;
+  @property() adaptive;
+  @property() adaptive_allow_mode_change;
+  @property() adaptive_force_bottom_sheet;
   @property() right_button;
   @property() right_button_variant;
   @property() right_button_appearance;
@@ -37,7 +40,7 @@ export class BrowserModPopup extends LitElement {
   @property() _style;
   @property() _formDataValid;
   @property({type: Array}) _styleAttributes: boolean [];
-  @query("ha-dialog") dialog: any;
+  @query("ha-dialog,ha-adaptive-dialog", false) dialog: any;
   @query("ha-dialog-footer") footer: any;
   _autoclose;
   _autocloseListener;
@@ -132,6 +135,12 @@ export class BrowserModPopup extends LitElement {
 
   openDialog() {
     this.open = true;
+    if (this.adaptive && this.adaptive_force_bottom_sheet) {
+      this.updateComplete.then(() => {
+        this.dialog._mode = "bottom-sheet";
+        this.dialog._modeSet = true;
+      });
+    }
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
       this._timeoutTimer = setInterval(() => {
@@ -215,7 +224,15 @@ export class BrowserModPopup extends LitElement {
       Object.keys(this._styleAttributes).forEach((key) => {
         key.split(" ").forEach((k) => this.removeAttribute(k));
       });
-      this._styleSequenceIndex = undefined;  
+      this._styleSequenceIndex = undefined;
+      // Workaround for bottom-sheet mode getting stuck
+      if (this.adaptive && this.dialog) {
+        const bottomSheet = this.dialog.shadowRoot?.querySelector("ha-bottom-sheet") as HTMLElement | null;
+        if (bottomSheet) {
+          bottomSheet.style.removeProperty("--dialog-transform");
+          bottomSheet.style.removeProperty("--dialog-transition");
+        }
+      }
     }
     this.addEventListener("closed", () => afterClose(), { once: true });
   }
@@ -283,6 +300,9 @@ export class BrowserModPopup extends LitElement {
     title,
     content,
     {
+      adaptive = false,
+      adaptive_allow_mode_change = false,
+      adaptive_force_bottom_sheet = false,
       right_button = undefined,
       right_button_variant = "brand",
       right_button_appearance = "plain",
@@ -358,7 +378,9 @@ export class BrowserModPopup extends LitElement {
       // Basic HTML content
       this.content = unsafeHTML(content);
     }
-
+    this.adaptive = adaptive;
+    this.adaptive_allow_mode_change = adaptive_allow_mode_change;
+    this.adaptive_force_bottom_sheet = adaptive_force_bottom_sheet;
     this.right_button = right_button;
     this.right_button_variant = right_button_variant;
     this.right_button_appearance = right_button_appearance;
@@ -442,95 +464,110 @@ export class BrowserModPopup extends LitElement {
   }
 
   render() {
+    const innerContent = html`
+      ${this.timeout && !this.timeout_hide_progress
+        ? html` <div slot="headerTitle" class="progress"></div> `
+        : ""}
+      ${this.title
+        ? html`
+          ${this.dismissable
+            ? html`
+                <ha-icon-button
+                  data-dialog="close"
+                  slot="headerNavigationIcon"
+                >
+                  <ha-icon 
+                    .icon=${this.dismiss_icon || "mdi:close"}>
+                  </ha-icon>
+                </ha-icon-button>
+              `
+            : ""}
+          <span 
+            slot="headerTitle" 
+            @click=${() => { this._cycleStyleAttributes() }} 
+            .title="${this.title}"
+            class="title"
+          >${this.title}</span>
+          ${this.icons 
+            ?
+              repeat(
+                this.icons,
+                (icon, index) => html`
+                  <ha-icon-button
+                    slot="headerActionItems"
+                    title=${icon.title ?? ""}
+                    @click=${() => { this.blur(); this._icon_action(index)} }
+                    class=${ifDefined(icon.class)}
+                  >
+                    <ha-icon .icon=${icon.icon}></ha-icon>
+                  </ha-icon-button>
+                `
+              )
+            : "" }
+          `
+        : html``}
+
+      <div class="content" tabindex="-1" dialogInitialFocus>
+        <div class="container">${this.content}</div>
+      </div>
+      ${this.left_button !== undefined || this.right_button !== undefined ?
+        html`
+        <ha-dialog-footer slot="footer">
+          ${this.left_button !== undefined
+            ? html`
+                <ha-button
+                  slot="secondaryAction"
+                  variant=${this.left_button_variant}
+                  appearance=${this.left_button_appearance}
+                  @click=${this._secondary}
+                  class="action-button"
+                >${this.left_button}</ha-button>
+              `
+            : html`<div></div>`}
+          ${this.right_button !== undefined
+            ? html`
+                <ha-button
+                  slot="primaryAction"
+                  variant=${this.right_button_variant}
+                  appearance=${this.right_button_appearance}
+                  @click=${this._primary}
+                  class="action-button"
+                  ?disabled=${!this._formDataValid}
+                >${this.right_button}</ha-button>
+              `
+            : ""}
+          </ha-dialog-footer>` : "" }
+      <style>
+        ${this.getDynamicStyles()}
+      </style>
+    `;
     // Type is set to "" so we don't get "standard" dialog CSS
+    if (this.adaptive) {
+      return html`
+        <ha-adaptive-dialog
+          .hass=${this.hass}
+          .open=${this.open}
+          @closed=${this.closeDialog}
+          ?prevent-scrim-close=${!this.dismissable}
+          ?without-header=${!this.title}
+          ?allow-mode-change=${this.adaptive_allow_mode_change}
+          flexContent
+        >
+          ${innerContent}
+        </ha-adaptive-dialog>
+      `;
+    }
     return html`
       <ha-dialog
         .hass=${this.hass}
         .open=${this.open}
         type=${this._styleAttributes["classic"] ? "" : "standard"}
         @closed=${this.closeDialog}
-        header-title=${this.title}
         ?prevent-scrim-close=${!this.dismissable}
         ?without-header=${!this.title}
         flexContent
       >
-        ${this.timeout && !this.timeout_hide_progress
-          ? html` <div slot="header" class="progress"></div> `
-          : ""}
-        ${this.title
-          ? html`
-              <ha-dialog-header slot="header">
-                ${this.dismissable
-                  ? html`
-                      <ha-icon-button
-                        data-dialog="close"
-                        slot="navigationIcon"
-                      >
-                        <ha-icon 
-                          .icon=${this.dismiss_icon || "mdi:close"}>
-                        </ha-icon>
-                      </ha-icon-button>
-                    `
-                  : ""}
-                <span 
-                  slot="title" 
-                  @click=${() => { this._cycleStyleAttributes() }} 
-                  .title="${this.title}"
-                  class="title"
-                >${this.title}</span>
-                ${this.icons 
-                  ?
-                    repeat(
-                      this.icons,
-                      (icon, index) => html`
-                        <ha-icon-button
-                          slot="actionItems"
-                          title=${icon.title ?? ""}
-                          @click=${() => { this.blur(); this._icon_action(index)} }
-                          class=${ifDefined(icon.class)}
-                        >
-                          <ha-icon .icon=${icon.icon}></ha-icon>
-                        </ha-icon-button>
-                      `
-                    )
-                  : "" }
-              </ha-dialog-header>
-            `
-          : html``}
-
-        <div class="content" tabindex="-1" dialogInitialFocus>
-          <div class="container">${this.content}</div>
-        </div>
-        ${this.left_button !== undefined || this.right_button !== undefined ?
-          html`
-          <ha-dialog-footer slot="footer">
-            ${this.left_button !== undefined
-              ? html`
-                  <ha-button
-                    slot="secondaryAction"
-                    variant=${this.left_button_variant}
-                    appearance=${this.left_button_appearance}
-                    @click=${this._secondary}
-                    class="action-button"
-                  >${this.left_button}</ha-button>
-                `
-              : html`<div></div>`}
-            ${this.right_button !== undefined
-              ? html`
-                  <ha-button
-                    slot="primaryAction"
-                    variant=${this.right_button_variant}
-                    appearance=${this.right_button_appearance}
-                    @click=${this._primary}
-                    class="action-button"
-                    ?disabled=${!this._formDataValid}
-                  >${this.right_button}</ha-button>
-                `
-              : ""}
-            </ha-dialog-footer>` : "" }
-        <style>
-          ${this.getDynamicStyles()}
-        </style>
+        ${innerContent}
       </ha-dialog>
     `;
   }
@@ -556,7 +593,7 @@ export class BrowserModPopup extends LitElement {
 
   static get styles() {
     return css`
-      ha-dialog .form {
+      ha-dialog .form, ha-adaptive-dialog .form {
         color: var(--primary-text-color);
       }
 
@@ -564,7 +601,7 @@ export class BrowserModPopup extends LitElement {
         color: var(--primary-color);
       }
 
-      ha-dialog {
+      ha-dialog, ha-adaptive-dialog {
         --dialog-surface-margin-top: var(--ha-space-10, 40px);
         --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-bottom, 0px));
         --padding-x: var(--popup-padding-x, 24px);
@@ -577,6 +614,7 @@ export class BrowserModPopup extends LitElement {
         --ha-dialog-min-height: var(--popup-min-height);
         --ha-dialog-max-height: var(--popup-max-height);
         --dialog-content-padding: 0;
+        --ha-bottom-sheet-max-width: var(--popup-max-width, 600px);
       }
 
       .content {
@@ -626,21 +664,21 @@ export class BrowserModPopup extends LitElement {
         cursor: default;
       }
 
-      :host([wide]) ha-dialog {
+      :host([wide]) ha-dialog, :host([wide]) ha-adaptive-dialog {
         --popup-width: var(--popup-wide-width, 90vw);
       }
-      :host([wide]) .content {
+      :host([wide]) ha-dialog > .content {
         width: max(var(--popup-width, 580px), calc(var(--popup-width, 580px) - 2 * var(--padding-x)));
       }
 
-      :host([classic]) ha-dialog {
+      :host([classic]) ha-dialog, :host([classic]) ha-adaptive-dialog {
         --dialog-surface-margin-top: var(--ha-space-10, 40px);
         --popup-border-radius: var(--popup-border-radius, 28px);
         --popup-min-height: 10%;
         --popup-max-height: calc(100% - 80px);
       }
 
-      :host([fullscreen]) ha-dialog {
+      :host([fullscreen]) ha-dialog, :host([fullscreen]) ha-adaptive-dialog {
         --popup-min-height: 100%;
         --popup-max-height: 100%;
         --dialog-surface-margin-top: 0px;
@@ -659,7 +697,7 @@ export class BrowserModPopup extends LitElement {
       }
 
       @media all and (max-width: 450px), all and (max-height: 500px) {
-        ha-dialog {
+        ha-dialog, ha-adaptive-dialog {
           --popup-width: calc(
             100vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
@@ -677,7 +715,7 @@ export class BrowserModPopup extends LitElement {
         :host([wide]) .content {
           width: 100vw;
         }
-        :host([classic]) ha-dialog {
+        :host([classic]) ha-dialog, :host([classic]) ha-adaptive-dialog {
           --popup-width: calc(
             97vw - var(--safe-area-inset-right) - var(--safe-area-inset-left)
           );
@@ -696,7 +734,7 @@ export class BrowserModPopup extends LitElement {
       }
 
       @media all and (min-width: 600px) and (min-height: 501px) {
-        ha-dialog {
+        ha-dialog, ha-adaptive-dialog {
           --dialog-surface-margin-top: calc(var(--ha-space-10, 40px));
           --popup-max-height: calc(100svh - var(--dialog-surface-margin-top) - var(--ha-space-2) - var(--safe-area-inset-bottom, 0px));
         }

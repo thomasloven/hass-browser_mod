@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { property, state } from "lit/decorators.js";
+import { frontendSettingsAdaptiveDialogStyle } from "../helpers";
 
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
@@ -47,6 +48,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     window.browser_mod.showPopup(
       {
         title: "Unregister browser",
+        adaptive: true,
         content: `Are you sure you want to unregister Browser ${browserID}?`,
         right_button: "Unregister",
         right_button_variant: "danger",
@@ -55,6 +57,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         left_button: "Cancel",
         left_button_variant: "neutral",
         left_button_appearance: "plain",
+        popup_styles: [ { style: "all", styles: frontendSettingsAdaptiveDialogStyle } ],
       }
     );
   }

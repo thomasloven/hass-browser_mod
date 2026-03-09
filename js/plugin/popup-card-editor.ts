@@ -1,6 +1,6 @@
 import { LitElement, html, css, PropertyValues } from "lit";
 import { property, query, state } from "lit/decorators.js";
-import { hass_base_el, loadHaForm, selectTree } from "../helpers";
+import { hass_base_el, loadHaForm, loadHuiCardPicker, selectTree } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
 
 const STANDARD_POPUP_STYLES = ["normal", "classic", "wide", "fullscreen"]
@@ -26,6 +26,32 @@ const configSchema = [
     label: "Title",
     selector: { text: {} },
   },
+  {
+    type: "expandable",
+    label: "Adaptive dialog",
+    schema: [
+      {
+        type: "grid",
+        schema: [
+          {
+            name: "adaptive",
+            label: "Use adaptive dialog",
+            selector: { boolean: {} },
+          },
+          {
+            name: "adaptive_allow_mode_change",
+            label: "Allow mode change when using adaptive dialog",
+            selector: { boolean: {} },
+          },
+          {
+            name: "adaptive_force_bottom_sheet",
+            label: "Force bottom sheet mode for adaptive dialog",
+            selector: { boolean: {} },
+          }
+        ],
+      }
+    ]
+  }, 
   {
     type: "expandable",
     label: "Header icon",
@@ -335,6 +361,7 @@ class PopupCardEditor extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     loadHaForm();
+    loadHuiCardPicker();
     this._objectSelectorMonitor = new ObjectSelectorMonitor(
       this,
       (value: boolean) => { this._settingsValid = value },
