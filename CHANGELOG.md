@@ -1,3 +1,15 @@
+## [2.9.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.8.2...v2.9.0) (2026-03-09)
+
+### ⭐ New Features
+
+* Adaptive dialog support ([ad1b1ca](https://github.com/thomasloven/hass-browser_mod/commit/ad1b1cadea5a544b7cf1c7599feb97d900e0827c)), closes [#1175](https://github.com/thomasloven/hass-browser_mod/issues/1175)
+* Use adaptive dialogs for Browser Mod Frontend settings popups. ([#1207](https://github.com/thomasloven/hass-browser_mod/issues/1207)) ([59d0784](https://github.com/thomasloven/hass-browser_mod/commit/59d07842d46a31aee00581f96031c61e81b2e7a0))
+
+### 🐞 Bug Fixes
+
+* Card picker on popup card editor may not show ([#1210](https://github.com/thomasloven/hass-browser_mod/issues/1210)) ([26e0e3a](https://github.com/thomasloven/hass-browser_mod/commit/26e0e3afcfcde877939e670e7a3c872a5752122a))
+* Workaround for bottom-sheet sticking to a reduced height when same popup opened again ([#1208](https://github.com/thomasloven/hass-browser_mod/issues/1208)) ([3622f39](https://github.com/thomasloven/hass-browser_mod/commit/3622f399ede114558d92914d73011082d012e1e9))
+
 ## [2.9.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0-beta.3...v2.9.0-beta.4) (2026-03-08)
 
 ### 🐞 Bug Fixes
