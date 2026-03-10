@@ -253,14 +253,14 @@ popup_styles:
         ha-dialog {
           --ha-dialog-border-radius: 0px !important;
         }
-        ha-dialog-header {
-          --ha-font-weight-normal: 300;
-          --ha-font-size-xl: 1.2em;
+        .title {
+          font-weight: 300;
+          font-size: 0.9em;
+        }
+        ha-icon-button {
+          padding: 8px;
           --ha-icon-button-size: 24px;
           --mdc-icon-size: 16px;
-        }
-        ha-dialog-header > ha-icon-button {
-          padding: 8px;
         }
         .content {
           font-size: 0.9em;
