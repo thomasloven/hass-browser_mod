@@ -1,3 +1,9 @@
+## [2.9.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0...v2.9.1-beta.1) (2026-03-10)
+
+### 🐞 Bug Fixes
+
+* Clear render of popup elements when closed. ([75adfcc](https://github.com/thomasloven/hass-browser_mod/commit/75adfccecba74e74417b35ade4637cfe6de752a1)), closes [#1215](https://github.com/thomasloven/hass-browser_mod/issues/1215)
+
 ## [2.9.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.8.2...v2.9.0) (2026-03-09)
 
 ### ⭐ New Features
