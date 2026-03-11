@@ -6,3 +6,9 @@ updates:
       interval: "daily"
     target-branch: "dev"
     prefix: "deps"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+    target-branch: 'dev'
+    prefix: "deps"
