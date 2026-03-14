@@ -8,6 +8,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 import { getSearchParam, clearSearchParam } from "./url-helpers";
+import structuredClone from "@ungap/structured-clone";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -275,7 +276,7 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
       ev.stopPropagation();
       ev.preventDefault();
       if (entityId) {
-        cardConfig = substituteEntityId(cardConfig, entityId);
+        cardConfig = substituteEntityId(structuredClone(cardConfig), entityId);
       }
       let properties = { ...cardConfig }
       delete properties.card;
