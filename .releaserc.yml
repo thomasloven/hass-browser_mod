@@ -58,6 +58,9 @@ releaseRules:
     release: major
   - type: feat
     release: minor
+  - type: feat
+    scope: "minor"
+    release: patch
   - type: fix
     release: patch
   - type: docs
