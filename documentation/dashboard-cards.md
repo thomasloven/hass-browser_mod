@@ -3,6 +3,7 @@
 - [Dashboard cards](#dashboard-cards)
   - [Browser Mod Popup](#browser-mod-popup)
     - [Popup card - replace more-info dialog of an entity](#popup-card---replace-more-info-dialog-of-an-entity)
+      - [Entity ID substitution in popup card config](#entity-id-substitution-in-popup-card-config)
       - [Popup card - template for popup service](#popup-card---template-for-popup-service)
     - [Browser Player](#browser-player)
   - [Browser Mod Tile and Badge](#browser-mod-tile-and-badge)
@@ -74,6 +75,26 @@ Here the standard Home Assistant `more-info-entity-id=<entity_id>` won't work as
 ```url
 /lovelace/?popup-more-info-entity-id=<entity_id>
 ```
+
+#### Entity ID substitution in popup card config
+
+When a popup card is matched via a wide target (area, label, device, or a list of entity IDs), the card config can reference the **triggering entity's ID** using the placeholder string `more_info.entityId`. Before the popup is shown, every occurrence of `more_info.entityId` in the card's string values is replaced with the actual entity ID that triggered the more-info event.
+
+This makes it possible to write a single reusable popup card config that adapts to whichever entity opened the dialog:
+
+```yaml
+type: custom:popup-card
+target:
+  area_id: living_room
+title: "more_info.entityId"
+card:
+  type: markdown
+  content: "State of **more_info.entityId**: {{ states('more_info.entityId') }}"
+```
+
+When the more-info dialog is opened for `light.living_room_ceiling`, the popup will render with `more_info.entityId` replaced by `light.living_room_ceiling` throughout the config.
+
+> Note: `more_info.entityId` is only substituted in **string values** — keys are never modified. Substitution is applied recursively to nested objects and arrays.
 
 #### Popup card - template for popup service
 
