@@ -11,7 +11,7 @@ function normaliseCardConfig(card) {
   return card;
 }
 
-function popupCardMatch(card, entity, viewIndex, curView) {
+function popupCardMatch(card, entity, viewIndex, curView, hass?) {
   if (card.type !== 'custom:popup-card') return false;
   // Resolve card IDs
   const cardTargetEntityIDs = ensureArray(card.target?.entity_id || []);
@@ -22,10 +22,12 @@ function popupCardMatch(card, entity, viewIndex, curView) {
   const cardAreaIDs = ensureArray(card.target?.area_id || []);
   const cardLabelIDs = ensureArray(card.target?.label_id || []);
   const cardDeviceIDs = ensureArray(card.target?.device_id || []);
+  // Resolve device area_id: entities can belong to an area indirectly through their device
+  const deviceAreaId = entity.device_id ? hass?.devices?.[entity.device_id]?.area_id : undefined;
   // return match if card is a popup-card and matches the target
   return  (
             cardEntityIDs.some((e: string) => e === entity.entity_id) ||
-            cardAreaIDs.some((a: string) => a === entity.area_id) ||
+            cardAreaIDs.some((a: string) => a === entity.area_id || (deviceAreaId && a === deviceAreaId)) ||
             cardLabelIDs.some((l: string) => entity.labels.includes(l)) ||
             cardDeviceIDs.some((d: string) => d === entity.device_id)
           )
@@ -55,11 +57,11 @@ export function findPopupCardConfigByEntity(lovelaceRoot, entity_id) {
       const view = lovelaceConfig.views[viewIndex];
       if (view.cards) {
         for (const card of view.cards) {
-          if (popupCardMatch(card, entity, viewIndex, curView)) return normaliseCardConfig(card);
+          if (popupCardMatch(card, entity, viewIndex, curView, hass)) return normaliseCardConfig(card);
           // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
           if (card.cards) {
             for (const subCard of card.cards) {
-              if (popupCardMatch(subCard, entity, viewIndex, curView)) return normaliseCardConfig(subCard);
+              if (popupCardMatch(subCard, entity, viewIndex, curView, hass)) return normaliseCardConfig(subCard);
             }
           }
         }
@@ -68,11 +70,11 @@ export function findPopupCardConfigByEntity(lovelaceRoot, entity_id) {
         for (const section of view.sections) {
           if (section.cards) {
             for (const card of section.cards) {
-              if (popupCardMatch(card, entity, viewIndex, curView)) return normaliseCardConfig(card);
+              if (popupCardMatch(card, entity, viewIndex, curView, hass)) return normaliseCardConfig(card);
               // Allow for card one level deep. This allows for a sub card in a panel dashboard for example.
               if (card.cards) {
                 for (const subCard of card.cards) {
-                  if (popupCardMatch(subCard, entity, viewIndex, curView)) return normaliseCardConfig(subCard);
+                  if (popupCardMatch(subCard, entity, viewIndex, curView, hass)) return normaliseCardConfig(subCard);
                 }
               }
             }
