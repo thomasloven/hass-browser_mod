@@ -8,6 +8,7 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import { icon } from "./types";
 import { findPopupCardConfigByEntity } from "./popup-card-helpers";
 import { getSearchParam, clearSearchParam } from "./url-helpers";
+import structuredClone from "@ungap/structured-clone";
 
 class PopupCard extends LitElement {
   @property() hass;
@@ -204,6 +205,23 @@ class PopupCard extends LitElement {
 
 const POPUP_ENTITY_PARAM = 'popup-more-info-entity-id';
 
+function substituteEntityId(obj: any, entityId: string): any {
+  if (typeof obj === 'string') {
+    return obj.replace(/more_info\.entityId/g, entityId);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map((item) => substituteEntityId(item, entityId));
+  }
+  if (obj && typeof obj === 'object') {
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = substituteEntityId(value, entityId);
+    }
+    return result;
+  }
+  return obj;
+}
+
 window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   ev.stopPropagation();
   while (!window.browser_mod) {
@@ -252,11 +270,14 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
           (!ev.detail?.entityId && !ev.detail?.target) || 
           !lovelaceRoot
         ) return;
-    const target = { entity_id: ev.detail?.entityId };
-    const cardConfig = findPopupCardConfigByEntity(lovelaceRoot, ev.detail?.entityId);
+    const entityId = ev.detail?.entityId;
+    let cardConfig = findPopupCardConfigByEntity(lovelaceRoot, entityId);
     if (cardConfig) {
       ev.stopPropagation();
       ev.preventDefault();
+      if (entityId) {
+        cardConfig = substituteEntityId(structuredClone(cardConfig), entityId);
+      }
       let properties = { ...cardConfig }
       delete properties.card;
       window.browser_mod?.service("popup", {
