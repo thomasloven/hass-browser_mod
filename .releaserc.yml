@@ -57,9 +57,6 @@ releaseRules:
     scope: "major"
     release: major
   - type: feat
-    scope: "minor"
-    release: patch
-  - type: feat
     release: minor
   - type: fix
     release: patch
