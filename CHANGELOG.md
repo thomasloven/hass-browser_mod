@@ -1,3 +1,9 @@
+## [2.10.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0-beta.1...v2.10.0-beta.2) (2026-03-15)
+
+### 🐞 Bug Fixes
+
+* Area target matching to include device-inherited area membership([#1225](https://github.com/thomasloven/hass-browser_mod/issues/1225)) ([5505d95](https://github.com/thomasloven/hass-browser_mod/commit/5505d9539c115cd7ab2e3cc76d943601b303b0ee)), closes [#1224](https://github.com/thomasloven/hass-browser_mod/issues/1224)
+
 ## [2.10.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.1-beta.1...v2.10.0-beta.1) (2026-03-15)
 
 ### ⭐ New Features
