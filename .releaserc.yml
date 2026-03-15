@@ -57,10 +57,10 @@ releaseRules:
     scope: "major"
     release: major
   - type: feat
-    release: minor
-  - type: feat
     scope: "minor"
     release: patch
+  - type: feat
+    release: minor
   - type: fix
     release: patch
   - type: docs
