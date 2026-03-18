@@ -1,3 +1,25 @@
+## [2.10.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0-beta.1...v2.10.0-beta.2) (2026-03-15)
+
+### 🐞 Bug Fixes
+
+* Area target matching to include device-inherited area membership([#1225](https://github.com/thomasloven/hass-browser_mod/issues/1225)) ([5505d95](https://github.com/thomasloven/hass-browser_mod/commit/5505d9539c115cd7ab2e3cc76d943601b303b0ee)), closes [#1224](https://github.com/thomasloven/hass-browser_mod/issues/1224)
+
+## [2.10.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.1-beta.1...v2.10.0-beta.1) (2026-03-15)
+
+### ⭐ New Features
+
+* **minor:** Pass source entityId to more-info popup card configs ([#1221](https://github.com/thomasloven/hass-browser_mod/issues/1221)) ([e2e6752](https://github.com/thomasloven/hass-browser_mod/commit/e2e67522bcfd86addfb95f9be1bc5f6b733f9a16))
+
+### 📔 Documentation
+
+* Update media query style example to suit 2.9.0 ([798aa2a](https://github.com/thomasloven/hass-browser_mod/commit/798aa2ad6f52f6310fae1aaaf7be86315b630f76))
+
+## [2.9.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0...v2.9.1-beta.1) (2026-03-10)
+
+### 🐞 Bug Fixes
+
+* Clear render of popup elements when closed. ([75adfcc](https://github.com/thomasloven/hass-browser_mod/commit/75adfccecba74e74417b35ade4637cfe6de752a1)), closes [#1215](https://github.com/thomasloven/hass-browser_mod/issues/1215)
+
 ## [2.9.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.8.2...v2.9.0) (2026-03-09)
 
 ### ⭐ New Features

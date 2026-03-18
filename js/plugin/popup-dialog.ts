@@ -464,6 +464,7 @@ export class BrowserModPopup extends LitElement {
   }
 
   render() {
+    if (!this.open) return html``;
     const innerContent = html`
       ${this.timeout && !this.timeout_hide_progress
         ? html` <div slot="headerTitle" class="progress"></div> `
