@@ -1,3 +1,9 @@
+## [2.10.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0...v2.10.1-beta.1) (2026-03-23)
+
+### 🐞 Bug Fixes
+
+* Fix slider in browser-player card ([#1232](https://github.com/thomasloven/hass-browser_mod/issues/1232)) ([814d30e](https://github.com/thomasloven/hass-browser_mod/commit/814d30e0e1f5f9cc9e9ded764517132e00a77427))
+
 ## [2.10.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0...v2.10.0) (2026-03-18)
 
 ### ⭐ New Features
