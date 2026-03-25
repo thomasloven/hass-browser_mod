@@ -240,6 +240,7 @@ export class BrowserModPopup extends LitElement {
   _updateStyleAttributes(newStyle) {
     if (newStyle == "initial") newStyle = this._initialStyle;
     // Clear previous style attributes
+    this._styleAttributes = this._styleAttributes || [];
     Object.keys(this._styleAttributes).forEach((key) => {
       this._styleAttributes[key] = false;
     });
