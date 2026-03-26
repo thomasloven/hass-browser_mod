@@ -1,3 +1,9 @@
+## [2.10.1-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.2...v2.10.1-beta.3) (2026-03-26)
+
+### 🐞 Bug Fixes
+
+* **popup:** Footer buttons not always justified space-between ([#1236](https://github.com/thomasloven/hass-browser_mod/issues/1236)) ([afabdd6](https://github.com/thomasloven/hass-browser_mod/commit/afabdd61f8aa5304435775ca979cd6f056803d71))
+
 ## [2.10.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.1...v2.10.1-beta.2) (2026-03-26)
 
 ### 🐞 Bug Fixes
