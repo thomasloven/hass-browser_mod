@@ -63,12 +63,6 @@ export class BrowserModPopup extends LitElement {
       this,
       (value: boolean) => { this._formDataValid = value }
     );
-    // When reopening popup, keep style attributes
-    // but make sure they are all set to false
-    this._styleAttributes = this._styleAttributes || [];
-    Object.keys(this._styleAttributes).forEach((key) => {
-      this._styleAttributes[key] = false;
-    });
   }
 
   updated(_changedProperties: PropertyValues): void {
@@ -216,6 +210,7 @@ export class BrowserModPopup extends LitElement {
       // Only remove style attributes after close to not force an update during closing animation
       Object.keys(this._styleAttributes).forEach((key) => {
         key.split(" ").forEach((k) => this.removeAttribute(k));
+        this._styleAttributes[key] = false;
       });
       this._styleSequenceIndex = undefined;
       // Workaround for bottom-sheet mode getting stuck
