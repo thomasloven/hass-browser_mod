@@ -1,7 +1,7 @@
 {
   "name": "browser_mod",
   "private": true,
-  "version": "2.10.0",
+  "version": "2.10.1-beta.3",
   "description": "",
   "scripts": {
     "build": "rollup -c",
@@ -17,7 +17,7 @@
     "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
-    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-terser": "^1.0.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",

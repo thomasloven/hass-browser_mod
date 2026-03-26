@@ -1,3 +1,21 @@
+## [2.10.1-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.2...v2.10.1-beta.3) (2026-03-26)
+
+### 🐞 Bug Fixes
+
+* **popup:** Footer buttons not always justified space-between ([#1236](https://github.com/thomasloven/hass-browser_mod/issues/1236)) ([afabdd6](https://github.com/thomasloven/hass-browser_mod/commit/afabdd61f8aa5304435775ca979cd6f056803d71))
+
+## [2.10.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.1...v2.10.1-beta.2) (2026-03-26)
+
+### 🐞 Bug Fixes
+
+* Frontend settings don't show on first open but do after second. Also shows console error. ([7b25109](https://github.com/thomasloven/hass-browser_mod/commit/7b2510912020c2f0dee600ef1ec06b96e810ba9d))
+
+## [2.10.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0...v2.10.1-beta.1) (2026-03-23)
+
+### 🐞 Bug Fixes
+
+* Fix slider in browser-player card ([#1232](https://github.com/thomasloven/hass-browser_mod/issues/1232)) ([814d30e](https://github.com/thomasloven/hass-browser_mod/commit/814d30e0e1f5f9cc9e9ded764517132e00a77427))
+
 ## [2.10.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.9.0...v2.10.0) (2026-03-18)
 
 ### ⭐ New Features

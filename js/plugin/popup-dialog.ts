@@ -41,7 +41,6 @@ export class BrowserModPopup extends LitElement {
   @property() _formDataValid;
   @property({type: Array}) _styleAttributes: boolean [];
   @query("ha-dialog,ha-adaptive-dialog", false) dialog: any;
-  @query("ha-dialog-footer") footer: any;
   _autoclose;
   _autocloseListener;
   _actions;
@@ -82,12 +81,6 @@ export class BrowserModPopup extends LitElement {
           key.split(" ").forEach((k) => this.removeAttribute(k));
         }
       });
-    }
-    if (this.left_button !== undefined && this.footer) {
-      const footerEl = this.footer.shadowRoot?.querySelector("footer");
-      if (footerEl?.style.getPropertyValue("justify-content") !== "space-between"){
-        footerEl?.style.setProperty("justify-content", "space-between");
-      }
     }
   }
 
@@ -240,6 +233,7 @@ export class BrowserModPopup extends LitElement {
   _updateStyleAttributes(newStyle) {
     if (newStyle == "initial") newStyle = this._initialStyle;
     // Clear previous style attributes
+    this._styleAttributes = this._styleAttributes || [];
     Object.keys(this._styleAttributes).forEach((key) => {
       this._styleAttributes[key] = false;
     });
@@ -513,11 +507,10 @@ export class BrowserModPopup extends LitElement {
       </div>
       ${this.left_button !== undefined || this.right_button !== undefined ?
         html`
-        <ha-dialog-footer slot="footer">
+        <footer slot="footer">
           ${this.left_button !== undefined
             ? html`
                 <ha-button
-                  slot="secondaryAction"
                   variant=${this.left_button_variant}
                   appearance=${this.left_button_appearance}
                   @click=${this._secondary}
@@ -528,7 +521,6 @@ export class BrowserModPopup extends LitElement {
           ${this.right_button !== undefined
             ? html`
                 <ha-button
-                  slot="primaryAction"
                   variant=${this.right_button_variant}
                   appearance=${this.right_button_appearance}
                   @click=${this._primary}
@@ -537,7 +529,7 @@ export class BrowserModPopup extends LitElement {
                 >${this.right_button}</ha-button>
               `
             : ""}
-          </ha-dialog-footer>` : "" }
+          </footer>` : "" }
       <style>
         ${this.getDynamicStyles()}
       </style>
@@ -663,6 +655,14 @@ export class BrowserModPopup extends LitElement {
         overflow: hidden;
         text-overflow: ellipsis;
         cursor: default;
+      }
+
+      footer {
+        display: flex;
+        gap: var(--ha-space-3);
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
       }
 
       :host([wide]) ha-dialog, :host([wide]) ha-adaptive-dialog {

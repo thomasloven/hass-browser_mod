@@ -6,6 +6,11 @@ import { babel } from "@rollup/plugin-babel";
 
 const dev = process.env.ROLLUP_WATCH;
 
+const tsPluginOptions = {
+  include: ["**/*.ts", "**/*.tsx"],
+  exclude: ["**/*.d.ts"],
+};
+
 export default [
   {
     input: "js/plugin/main.ts",
@@ -16,7 +21,7 @@ export default [
     plugins: [
       nodeResolve(),
       json(),
-      typescript(),
+      typescript(tsPluginOptions),
       babel({ babelHelpers: 'bundled', exclude: "node_modules/**" }),
       !dev && terser({ format: { comments: false } }),
     ],
@@ -30,7 +35,7 @@ export default [
     plugins: [
       nodeResolve(),
       json(),
-      typescript(),
+      typescript(tsPluginOptions),
       babel({ babelHelpers: 'bundled', exclude: "node_modules/**" }),
       !dev && terser({ format: { comments: false } }),
     ],
