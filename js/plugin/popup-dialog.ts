@@ -511,7 +511,6 @@ export class BrowserModPopup extends LitElement {
           ${this.left_button !== undefined
             ? html`
                 <ha-button
-                  slot="secondaryAction"
                   variant=${this.left_button_variant}
                   appearance=${this.left_button_appearance}
                   @click=${this._secondary}
@@ -522,7 +521,6 @@ export class BrowserModPopup extends LitElement {
           ${this.right_button !== undefined
             ? html`
                 <ha-button
-                  slot="primaryAction"
                   variant=${this.right_button_variant}
                   appearance=${this.right_button_appearance}
                   @click=${this._primary}
