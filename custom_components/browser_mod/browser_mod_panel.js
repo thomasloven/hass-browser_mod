@@ -159,10 +159,6 @@ function e(e,t,i,s){var o,a=arguments.length,n=a<3?t:null===s?s=Object.getOwnPro
         display: flex;
         justify-content: space-between;
       }
-      ha-textfield {
-        display: block;
-        margin-top: 8px;
-      }
       ha-md-list-item[narrow] > ha-form {
         flex: 2;
       }
