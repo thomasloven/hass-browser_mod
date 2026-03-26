@@ -1,3 +1,9 @@
+## [2.10.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.1...v2.10.1-beta.2) (2026-03-26)
+
+### 🐞 Bug Fixes
+
+* Frontend settings don't show on first open but do after second. Also shows console error. ([7b25109](https://github.com/thomasloven/hass-browser_mod/commit/7b2510912020c2f0dee600ef1ec06b96e810ba9d))
+
 ## [2.10.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0...v2.10.1-beta.1) (2026-03-23)
 
 ### 🐞 Bug Fixes
