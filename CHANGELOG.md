@@ -1,3 +1,10 @@
+## [2.10.1-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.3...v2.10.1-beta.4) (2026-03-27)
+
+### 🐞 Bug Fixes
+
+* **popup:** Adjust timeout bar for newer popup dialog structure. Now shows below header but sticky above content. ([#1243](https://github.com/thomasloven/hass-browser_mod/issues/1243)) ([76bb994](https://github.com/thomasloven/hass-browser_mod/commit/76bb9949c7e201936efdecf696159aa145745986)), closes [#1238](https://github.com/thomasloven/hass-browser_mod/issues/1238)
+* **popup:** Popup not respecting initial_style with Home Assistant 2026.4.0 ([#1240](https://github.com/thomasloven/hass-browser_mod/issues/1240)) ([fa192bc](https://github.com/thomasloven/hass-browser_mod/commit/fa192bc1a300269c349f5973bab21b8101777028))
+
 ## [2.10.1-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.2...v2.10.1-beta.3) (2026-03-26)
 
 ### 🐞 Bug Fixes
