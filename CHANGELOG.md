@@ -1,3 +1,9 @@
+## [2.10.1-beta.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.4...v2.10.1-beta.5) (2026-03-27)
+
+### 🐞 Bug Fixes
+
+* **popup:** Timeout bar not showing on standard popup. ([154d31b](https://github.com/thomasloven/hass-browser_mod/commit/154d31b7a725f7d59bcdcaa478100e8506b9bf7e))
+
 ## [2.10.1-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.3...v2.10.1-beta.4) (2026-03-27)
 
 ### 🐞 Bug Fixes
