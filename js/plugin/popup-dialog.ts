@@ -494,7 +494,7 @@ export class BrowserModPopup extends LitElement {
           `
         : html``}
       ${this.timeout && !this.timeout_hide_progress
-        ? html` <div class="progress" style="--progress-top: ${this.title ? "-5px" : "0"};"></div>`
+        ? html` <div class="progress"></div>`
         : ""}
       <div class="content" tabindex="-1" dialogInitialFocus>
         <div class="container">${this.content}</div>
@@ -619,7 +619,9 @@ export class BrowserModPopup extends LitElement {
         padding: 8px 8px 20px 8px;
       }
       .progress {
-        position: static;
+        position: sticky;
+        top: 0;
+        z-index: 1;
       }
 
       .progress::before {
