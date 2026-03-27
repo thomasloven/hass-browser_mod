@@ -455,9 +455,6 @@ export class BrowserModPopup extends LitElement {
   render() {
     if (!this.open) return html``;
     const innerContent = html`
-      ${this.timeout && !this.timeout_hide_progress
-        ? html` <div slot="headerTitle" class="progress"></div> `
-        : ""}
       ${this.title
         ? html`
           ${this.dismissable
@@ -496,7 +493,9 @@ export class BrowserModPopup extends LitElement {
             : "" }
           `
         : html``}
-
+      ${this.timeout && !this.timeout_hide_progress
+        ? html` <div class="progress" style="--progress-top: ${this.title ? "-5px" : "0"};"></div>`
+        : ""}
       <div class="content" tabindex="-1" dialogInitialFocus>
         <div class="container">${this.content}</div>
       </div>
@@ -529,7 +528,6 @@ export class BrowserModPopup extends LitElement {
         ${this.getDynamicStyles()}
       </style>
     `;
-    // Type is set to "" so we don't get "standard" dialog CSS
     if (this.adaptive) {
       return html`
         <ha-adaptive-dialog
@@ -545,6 +543,7 @@ export class BrowserModPopup extends LitElement {
         </ha-adaptive-dialog>
       `;
     }
+    // Type is set to "" so we don't get "standard" dialog CSS except for classic
     return html`
       <ha-dialog
         .hass=${this.hass}
@@ -620,7 +619,7 @@ export class BrowserModPopup extends LitElement {
         padding: 8px 8px 20px 8px;
       }
       .progress {
-        position: relative;
+        position: static;
       }
 
       .progress::before {
@@ -628,7 +627,7 @@ export class BrowserModPopup extends LitElement {
         position: absolute;
         left: 0;
         width: calc(100% - var(--progress, 60%));
-        top: 0;
+        top: var(--progress-top, 0);
         height: 5px;
         background: var(--primary-color);
         z-index: 10;
