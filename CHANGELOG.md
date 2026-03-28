@@ -1,3 +1,10 @@
+## [2.10.1-beta.6](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.5...v2.10.1-beta.6) (2026-03-28)
+
+### 🐞 Bug Fixes
+
+* **popup:** Restore timeout progress var to popup dialog top ([#1245](https://github.com/thomasloven/hass-browser_mod/issues/1245)) ([4a22c3e](https://github.com/thomasloven/hass-browser_mod/commit/4a22c3eca151a5c55473b099ceafc868bcb25731))
+* **popup:** Timeout delay (5s) when action on popup will reuse same popup (default or same tag). ([7ac3781](https://github.com/thomasloven/hass-browser_mod/commit/7ac3781c548c13511babe8287102a3df4d3782e1))
+
 ## [2.10.1-beta.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.4...v2.10.1-beta.5) (2026-03-27)
 
 ### 🐞 Bug Fixes
