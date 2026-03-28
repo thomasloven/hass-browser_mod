@@ -1,3 +1,16 @@
+## [2.10.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0...v2.10.1) (2026-03-28)
+
+### 🐞 Bug Fixes
+
+* Fix slider in browser-player card ([#1232](https://github.com/thomasloven/hass-browser_mod/issues/1232)) ([814d30e](https://github.com/thomasloven/hass-browser_mod/commit/814d30e0e1f5f9cc9e9ded764517132e00a77427))
+* Frontend settings don't show on first open but do after second. Also shows console error. ([7b25109](https://github.com/thomasloven/hass-browser_mod/commit/7b2510912020c2f0dee600ef1ec06b96e810ba9d))
+* **popup:** Adjust timeout bar for newer popup dialog structure. Now shows below header but sticky above content. ([#1243](https://github.com/thomasloven/hass-browser_mod/issues/1243)) ([76bb994](https://github.com/thomasloven/hass-browser_mod/commit/76bb9949c7e201936efdecf696159aa145745986)), closes [#1238](https://github.com/thomasloven/hass-browser_mod/issues/1238)
+* **popup:** Footer buttons not always justified space-between ([#1236](https://github.com/thomasloven/hass-browser_mod/issues/1236)) ([afabdd6](https://github.com/thomasloven/hass-browser_mod/commit/afabdd61f8aa5304435775ca979cd6f056803d71))
+* **popup:** Popup not respecting initial_style with Home Assistant 2026.4.0 ([#1240](https://github.com/thomasloven/hass-browser_mod/issues/1240)) ([fa192bc](https://github.com/thomasloven/hass-browser_mod/commit/fa192bc1a300269c349f5973bab21b8101777028))
+* **popup:** Restore timeout progress var to popup dialog top ([#1245](https://github.com/thomasloven/hass-browser_mod/issues/1245)) ([4a22c3e](https://github.com/thomasloven/hass-browser_mod/commit/4a22c3eca151a5c55473b099ceafc868bcb25731))
+* **popup:** Timeout bar not showing on standard popup. ([154d31b](https://github.com/thomasloven/hass-browser_mod/commit/154d31b7a725f7d59bcdcaa478100e8506b9bf7e))
+* **popup:** Timeout delay (5s) when action on popup will reuse same popup (default or same tag). ([7ac3781](https://github.com/thomasloven/hass-browser_mod/commit/7ac3781c548c13511babe8287102a3df4d3782e1))
+
 ## [2.10.1-beta.6](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1-beta.5...v2.10.1-beta.6) (2026-03-28)
 
 ### 🐞 Bug Fixes
