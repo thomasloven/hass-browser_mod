@@ -300,10 +300,6 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         display: flex;
         justify-content: space-between;
       }
-      ha-textfield {
-        display: block;
-        margin-top: 8px;
-      }
       ha-md-list-item[narrow] > ha-form {
         flex: 2;
       }
