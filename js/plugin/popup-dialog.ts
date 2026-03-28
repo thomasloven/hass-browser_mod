@@ -94,6 +94,7 @@ export class BrowserModPopup extends LitElement {
     this.card?.remove?.();
     this.card = undefined;
     clearInterval(this._timeoutTimer);
+    this.style.removeProperty("--progress");
     if (this._autocloseListener) {
       window.browser_mod.removeEventListener(
         "browser-mod-activity",
@@ -122,12 +123,32 @@ export class BrowserModPopup extends LitElement {
 
   openDialog() {
     this.open = true;
-    if (this.adaptive && this.adaptive_force_bottom_sheet) {
-      this.updateComplete.then(() => {
+    this.updateComplete.then(async () => {
+      if (this.adaptive && this.adaptive_force_bottom_sheet) {
         this.dialog._mode = "bottom-sheet";
         this.dialog._modeSet = true;
-      });
-    }
+        if (this.timeout && !this.timeout_hide_progress) {
+          await this.dialog?.updateComplete;
+          const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
+          this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
+        }
+      } else if (this.timeout && !this.timeout_hide_progress) {
+        if (this.adaptive) {
+          await this.dialog?.updateComplete;
+          const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
+          if (bottomSheet) {
+            this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
+          } else {
+            const innerDialog = this.dialog?.shadowRoot?.querySelector("ha-dialog") as any;
+            if (innerDialog?.updateComplete) await innerDialog.updateComplete;
+            this._injectProgressToDialogHeader(innerDialog?.shadowRoot?.querySelector("ha-dialog-header"));
+          }
+        } else {
+          await this.dialog?.updateComplete;
+          this._injectProgressToDialogHeader(this.dialog?.shadowRoot?.querySelector("ha-dialog-header"));
+        }
+      }
+    });
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
       this._timeoutTimer = setInterval(() => {
@@ -452,6 +473,50 @@ export class BrowserModPopup extends LitElement {
     await this.icons?.[index]?.action?.();
   }
 
+  _injectProgressToDialogHeader(headerEl: Element | null) {
+    if (!headerEl?.shadowRoot) return;
+    if (headerEl.shadowRoot.querySelector(".browser-mod-progress-style")) return;
+    const style = document.createElement("style");
+    style.classList.add("browser-mod-progress-style");
+    style.textContent = `
+      :host {
+        position: relative;
+        overflow: hidden;
+      }
+      :host::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: calc(100% - var(--progress, 0%));
+        background: var(--primary-color);
+        z-index: 10;
+        pointer-events: none;
+      }
+    `;
+    headerEl.shadowRoot.prepend(style);
+  }
+
+  _injectProgressToBottomSheet(bottomSheetEl: HTMLElement | null) {
+    if (!bottomSheetEl) return;
+    if (bottomSheetEl.querySelector(".browser-mod-progress-bar")) return;
+    const progressEl = document.createElement("div");
+    progressEl.classList.add("browser-mod-progress-bar");
+    progressEl.setAttribute("slot", "header");
+    progressEl.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: calc(100% - var(--progress, 0%));
+      background: var(--primary-color);
+      z-index: 10;
+      pointer-events: none;
+    `;
+    bottomSheetEl.prepend(progressEl);
+  }
+
   render() {
     if (!this.open) return html``;
     const innerContent = html`
@@ -493,9 +558,6 @@ export class BrowserModPopup extends LitElement {
             : "" }
           `
         : html``}
-      ${this.timeout && !this.timeout_hide_progress
-        ? html` <div class="progress"></div>`
-        : ""}
       <div class="content" tabindex="-1" dialogInitialFocus>
         <div class="container">${this.content}</div>
       </div>
@@ -617,22 +679,6 @@ export class BrowserModPopup extends LitElement {
       }
       :host([card]) .content .container {
         padding: 8px 8px 20px 8px;
-      }
-      .progress {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-      }
-
-      .progress::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        width: calc(100% - var(--progress, 60%));
-        top: var(--progress-top, 0);
-        height: 5px;
-        background: var(--primary-color);
-        z-index: 10;
       }
       .title {
         display: flex;
