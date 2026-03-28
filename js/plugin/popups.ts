@@ -53,17 +53,17 @@ export const PopupMixin = (SuperClass) => {
     }
 
     async closePopup(args) {
-      async function _closePopup(popup) {
+      const _closePopup = async (popup) => {
         const tag = popup.tag !== undefined && popup.tag !== "" ? popup.tag : "standard";
         let timeoutId: ReturnType<typeof setTimeout> | undefined;
         const result = await Unpromise.race([
           new Promise<void>((resolve) => {
             const onClose = () => {
-              popup.dialog?.removeEventListener('closed', onClose);
+              this.removeEventListener('browser-mod-popup-closed', onClose);
               if (timeoutId !== undefined) clearTimeout(timeoutId);
               resolve();
-            };
-            popup.dialog.addEventListener('closed', onClose, { once: true });
+            }
+            this.addEventListener('browser-mod-popup-closed', onClose, { once: true });
             popup.closeDialog();
           }),
           new Promise<void>((resolve) => {

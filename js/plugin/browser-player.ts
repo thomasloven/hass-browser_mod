@@ -141,11 +141,11 @@ class BrowserPlayer extends LitElement {
           </ha-icon-button>
           <ha-slider
             labeled
-            min="0"
-            max="100"
-            step="1"
-            ?disabled=${window.browser_mod.player.muted}
-            value=${window.browser_mod.player.volume * 100}
+            .min=${0}
+            .max=${100}
+            .step=${1}
+            .disabled=${window.browser_mod.player.muted}
+            .value=${window.browser_mod.player.volume * 100}
             @change=${this.handleVolumeChange}
           ></ha-slider>
 
