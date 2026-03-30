@@ -55,9 +55,15 @@ export const PopupMixin = (SuperClass) => {
     async closePopup(args) {
       const _closePopup = async (popup) => {
         const tag = popup.tag !== undefined && popup.tag !== "" ? popup.tag : "standard";
-        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+        var timeoutId: ReturnType<typeof setTimeout> | undefined;
         const result = await Unpromise.race([
           new Promise<void>((resolve) => {
+            timeoutId = setTimeout(() => {
+              console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
+              resolve();
+            }, 5000);
+          }),
+          new Promise<void>(async (resolve) => {
             const onClose = () => {
               this.removeEventListener('browser-mod-popup-closed', onClose);
               if (timeoutId !== undefined) clearTimeout(timeoutId);
@@ -65,12 +71,6 @@ export const PopupMixin = (SuperClass) => {
             }
             this.addEventListener('browser-mod-popup-closed', onClose, { once: true });
             popup.closeDialog();
-          }),
-          new Promise<void>((resolve) => {
-            timeoutId = setTimeout(() => {
-              console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
-              resolve();
-            }, 5000);
           })
         ]);
       }
