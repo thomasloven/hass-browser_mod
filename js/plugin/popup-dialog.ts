@@ -56,6 +56,7 @@ export class BrowserModPopup extends LitElement {
   _initialStyle: string;
   _styleSequence: string[];
   _styleSequenceIndex: number;
+  _expectingCloseEvent: boolean;
 
   connectedCallback() {
     super.connectedCallback();
@@ -87,7 +88,14 @@ export class BrowserModPopup extends LitElement {
     this.openDialog();
   }
 
-  async closeDialog() {
+  async closeDialog(event?: CustomEvent) {
+    // Logic to not Close twice when we close ourself and the event is coming from the dialog close event
+    if (!event) {
+      this._expectingCloseEvent = true;
+    } if (event && this._expectingCloseEvent) {
+      this._expectingCloseEvent = false;
+      return;
+    }
     if (!this.open) return true;
     this.open = false;
     this._objectSelectorMonitor.stopMonitoring();

@@ -1,3 +1,9 @@
+## [2.10.2-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1...v2.10.2-beta.1) (2026-03-30)
+
+### 🐞 Bug Fixes
+
+* **popup:** Action from popup that will open new popup with same tag (or no tag) causes new popup not to show. ([#1250](https://github.com/thomasloven/hass-browser_mod/issues/1250)) ([c55d1be](https://github.com/thomasloven/hass-browser_mod/commit/c55d1bec82cc0a1b5b4d18cfd6d81a39a8f50f32))
+
 ## [2.10.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.0...v2.10.1) (2026-03-28)
 
 ### 🐞 Bug Fixes
