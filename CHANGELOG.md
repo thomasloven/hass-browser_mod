@@ -1,3 +1,9 @@
+## [2.11.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.2...v2.11.0-beta.1) (2026-04-10)
+
+### ⭐ New Features
+
+* Store browser ID in cookie to resist any clearing of localStorage ([#1257](https://github.com/thomasloven/hass-browser_mod/issues/1257)) ([89116f9](https://github.com/thomasloven/hass-browser_mod/commit/89116f9498979747b7fd0b1b2fd06652ccf1af62)), closes [#1158](https://github.com/thomasloven/hass-browser_mod/issues/1158)
+
 ## [2.10.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1...v2.10.2) (2026-04-01)
 
 ### 🐞 Bug Fixes
