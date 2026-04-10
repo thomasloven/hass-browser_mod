@@ -1,5 +1,20 @@
 const ID_STORAGE_KEY = "browser_mod-browser-id";
 const ID_STORAGE_KEY_LOVELACE_PLAYER = "lovelace-player-device-id"
+const ID_COOKIE_KEY = "browser_mod-browser-id";
+// 400 days in seconds - the practical maximum accepted by browsers
+const COOKIE_MAX_AGE = 400 * 24 * 60 * 60;
+
+function getCookie(name: string): string | null {
+  const match = document.cookie.match(
+    new RegExp("(^|;\\s*)" + name + "=([^;]*)")
+  );
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+function setCookie(name: string, value: string, maxAge: number): void {
+  const secure = window.location.protocol === "https:" ? ";Secure" : "";
+  document.cookie = `${name}=${encodeURIComponent(value)};max-age=${maxAge};path=/;SameSite=Strict${secure}`;
+}
 
 export const BrowserIDMixin = (SuperClass) => {
   return class BrowserIDMixinClass extends SuperClass {
@@ -35,12 +50,24 @@ export const BrowserIDMixin = (SuperClass) => {
       });
       if (recalledID) {
         localStorage[ID_STORAGE_KEY] = recalledID;
+        setCookie(ID_COOKIE_KEY, recalledID, COOKIE_MAX_AGE);
       }
     }
 
     get browserID() {
       if (document.querySelector("hc-main")) return "CAST";
+      // Prefer cookie storage as it is more resistant to Apple's ITP
+      // than localStorage which may be cleared after 7 days of inactivity.
+      const cookieID = getCookie(ID_COOKIE_KEY);
+      if (cookieID) {
+        // Keep localStorage in sync for backward compatibility
+        localStorage[ID_STORAGE_KEY] = cookieID;
+        localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = cookieID;
+        return cookieID;
+      }
       if (localStorage[ID_STORAGE_KEY]) {
+        // Migrate existing localStorage value into cookie
+        setCookie(ID_COOKIE_KEY, localStorage[ID_STORAGE_KEY], COOKIE_MAX_AGE);
         // set lovelace-player-device-id as used by card-tools, state-switch
         localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
         return localStorage[ID_STORAGE_KEY];
@@ -64,6 +91,8 @@ export const BrowserIDMixin = (SuperClass) => {
       localStorage[ID_STORAGE_KEY] = id;
       // set lovelace-player-device-id as used by card-tools, state-switch
       localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
+      // Store in cookie as primary persistence (more resistant to ITP than localStorage)
+      setCookie(ID_COOKIE_KEY, id, COOKIE_MAX_AGE);
 
       this.browserIDChanged(oldID, id);
     }
