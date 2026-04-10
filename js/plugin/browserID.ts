@@ -56,7 +56,7 @@ export const BrowserIDMixin = (SuperClass) => {
 
     get browserID() {
       if (document.querySelector("hc-main")) return "CAST";
-      // Prefer cookie storage as it is more resistant to Apples ITP
+      // Prefer cookie storage as it is more resistant to Apple's ITP
       // than localStorage which may be cleared after 7 days of inactivity.
       const cookieID = getCookie(ID_COOKIE_KEY);
       if (cookieID) {
