@@ -41,6 +41,9 @@ export const BrowserStateMixin = (SuperClass) => {
         const battery = (<any>navigator).getBattery
           ? await (<any>navigator).getBattery()
           : undefined;
+        const persistent = navigator.storage?.persisted
+          ? await navigator.storage.persisted()
+          : undefined;
         this.sendUpdate({
           browser: {
             path: window.location.pathname,
@@ -58,6 +61,7 @@ export const BrowserStateMixin = (SuperClass) => {
             userData: this.user,
             ip_address: window.fully?.getIp4Address(),
             fully_data: this.fully_data,
+            persistent,
           },
         });
       };

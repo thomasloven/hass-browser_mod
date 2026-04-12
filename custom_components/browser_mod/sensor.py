@@ -57,6 +57,9 @@ class BrowserSensor(BrowserModEntity, SensorEntity):
     def extra_state_attributes(self):
         retval = super().extra_state_attributes
 
+        if self.parameter == "browserID":
+            retval["persistent"] = self._data.get("browser", {}).get("persistent")
+
         if self.parameter == "currentUser":
             retval["userData"] = self._data.get("browser", {}).get("userData")
             retval["person"] = self._data.get("browser", {}).get("person")
