@@ -258,9 +258,13 @@ window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) =>  {
   // popstate will get fired on window.browser_mod?.service("popup", ...) but as this popstate
   // is not currently cleared there is no way to distinguish this event properly at this time.
   // Hence, setting lovelaceRoot on all popstate which captures, for example, UI back from History Panel.
+  // Requesting animation frame to ensure that the DOM has updated with the new hui-root or null if 
+  // it has changed before we attempt to get it.
   ['popstate','location-changed'].forEach(event => 
     window.addEventListener(event, async (ev) => {
-      lovelaceRoot = await getLovelaceRoot(document);
+      window.requestAnimationFrame(async () => {
+        lovelaceRoot = await getLovelaceRoot(document);
+      });
     })
   );
 

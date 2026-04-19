@@ -40,7 +40,10 @@ function popupCardMatch(card, entity, viewIndex, curView, hass?) {
 export function findPopupCardConfigByEntity(lovelaceRoot, entity_id) {
   const lovelaceConfig = lovelaceRoot?.lovelace?.config;
   const hass = lovelaceRoot?.hass;
-  if (lovelaceConfig && hass) {
+  // Make sure hass and entities are available before attempting to find a card by entity_id. 
+  // This should not happen as the popup should not be triggered if hass or entities are not available
+  // as lovelaceRoot should not be set, but adding this check just in case.
+  if (lovelaceConfig && hass?.entities) {
     let entity = hass.entities[entity_id];
     if (!entity) {
       // Support fake entity_id
