@@ -256,6 +256,11 @@ declare global {
     customCards?: [{}?];
     loadCardHelpers?: { () };
   }
+  interface WindowEventMap {
+    "browser-mod-bootstrap": CustomEvent;
+    "hass-more-info": CustomEvent;
+    "connection-status": CustomEvent;
+  }
 }
 
 export type icon = {
