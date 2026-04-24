@@ -1,15 +1,8 @@
-## [2.11.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.11.0-beta.1...v2.11.0-beta.2) (2026-04-19)
+## [2.11.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.2...v2.11.0) (2026-04-24)
 
 ### 🐞 Bug Fixes
 
 * Possible issue blocking standard more-info on settings pages like updates, especially when using shortcuts dialog to navigate to settings page ([6134f41](https://github.com/thomasloven/hass-browser_mod/commit/6134f416d2f491d2fb64a9aa1a2ac02f3a2e7015))
-* Revert "feat: Store browser ID in cookie to resist any clearing of localStora…" ([ec60a31](https://github.com/thomasloven/hass-browser_mod/commit/ec60a3100b69ca0b0b86c29b6790f40ae9948b1a))
-
-## [2.11.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.2...v2.11.0-beta.1) (2026-04-10)
-
-### ⭐ New Features
-
-* Store browser ID in cookie to resist any clearing of localStorage ([#1257](https://github.com/thomasloven/hass-browser_mod/issues/1257)) ([89116f9](https://github.com/thomasloven/hass-browser_mod/commit/89116f9498979747b7fd0b1b2fd06652ccf1af62)), closes [#1158](https://github.com/thomasloven/hass-browser_mod/issues/1158)
 
 ## [2.10.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.1...v2.10.2) (2026-04-01)
 

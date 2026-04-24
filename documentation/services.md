@@ -196,7 +196,7 @@ data:
 | | |
 |---|---|
 |`entity`| The entity whose more-info dialog to display. |
-|`view`| The more-info view to open. The view opened will always have a close icon. Setting the view to anything other than `info` will always ignore custom popup-cards. |
+|`view`| The more-info view to open. Setting the view to anything other than `info` will always ignore custom popup-cards. |
 |`large`| If true, the dialog will be displayed wider, as if you had clicked the title of the dialog. |
 |`ignore_popup_card` | If true the more-info dialog will be shown even if there's currently a popup-card in the view/dashboard(*) which would override it. |
 |`close` | If true the more-into dialog will be closed if open. All other parameters are ignored. |
