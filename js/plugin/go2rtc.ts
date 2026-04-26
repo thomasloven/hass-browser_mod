@@ -99,7 +99,7 @@ export const Go2rtcMixin = (SuperClass) => {
       await this.connectionPromise;
 
       const baseUrl = this._go2rtc_configured_base_url;
-      if (!baseUrl || !this.registered) {
+      if (!baseUrl || !this.registered || !this.cameraEnabled) {
         this._go2rtc_stop();
         return;
       }
