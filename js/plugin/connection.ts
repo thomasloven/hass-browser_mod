@@ -311,6 +311,14 @@ export const ConnectionMixin = (SuperClass) => {
       this._reregister({ camera: value });
     }
 
+    get go2rtcEnabled() {
+      if (!this.registered) return null;
+      return this.browsers[this.browserID].go2rtc;
+    }
+    set go2rtcEnabled(value) {
+      this._reregister({ go2rtc: value });
+    }
+
     get playerEnabled() {
       if (!this.registered) return null;
       return (this.browserEntities as any)?.player?.enabled ?? false;

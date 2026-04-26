@@ -47,6 +47,7 @@ class BrowserStoreData:
     registered = attr.ib(type=bool, default=False)
     locked = attr.ib(type=bool, default=False)
     camera = attr.ib(type=bool, default=False)
+    go2rtc = attr.ib(type=bool, default=False)
     settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
     meta = attr.ib(type=str, default="default")
 

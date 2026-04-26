@@ -7,6 +7,7 @@ export const Go2rtcMixin = (SuperClass) => {
     private _go2rtcResourceUrl?: string;
     private _go2rtcBaseUrl?: string;
     private _go2rtcPublishKey?: string;
+    private _go2rtcAbortController?: AbortController;
     private _go2rtcStartToken = 0;
     private _go2rtcReconnectTimer?: number;
     public go2rtcError;
@@ -86,9 +87,16 @@ export const Go2rtcMixin = (SuperClass) => {
     private _go2rtc_schedule_reconnect(baseUrl: string, publishKey: string) {
       window.clearTimeout(this._go2rtcReconnectTimer);
       this._go2rtcReconnectTimer = window.setTimeout(() => {
+        const shouldReconnect =
+          this.go2rtcState === "error" ||
+          ["failed", "disconnected"].includes(
+            this._go2rtcPeerConnection?.connectionState
+          );
+
         if (
           this._go2rtc_configured_base_url === baseUrl &&
-          this._go2rtc_publish_key(baseUrl) === publishKey
+          this._go2rtc_publish_key(baseUrl) === publishKey &&
+          shouldReconnect
         ) {
           this._go2rtc_restart(baseUrl, publishKey);
         }
@@ -99,7 +107,7 @@ export const Go2rtcMixin = (SuperClass) => {
       await this.connectionPromise;
 
       const baseUrl = this._go2rtc_configured_base_url;
-      if (!baseUrl || !this.registered || !this.cameraEnabled) {
+      if (!baseUrl || !this.registered || !this.go2rtcEnabled) {
         this._go2rtc_stop();
         return;
       }
@@ -124,8 +132,9 @@ export const Go2rtcMixin = (SuperClass) => {
 
     private async _go2rtc_start(baseUrl: string, publishKey: string) {
       const token = ++this._go2rtcStartToken;
-      const endpoint = this._go2rtc_endpoint(baseUrl);
-      const pc = new RTCPeerConnection();
+      let endpoint: URL | undefined;
+      let pc: RTCPeerConnection | undefined;
+      let abortController: AbortController | undefined;
       let stream: MediaStream | undefined;
 
       this._go2rtcBaseUrl = baseUrl;
@@ -134,16 +143,29 @@ export const Go2rtcMixin = (SuperClass) => {
       this.go2rtcError = undefined;
       this.fireBrowserEvent("browser-mod-config-update");
 
-      pc.addEventListener("connectionstatechange", () => {
-        this.go2rtcState = pc.connectionState;
-        this.fireBrowserEvent("browser-mod-config-update");
-
-        if (["failed", "disconnected"].includes(pc.connectionState)) {
-          this._go2rtc_schedule_reconnect(baseUrl, publishKey);
-        }
-      });
-
       try {
+        endpoint = this._go2rtc_endpoint(baseUrl);
+        pc = new RTCPeerConnection();
+        abortController = new AbortController();
+        this._go2rtcPeerConnection = pc;
+        this._go2rtcAbortController = abortController;
+
+        pc.addEventListener("connectionstatechange", () => {
+          if (
+            token !== this._go2rtcStartToken ||
+            this._go2rtcPeerConnection !== pc
+          ) {
+            return;
+          }
+
+          this.go2rtcState = pc.connectionState;
+          this.fireBrowserEvent("browser-mod-config-update");
+
+          if (["failed", "disconnected"].includes(pc.connectionState)) {
+            this._go2rtc_schedule_reconnect(baseUrl, publishKey);
+          }
+        });
+
         if (!navigator.mediaDevices?.getUserMedia) {
           throw new Error("Browser does not support mediaDevices.getUserMedia");
         }
@@ -152,6 +174,14 @@ export const Go2rtcMixin = (SuperClass) => {
           video: this._go2rtc_video_constraints(),
           audio: false,
         });
+
+        if (token !== this._go2rtcStartToken || this._go2rtcPeerConnection !== pc) {
+          pc.close();
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+
+        this._go2rtcStream = stream;
 
         for (const track of stream.getTracks()) {
           pc.addTrack(track, stream);
@@ -171,6 +201,7 @@ export const Go2rtcMixin = (SuperClass) => {
             "Content-Type": "application/sdp",
           },
           body: pc.localDescription.sdp,
+          signal: abortController.signal,
         });
 
         if (!response.ok) {
@@ -179,29 +210,40 @@ export const Go2rtcMixin = (SuperClass) => {
           );
         }
 
+        const resourceUrl = response.headers.get("Location");
+        this._go2rtcResourceUrl = resourceUrl
+          ? new URL(resourceUrl, endpoint).toString()
+          : undefined;
         const answer = await response.text();
         await pc.setRemoteDescription({ type: "answer", sdp: answer });
 
-        if (token !== this._go2rtcStartToken) {
+        if (token !== this._go2rtcStartToken || this._go2rtcPeerConnection !== pc) {
           pc.close();
           stream.getTracks().forEach((track) => track.stop());
           return;
         }
 
-        this._go2rtcPeerConnection = pc;
-        this._go2rtcStream = stream;
-        const resourceUrl = response.headers.get("Location");
-        this._go2rtcResourceUrl = resourceUrl
-          ? new URL(resourceUrl, endpoint).toString()
-          : undefined;
-        this.go2rtcState = "connected";
+        this.go2rtcState = pc.connectionState;
         this.fireBrowserEvent("browser-mod-config-update");
       } catch (err) {
-        pc.close();
+        pc?.close();
         stream?.getTracks().forEach((track) => track.stop());
 
-        if (token !== this._go2rtcStartToken) return;
+        if (
+          token !== this._go2rtcStartToken ||
+          (pc && this._go2rtcPeerConnection !== pc)
+        ) {
+          return;
+        }
 
+        if (this._go2rtcResourceUrl) {
+          fetch(this._go2rtcResourceUrl, { method: "DELETE" }).catch(() => {});
+        }
+
+        this._go2rtcPeerConnection = undefined;
+        this._go2rtcStream = undefined;
+        this._go2rtcResourceUrl = undefined;
+        this._go2rtcAbortController = undefined;
         this.go2rtcState = "error";
         this.go2rtcError = err;
         this.fireBrowserEvent("browser-mod-config-update");
@@ -213,11 +255,13 @@ export const Go2rtcMixin = (SuperClass) => {
     private _go2rtc_stop(notify = true) {
       window.clearTimeout(this._go2rtcReconnectTimer);
       this._go2rtcStartToken += 1;
+      const hadError = this.go2rtcError !== undefined;
 
       if (this._go2rtcResourceUrl) {
         fetch(this._go2rtcResourceUrl, { method: "DELETE" }).catch(() => {});
       }
 
+      this._go2rtcAbortController?.abort();
       this._go2rtcPeerConnection?.close();
       this._go2rtcStream?.getTracks().forEach((track) => track.stop());
 
@@ -226,8 +270,10 @@ export const Go2rtcMixin = (SuperClass) => {
       this._go2rtcResourceUrl = undefined;
       this._go2rtcBaseUrl = undefined;
       this._go2rtcPublishKey = undefined;
+      this._go2rtcAbortController = undefined;
+      this.go2rtcError = undefined;
 
-      if (notify && this.go2rtcState !== "stopped") {
+      if (notify && (this.go2rtcState !== "stopped" || hadError)) {
         this.go2rtcState = "stopped";
         this.fireBrowserEvent("browser-mod-config-update");
       }

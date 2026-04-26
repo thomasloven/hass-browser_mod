@@ -33,6 +33,12 @@ Browser Mod is trying hard to keep the Browser ID constant. If you have an envir
 
 If your device has a camera, this will allow it to be forwarded as a `camera` entity to Home Assistant.
 
+### Enable go2rtc publishing
+
+If your device has a camera, this will allow it to publish the browser camera to go2rtc using WHIP.
+
+This is independent from [Enable camera](#enable-camera). You can enable the Browser Mod `camera` entity, go2rtc publishing, both, or neither for each registered Browser.
+
 ## Registered Browsers (admin only)
 
 This section shows all currently registered _Browsers_ and allows you to unregister them. This is useful e.g. if a `BrowserID` has changed or if you do not have access to a device anymore.
@@ -237,7 +243,6 @@ Common resolutions:
 
 Set a go2rtc base URL to publish the Browser camera as a WHIP stream. Browser Mod will publish to `/api/webrtc?dst=<BrowserID>` under this base URL. For example, if the base URL is `https://go2rtc.example.local`, the Browser with ID `kitchen` publishes to `https://go2rtc.example.local/api/webrtc?dst=kitchen`.
 
-This is separate from the Browser Mod `camera` entity and does not replace the existing JPEG camera implementation. The Browser must be registered, the page must be allowed to use the camera, and go2rtc must allow browser requests to its API endpoint.
 
 ---
 

@@ -15,6 +15,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
     this.dirty = true;
   }
+  toggleGo2rtcEnabled() {
+    window.browser_mod.go2rtcEnabled = !window.browser_mod.go2rtcEnabled;
+    this.dirty = true;
+  }
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -139,6 +143,18 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                     slot="end"
                     .checked=${window.browser_mod?.cameraEnabled}
                     @change=${this.toggleCameraEnabled}
+                    .disabled=${window.browser_mod?.browser_locked}
+                  ></ha-switch>
+                </ha-md-list-item>
+                <ha-md-list-item>
+                  <span slot="headline">Enable go2rtc publishing</span>
+                  <span slot="supporting-text"
+                    >Publish this browser camera to go2rtc using WHIP</span
+                  >
+                  <ha-switch
+                    slot="end"
+                    .checked=${window.browser_mod?.go2rtcEnabled}
+                    @change=${this.toggleGo2rtcEnabled}
                     .disabled=${window.browser_mod?.browser_locked}
                   ></ha-switch>
                 </ha-md-list-item>
