@@ -510,6 +510,20 @@ class BrowserModFrontendSettingsCard extends LitElement {
               }}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
+          <ha-expansion-panel
+            .header=${"go2rtc base URL"}
+            .secondary=${"Publish this browser camera to go2rtc using WHIP"}
+            @expanded-changed=${this.expandedChanged}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"go2rtcBaseUrl"}
+              .settingSelector=${{
+                text: {},
+              }}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
         </div>
       </ha-card>
     `;

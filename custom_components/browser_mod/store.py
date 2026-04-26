@@ -29,6 +29,7 @@ class SettingsStoreData:
     fullInteraction = attr.ib(type=bool, default=None)
     kioskMode = attr.ib(type=bool, default=None)
     cameraResolution = attr.ib(type=str, default=None)
+    go2rtcBaseUrl = attr.ib(type=str, default=None)
 
     @classmethod
     def from_dict(cls, data):

@@ -233,6 +233,12 @@ Common resolutions:
 
 > Note: The actual resolution used may depend on your camera's capabilities. The browser will try to use the closest available resolution to what you specify.
 
+### go2rtc base URL
+
+Set a go2rtc base URL to publish the Browser camera as a WHIP stream. Browser Mod will publish to `/api/webrtc?dst=<BrowserID>` under this base URL. For example, if the base URL is `https://go2rtc.example.local`, the Browser with ID `kitchen` publishes to `https://go2rtc.example.local/api/webrtc?dst=kitchen`.
+
+This is separate from the Browser Mod `camera` entity and does not replace the existing JPEG camera implementation. The Browser must be registered, the page must be allowed to use the camera, and go2rtc must allow browser requests to its API endpoint.
+
 ---
 
 #### Browser ID updates

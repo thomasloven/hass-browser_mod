@@ -21,6 +21,7 @@ import { AutoSettingsMixin } from "./frontend-settings";
 import { BrowserIDMixin } from "./browserID";
 import { VersionMixin } from "./version.js";
 import { PanelStateMixin } from "./panel.js";
+import { Go2rtcMixin } from "./go2rtc";
 
 export class BrowserMod extends ServicesMixin(
   VersionMixin(
@@ -28,13 +29,15 @@ export class BrowserMod extends ServicesMixin(
       ActivityMixin(
         BrowserStateMixin(
           PanelStateMixin(
-            CameraMixin(
-              MediaPlayerMixin(
-                ScreenSaverMixin(
-                  AutoSettingsMixin(
-                    FullyMixin(
-                      RequireInteractMixin(
-                        ConnectionMixin(BrowserIDMixin(EventTarget))
+            Go2rtcMixin(
+              CameraMixin(
+                MediaPlayerMixin(
+                  ScreenSaverMixin(
+                    AutoSettingsMixin(
+                      FullyMixin(
+                        RequireInteractMixin(
+                          ConnectionMixin(BrowserIDMixin(EventTarget))
+                        )
                       )
                     )
                   )
