@@ -170,6 +170,13 @@ export const Go2rtcMixin = (SuperClass) => {
           throw new Error("Browser does not support mediaDevices.getUserMedia");
         }
 
+        await this.videoInteraction;
+
+        if (token !== this._go2rtcStartToken || this._go2rtcPeerConnection !== pc) {
+          pc.close();
+          return;
+        }
+
         stream = await navigator.mediaDevices.getUserMedia({
           video: this._go2rtc_video_constraints(),
           audio: false,

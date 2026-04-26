@@ -134,10 +134,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             ? html`
                 ${this._renderSuspensionAlert()}
                 <ha-md-list-item>
-                  <span slot="headline">Enable camera</span>
+                  <span slot="headline">Enable camera entity</span>
                   <span slot="supporting-text"
-                    >Get camera input from this browser (hardware
-                    dependent)</span
+                    >Expose this browser camera as a Home Assistant camera
+                    entity</span
                   >
                   <ha-switch
                     slot="end"
@@ -164,6 +164,15 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                         Setting up the device camera failed. Make sure you are browsing
                         in a secure (https://) context and have
                         allowed use of the camera in your browser.
+                      </ha-alert>
+                    `
+                  : ""}
+                ${window.browser_mod?.go2rtcError
+                  ? html`
+                      <ha-alert alert-type="error">
+                        Setting up go2rtc publishing failed. Make sure go2rtc
+                        is reachable, you are browsing in a secure (https://)
+                        context, and camera access is allowed.
                       </ha-alert>
                     `
                   : ""}
@@ -205,8 +214,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         For privacy reasons many browsers require the user to interact with a
         webpage before allowing audio playback or video capture. This may affect
         the
-        <code>media_player</code> and <code>camera</code> components of Browser
-        Mod. <br /><br />
+        <code>media_player</code>, <code>camera</code>, and go2rtc publishing
+        features of Browser Mod. <br /><br />
 
         If you ever see a
         <ha-icon
