@@ -243,6 +243,8 @@ Common resolutions:
 
 Set a go2rtc base URL to publish the Browser camera as a WHIP stream. Browser Mod will publish to `/api/webrtc?dst=<BrowserID>` under this base URL. For example, if the base URL is `https://go2rtc.example.local`, the Browser with ID `kitchen` publishes to `https://go2rtc.example.local/api/webrtc?dst=kitchen`.
 
+See [go2rtc publishing](./go2rtc.md) for go2rtc setup, HTTPS, CORS, and troubleshooting notes.
+
 
 ---
 
