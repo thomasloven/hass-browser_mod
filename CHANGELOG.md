@@ -1,3 +1,9 @@
+## [2.12.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.11.0...v2.12.0-beta.1) (2026-04-28)
+
+### ⭐ New Features
+
+* Enable push camera stream to go2rtc via WebRTC/WHIP [#1267](https://github.com/thomasloven/hass-browser_mod/issues/1267) from widewing/codex/go2rtc-whip-publish ([e7d47ba](https://github.com/thomasloven/hass-browser_mod/commit/e7d47ba7592e02f02c09dc647150455518f717d9))
+
 ## [2.11.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.10.2...v2.11.0) (2026-04-24)
 
 ### 🐞 Bug Fixes
