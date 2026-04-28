@@ -512,7 +512,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
           </ha-expansion-panel>
           <ha-expansion-panel
             .header=${"go2rtc base URL"}
-            .secondary=${"Publish this browser camera to go2rtc using WHIP"}
+            .secondary=${"Set the go2rtc URL used for WHIP publishing"}
             @expanded-changed=${this.expandedChanged}
             leftChevron
           >
