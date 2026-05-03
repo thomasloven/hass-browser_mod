@@ -18,12 +18,17 @@ export const RequireInteractMixin = (SuperClass) => {
 
       this.addEventListener("browser-mod-user-ready", () => {
         this.entitiesReady().then(() => {
-          if ((this.playerEnabled || this.cameraEnabled) && !this._versionNotificationPending) {
+          if (
+            (this.playerEnabled || this.cameraEnabled || this.go2rtcEnabled) &&
+            !this._versionNotificationPending
+          ) {
             this._audioRequired = this.playerEnabled;
             this.setupInteraction();
           }
         }).catch((err) => {
-          console.warn(`Browser Mod: Failed to wait for browser entities to be ready. Player will be unavailable. Error: ${err}`);
+          console.warn(
+            `Browser Mod: Failed to wait for browser entities to be ready. Interaction-dependent features may be unavailable. Error: ${err}`
+          );
         });
       }, { once: true });
     }

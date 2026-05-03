@@ -15,6 +15,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     window.browser_mod.cameraEnabled = !window.browser_mod.cameraEnabled;
     this.dirty = true;
   }
+  toggleGo2rtcEnabled() {
+    window.browser_mod.go2rtcEnabled = !window.browser_mod.go2rtcEnabled;
+    this.dirty = true;
+  }
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -130,15 +134,27 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             ? html`
                 ${this._renderSuspensionAlert()}
                 <ha-md-list-item>
-                  <span slot="headline">Enable camera</span>
+                  <span slot="headline">Enable camera entity</span>
                   <span slot="supporting-text"
-                    >Get camera input from this browser (hardware
-                    dependent)</span
+                    >Expose this browser camera as a Home Assistant camera
+                    entity</span
                   >
                   <ha-switch
                     slot="end"
                     .checked=${window.browser_mod?.cameraEnabled}
                     @change=${this.toggleCameraEnabled}
+                    .disabled=${window.browser_mod?.browser_locked}
+                  ></ha-switch>
+                </ha-md-list-item>
+                <ha-md-list-item>
+                  <span slot="headline">Enable go2rtc publishing</span>
+                  <span slot="supporting-text"
+                    >Publish this browser camera to go2rtc using WHIP</span
+                  >
+                  <ha-switch
+                    slot="end"
+                    .checked=${window.browser_mod?.go2rtcEnabled}
+                    @change=${this.toggleGo2rtcEnabled}
                     .disabled=${window.browser_mod?.browser_locked}
                   ></ha-switch>
                 </ha-md-list-item>
@@ -148,6 +164,15 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                         Setting up the device camera failed. Make sure you are browsing
                         in a secure (https://) context and have
                         allowed use of the camera in your browser.
+                      </ha-alert>
+                    `
+                  : ""}
+                ${window.browser_mod?.go2rtcError
+                  ? html`
+                      <ha-alert alert-type="error">
+                        Setting up go2rtc publishing failed. Make sure go2rtc
+                        is reachable, you are browsing in a secure (https://)
+                        context, and camera access is allowed.
                       </ha-alert>
                     `
                   : ""}
@@ -189,8 +214,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         For privacy reasons many browsers require the user to interact with a
         webpage before allowing audio playback or video capture. This may affect
         the
-        <code>media_player</code> and <code>camera</code> components of Browser
-        Mod. <br /><br />
+        <code>media_player</code>, <code>camera</code>, and go2rtc publishing
+        features of Browser Mod. <br /><br />
 
         If you ever see a
         <ha-icon

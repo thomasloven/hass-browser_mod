@@ -17,7 +17,7 @@ Registering a _Browser_ as a device will create a Home Assistant Device associat
 - A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
 - A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
 
-> NOTE: Both the `media_player` and `light` functions can be disabled by disabling the entity in Home Assistant. If `media_player` is disabled no [User interaction](#user-interaction) check will take place. If `light` is disabled, there will be no setting of screen brightness from Home Assistant, which is useful if you are using adaptive light brightness on your device and never want Browser Mod to override.
+> NOTE: Both the `media_player` and `light` functions can be disabled by disabling the entity in Home Assistant. If `media_player` is disabled and neither the camera entity nor go2rtc publishing is enabled, no [User interaction](#user-interaction) check will take place. If `light` is disabled, there will be no setting of screen brightness from Home Assistant, which is useful if you are using adaptive light brightness on your device and never want Browser Mod to override.
 
 Registering a browser also enables it to act as a target for Browser Mod _services_.
 
@@ -29,9 +29,15 @@ There may be benefits to using the same `BrowserID` in some cases, so you'll hav
 
 Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider following the best practice for [Browser ID updates](#browser-id-updates).
 
-### Enable camera
+### Enable camera entity
 
-If your device has a camera, this will allow it to be forwarded as a `camera` entity to Home Assistant.
+If your device has a camera, this will allow it to be forwarded as a Browser Mod `camera` entity to Home Assistant.
+
+### Enable go2rtc publishing
+
+If your device has a camera, this will allow it to publish the browser camera to go2rtc using WHIP.
+
+This is independent from [Enable camera entity](#enable-camera-entity). You can enable the Browser Mod `camera` entity, go2rtc publishing, both, or neither for each registered Browser.
 
 ## Registered Browsers (admin only)
 
@@ -232,6 +238,13 @@ Common resolutions:
 - `3840 x 2160` - 4K (2160p)
 
 > Note: The actual resolution used may depend on your camera's capabilities. The browser will try to use the closest available resolution to what you specify.
+
+### go2rtc base URL
+
+Set a go2rtc base URL to publish the Browser camera as a WHIP stream. Browser Mod will publish to `/api/webrtc?dst=<BrowserID>` under this base URL. For example, if the base URL is `https://go2rtc.example.local`, the Browser with ID `kitchen` publishes to `https://go2rtc.example.local/api/webrtc?dst=kitchen`.
+
+See [go2rtc publishing](./go2rtc.md) for go2rtc setup, HTTPS, CORS, and troubleshooting notes.
+
 
 ---
 
