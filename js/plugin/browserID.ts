@@ -39,10 +39,10 @@ export const BrowserIDMixin = (SuperClass) => {
         type: "browser_mod/recall_id",
       });
       if (result) {
-        localStorage[ID_STORAGE_KEY] = result.browserID;
+        this.browserID = result.browserID;
         // If the ID was recovered via a session mapping, reflect that in the sync flag
         if (result.via_session) {
-          localStorage.setItem(SYNC_SESSION_STORAGE_KEY, "true");
+          this.syncSession = true;
         }
       }
     }
@@ -70,6 +70,7 @@ export const BrowserIDMixin = (SuperClass) => {
 
       if (id === "") id = _createBrowserID();
       const oldID = localStorage[ID_STORAGE_KEY];
+      if (id === oldID) return;
       localStorage[ID_STORAGE_KEY] = id;
       // set lovelace-player-device-id as used by card-tools, state-switch
       localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
