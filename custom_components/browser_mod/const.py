@@ -16,6 +16,8 @@ WS_UNREGISTER = f"{WS_ROOT}/unregister"
 WS_UPDATE = f"{WS_ROOT}/update"
 WS_SETTINGS = f"{WS_ROOT}/settings"
 WS_RECALL_ID = f"{WS_ROOT}/recall_id"
+WS_STORE_SESSION = f"{WS_ROOT}/store_session"
+WS_DELETE_SESSION = f"{WS_ROOT}/delete_session"
 WS_LOG = f"{WS_ROOT}/log"
 
 BROWSER_MOD_BROWSER_SERVICES = [

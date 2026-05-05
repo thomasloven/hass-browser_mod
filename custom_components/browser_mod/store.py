@@ -75,6 +75,7 @@ class ConfigStoreData:
     version = attr.ib(type=str, default="2.0")
     settings = attr.ib(type=SettingsStoreData, factory=SettingsStoreData)
     user_settings = attr.ib(type=dict[str:SettingsStoreData], factory=dict)
+    session_browser_map = attr.ib(type=dict, factory=dict)
 
     @classmethod
     def from_dict(cls, data={}):
@@ -176,7 +177,22 @@ class BrowserModStore:
     async def set_global_settings(self, **data):
         self.data.settings.__dict__.update(data)
         await self.updated()
-    
+
+    def get_session_browser_id(self, refresh_token_id):
+        """Return the browserID stored for a given refresh token ID, or None."""
+        return self.data.session_browser_map.get(refresh_token_id)
+
+    async def set_session_browser_map(self, refresh_token_id, browserID):
+        """Store a refresh_token_id -> browserID mapping."""
+        self.data.session_browser_map[refresh_token_id] = browserID
+        await self.updated()
+
+    async def delete_session_browser_map(self, refresh_token_id):
+        """Remove a refresh_token_id -> browserID mapping if it exists."""
+        if refresh_token_id in self.data.session_browser_map:
+            del self.data.session_browser_map[refresh_token_id]
+            await self.updated()
+
     async def cleanup(self, browser_include, browser_exclude):
         """Cleanup old browsers from data store."""
         if browser_include:

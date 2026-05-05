@@ -19,6 +19,8 @@ from .const import (
     WS_RECALL_ID,
     WS_REGISTER,
     WS_SETTINGS,
+    WS_STORE_SESSION,
+    WS_DELETE_SESSION,
     WS_UNREGISTER,
     WS_UPDATE,
     DOMAIN,
@@ -172,12 +174,56 @@ async def async_setup_connection(hass):
     )
     def handle_recall_id(hass, connection, msg):
         """Recall browserID of Browser with the current connection."""
+        store = hass.data[DOMAIN][DATA_STORE]
+
+        # First try: look up by active connection
         dev = getBrowserByConnection(hass, connection)
         if dev:
             connection.send_message(
                 websocket_api.result_message(msg["id"], dev.browserID)
             )
+            return
+
+        # Second try: look up by login session (refresh token)
+        refresh_token_id = connection.refresh_token_id
+        if refresh_token_id:
+            browserID = store.get_session_browser_id(refresh_token_id)
+            if browserID:
+                connection.send_message(
+                    websocket_api.result_message(msg["id"], browserID)
+                )
+                return
+
         connection.send_message(websocket_api.result_message(msg["id"], None))
+
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): WS_STORE_SESSION,
+            vol.Required("browserID"): str,
+        }
+    )
+    @websocket_api.async_response
+    async def handle_store_session(hass, connection, msg):
+        """Store a login-session -> browserID mapping for the current connection."""
+        store = hass.data[DOMAIN][DATA_STORE]
+        refresh_token_id = connection.refresh_token_id
+        if refresh_token_id:
+            await store.set_session_browser_map(refresh_token_id, msg[BROWSER_ID])
+        connection.send_result(msg["id"])
+
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): WS_DELETE_SESSION,
+        }
+    )
+    @websocket_api.async_response
+    async def handle_delete_session(hass, connection, msg):
+        """Remove the login-session -> browserID mapping for the current connection."""
+        store = hass.data[DOMAIN][DATA_STORE]
+        refresh_token_id = connection.refresh_token_id
+        if refresh_token_id:
+            await store.delete_session_browser_map(refresh_token_id)
+        connection.send_result(msg["id"])
 
     @websocket_api.websocket_command(
         {
@@ -195,4 +241,6 @@ async def async_setup_connection(hass):
     async_register_command(hass, handle_update)
     async_register_command(hass, handle_settings)
     async_register_command(hass, handle_recall_id)
+    async_register_command(hass, handle_store_session)
+    async_register_command(hass, handle_delete_session)
     async_register_command(hass, handle_log)
