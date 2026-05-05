@@ -42,7 +42,7 @@ export const BrowserIDMixin = (SuperClass) => {
         this.browserID = result.browserID;
         // If the ID was recovered via a session mapping, reflect that in the sync flag
         if (result.via_session) {
-          this.syncSession = true;
+          localStorage.setItem(SYNC_SESSION_STORAGE_KEY, "true");
         }
       }
     }
