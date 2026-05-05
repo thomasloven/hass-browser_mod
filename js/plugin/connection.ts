@@ -49,6 +49,8 @@ export const ConnectionMixin = (SuperClass) => {
       this.LOG("Integration ready: browser_mod loaded and update received");
       this.fireBrowserEvent("browser-mod-ready");
       window.setTimeout(() => this.sendUpdate({}), 1000);
+      // Re-establish server-side session mapping if syncSession was set before connection
+      if (this.syncSession) this.store_session();
       this.userReady()
         .then(() => {
           this.onUserReady();

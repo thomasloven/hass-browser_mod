@@ -4,8 +4,6 @@ const SYNC_SESSION_STORAGE_KEY = "browser_mod-sync-session";
 
 export const BrowserIDMixin = (SuperClass) => {
   return class BrowserIDMixinClass extends SuperClass {
-    _sessionSyncInitiated = false;
-
     constructor() {
       super();
 
@@ -53,15 +51,6 @@ export const BrowserIDMixin = (SuperClass) => {
       if (localStorage[ID_STORAGE_KEY]) {
         // set lovelace-player-device-id as used by card-tools, state-switch
         localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
-        // If syncSession is enabled, re-establish the server-side mapping once
-        // per page load (covers server restarts where the mapping was lost).
-        // Reset the flag on failure so the next getter call can retry.
-        if (this.syncSession && !this._sessionSyncInitiated) {
-          this._sessionSyncInitiated = true;
-          this.store_session().catch(() => {
-            this._sessionSyncInitiated = false;
-          });
-        }
         return localStorage[ID_STORAGE_KEY];
       }
       this.browserID = "";
