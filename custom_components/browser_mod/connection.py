@@ -176,17 +176,10 @@ async def async_setup_connection(hass):
         """Recall browserID of Browser with the current connection."""
         store = hass.data[DOMAIN][DATA_STORE]
 
-        # First try: look up by active connection
-        dev = getBrowserByConnection(hass, connection)
-        if dev:
-            connection.send_message(
-                websocket_api.result_message(
-                    msg["id"], {"browserID": dev.browserID, "via_session": False}
-                )
-            )
-            return
-
-        # Second try: look up by login session (refresh token)
+        # First try: look up by login session (refresh token)
+        # This must run before the connection lookup so that via_session is
+        # accurately reported; a connection-based hit would mask the session
+        # mapping and prevent the frontend from setting the sync flag.
         refresh_token_id = connection.refresh_token_id
         if refresh_token_id:
             browserID = store.get_session_browser_id(refresh_token_id)
@@ -197,6 +190,16 @@ async def async_setup_connection(hass):
                     )
                 )
                 return
+
+        # Second try: look up by active connection
+        dev = getBrowserByConnection(hass, connection)
+        if dev:
+            connection.send_message(
+                websocket_api.result_message(
+                    msg["id"], {"browserID": dev.browserID, "via_session": False}
+                )
+            )
+            return
 
         connection.send_message(websocket_api.result_message(msg["id"], None))
 
