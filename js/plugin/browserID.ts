@@ -34,11 +34,16 @@ export const BrowserIDMixin = (SuperClass) => {
       // This happens e.g. when the frontend cache is reset in the Companion app
       // Also tries session-based recall if a session mapping was stored server-side
       if (!this.connection) return;
-      const recalledID = await this.connection.sendMessagePromise({
+      const result = await this.connection.sendMessagePromise({
         type: "browser_mod/recall_id",
       });
-      if (recalledID) {
-        localStorage[ID_STORAGE_KEY] = recalledID;
+      if (result) {
+        const browserID = result.browserID ?? result;
+        localStorage[ID_STORAGE_KEY] = browserID;
+        // If the ID was recovered via a session mapping, reflect that in the sync flag
+        if (result.via_session) {
+          localStorage.setItem(SYNC_SESSION_STORAGE_KEY, "true");
+        }
       }
     }
 

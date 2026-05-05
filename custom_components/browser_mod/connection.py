@@ -180,7 +180,9 @@ async def async_setup_connection(hass):
         dev = getBrowserByConnection(hass, connection)
         if dev:
             connection.send_message(
-                websocket_api.result_message(msg["id"], dev.browserID)
+                websocket_api.result_message(
+                    msg["id"], {"browserID": dev.browserID, "via_session": False}
+                )
             )
             return
 
@@ -190,7 +192,9 @@ async def async_setup_connection(hass):
             browserID = store.get_session_browser_id(refresh_token_id)
             if browserID:
                 connection.send_message(
-                    websocket_api.result_message(msg["id"], browserID)
+                    websocket_api.result_message(
+                        msg["id"], {"browserID": browserID, "via_session": True}
+                    )
                 )
                 return
 
