@@ -38,8 +38,7 @@ export const BrowserIDMixin = (SuperClass) => {
         type: "browser_mod/recall_id",
       });
       if (result) {
-        const browserID = result.browserID ?? result;
-        localStorage[ID_STORAGE_KEY] = browserID;
+        localStorage[ID_STORAGE_KEY] = result.browserID;
         // If the ID was recovered via a session mapping, reflect that in the sync flag
         if (result.via_session) {
           localStorage.setItem(SYNC_SESSION_STORAGE_KEY, "true");
