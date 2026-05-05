@@ -216,6 +216,7 @@ async def async_setup_connection(hass):
         refresh_token_id = connection.refresh_token_id
         if refresh_token_id:
             await store.set_session_browser_map(refresh_token_id, msg[BROWSER_ID])
+            await store.cleanup_session_map(hass)
         connection.send_result(msg["id"])
 
     @websocket_api.websocket_command(

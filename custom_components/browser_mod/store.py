@@ -193,6 +193,21 @@ class BrowserModStore:
             del self.data.session_browser_map[refresh_token_id]
             await self.updated()
 
+    async def cleanup_session_map(self, hass):
+        """Remove session_browser_map entries whose refresh tokens no longer exist."""
+        stale = [
+            token_id
+            for token_id in list(self.data.session_browser_map.keys())
+            if hass.auth.async_get_refresh_token(token_id) is None
+        ]
+        if stale:
+            for token_id in stale:
+                _LOGGER.debug(
+                    "Session map cleanup: removing stale refresh_token_id %s", token_id
+                )
+                del self.data.session_browser_map[token_id]
+            await self.updated()
+
     async def cleanup(self, browser_include, browser_exclude):
         """Cleanup old browsers from data store."""
         if browser_include:

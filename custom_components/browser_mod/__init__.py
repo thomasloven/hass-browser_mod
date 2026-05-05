@@ -26,6 +26,7 @@ async def async_setup(hass, config):
 
     store = BrowserModStore(hass)
     await store.load()
+    await store.cleanup_session_map(hass)
 
     version = await hass.async_add_executor_job(get_version, hass)
     await store.set_version(version)
