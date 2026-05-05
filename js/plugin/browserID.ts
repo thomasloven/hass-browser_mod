@@ -30,10 +30,11 @@ export const BrowserIDMixin = (SuperClass) => {
     }
 
     async recall_id() {
-      // If the connection is still open, but the BrowserID has disappeared - recall it from the backend
-      // This happens e.g. when the frontend cache is reset in the Companion app
-      // Also tries session-based recall if a session mapping was stored server-side
-      if (!this.connection) return;
+      // Recall the BrowserID from the backend when it has disappeared from localStorage.
+      // This happens e.g. when the frontend cache is reset in the Companion app, or on
+      // first load when a session mapping was stored server-side.
+      // Wait for the WebSocket connection to be ready before sending the request.
+      await this.connectionPromise;
       const result = await this.connection.sendMessagePromise({
         type: "browser_mod/recall_id",
       });
