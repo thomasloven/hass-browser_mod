@@ -27,7 +27,17 @@ This box lets you set the `BrowserID` for the current _Browser_.
 Note that it is possible to assign the same `BrowserID` to several browsers, but unpredictable things _may_ happen if several of them are open at the same time.
 There may be benefits to using the same `BrowserID` in some cases, so you'll have to experiment with what works for you.
 
-Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider following the best practice for [Browser ID updates](#browser-id-updates).
+Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider enabling [Sync Browser ID to login session](#sync-browser-id-to-login-session) or following the best practice for [Browser ID updates](#browser-id-updates).
+
+### Sync Browser ID to login session
+
+When enabled, Browser Mod stores the current `BrowserID` against your Home Assistant login session on the server. If the browser's local storage is cleared (e.g. due to privacy settings, a cache wipe, or the Home Assistant Companion App resetting its frontend cache), the `BrowserID` will be automatically recalled from the server the next time the same login session connects.
+
+This is particularly useful for:
+- **Home Assistant Companion Apps** on iOS or Android, where the frontend cache may be cleared periodically.
+- Any browser that clears local storage regularly.
+
+> **Note:** The session mapping is tied to the Home Assistant refresh token used for the current login session. If you log out and log back in, a new session is created and the mapping will need to be re-established. To restore the mapping, simply navigate to the Browser Mod panel and ensure the toggle is enabled.
 
 ### Enable camera entity
 
@@ -250,7 +260,11 @@ See [go2rtc publishing](./go2rtc.md) for go2rtc setup, HTTPS, CORS, and troubles
 
 #### Browser ID updates
 
-While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied. To be able to restore Browser ID and Frontend settings tied to the Browser ID you can follow the best practices listed below.
+While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied.
+
+The easiest way to handle this is to enable [Sync Browser ID to login session](#sync-browser-id-to-login-session), which automatically recalls the Browser ID from the server whenever local storage is cleared, as long as the same login session is used.
+
+If you prefer a manual approach or cannot use session sync, you can follow the best practices listed below.
 
 1. Turn off auto-register. This allows to control the register order, and also limits many new Browser IDs being registered in your environment of changing Browser IDs.
 2. Don't lock the register but leave open to make the next step easy to accomplish.
