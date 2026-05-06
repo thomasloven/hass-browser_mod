@@ -1,3 +1,4 @@
+import { Unpromise } from "@watchable/unpromise";
 import { compare_deep, hass, provideHass } from "../helpers";
 
 const RECALL_ID_TIMEOUT_MS = 5000;
@@ -99,9 +100,15 @@ export const ConnectionMixin = (SuperClass) => {
     private async userReady() {
       // Wait for recall_id to complete so the correct browserID is set
       // before anything depending on it (e.g. _runDefaultAction) fires.
-      // Race against a 5-second timeout so a stalled recall_id never blocks startup.
-      const recallTimeout = new Promise<void>((resolve) => setTimeout(resolve, RECALL_ID_TIMEOUT_MS));
-      await Promise.race([this._recallIdPromise, recallTimeout]);
+      // Race against a timeout so a stalled recall_id never blocks startup.
+      // If the timeout wins, throw so the caller can log the failure.
+      const recallTimeout = new Promise<void>((_, reject) =>
+        setTimeout(
+          () => reject(new Error(`recall_id did not return within ${RECALL_ID_TIMEOUT_MS}ms`)),
+          RECALL_ID_TIMEOUT_MS
+        )
+      );
+      await Unpromise.race([this._recallIdPromise, recallTimeout]);
       if (this.user) {
         return true;
       } else {
