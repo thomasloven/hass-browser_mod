@@ -1,5 +1,7 @@
 import { compare_deep, hass, provideHass } from "../helpers";
 
+const RECALL_ID_TIMEOUT_MS = 5000;
+
 export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
     public hass;
@@ -98,7 +100,7 @@ export const ConnectionMixin = (SuperClass) => {
       // Wait for recall_id to complete so the correct browserID is set
       // before anything depending on it (e.g. _runDefaultAction) fires.
       // Race against a 5-second timeout so a stalled recall_id never blocks startup.
-      const recallTimeout = new Promise<void>((resolve) => setTimeout(resolve, 5000));
+      const recallTimeout = new Promise<void>((resolve) => setTimeout(resolve, RECALL_ID_TIMEOUT_MS));
       await Promise.race([this._recallIdPromise, recallTimeout]);
       if (this.user) {
         return true;
