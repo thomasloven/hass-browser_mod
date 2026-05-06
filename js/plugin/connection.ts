@@ -9,7 +9,7 @@ export const ConnectionMixin = (SuperClass) => {
     private _data;
     private _connected = false;
     private _connectionResolve;
-    private _recallIdPromise: Promise<any> = Promise.resolve();
+    private _recallIdPromise: Promise<void> = Promise.resolve();
 
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
