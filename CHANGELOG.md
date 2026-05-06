@@ -1,3 +1,9 @@
+## [2.13.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.12.0...v2.13.0-beta.1) (2026-05-06)
+
+### ⭐ New Features
+
+* New setting to sync Browser ID to login session which allows for Browser ID recall when using same login session on Companion Apps ([#1270](https://github.com/thomasloven/hass-browser_mod/issues/1270)) ([b5f5127](https://github.com/thomasloven/hass-browser_mod/commit/b5f5127a11132e1363c6981d1f01431b8f8de5ec)), closes [#1158](https://github.com/thomasloven/hass-browser_mod/issues/1158)
+
 ## [2.12.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.11.0...v2.12.0) (2026-05-03)
 
 ### ⭐ New Features
