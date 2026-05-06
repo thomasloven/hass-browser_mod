@@ -97,7 +97,9 @@ export const ConnectionMixin = (SuperClass) => {
     private async userReady() {
       // Wait for recall_id to complete so the correct browserID is set
       // before anything depending on it (e.g. _runDefaultAction) fires.
-      await this._recallIdPromise;
+      // Race against a 5-second timeout so a stalled recall_id never blocks startup.
+      const recallTimeout = new Promise<void>((resolve) => setTimeout(resolve, 5000));
+      await Promise.race([this._recallIdPromise, recallTimeout]);
       if (this.user) {
         return true;
       } else {
