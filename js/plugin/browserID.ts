@@ -55,7 +55,6 @@ export const BrowserIDMixin = (SuperClass) => {
         return localStorage[ID_STORAGE_KEY];
       }
       this.browserID = "";
-      this.recall_id();
       return this.browserID;
     }
     set browserID(id) {
