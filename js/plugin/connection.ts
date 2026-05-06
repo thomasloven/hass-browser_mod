@@ -9,6 +9,7 @@ export const ConnectionMixin = (SuperClass) => {
     private _data;
     private _connected = false;
     private _connectionResolve;
+    private _recallIdPromise: Promise<any> = Promise.resolve();
 
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
@@ -49,9 +50,10 @@ export const ConnectionMixin = (SuperClass) => {
       this.LOG("Integration ready: browser_mod loaded and update received");
       this.fireBrowserEvent("browser-mod-ready");
       window.setTimeout(() => this.sendUpdate({}), 1000);
-      // Always try to recall ID on connection to handle race conditions
-      // (e.g. iOS companion app generating a random ID before a cache-clear page refresh)
-      this.recall_id();
+      // Only recall ID when not using session sync — syncSession handles its own ID mapping
+      if (!this.syncSession) {
+        this._recallIdPromise = this.recall_id();
+      }
       // Re-establish server-side session mapping if syncSession was set before connection
       if (this.syncSession) this.store_session();
       this.userReady()
@@ -93,6 +95,9 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     private async userReady() {
+      // Wait for recall_id to complete so the correct browserID is set
+      // before anything depending on it (e.g. _runDefaultAction) fires.
+      await this._recallIdPromise;
       if (this.user) {
         return true;
       } else {
