@@ -39,8 +39,6 @@ This is particularly useful for:
 
 > **Note:** The session mapping is tied to the Home Assistant refresh token used for the current login session. If you log out and log back in, a new session is created and the mapping will need to be re-established. To restore the mapping, simply navigate to the Browser Mod panel and ensure the toggle is enabled.
 
-> **Note:** This setting is stored in local storage and will survive a `localStorage.clear()` call (Browser Mod patches `clear()` to preserve it).
-
 ### Enable camera entity
 
 If your device has a camera, this will allow it to be forwarded as a Browser Mod `camera` entity to Home Assistant.
