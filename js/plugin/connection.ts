@@ -49,6 +49,9 @@ export const ConnectionMixin = (SuperClass) => {
       this.LOG("Integration ready: browser_mod loaded and update received");
       this.fireBrowserEvent("browser-mod-ready");
       window.setTimeout(() => this.sendUpdate({}), 1000);
+      // Always try to recall ID on connection to handle race conditions
+      // (e.g. iOS companion app generating a random ID before a cache-clear page refresh)
+      this.recall_id();
       // Re-establish server-side session mapping if syncSession was set before connection
       if (this.syncSession) this.store_session();
       this.userReady()
