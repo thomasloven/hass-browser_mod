@@ -262,9 +262,6 @@ declare global {
     "connection-status": CustomEvent;
     "ll-custom": CustomEvent;
     "location-changed": CustomEvent;
-    "fully-update": CustomEvent;
-    "browser-mod-ready": CustomEvent;
-    "browser-mod-user-ready": CustomEvent;
   }
 }
 
