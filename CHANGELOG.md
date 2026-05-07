@@ -1,3 +1,9 @@
+## [2.13.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.2...v2.13.0-beta.3) (2026-05-07)
+
+### 🐞 Bug Fixes
+
+* Hiding of sidebar and header on Home dashboard and custom config panels ([#1272](https://github.com/thomasloven/hass-browser_mod/issues/1272)) ([9900e27](https://github.com/thomasloven/hass-browser_mod/commit/9900e272fc7c44846941db3890a49d236d5dd610)), closes [#1271](https://github.com/thomasloven/hass-browser_mod/issues/1271)
+
 ## [2.13.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.1...v2.13.0-beta.2) (2026-05-07)
 
 ### 🐞 Bug Fixes
