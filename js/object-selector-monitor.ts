@@ -17,6 +17,7 @@ export class ObjectSelectorMonitor {
   private _settingsValidCallback?: (value: boolean) => void;
   private _showErrorsCallback?: (value: boolean) => void;
   private _objectSelectors?: ObjectSelector[] = undefined;
+  private _handlerMap: WeakMap<LitElement, EventListener> = new WeakMap();
 
   constructor(
     element: LitElement,
@@ -89,7 +90,6 @@ export class ObjectSelectorMonitor {
       );
     }
     this.objectSelectors.map((selector) => {
-      // Store the handler so it can be removed later
       const handler = (ev: Event) => {
         const customEv = ev as CustomEvent;
         selector.isValid = customEv.detail.isValid;
@@ -104,18 +104,21 @@ export class ObjectSelectorMonitor {
           this._debounceShowErrors(); 
         }
       };
-      // Attach handler reference to selector for later removal
-      (selector as any)._valueChangedHandler = handler;
-      selector.element?.addEventListener("value-changed", handler, { capture: true });
+      if (selector.element) {
+        this._handlerMap.set(selector.element, handler);
+        selector.element.addEventListener("value-changed", handler, { capture: true });
+      }
     });
   }
 
   stopMonitoring() {
     this.objectSelectors.map((selector) => {
-      const handler = (selector as any)._valueChangedHandler;
-      if (handler) {
-        selector.element?.removeEventListener("value-changed", handler, { capture: true });
-        delete (selector as any)._valueChangedHandler;
+      if (selector.element) {
+        const handler = this._handlerMap.get(selector.element);
+        if (handler) {
+          selector.element.removeEventListener("value-changed", handler, { capture: true });
+          this._handlerMap.delete(selector.element);
+        }
       }
     });
     this.showErrors = false;
