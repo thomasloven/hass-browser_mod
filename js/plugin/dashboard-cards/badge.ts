@@ -160,7 +160,7 @@ export class BrowserModBadge extends LitElement {
   }
 }
 
-window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
+window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
   ev.stopPropagation();
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
