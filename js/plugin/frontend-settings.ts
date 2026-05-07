@@ -260,18 +260,23 @@ export const AutoSettingsMixin = (SuperClass) => {
       } else {
         let steps = 0;
         let el = rootEl;
-        while (el && el.localName !== "ha-top-app-bar-fixed" && steps++ < 5) {
+        // header is either div.header when as dashboard or header element when as panel 
+        // either can be in shadow DOM of multiple elements, so loop through them up to 10 levels deep (including shadow Roots) to find it
+        while (el && (!el.querySelector(".header") && (!el.shadowRoot?.querySelector("header"))) && steps++ < 10) {
           await await_element(el, true);
-          const next =
-            el.querySelector("ha-top-app-bar-fixed") ??
-            el.firstElementChild ??
-            el.shadowRoot;
-          el = next;
+          el = el.shadowRoot ? el.shadowRoot.firstElementChild : el.firstElementChild;
+          // uix or card-mod can add their style element so skip to next sibling
+          if (el && el.localName && ["uix-node", "card-mod"].includes(el.localName)) {
+            el = el.nextElementSibling;
+          }
         }
-        if (el?.localName !== "ha-top-app-bar-fixed") return false;
+        // bail if we can't find header after going through 10 levels of shadow DOM 
+        if (!el?.querySelector(".header") && !el?.shadowRoot?.querySelector("header")) return false;
 
-        header = el.shadowRoot.querySelector("header");
-        menuButton = el.querySelector("ha-menu-button");
+        // header will be div.header or header element in shadow DOM
+        header = el.querySelector(".header") || el.shadowRoot?.querySelector("header");
+        // menu button will be in light DOM of div.header or in shadow DOM of header element
+        menuButton = el.querySelector("ha-menu-button") || el.shadowRoot?.querySelector("slot[name=Navigation Icon]")?.assignedElements()?.[0];
       }
 
       if (header && this.settings.hideHeader === true) {
@@ -279,7 +284,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         header.style.setProperty("display", "none");
         return true;
       } else if (menuButton && this.settings.hideSidebar === true) {
-        menuButton.remove?.();
+        menuButton.style.setProperty("display", "none");
         return true;
       }
       return false;
