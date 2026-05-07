@@ -22,7 +22,7 @@ export default [
       nodeResolve(),
       json(),
       typescript(tsPluginOptions),
-      //babel({ babelHelpers: 'bundled', exclude: "node_modules/**" }),
+      babel({ babelHelpers: 'bundled', exclude: "node_modules/**" }),
       !dev && terser({ format: { comments: false } }),
     ],
   },
