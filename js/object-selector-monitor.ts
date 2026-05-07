@@ -70,11 +70,11 @@ export class ObjectSelectorMonitor {
         }
     });
     const elements = form?.shadowRoot?.querySelectorAll("ha-form-grid, ha-form-expandable");
-    elements?.forEach((element: LitElement) => {
+    elements?.forEach((element) => {
         if (element.shadowRoot) {
         const forms = element.shadowRoot.querySelectorAll("ha-form");
-        forms.forEach((subForm: LitElement) => {
-            const subSelectors = this._formObjectSelectors(subForm);
+        forms.forEach((subForm) => {
+            const subSelectors = this._formObjectSelectors(subForm as LitElement);
             objectSelectors.push(...subSelectors);
         });
         }
@@ -89,9 +89,10 @@ export class ObjectSelectorMonitor {
       );
     }
     this.objectSelectors.map((selector) => {
-      selector.element?.addEventListener("value-changed", (ev: CustomEvent) => {
-        selector.isValid = ev.detail.isValid;
-        selector.errorMsg = ev.detail.errorMsg;
+      selector.element?.addEventListener("value-changed", (ev) => {
+        const customEv = ev as CustomEvent;
+        selector.isValid = customEv.detail.isValid;
+        selector.errorMsg = customEv.detail.errorMsg;
         this.settingsValid = this.objectSelectors.every(
           (s) => s.isValid !== false
         );

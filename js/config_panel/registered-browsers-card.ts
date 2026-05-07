@@ -5,7 +5,7 @@ import { frontendSettingsAdaptiveDialogStyle } from "../helpers";
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
 
-  @property() _entity_registry?: any[];
+  @property({ type: Array }) _entity_registry?: any[];
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>

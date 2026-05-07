@@ -16,7 +16,7 @@ export class BrowserModTileCardEditor extends LitElement {
     super.connectedCallback();
 
     this._tileCardEntities = window.browser_mod?.browserEntities || {};
-    this.addEventListener("browser-mod-entities-update", (ev: CustomEvent) => {
+    this.addEventListener("browser-mod-entities-update", () => {
       this._tileCardEntities = window.browser_mod?.browserEntities || {};
     });
   }

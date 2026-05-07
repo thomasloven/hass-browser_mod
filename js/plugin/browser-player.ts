@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 
-import "./browser-player-editor.ts";
+import "./browser-player-editor";
 
 import "./types";
 

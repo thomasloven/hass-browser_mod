@@ -143,11 +143,12 @@ class BrowserModFrontendSettingsCard extends LitElement {
         custom_value: true,
       },
     };
-    const pl = Object.values(this._panels)
-      .filter((p: { url_path: string, title: string }) => {
+    const pl = (Object.values(this._panels) as Array<{ url_path: string; title: string }>)
+      .filter((p) => {
         if (!p.title) return false;
         return true;
-      }).map((p: { url_path: string, title: string }) => {
+      })
+      .map((p) => {
         return { value: p.url_path, label: this.hass.localize?.(`panel.${p.title}`) || p.title };
       });
     const panels = [{ value: "lovelace", label: this.hass.localize?.("panel.states") || "lovelace (default)" }, ...pl]

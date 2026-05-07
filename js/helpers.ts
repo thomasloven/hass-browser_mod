@@ -230,7 +230,7 @@ export function runOnce(restart = false) {
   return function (target, propertyKey, descriptor) {
     const fn = descriptor.value;
     let running = undefined;
-    const newfn = function (...rest) {
+    const newfn = function (this: any, ...rest) {
       if (restart && running === false) running = true;
       if (running !== undefined) return;
       running = false;
