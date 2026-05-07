@@ -257,7 +257,7 @@ declare global {
     loadCardHelpers?: { () };
   }
   interface WindowEventMap {
-    "browser-mod-bootstrap": CustomEvent;
+    "browser-mod-bootstrap": Event;
     "hass-more-info": CustomEvent;
     "connection-status": CustomEvent;
     "ll-custom": CustomEvent;
