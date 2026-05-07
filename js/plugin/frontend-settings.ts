@@ -276,7 +276,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         // header will be div.header or header element in shadow DOM
         header = el.querySelector(".header") || el.shadowRoot?.querySelector("header");
         // menu button will be in light DOM of div.header or in shadow DOM of header element
-        menuButton = el.querySelector("ha-menu-button") || el.shadowRoot?.querySelector("slot[name=Navigation Icon]")?.assignedElements()?.[0];
+        menuButton = el.querySelector("ha-menu-button") || el.shadowRoot?.querySelector("slot[name=navigationIcon]")?.assignedElements()?.[0];
       }
 
       if (header && this.settings.hideHeader === true) {
