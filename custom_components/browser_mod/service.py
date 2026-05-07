@@ -101,9 +101,9 @@ async def async_setup_services(hass):
             userIDs = set()
             for user in users:
                 user_state = hass.states.get(user)
-                userId = user_state.attributes.get("user_id") if user_state else None
-                if userId:
-                    userIDs.add(userId)
+                user_id = user_state.attributes.get("user_id") if user_state else None
+                if user_id:
+                    userIDs.add(user_id)
                 else:
                     userIDs.add(user)
 
