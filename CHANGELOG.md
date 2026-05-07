@@ -1,3 +1,9 @@
+## [2.13.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.1...v2.13.0-beta.2) (2026-05-07)
+
+### 🐞 Bug Fixes
+
+* Browser Mod services `user_id` target resolution on HA 2026.05 ([#1274](https://github.com/thomasloven/hass-browser_mod/issues/1274)) ([475956e](https://github.com/thomasloven/hass-browser_mod/commit/475956ee56fe6734c3f047abf57f80f13d197dd0))
+
 ## [2.13.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.12.0...v2.13.0-beta.1) (2026-05-06)
 
 ### ⭐ New Features
