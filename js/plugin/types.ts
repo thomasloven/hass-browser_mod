@@ -260,8 +260,10 @@ declare global {
     "browser-mod-bootstrap": Event;
     "hass-more-info": CustomEvent;
     "connection-status": CustomEvent;
-    "ll-custom": CustomEvent;
     "location-changed": CustomEvent;
+  }
+  interface HTMLElementEventMap {
+    "ll-custom": CustomEvent;
   }
 }
 
