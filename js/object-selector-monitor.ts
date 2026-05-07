@@ -89,7 +89,8 @@ export class ObjectSelectorMonitor {
       );
     }
     this.objectSelectors.map((selector) => {
-      selector.element?.addEventListener("value-changed", (ev) => {
+      // Store the handler so it can be removed later
+      const handler = (ev: Event) => {
         const customEv = ev as CustomEvent;
         selector.isValid = customEv.detail.isValid;
         selector.errorMsg = customEv.detail.errorMsg;
@@ -102,13 +103,20 @@ export class ObjectSelectorMonitor {
         } else {
           this._debounceShowErrors(); 
         }
-      }, { capture: true } );
+      };
+      // Attach handler reference to selector for later removal
+      (selector as any)._valueChangedHandler = handler;
+      selector.element?.addEventListener("value-changed", handler, { capture: true });
     });
   }
 
   stopMonitoring() {
     this.objectSelectors.map((selector) => {
-      selector.element?.removeEventListener("value-changed", () => {});
+      const handler = (selector as any)._valueChangedHandler;
+      if (handler) {
+        selector.element?.removeEventListener("value-changed", handler, { capture: true });
+        delete (selector as any)._valueChangedHandler;
+      }
     });
     this.showErrors = false;
     this.settingsValid = true;
