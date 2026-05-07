@@ -1,6 +1,6 @@
 import logging
 
-from homeassistant.helpers import device_registry, template
+from homeassistant.helpers import device_registry
 from homeassistant.util import dt as dt_util
 from homeassistant.exceptions import ServiceValidationError
 
@@ -100,9 +100,10 @@ async def async_setup_services(hass):
         if len(users):
             userIDs = set()
             for user in users:
-                userId = template.state_attr(hass, user, "user_id")
-                if userId:
-                    userIDs.add(userId)
+                user_state = hass.states.get(user)
+                user_id = user_state.attributes.get("user_id") if user_state else None
+                if user_id:
+                    userIDs.add(user_id)
                 else:
                     userIDs.add(user)
 
