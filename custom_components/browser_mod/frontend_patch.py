@@ -37,6 +37,8 @@ from homeassistant.core import HomeAssistant
 from .const import DATA_BROWSERS, DATA_FRONTEND_PATCHES, DATA_STORE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+# Keep this short enough to avoid visible startup lag, but long enough to cover
+# typical Browser Mod websocket connect/registration timing on slow clients.
 _BROWSER_ID_RESOLVE_TIMEOUT_SECONDS = 5.0
 _BROWSER_ID_RESOLVE_RETRY_INTERVAL_SECONDS = 0.25
 
@@ -202,20 +204,21 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
 
         # "core" key: inject BM defaultPanel.
         bm_store = hass.data.get(DOMAIN, {}).get(DATA_STORE)
-        browser_id = (
-            await _resolve_browser_id_with_retry(hass, connection)
+        state = {
+            "browser_id": await _resolve_browser_id_with_retry(hass, connection)
             if bm_store is not None
             else None
-        )
+        }
 
         def get_merged_value():
-            nonlocal browser_id
             ha_value = ha_store.data.get("core") or {}
             if bm_store is None:
                 return ha_value
-            if browser_id is None:
-                browser_id = _resolve_browser_id(hass, connection)
-            return _inject_user_default_panel(ha_value, bm_store, browser_id, user_id)
+            if state["browser_id"] is None:
+                state["browser_id"] = _resolve_browser_id(hass, connection)
+            return _inject_user_default_panel(
+                ha_value, bm_store, state["browser_id"], user_id
+            )
 
         def send_core_event():
             connection.send_event(msg["id"], {"value": get_merged_value()})
