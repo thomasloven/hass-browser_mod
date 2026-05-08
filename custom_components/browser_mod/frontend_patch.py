@@ -24,6 +24,7 @@ the optional syncSession/session_browser_map mapping for early bootstrap before 
 browser has opened its Browser Mod websocket connection.
 """
 
+import asyncio
 import logging
 
 import voluptuous as vol
@@ -36,6 +37,8 @@ from homeassistant.core import HomeAssistant
 from .const import DATA_BROWSERS, DATA_FRONTEND_PATCHES, DATA_STORE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
+_BROWSER_ID_RESOLVE_TIMEOUT_SECONDS = 5.0
+_BROWSER_ID_RESOLVE_RETRY_INTERVAL_SECONDS = 0.25
 
 _PATCHED_COMMANDS = [
     "frontend/subscribe_user_data",
@@ -74,6 +77,30 @@ def _resolve_browser_id(hass, connection):
         return bm_store.get_session_browser_id(refresh_token_id)
 
     return None
+
+
+async def _resolve_browser_id_with_retry(hass, connection):
+    """Resolve browserID, retrying briefly to absorb startup timing races.
+
+    This gives Browser Mod's websocket connect/registration path up to 5 seconds
+    to attach the connection to DATA_BROWSERS before falling back to None.
+    """
+    browser_id = _resolve_browser_id(hass, connection)
+    if browser_id is not None:
+        return browser_id
+
+    loop = asyncio.get_running_loop()
+    deadline = loop.time() + _BROWSER_ID_RESOLVE_TIMEOUT_SECONDS
+
+    while True:
+        remaining = deadline - loop.time()
+        if remaining <= 0:
+            return None
+
+        await asyncio.sleep(min(_BROWSER_ID_RESOLVE_RETRY_INTERVAL_SECONDS, remaining))
+        browser_id = _resolve_browser_id(hass, connection)
+        if browser_id is not None:
+            return browser_id
 
 
 def _get_user_data_default_panel(bm_store, browser_id, user_id):
@@ -175,12 +202,19 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
 
         # "core" key: inject BM defaultPanel.
         bm_store = hass.data.get(DOMAIN, {}).get(DATA_STORE)
+        browser_id = (
+            await _resolve_browser_id_with_retry(hass, connection)
+            if bm_store is not None
+            else None
+        )
 
         def get_merged_value():
+            nonlocal browser_id
             ha_value = ha_store.data.get("core") or {}
             if bm_store is None:
                 return ha_value
-            browser_id = _resolve_browser_id(hass, connection)
+            if browser_id is None:
+                browser_id = _resolve_browser_id(hass, connection)
             return _inject_user_default_panel(ha_value, bm_store, browser_id, user_id)
 
         def send_core_event():
@@ -239,7 +273,7 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
         ha_value = ha_store.data.get("core") or {}
 
         if bm_store is not None:
-            browser_id = _resolve_browser_id(hass, connection)
+            browser_id = await _resolve_browser_id_with_retry(hass, connection)
             ha_value = _inject_user_default_panel(
                 ha_value, bm_store, browser_id, connection.user.id
             )
