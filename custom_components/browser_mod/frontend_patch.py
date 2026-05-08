@@ -7,14 +7,14 @@ The HA frontend determines the default panel via this priority chain:
   4. "home"                         (built-in default)
 
 Browser Mod stores defaultPanel at three levels:
+  - Global-level:  settings.defaultPanel
   - Browser-level: browsers[browserID].settings.defaultPanel
   - User-level:    user_settings[userID].defaultPanel
-  - Global-level:  settings.defaultPanel
 
 This module overrides the four relevant HA websocket handlers so that BM's
 defaultPanel values are injected into the responses before they reach the browser:
-  - frontend/subscribe_user_data  (key "core") → browser-level or user-level
-  - frontend/get_user_data        (key "core") → browser-level or user-level
+  - frontend/subscribe_user_data  (key "core") → global-level or browser/user-level
+  - frontend/get_user_data        (key "core") → global-level or browser/user-level
   - frontend/subscribe_system_data (key "core") → global-level
   - frontend/get_system_data      (key "core") → global-level
 
@@ -71,8 +71,13 @@ def _resolve_browser_id(connection, bm_store):
 def _get_user_data_default_panel(bm_store, browser_id, user_id):
     """Return the defaultPanel to inject into userData, or None.
 
-    Priority: browser-level (registered + syncSession) > user-level > None.
+    Priority: global-level > browser-level (registered + syncSession)
+    > user-level > None.
     """
+    global_settings = bm_store.get_global_settings()
+    if global_settings.defaultPanel is not None:
+        return global_settings.defaultPanel
+
     if browser_id is not None:
         browser = bm_store.get_browser(browser_id)
         if browser.registered and browser.settings.defaultPanel is not None:

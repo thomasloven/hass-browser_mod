@@ -115,17 +115,22 @@ export const AutoSettingsMixin = (SuperClass) => {
 
       // Default panel
       // Registered browsers: server-side injection via frontend/subscribe_user_data
-      // and frontend/subscribe_system_data handles defaultPanel based on browser,
-      // user, and global Browser Mod settings, so localStorage is not needed.
+      // and frontend/subscribe_system_data handles defaultPanel based on Browser Mod
+      // settings, so localStorage is not needed.
+      //
+      // Global defaultPanel has highest priority and overrides browser/user defaults.
       // Note: server-side browser-level injection requires the "syncSession" client
       // option to be enabled so that the session_browser_map is populated; when it
       // is not set, the browser-level override falls back to user/global level.
       // Unregistered browsers: keep localStorage as a bootstrap fallback so that
       // user/global settings take effect immediately on first paint before the
       // server subscription response arrives.
-      if (settings.defaultPanel) {
+      const defaultPanel =
+        this.global_settings?.defaultPanel ?? settings.defaultPanel;
+
+      if (defaultPanel) {
         if (!this.registered) {
-          localStorage.setItem("defaultPanel", `"${settings.defaultPanel}"`);
+          localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
         }
       } else if (this.registered && this._removeLegacySidebarSettings) {
         // Clear any stale localStorage value left from before registration or
@@ -445,12 +450,11 @@ export const AutoSettingsMixin = (SuperClass) => {
       const applyProfileOverride = async () => {
         if (!window.location.pathname.startsWith("/profile")) return;
 
-        // Only suppress the HA profile row when BM has a user-level or
-        // browser-level defaultPanel set — those are the settings injected
-        // into userData which would override whatever the user picks in their
-        // HA profile.  A global-only setting goes into systemData, so the
-        // user can still override it from their profile.
-        const hasBrowserOrUserDefault =
+        // Suppress the HA profile row whenever Browser Mod has any defaultPanel
+        // setting (global/browser/user), because BM now owns effective default
+        // dashboard selection and global has highest priority.
+        const hasManagedDefaultPanel =
+          this.global_settings?.defaultPanel != null ||
           this.user_settings?.defaultPanel != null ||
           this.browser_settings?.defaultPanel != null;
 
@@ -469,7 +473,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         // Remove any previously inserted BM notice to avoid duplicates.
         dashboardRow.parentNode?.querySelector(`#${NOTICE_ID}`)?.remove();
 
-        if (hasBrowserOrUserDefault) {
+        if (hasManagedDefaultPanel) {
           // Hide the HA dashboard picker row and insert a BM-managed notice.
           (dashboardRow as HTMLElement).style.display = "none";
           const notice = document.createElement("ha-md-list-item");
