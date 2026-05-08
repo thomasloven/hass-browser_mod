@@ -11,14 +11,20 @@ export class BrowserModTileCardEditor extends LitElement {
   private _tileCardEditor: Promise<any>;
 
   private _tileCardConfig;
+  private _entitiesUpdateHandler = () => {
+    this._tileCardEntities = window.browser_mod?.browserEntities || {};
+  };
 
   connectedCallback(): void {
     super.connectedCallback();
 
     this._tileCardEntities = window.browser_mod?.browserEntities || {};
-    this.addEventListener("browser-mod-entities-update", () => {
-      this._tileCardEntities = window.browser_mod?.browserEntities || {};
-    });
+    this.addEventListener("browser-mod-entities-update", this._entitiesUpdateHandler);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.removeEventListener("browser-mod-entities-update", this._entitiesUpdateHandler);
   }
   
   setConfig(config): void {
