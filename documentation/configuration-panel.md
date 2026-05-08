@@ -153,17 +153,25 @@ See [Default action](#default-action) below for tips on calling multiple actions
 
 __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
 
-### Default dashboard (legacy)
-
-**Using this Frontend setting is not recommended. See below for options which are recommended.**
-
-1. Global/System ⇒ (Since 2025.12) Set the Home Assistant default system dashboard in Dashboards.
-2. Browser/Device ⇒ Use Default action with `browser_mod.navigate`. This also works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
-3. User ⇒ (Since 2025.12) Set Home Assistant default user dashboard in user profile.
+### Default dashboard
 
 Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
 
-> NOTE: This uses legacy method of storing default dashboard in localStorage. Home Assistant 2025.12 started storing the default dashboard in system/user settings. If the default dashboard is set via Home Assistant at either system or user level, this overrides the legacy method and Browser Mod setting will be ignored.
+Browser Mod supports three levels of default dashboard and applies them in the following priority order (highest first):
+
+| Level | Scope | Overrides |
+|-------|-------|-----------|
+| **Global** | All browsers, all users | Everything — browser-level, user-level, and native HA defaults |
+| **Browser** | This registered browser, any user | User-level BM setting and native HA defaults |
+| **User** | Any browser, this user | Native HA defaults only |
+
+When a Global default dashboard is set it overrides all other settings, including any Browser- or User-level Browser Mod settings and any dashboard configured in the Home Assistant Dashboards settings or user profile. This override is enforced server-side, so it cannot be bypassed by changing local settings in the browser.
+
+When a Browser- or User-level default dashboard is set (with no Global setting), Browser Mod takes control and the native Home Assistant dashboard picker in the user profile is disabled for those browsers or users. A notice will be shown in the HA user profile explaining that the default dashboard is managed by Browser Mod.
+
+When no Browser Mod default dashboard is set at any level, Home Assistant's own default dashboard settings (system dashboard and user profile dashboard) apply as normal.
+
+> NOTE: For browsers where a Browser Mod default dashboard is active, the **Default Dashboard** row in the Home Assistant user profile is hidden and replaced with a Browser Mod notice. To restore the native HA picker, clear the relevant Browser Mod default dashboard setting.
 
 ### Default action
 
