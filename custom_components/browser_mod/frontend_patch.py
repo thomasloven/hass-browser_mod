@@ -191,6 +191,9 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
                 try:
                     send_core_event()
                 except Exception:
+                    # Swallow all exceptions so a failing send (e.g. closed
+                    # connection, inactive subscription) does not propagate
+                    # back through store.updated() into unrelated handlers.
                     _LOGGER.debug(
                         "Error pushing user_data update to connection", exc_info=True
                     )
