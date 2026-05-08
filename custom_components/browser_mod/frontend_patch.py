@@ -18,11 +18,10 @@ defaultPanel values are injected into the responses before they reach the browse
   - frontend/subscribe_system_data (key "core") → global-level
   - frontend/get_system_data      (key "core") → global-level
 
-The browser identity is resolved by looking up the connection in DATA_BROWSERS —
-the live registry of registered browsers maintained by BrowserModBrowser.  Only
-registered browsers appear in DATA_BROWSERS, so any unregistered connection (which
-cannot have browser-level settings) correctly returns None.  This approach does not
-require the "syncSession" / session_browser_map mechanism.
+The browser identity is resolved by first looking up the active connection in
+DATA_BROWSERS (registered/open BrowserModBrowser instances), then falling back to
+the optional syncSession/session_browser_map mapping for early bootstrap before a
+browser has opened its Browser Mod websocket connection.
 """
 
 import logging
@@ -54,12 +53,11 @@ _PATCHED_COMMANDS = [
 def _resolve_browser_id(hass, connection):
     """Resolve browserID by finding a registered browser whose connection matches.
 
-    Returns the browserID string if a registered BrowserModBrowser has this
-    connection open, otherwise None.
+    Resolution order:
+      1) DATA_BROWSERS connection lookup (registered/open browser instance)
+      2) session_browser_map lookup by refresh_token_id (syncSession fallback)
 
-    Only registered browsers are tracked in DATA_BROWSERS, so unregistered
-    connections — which cannot have browser-level settings — always return None.
-    This lookup does not require the syncSession / session_browser_map mechanism.
+    Returns the browserID string if found, otherwise None.
     """
     browsers = hass.data.get(DOMAIN, {}).get(DATA_BROWSERS, {})
     for browser_id, browser in browsers.items():
@@ -67,6 +65,14 @@ def _resolve_browser_id(hass, connection):
         # by BrowserModBrowser.open_connection / close_connection.
         if any(c[0] == connection for c in browser.connection):
             return browser_id
+
+    # Fallback for early bootstrap before Browser Mod's own websocket connect
+    # command has attached this connection to a BrowserModBrowser instance.
+    bm_store = hass.data.get(DOMAIN, {}).get(DATA_STORE)
+    refresh_token_id = getattr(connection, "refresh_token_id", None)
+    if bm_store is not None and refresh_token_id:
+        return bm_store.get_session_browser_id(refresh_token_id)
+
     return None
 
 
