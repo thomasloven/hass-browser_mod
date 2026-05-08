@@ -1,3 +1,9 @@
+## [2.13.0-beta.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.4...v2.13.0-beta.5) (2026-05-08)
+
+### ⭐ New Features
+
+* Implement defaultDashboard Frontend setting via server-side system_data and user_data overrides ([#1276](https://github.com/thomasloven/hass-browser_mod/issues/1276)) ([787be94](https://github.com/thomasloven/hass-browser_mod/commit/787be94cec2b468299e21d0ec595150f38bf3c1e))
+
 ## [2.13.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.3...v2.13.0-beta.4) (2026-05-08)
 
 ### ⚙️ Miscellaneous
