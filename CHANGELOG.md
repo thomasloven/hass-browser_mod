@@ -1,3 +1,9 @@
+## [2.13.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.3...v2.13.0-beta.4) (2026-05-08)
+
+### ⚙️ Miscellaneous
+
+* Update typescript to version 6 and associated type updates ([#1275](https://github.com/thomasloven/hass-browser_mod/issues/1275)) ([51558b3](https://github.com/thomasloven/hass-browser_mod/commit/51558b3d1464986fb72265d0ccd815956c32e78c))
+
 ## [2.13.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.2...v2.13.0-beta.3) (2026-05-07)
 
 ### 🐞 Bug Fixes
