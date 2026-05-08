@@ -113,8 +113,24 @@ export const AutoSettingsMixin = (SuperClass) => {
       this.updateSidebarPanelsDebounced();
 
       // Default panel
+      // Registered browsers: server-side injection via frontend/subscribe_user_data
+      // and frontend/subscribe_system_data handles defaultPanel based on browser,
+      // user, and global Browser Mod settings, so localStorage is not needed.
+      // Note: server-side browser-level injection requires the "syncSession" client
+      // option to be enabled so that the session_browser_map is populated; when it
+      // is not set, the browser-level override falls back to user/global level.
+      // Unregistered browsers: keep localStorage as a bootstrap fallback so that
+      // user/global settings take effect immediately on first paint before the
+      // server subscription response arrives.
       if (settings.defaultPanel) {
-        localStorage.setItem("defaultPanel", `"${settings.defaultPanel}"`);
+        if (!this.registered) {
+          localStorage.setItem("defaultPanel", `"${settings.defaultPanel}"`);
+        }
+      } else if (this.registered && this._removeLegacySidebarSettings) {
+        // Clear any stale localStorage value left from before registration or
+        // from a previous version of Browser Mod, so HA's native user data
+        // (injected server-side) is the sole source of truth.
+        localStorage.removeItem("defaultPanel");
       }
 
       // Kiosk Mode built into Home Assistant since 2026.1
