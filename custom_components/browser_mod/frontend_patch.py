@@ -18,13 +18,11 @@ defaultPanel values are injected into the responses before they reach the browse
   - frontend/subscribe_system_data (key "core") → global-level
   - frontend/get_system_data      (key "core") → global-level
 
-The browser identity is resolved by first looking up the active connection in
-DATA_BROWSERS (registered/open BrowserModBrowser instances), then falling back to
-the optional syncSession/session_browser_map mapping for early bootstrap before a
-browser has opened its Browser Mod websocket connection.
+The browser identity is resolved from syncSession/session_browser_map using the
+current websocket connection refresh token. Browser-level defaultPanel overrides
+therefore require the syncSession option to be enabled.
 """
 
-import asyncio
 import logging
 
 import voluptuous as vol
@@ -34,13 +32,9 @@ from homeassistant.components.websocket_api import async_register_command
 from homeassistant.components.websocket_api.const import DOMAIN as WS_DOMAIN
 from homeassistant.core import HomeAssistant
 
-from .const import DATA_BROWSERS, DATA_FRONTEND_PATCHES, DATA_STORE, DOMAIN
+from .const import DATA_FRONTEND_PATCHES, DATA_STORE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
-# Keep this short enough to avoid visible startup lag, but long enough to cover
-# typical Browser Mod websocket connect/registration timing on slow clients.
-_BROWSER_ID_RESOLVE_TIMEOUT_SECONDS = 5.0
-_BROWSER_ID_RESOLVE_RETRY_INTERVAL_SECONDS = 0.25
 
 _PATCHED_COMMANDS = [
     "frontend/subscribe_user_data",
@@ -56,23 +50,7 @@ _PATCHED_COMMANDS = [
 
 
 def _resolve_browser_id(hass, connection):
-    """Resolve browserID by finding a registered browser whose connection matches.
-
-    Resolution order:
-      1) DATA_BROWSERS connection lookup (registered/open browser instance)
-      2) session_browser_map lookup by refresh_token_id (syncSession fallback)
-
-    Returns the browserID string if found, otherwise None.
-    """
-    browsers = hass.data.get(DOMAIN, {}).get(DATA_BROWSERS, {})
-    for browser_id, browser in browsers.items():
-        # browser.connection is a list of (ActiveConnection, cid) tuples maintained
-        # by BrowserModBrowser.open_connection / close_connection.
-        if any(c[0] == connection for c in browser.connection):
-            return browser_id
-
-    # Fallback for early bootstrap before Browser Mod's own websocket connect
-    # command has attached this connection to a BrowserModBrowser instance.
+    """Resolve browserID from session_browser_map via connection refresh token."""
     bm_store = hass.data.get(DOMAIN, {}).get(DATA_STORE)
     refresh_token_id = getattr(connection, "refresh_token_id", None)
     if bm_store is not None and refresh_token_id:
@@ -81,39 +59,13 @@ def _resolve_browser_id(hass, connection):
     return None
 
 
-async def _resolve_browser_id_with_retry(hass, connection):
-    """Resolve browserID, retrying briefly to absorb startup timing races.
-
-    This gives Browser Mod's websocket connect/registration path up to 5 seconds
-    to attach the connection to DATA_BROWSERS before falling back to None.
-    """
-    browser_id = _resolve_browser_id(hass, connection)
-    if browser_id is not None:
-        return browser_id
-
-    loop = asyncio.get_running_loop()
-    deadline = loop.time() + _BROWSER_ID_RESOLVE_TIMEOUT_SECONDS
-
-    while True:
-        remaining = deadline - loop.time()
-        if remaining <= 0:
-            return None
-
-        await asyncio.sleep(min(_BROWSER_ID_RESOLVE_RETRY_INTERVAL_SECONDS, remaining))
-        browser_id = _resolve_browser_id(hass, connection)
-        if browser_id is not None:
-            return browser_id
-
-
 def _get_user_data_default_panel(bm_store, browser_id, user_id):
     """Return the defaultPanel to inject into userData, or None.
 
     Priority: global-level > browser-level > user-level > None.
 
-    browser_id is only non-None when the connection belongs to a registered
-    browser (resolved via DATA_BROWSERS).  A None guard is still applied on
-    the browser lookup in case of timing edge cases where the browser is in
-    DATA_BROWSERS but not yet present in the persistent store.
+    browser_id is non-None when syncSession/session_browser_map can resolve the
+    current connection's refresh token to a browserID.
     """
     global_settings = bm_store.get_global_settings()
     if global_settings.defaultPanel not in (None, ""):
@@ -205,9 +157,7 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
         # "core" key: inject BM defaultPanel.
         bm_store = hass.data.get(DOMAIN, {}).get(DATA_STORE)
         state = {
-            "browser_id": await _resolve_browser_id_with_retry(hass, connection)
-            if bm_store is not None
-            else None
+            "browser_id": _resolve_browser_id(hass, connection) if bm_store is not None else None
         }
 
         def get_merged_value():
@@ -276,7 +226,7 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
         ha_value = ha_store.data.get("core") or {}
 
         if bm_store is not None:
-            browser_id = await _resolve_browser_id_with_retry(hass, connection)
+            browser_id = _resolve_browser_id(hass, connection)
             ha_value = _inject_user_default_panel(
                 ha_value, bm_store, browser_id, connection.user.id
             )

@@ -119,9 +119,8 @@ export const AutoSettingsMixin = (SuperClass) => {
       // settings, so localStorage is not needed.
       //
       // Global defaultPanel has highest priority and overrides browser/user defaults.
-      // Browser-level server-side injection resolves by active Browser Mod websocket
-      // connection, and falls back to syncSession/session_browser_map for early
-      // bootstrap before the Browser Mod websocket connect completes.
+      // Browser-level server-side injection resolves via syncSession/
+      // session_browser_map for the current login session.
       // Unregistered browsers: keep localStorage as a bootstrap fallback so that
       // user/global settings take effect immediately on first paint before the
       // server subscription response arrives.
