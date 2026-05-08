@@ -55,6 +55,7 @@ async def async_setup_entry(hass, config_entry):
 
 async def async_unload_entry(hass, config_entry):
 
+    unload_ok = await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
     await async_restore_frontend_patches(hass)
 
-    return await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+    return unload_ok

@@ -204,7 +204,7 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
             data = ha_store.data
             connection.send_result(
                 msg["id"],
-                {"value": data.get(key) if "key" in msg else data},
+                {"value": data.get(key) if key is not None else data},
             )
             return
 
