@@ -124,11 +124,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       // Unregistered browsers: keep localStorage as a bootstrap fallback so that
       // user/global settings take effect immediately on first paint before the
       // server subscription response arrives.
-      const globalDefaultPanel = this.global_settings?.defaultPanel;
-      const defaultPanel =
-        settings.defaultPanel != null && settings.defaultPanel !== ""
-          ? settings.defaultPanel
-          : globalDefaultPanel;
+      const defaultPanel = this.settings.defaultPanel;
 
       if (defaultPanel) {
         if (!this.registered) {
