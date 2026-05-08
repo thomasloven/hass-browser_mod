@@ -341,7 +341,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
 
           <ha-expansion-panel
             .header=${"Default dashboard"}
-            .secondary=${`The dashboard that is shown when navigating to ${location.origin} (Legacy)`}
+            .secondary=${`The dashboard that is shown when navigating to ${location.origin}`}
             @expanded-changed=${this.expandedChanged}
             leftChevron
           >

@@ -153,17 +153,20 @@ See [Default action](#default-action) below for tips on calling multiple actions
 
 __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
 
-### Default dashboard (legacy)
+### Default dashboard
 
-**Using this Frontend setting is not recommended. See below for options which are recommended.**
+Set the default dashboard that is shown when you access Home Assistant base URL (e.g. https://homeassistant.local/)
 
-1. Global/System ⇒ (Since 2025.12) Set the Home Assistant default system dashboard in Dashboards.
-2. Browser/Device ⇒ Use Default action with `browser_mod.navigate`. This also works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
-3. User ⇒ (Since 2025.12) Set Home Assistant default user dashboard in user profile.
+Browser Mod supports three levels of default dashboard and applies them in the following priority order (highest first):
 
-Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
+| Level | Scope | Overrides |
+|-------|-------|-----------|
+| **User** | Any browser, this user | Browser-level and global Browser Mod settings, and native Home Assistant defaults |
+| **Browser** | This registered browser, any user | Global Browser Mod setting and native Home Assistant defaults |
+| **Global** | All browsers, all users | Native Home Assistant defaults |
 
-> NOTE: This uses legacy method of storing default dashboard in localStorage. Home Assistant 2025.12 started storing the default dashboard in system/user settings. If the default dashboard is set via Home Assistant at either system or user level, this overrides the legacy method and Browser Mod setting will be ignored.
+> NOTE: Browser-level default dashboard override requires **Sync Browser ID to login session** to be enabled. Global and User-level overrides work without sync session.
+> When a Browser Mod default dashboard is active for a browser or user, the **Default Dashboard** row in the Home Assistant user profile is replaced with a notice that Browser Mod is managing the default dashboard. To restore the native picker, clear the relevant Browser Mod setting.
 
 ### Default action
 

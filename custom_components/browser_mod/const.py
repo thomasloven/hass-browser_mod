@@ -45,3 +45,5 @@ DYNAMIC_ENTITIES = [
     "battery_level",
     "charging",
 ]
+
+DATA_FRONTEND_PATCHES = "frontend_patches"
