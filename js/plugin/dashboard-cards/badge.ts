@@ -15,6 +15,10 @@ export class BrowserModBadge extends LitElement {
   private _badge : Promise<any>;
   private _entitiesResolved: boolean;
   private _privilegedUser: boolean = false;
+  private _entitiesUpdateHandler = () => {
+    this._badgeEntities = window.browser_mod?.browserEntities || {};
+    this._replaceEntities();
+  };
 
   constructor() {
     super();
@@ -42,16 +46,18 @@ export class BrowserModBadge extends LitElement {
     super.connectedCallback();
 
     this._badgeEntities = window.browser_mod?.browserEntities || {};
-    this.addEventListener("browser-mod-entities-update", (ev: CustomEvent) => {
-      this._badgeEntities = window.browser_mod?.browserEntities || {};
-      this._replaceEntities();
-    });
+    this.addEventListener("browser-mod-entities-update", this._entitiesUpdateHandler);
     getLovelaceRoot(document).then((lovelace) => {
       const currentUser = window.browser_mod?.user;
       const dashboardPrivilegedUsers = lovelace?.config?.browser_mod?.privileged_users ?? [];
       this._privilegedUser = currentUser?.is_admin || dashboardPrivilegedUsers.includes(currentUser?.name) || false;
       this.requestUpdate();
     });
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.removeEventListener("browser-mod-entities-update", this._entitiesUpdateHandler);
   }
   
   setConfig(config): void {
@@ -160,7 +166,7 @@ export class BrowserModBadge extends LitElement {
   }
 }
 
-window.addEventListener("browser-mod-bootstrap", async (ev: CustomEvent) => {
+window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
   ev.stopPropagation();
   while (!window.browser_mod) {
     await new Promise((resolve) => setTimeout(resolve, 1000));

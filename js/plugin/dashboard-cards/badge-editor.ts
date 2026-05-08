@@ -18,14 +18,20 @@ export class BrowserModBadgeEditor extends LitElement {
   private _badgeEditor: Promise<any>;
 
   private _badgeConfig;
+  private _entitiesUpdateHandler = () => {
+    this._badgeEntities = window.browser_mod?.browserEntities || {};
+  };
 
   connectedCallback(): void {
     super.connectedCallback();
 
     this._badgeEntities = window.browser_mod?.browserEntities || {};
-    this.addEventListener("browser-mod-entities-update", (ev: CustomEvent) => {
-      this._badgeEntities = window.browser_mod?.browserEntities || {};
-    });
+    this.addEventListener("browser-mod-entities-update", this._entitiesUpdateHandler);
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.removeEventListener("browser-mod-entities-update", this._entitiesUpdateHandler);
   }
   
   setConfig(config): void {
