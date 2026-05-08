@@ -161,9 +161,9 @@ Browser Mod supports three levels of default dashboard and applies them in the f
 
 | Level | Scope | Overrides |
 |-------|-------|-----------|
-| **Global** | All browsers, all users | Everything — browser-level, user-level, and native Home Assistant defaults |
-| **Browser** | This registered browser, any user | User-level Browser Mod setting and native Home Assistant defaults |
-| **User** | Any browser, this user | Native Home Assistant defaults only |
+| **User** | Any browser, this user | Browser-level and global Browser Mod settings, and native Home Assistant defaults |
+| **Browser** | This registered browser, any user | Global Browser Mod setting and native Home Assistant defaults |
+| **Global** | All browsers, all users | Native Home Assistant defaults |
 
 > NOTE: Browser-level default dashboard override requires **Sync Browser ID to login session** to be enabled. Global and User-level overrides work without sync session.
 > When a Browser Mod default dashboard is active for a browser or user, the **Default Dashboard** row in the Home Assistant user profile is replaced with a notice that Browser Mod is managing the default dashboard. To restore the native picker, clear the relevant Browser Mod setting.

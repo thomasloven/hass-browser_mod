@@ -118,7 +118,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       // and frontend/subscribe_system_data handles defaultPanel based on Browser Mod
       // settings, so localStorage is not needed.
       //
-      // Global defaultPanel has highest priority and overrides browser/user defaults.
+      // Browser Mod defaultPanel priority is user > browser > global.
       // Browser-level server-side injection resolves via syncSession/
       // session_browser_map for the current login session.
       // Unregistered browsers: keep localStorage as a bootstrap fallback so that
@@ -126,9 +126,9 @@ export const AutoSettingsMixin = (SuperClass) => {
       // server subscription response arrives.
       const globalDefaultPanel = this.global_settings?.defaultPanel;
       const defaultPanel =
-        globalDefaultPanel != null && globalDefaultPanel !== ""
-          ? globalDefaultPanel
-          : settings.defaultPanel;
+        settings.defaultPanel != null && settings.defaultPanel !== ""
+          ? settings.defaultPanel
+          : globalDefaultPanel;
 
       if (defaultPanel) {
         if (!this.registered) {

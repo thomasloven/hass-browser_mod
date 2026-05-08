@@ -62,23 +62,38 @@ def _resolve_browser_id(hass, connection):
 def _get_user_data_default_panel(bm_store, browser_id, user_id):
     """Return the defaultPanel to inject into userData, or None.
 
-    Priority: global-level > browser-level > user-level > None.
+    Priority: user-level > browser-level > global-level > None.
 
     browser_id is non-None when syncSession/session_browser_map can resolve the
     current connection's refresh token to a browserID.
     """
-    global_settings = bm_store.get_global_settings()
-    if global_settings.defaultPanel not in (None, ""):
-        return global_settings.defaultPanel
+    def _extract_default_panel(settings):
+        if settings is None:
+            return None
+        if isinstance(settings, dict):
+            value = settings.get("defaultPanel")
+        else:
+            value = getattr(settings, "defaultPanel", None)
+        return value if value not in (None, "") else None
+
+    user_settings = bm_store.get_user_settings(user_id)
+    user_default_panel = _extract_default_panel(user_settings)
+    if user_default_panel is not None:
+        return user_default_panel
 
     if browser_id is not None:
         browser = bm_store.get_browser(browser_id)
-        if browser is not None and browser.settings.defaultPanel not in (None, ""):
-            return browser.settings.defaultPanel
+        browser_settings = (
+            browser.get("settings", {}) if isinstance(browser, dict) else browser.settings
+        )
+        browser_default_panel = _extract_default_panel(browser_settings)
+        if browser_default_panel is not None:
+            return browser_default_panel
 
-    user_settings = bm_store.get_user_settings(user_id)
-    if user_settings.defaultPanel not in (None, ""):
-        return user_settings.defaultPanel
+    global_settings = bm_store.get_global_settings()
+    global_default_panel = _extract_default_panel(global_settings)
+    if global_default_panel is not None:
+        return global_default_panel
 
     return None
 
