@@ -88,6 +88,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         {once: true}
       );
       this._watchEditSidebar();
+      this._watchProfileDashboardRow();
     }
 
     async _auto_settings_setup() {
@@ -436,6 +437,63 @@ export const AutoSettingsMixin = (SuperClass) => {
         this._removeLegacySidebarSettings = true;
         this._auto_settings_setup();
       }
+    }
+
+    async _watchProfileDashboardRow() {
+      const NOTICE_ID = "browser-mod-dashboard-notice";
+
+      const applyProfileOverride = async () => {
+        if (!window.location.pathname.startsWith("/profile")) return;
+
+        // Only suppress the HA profile row when BM has a user-level or
+        // browser-level defaultPanel set — those are the settings injected
+        // into userData which would override whatever the user picks in their
+        // HA profile.  A global-only setting goes into systemData, so the
+        // user can still override it from their profile.
+        const hasBrowserOrUserDefault =
+          this.user_settings?.defaultPanel != null ||
+          this.browser_settings?.defaultPanel != null;
+
+        // Try to find ha-pick-dashboard-row.  The path covers both the
+        // flat (older HA) and tabbed (newer HA) profile page structures.
+        // selectTree returns null on timeout instead of throwing.
+        let dashboardRow = await selectTree(
+          document.body,
+          "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-panel-profile $ ha-pick-dashboard-row",
+          false,
+          3000
+        );
+
+        if (!dashboardRow) return;
+
+        // Remove any previously inserted BM notice to avoid duplicates.
+        dashboardRow.parentNode?.querySelector(`#${NOTICE_ID}`)?.remove();
+
+        if (hasBrowserOrUserDefault) {
+          // Hide the HA dashboard picker row and insert a BM-managed notice.
+          (dashboardRow as HTMLElement).style.display = "none";
+          const notice = document.createElement("ha-md-list-item");
+          notice.id = NOTICE_ID;
+          const headline = document.createElement("span");
+          headline.slot = "headline";
+          headline.textContent = "Default Dashboard";
+          const supporting = document.createElement("span");
+          supporting.slot = "supporting-text";
+          supporting.textContent =
+            "The default dashboard for this browser is managed by Browser Mod.";
+          notice.appendChild(headline);
+          notice.appendChild(supporting);
+          dashboardRow.parentNode?.insertBefore(notice, dashboardRow);
+        } else {
+          (dashboardRow as HTMLElement).style.display = "";
+        }
+      };
+
+      this.addEventListener("browser-mod-config-update", applyProfileOverride);
+      this.addEventListener("browser-mod-user-ready", applyProfileOverride);
+      window.addEventListener("location-changed", applyProfileOverride);
+      window.addEventListener("popstate", applyProfileOverride);
+      applyProfileOverride();
     }
 
     async _updateSidebarPanels() {
