@@ -187,7 +187,15 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
         if bm_store is not None:
             # Re-push the event whenever BM settings change (e.g. after
             # the user changes the defaultPanel setting in the UI).
-            bm_unsub = bm_store.add_listener(lambda _data: send_core_event())
+            def on_bm_store_updated(_data):
+                try:
+                    send_core_event()
+                except Exception:
+                    _LOGGER.debug(
+                        "Error pushing user_data update to connection", exc_info=True
+                    )
+
+            bm_unsub = bm_store.add_listener(on_bm_store_updated)
 
         def unsubscribe():
             ha_unsub()

@@ -155,7 +155,7 @@ __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT supp
 
 ### Default dashboard
 
-Set the default dashboard that is shown when you access Home Assistant.
+Set the default dashboard that is shown when you access Home Assistant base url (e.g. https://homeassistant.local/)
 
 Browser Mod supports three levels of default dashboard and applies them in the following priority order (highest first):
 
