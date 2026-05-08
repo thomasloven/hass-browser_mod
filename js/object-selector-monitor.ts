@@ -89,7 +89,7 @@ export class ObjectSelectorMonitor {
         this.element?.shadowRoot?.querySelector("ha-form")
       );
     }
-    this.objectSelectors.map((selector) => {
+    this.objectSelectors.forEach((selector) => {
       const handler = (ev: Event) => {
         const customEv = ev as CustomEvent;
         selector.isValid = customEv.detail.isValid;
@@ -112,7 +112,7 @@ export class ObjectSelectorMonitor {
   }
 
   stopMonitoring() {
-    this.objectSelectors.map((selector) => {
+    this.objectSelectors.forEach((selector) => {
       if (selector.element) {
         const handler = this._handlerMap.get(selector.element);
         if (handler) {
