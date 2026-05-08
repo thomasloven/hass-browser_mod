@@ -63,6 +63,8 @@ def _resolve_browser_id(hass, connection):
     """
     browsers = hass.data.get(DOMAIN, {}).get(DATA_BROWSERS, {})
     for browser_id, browser in browsers.items():
+        # browser.connection is a list of (ActiveConnection, cid) tuples maintained
+        # by BrowserModBrowser.open_connection / close_connection.
         if any(c[0] == connection for c in browser.connection):
             return browser_id
     return None
@@ -83,6 +85,8 @@ def _get_user_data_default_panel(bm_store, browser_id, user_id):
 
     if browser_id is not None:
         browser = bm_store.get_browser(browser_id)
+        # No `browser.registered` guard needed: DATA_BROWSERS only contains
+        # registered browsers, so browser_id is always for a registered browser.
         if browser.settings.defaultPanel not in (None, ""):
             return browser.settings.defaultPanel
 
