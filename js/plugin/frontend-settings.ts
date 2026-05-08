@@ -462,38 +462,43 @@ export const AutoSettingsMixin = (SuperClass) => {
         // Try to find ha-pick-dashboard-row.  The path covers both the
         // flat (older HA) and tabbed (newer HA) profile page structures.
         // selectTree returns null on timeout instead of throwing.
-        let dashboardRow = await selectTree(
-          document.body,
-          "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-panel-profile $ ha-pick-dashboard-row",
-          false,
-          3000
-        );
+        let dashboardRow = undefined;
+        let cnt = 0;
+        while (!dashboardRow && cnt++ < 10) {
+          dashboardRow = await selectTree(
+            document.body,
+            "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-profile-section-general $ ha-pick-dashboard-row"
+          );
+          if (!dashboardRow) await new Promise((r) => setTimeout(r, 1000));
+        }
 
         if (!dashboardRow) return;
 
-        // Remove any previously inserted BM notice to avoid duplicates.
-        dashboardRow.parentNode?.querySelector(`#${NOTICE_ID}`)?.remove();
-
-        if (hasManagedDefaultPanel) {
-          // Hide the HA dashboard picker row and insert a BM-managed notice.
-          (dashboardRow as HTMLElement).style.display = "none";
-          const notice = document.createElement("ha-md-list-item");
-          notice.id = NOTICE_ID;
-          const headline = document.createElement("span");
-          headline.slot = "headline";
-          headline.textContent = "Default Dashboard";
-          const supporting = document.createElement("span");
-          supporting.slot = "supporting-text";
-          supporting.textContent =
-            "The default dashboard for this browser is managed by Browser Mod.";
-          notice.appendChild(headline);
-          notice.appendChild(supporting);
-          dashboardRow.parentNode?.insertBefore(notice, dashboardRow);
-        } else {
-          (dashboardRow as HTMLElement).style.display = "";
-        }
+        dashboardRow.updateComplete.then(() => {
+          const settingsRow = dashboardRow.shadowRoot?.querySelector("ha-settings-row");
+          if (settingsRow) {
+            const pickText = settingsRow.querySelector(`[slot="description"]:not(.${NOTICE_ID})`);
+            const dashboardSelect = settingsRow.querySelector("ha-select");
+            const noticeText = settingsRow.querySelector(`[slot="description"].${NOTICE_ID}`);
+            if (!noticeText) {
+              const notice = document.createElement("span");
+              notice.classList.add(NOTICE_ID);
+              notice.slot = "description";
+              notice.textContent = "Default dashboard for this Browser is managed by Browser Mod.";
+              settingsRow.appendChild(notice);
+            }
+            if (this.settings.defaultPanel) {
+              if (pickText) pickText.style.display = "none";
+              if (noticeText) noticeText.style.display = "";
+              if (dashboardSelect) dashboardSelect.disabled = true;
+            } else {
+              if (pickText) pickText.style.display = "";
+              if (noticeText) noticeText.style.display = "none";
+              if (dashboardSelect) dashboardSelect.disabled = false;
+            }
+          }
+        });
       };
-
       this.addEventListener("browser-mod-config-update", applyProfileOverride);
       this.addEventListener("browser-mod-user-ready", applyProfileOverride);
       window.addEventListener("location-changed", applyProfileOverride);
