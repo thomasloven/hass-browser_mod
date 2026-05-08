@@ -90,21 +90,27 @@ export class ObjectSelectorMonitor {
       );
     }
     this.objectSelectors.forEach((selector) => {
-      const handler = (ev: Event) => {
-        const customEv = ev as CustomEvent;
-        selector.isValid = customEv.detail.isValid;
-        selector.errorMsg = customEv.detail.errorMsg;
-        this.settingsValid = this.objectSelectors.every(
-          (s) => s.isValid !== false
-        );
-        if (this.settingsValid) {
-          this.showErrors = false;
-          this._debounceShowErrors.cancel();
-        } else {
-          this._debounceShowErrors(); 
-        }
-      };
       if (selector.element) {
+        // Remove any existing handler before adding a new one
+        const existingHandler = this._handlerMap.get(selector.element);
+        if (existingHandler) {
+          selector.element.removeEventListener("value-changed", existingHandler, { capture: true });
+          this._handlerMap.delete(selector.element);
+        }
+        const handler = (ev: Event) => {
+          const customEv = ev as CustomEvent;
+          selector.isValid = customEv.detail.isValid;
+          selector.errorMsg = customEv.detail.errorMsg;
+          this.settingsValid = this.objectSelectors.every(
+            (s) => s.isValid !== false
+          );
+          if (this.settingsValid) {
+            this.showErrors = false;
+            this._debounceShowErrors.cancel();
+          } else {
+            this._debounceShowErrors(); 
+          }
+        };
         this._handlerMap.set(selector.element, handler);
         selector.element.addEventListener("value-changed", handler, { capture: true });
       }
