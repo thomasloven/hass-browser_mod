@@ -75,16 +75,16 @@ def _get_user_data_default_panel(bm_store, browser_id, user_id):
     > user-level > None.
     """
     global_settings = bm_store.get_global_settings()
-    if global_settings.defaultPanel is not None:
+    if global_settings.defaultPanel not in (None, ""):
         return global_settings.defaultPanel
 
     if browser_id is not None:
         browser = bm_store.get_browser(browser_id)
-        if browser.registered and browser.settings.defaultPanel is not None:
+        if browser.registered and browser.settings.defaultPanel not in (None, ""):
             return browser.settings.defaultPanel
 
     user_settings = bm_store.get_user_settings(user_id)
-    if user_settings.defaultPanel is not None:
+    if user_settings.defaultPanel not in (None, ""):
         return user_settings.defaultPanel
 
     return None
@@ -93,6 +93,8 @@ def _get_user_data_default_panel(bm_store, browser_id, user_id):
 def _get_system_data_default_panel(bm_store):
     """Return the global defaultPanel to inject into systemData, or None."""
     global_settings = bm_store.get_global_settings()
+    if global_settings.defaultPanel in (None, ""):
+        return None
     return global_settings.defaultPanel
 
 

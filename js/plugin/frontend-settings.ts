@@ -125,8 +125,11 @@ export const AutoSettingsMixin = (SuperClass) => {
       // Unregistered browsers: keep localStorage as a bootstrap fallback so that
       // user/global settings take effect immediately on first paint before the
       // server subscription response arrives.
+      const globalDefaultPanel = this.global_settings?.defaultPanel;
       const defaultPanel =
-        this.global_settings?.defaultPanel ?? settings.defaultPanel;
+        globalDefaultPanel != null && globalDefaultPanel !== ""
+          ? globalDefaultPanel
+          : settings.defaultPanel;
 
       if (defaultPanel) {
         if (!this.registered) {
@@ -454,9 +457,12 @@ export const AutoSettingsMixin = (SuperClass) => {
         // setting (global/browser/user), because BM now owns effective default
         // dashboard selection and global has highest priority.
         const hasManagedDefaultPanel =
-          this.global_settings?.defaultPanel != null ||
-          this.user_settings?.defaultPanel != null ||
-          this.browser_settings?.defaultPanel != null;
+          (this.global_settings?.defaultPanel != null &&
+            this.global_settings?.defaultPanel !== "") ||
+          (this.user_settings?.defaultPanel != null &&
+            this.user_settings?.defaultPanel !== "") ||
+          (this.browser_settings?.defaultPanel != null &&
+            this.browser_settings?.defaultPanel !== "");
 
         // Try to find ha-pick-dashboard-row.  The path covers both the
         // flat (older HA) and tabbed (newer HA) profile page structures.
