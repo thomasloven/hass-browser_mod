@@ -878,7 +878,7 @@ function e(e,t,i,s){var o,a=arguments.length,n=a<3?t:null===s?s=Object.getOwnPro
 
           <ha-expansion-panel
             .header=${"Default dashboard"}
-            .secondary=${`The dashboard that is shown when navigating to ${location.origin}`}
+            .secondary=${`The dashboard that is shown when navigating to ${location.origin} (Legacy)`}
             @expanded-changed=${this.expandedChanged}
             leftChevron
           >
