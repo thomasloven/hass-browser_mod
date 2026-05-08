@@ -76,8 +76,9 @@ def _get_user_data_default_panel(bm_store, browser_id, user_id):
     Priority: global-level > browser-level > user-level > None.
 
     browser_id is only non-None when the connection belongs to a registered
-    browser (resolved via DATA_BROWSERS), so no additional registration check
-    is needed here.
+    browser (resolved via DATA_BROWSERS).  A None guard is still applied on
+    the browser lookup in case of timing edge cases where the browser is in
+    DATA_BROWSERS but not yet present in the persistent store.
     """
     global_settings = bm_store.get_global_settings()
     if global_settings.defaultPanel not in (None, ""):
@@ -85,9 +86,7 @@ def _get_user_data_default_panel(bm_store, browser_id, user_id):
 
     if browser_id is not None:
         browser = bm_store.get_browser(browser_id)
-        # No `browser.registered` guard needed: DATA_BROWSERS only contains
-        # registered browsers, so browser_id is always for a registered browser.
-        if browser.settings.defaultPanel not in (None, ""):
+        if browser is not None and browser.settings.defaultPanel not in (None, ""):
             return browser.settings.defaultPanel
 
     user_settings = bm_store.get_user_settings(user_id)
