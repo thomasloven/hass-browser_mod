@@ -18,11 +18,11 @@ defaultPanel values are injected into the responses before they reach the browse
   - frontend/subscribe_system_data (key "core") → global-level
   - frontend/get_system_data      (key "core") → global-level
 
-The browser identity is resolved via the session_browser_map, which is populated
-only when the client option "syncSession" is enabled (browser_mod/store_session has
-been called). If the map has no entry for the connection — which is the case when
-syncSession is disabled, or before the client has registered the mapping — the
-browser-level override is skipped and the user-level or global-level is used instead.
+The browser identity is resolved by looking up the connection in DATA_BROWSERS —
+the live registry of registered browsers maintained by BrowserModBrowser.  Only
+registered browsers appear in DATA_BROWSERS, so any unregistered connection (which
+cannot have browser-level settings) correctly returns None.  This approach does not
+require the "syncSession" / session_browser_map mechanism.
 """
 
 import logging
@@ -34,7 +34,7 @@ from homeassistant.components.websocket_api import async_register_command
 from homeassistant.components.websocket_api.const import DOMAIN as WS_DOMAIN
 from homeassistant.core import HomeAssistant
 
-from .const import DATA_FRONTEND_PATCHES, DATA_STORE, DOMAIN
+from .const import DATA_BROWSERS, DATA_FRONTEND_PATCHES, DATA_STORE, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,28 +51,31 @@ _PATCHED_COMMANDS = [
 # ---------------------------------------------------------------------------
 
 
-def _resolve_browser_id(connection, bm_store):
-    """Resolve browserID from session_browser_map for the given connection.
+def _resolve_browser_id(hass, connection):
+    """Resolve browserID by finding a registered browser whose connection matches.
 
-    Returns the browserID string if a mapping exists, otherwise None.
+    Returns the browserID string if a registered BrowserModBrowser has this
+    connection open, otherwise None.
 
-    The session_browser_map is only populated when the client has enabled the
-    "syncSession" option (i.e. browser_mod/store_session was called).  Any
-    connection that has not done so — including connections whose refresh token
-    is absent (long-lived access tokens, system users, etc.) — will receive
-    None, and browser-level overrides will be skipped for that connection.
+    Only registered browsers are tracked in DATA_BROWSERS, so unregistered
+    connections — which cannot have browser-level settings — always return None.
+    This lookup does not require the syncSession / session_browser_map mechanism.
     """
-    refresh_token_id = getattr(connection, "refresh_token_id", None)
-    if not refresh_token_id:
-        return None
-    return bm_store.get_session_browser_id(refresh_token_id)
+    browsers = hass.data.get(DOMAIN, {}).get(DATA_BROWSERS, {})
+    for browser_id, browser in browsers.items():
+        if any(c[0] == connection for c in browser.connection):
+            return browser_id
+    return None
 
 
 def _get_user_data_default_panel(bm_store, browser_id, user_id):
     """Return the defaultPanel to inject into userData, or None.
 
-    Priority: global-level > browser-level (registered + syncSession)
-    > user-level > None.
+    Priority: global-level > browser-level > user-level > None.
+
+    browser_id is only non-None when the connection belongs to a registered
+    browser (resolved via DATA_BROWSERS), so no additional registration check
+    is needed here.
     """
     global_settings = bm_store.get_global_settings()
     if global_settings.defaultPanel not in (None, ""):
@@ -80,7 +83,7 @@ def _get_user_data_default_panel(bm_store, browser_id, user_id):
 
     if browser_id is not None:
         browser = bm_store.get_browser(browser_id)
-        if browser.registered and browser.settings.defaultPanel not in (None, ""):
+        if browser.settings.defaultPanel not in (None, ""):
             return browser.settings.defaultPanel
 
     user_settings = bm_store.get_user_settings(user_id)
@@ -168,9 +171,7 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
             ha_value = ha_store.data.get("core") or {}
             if bm_store is None:
                 return ha_value
-            # _resolve_browser_id returns None when syncSession is disabled
-            # or when the session map has no entry for this connection yet.
-            browser_id = _resolve_browser_id(connection, bm_store)
+            browser_id = _resolve_browser_id(hass, connection)
             return _inject_user_default_panel(ha_value, bm_store, browser_id, user_id)
 
         def send_core_event():
@@ -181,7 +182,6 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
         bm_unsub = None
         if bm_store is not None:
             # Re-push the event whenever BM settings change (e.g. after
-            # browser_mod/store_session populates the session map, or after
             # the user changes the defaultPanel setting in the UI).
             bm_unsub = bm_store.add_listener(lambda _data: send_core_event())
 
@@ -219,7 +219,7 @@ async def async_setup_frontend_patches(hass: HomeAssistant) -> None:
         ha_value = ha_store.data.get("core") or {}
 
         if bm_store is not None:
-            browser_id = _resolve_browser_id(connection, bm_store)
+            browser_id = _resolve_browser_id(hass, connection)
             ha_value = _inject_user_default_panel(
                 ha_value, bm_store, browser_id, connection.user.id
             )
