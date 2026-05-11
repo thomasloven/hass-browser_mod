@@ -1,3 +1,9 @@
+## [2.13.0-beta.6](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.5...v2.13.0-beta.6) (2026-05-11)
+
+### ⭐ New Features
+
+* Closing via button actions or browser_mod.close_popup now runs underlying dialog closing animations. ([#1278](https://github.com/thomasloven/hass-browser_mod/issues/1278)) ([20abd39](https://github.com/thomasloven/hass-browser_mod/commit/20abd392e1c15b03a6b5cbb3c6952e4b31fab137)), closes [#1277](https://github.com/thomasloven/hass-browser_mod/issues/1277)
+
 ## [2.13.0-beta.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.4...v2.13.0-beta.5) (2026-05-08)
 
 ### ⭐ New Features
