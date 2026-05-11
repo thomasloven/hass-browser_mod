@@ -7,6 +7,7 @@ import {
   ensureArray,
   provideHass,
   selectTree,
+  BROWSER_MOD_CLOSE_ANCHOR,
 } from "../helpers";
 import { loadHaForm } from "../helpers";
 import { ObjectSelectorMonitor } from "../object-selector-monitor";
@@ -455,7 +456,7 @@ export class BrowserModPopup extends LitElement {
   async do_close() {
     const action = this._actions?.dismiss_action;
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await this.closeDialog();
+    await window.browser_mod.closePopup({tag: this.tag ?? ""});
     action?.(this._formdata);
     this._objectSelectorMonitor.stopMonitoring();
   }
@@ -566,6 +567,7 @@ export class BrowserModPopup extends LitElement {
             : "" }
           `
         : html``}
+      <div data-close-anchor="${BROWSER_MOD_CLOSE_ANCHOR}" class="${BROWSER_MOD_CLOSE_ANCHOR}" data-dialog="close"></div>
       <div class="content" tabindex="-1" dialogInitialFocus>
         <div class="container">${this.content}</div>
       </div>
@@ -603,7 +605,7 @@ export class BrowserModPopup extends LitElement {
         <ha-adaptive-dialog
           .hass=${this.hass}
           .open=${this.open}
-          @closed=${this.closeDialog}
+          @closed=${(ev: CustomEvent) => this.closeDialog(ev)}
           ?prevent-scrim-close=${!this.dismissable}
           ?without-header=${!this.title}
           ?allow-mode-change=${this.adaptive_allow_mode_change}
@@ -619,7 +621,7 @@ export class BrowserModPopup extends LitElement {
         .hass=${this.hass}
         .open=${this.open}
         type=${this._styleAttributes["classic"] ? "" : "standard"}
-        @closed=${this.closeDialog}
+        @closed=${(ev: CustomEvent) => this.closeDialog(ev)}
         ?prevent-scrim-close=${!this.dismissable}
         ?without-header=${!this.title}
         flexContent
@@ -674,6 +676,12 @@ export class BrowserModPopup extends LitElement {
         --ha-bottom-sheet-max-width: var(--popup-max-width, 600px);
       }
 
+      .browser-mod-close-anchor {
+        width: 0;
+        height: 0;
+        display: none;
+        visibility: hidden;
+      }
       .content {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
