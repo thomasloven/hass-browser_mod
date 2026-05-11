@@ -65,7 +65,8 @@ export const PopupMixin = (SuperClass) => {
             }, 5000);
           }),
           new Promise<void>(async (resolve) => {
-            const onClose = () => {
+            const onClose = (ev: CustomEvent) => {
+              if (ev.detail?.popup !== popup) return;
               this.removeEventListener('browser-mod-popup-closed', onClose);
               if (timeoutId !== undefined) clearTimeout(timeoutId);
               resolve();

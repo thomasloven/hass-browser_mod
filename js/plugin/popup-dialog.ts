@@ -605,7 +605,7 @@ export class BrowserModPopup extends LitElement {
         <ha-adaptive-dialog
           .hass=${this.hass}
           .open=${this.open}
-          @closed=${() => this.closeDialog()}
+          @closed=${(ev: CustomEvent) => this.closeDialog(ev)}
           ?prevent-scrim-close=${!this.dismissable}
           ?without-header=${!this.title}
           ?allow-mode-change=${this.adaptive_allow_mode_change}
@@ -621,7 +621,7 @@ export class BrowserModPopup extends LitElement {
         .hass=${this.hass}
         .open=${this.open}
         type=${this._styleAttributes["classic"] ? "" : "standard"}
-        @closed=${() => this.closeDialog()}
+        @closed=${(ev: CustomEvent) => this.closeDialog(ev)}
         ?prevent-scrim-close=${!this.dismissable}
         ?without-header=${!this.title}
         flexContent
