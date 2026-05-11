@@ -2,6 +2,7 @@ import { Unpromise } from "@watchable/unpromise";
 import {
   loadLoadCardHelpers,
   hass_base_el,
+  BROWSER_MOD_CLOSE_ANCHOR,
 } from "../helpers";
 import { BrowserModPopup } from "./popup-dialog";
 
@@ -70,7 +71,15 @@ export const PopupMixin = (SuperClass) => {
               resolve();
             }
             this.addEventListener('browser-mod-popup-closed', onClose, { once: true });
-            popup.closeDialog();
+            // Use BROWSER_MOD_CLOSE_ANCHOR to trigger the close action on the popup's dialog, 
+            // which ensures that the underlying dialog's close event is properly dispatched and handled
+            const closeAnchor = popup.dialog?.querySelector(`#${BROWSER_MOD_CLOSE_ANCHOR}`);
+            if (closeAnchor) {
+              closeAnchor.click();
+            } else {
+              // Fallback to directly calling closeDialog if the anchor is not found
+              popup.closeDialog();
+            }
           })
         ]);
       }
