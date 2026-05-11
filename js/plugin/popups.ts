@@ -56,21 +56,23 @@ export const PopupMixin = (SuperClass) => {
     async closePopup(args) {
       const _closePopup = async (popup) => {
         const tag = popup.tag !== undefined && popup.tag !== "" ? popup.tag : "standard";
-        var timeoutId: ReturnType<typeof setTimeout> | undefined;
+        let timeoutId: ReturnType<typeof setTimeout> | undefined;
+        let onClose: ((ev: CustomEvent) => void) | undefined;
         const result = await Unpromise.race([
           new Promise<void>((resolve) => {
             timeoutId = setTimeout(() => {
+              if (onClose) this.removeEventListener('browser-mod-popup-closed', onClose);
               console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
               resolve();
             }, 5000);
           }),
           new Promise<void>(async (resolve) => {
-            const onClose = (ev: CustomEvent) => {
+            onClose = (ev: CustomEvent) => {
               if (ev.detail?.popup !== popup) return;
-              this.removeEventListener('browser-mod-popup-closed', onClose);
+              if (onClose) this.removeEventListener('browser-mod-popup-closed', onClose);
               if (timeoutId !== undefined) clearTimeout(timeoutId);
               resolve();
-            }
+            };
             this.addEventListener('browser-mod-popup-closed', onClose);
             // Use BROWSER_MOD_CLOSE_ANCHOR to trigger the close action on the popup's dialog, 
             // which ensures that the underlying dialog's close event is properly dispatched and handled
