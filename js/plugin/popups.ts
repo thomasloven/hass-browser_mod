@@ -71,7 +71,7 @@ export const PopupMixin = (SuperClass) => {
               if (timeoutId !== undefined) clearTimeout(timeoutId);
               resolve();
             }
-            this.addEventListener('browser-mod-popup-closed', onClose, { once: true });
+            this.addEventListener('browser-mod-popup-closed', onClose);
             // Use BROWSER_MOD_CLOSE_ANCHOR to trigger the close action on the popup's dialog, 
             // which ensures that the underlying dialog's close event is properly dispatched and handled
             const closeAnchor = popup.dialog?.querySelector(`[data-close-anchor="${BROWSER_MOD_CLOSE_ANCHOR}"]`);
