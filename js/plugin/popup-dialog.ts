@@ -456,7 +456,7 @@ export class BrowserModPopup extends LitElement {
   async do_close() {
     const action = this._actions?.dismiss_action;
     if (this._actions?.dismiss_action) this._actions.dismiss_action = undefined;
-    await window.browser_mod.closePopup({tag: this.tag});
+    await window.browser_mod.closePopup({tag: this.tag ?? ""});
     action?.(this._formdata);
     this._objectSelectorMonitor.stopMonitoring();
   }
@@ -567,7 +567,7 @@ export class BrowserModPopup extends LitElement {
             : "" }
           `
         : html``}
-      <div id="${BROWSER_MOD_CLOSE_ANCHOR}" class="${BROWSER_MOD_CLOSE_ANCHOR}" data-dialog="close"></div>
+      <div data-close-anchor="${BROWSER_MOD_CLOSE_ANCHOR}" class="${BROWSER_MOD_CLOSE_ANCHOR}" data-dialog="close"></div>
       <div class="content" tabindex="-1" dialogInitialFocus>
         <div class="container">${this.content}</div>
       </div>
@@ -605,7 +605,7 @@ export class BrowserModPopup extends LitElement {
         <ha-adaptive-dialog
           .hass=${this.hass}
           .open=${this.open}
-          @closed=${this.closeDialog.bind(this)}
+          @closed=${() => this.closeDialog()}
           ?prevent-scrim-close=${!this.dismissable}
           ?without-header=${!this.title}
           ?allow-mode-change=${this.adaptive_allow_mode_change}
@@ -621,7 +621,7 @@ export class BrowserModPopup extends LitElement {
         .hass=${this.hass}
         .open=${this.open}
         type=${this._styleAttributes["classic"] ? "" : "standard"}
-        @closed=${this.closeDialog.bind(this)}
+        @closed=${() => this.closeDialog()}
         ?prevent-scrim-close=${!this.dismissable}
         ?without-header=${!this.title}
         flexContent
