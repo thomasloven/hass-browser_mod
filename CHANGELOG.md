@@ -1,3 +1,20 @@
+## [2.13.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.12.0...v2.13.0) (2026-05-14)
+
+### ⭐ New Features
+
+* Closing via button actions or browser_mod.close_popup now runs underlying dialog closing animations. ([#1278](https://github.com/thomasloven/hass-browser_mod/issues/1278)) ([20abd39](https://github.com/thomasloven/hass-browser_mod/commit/20abd392e1c15b03a6b5cbb3c6952e4b31fab137)), closes [#1277](https://github.com/thomasloven/hass-browser_mod/issues/1277)
+* Implement defaultDashboard Frontend setting via server-side system_data and user_data overrides ([#1276](https://github.com/thomasloven/hass-browser_mod/issues/1276)) ([787be94](https://github.com/thomasloven/hass-browser_mod/commit/787be94cec2b468299e21d0ec595150f38bf3c1e))
+* New setting to sync Browser ID to login session which allows for Browser ID recall when using same login session on Companion Apps ([#1270](https://github.com/thomasloven/hass-browser_mod/issues/1270)) ([b5f5127](https://github.com/thomasloven/hass-browser_mod/commit/b5f5127a11132e1363c6981d1f01431b8f8de5ec)), closes [#1158](https://github.com/thomasloven/hass-browser_mod/issues/1158)
+
+### 🐞 Bug Fixes
+
+* Browser Mod services `user_id` target resolution on HA 2026.05 ([#1274](https://github.com/thomasloven/hass-browser_mod/issues/1274)) ([475956e](https://github.com/thomasloven/hass-browser_mod/commit/475956ee56fe6734c3f047abf57f80f13d197dd0))
+* Hiding of sidebar and header on Home dashboard and custom config panels ([#1272](https://github.com/thomasloven/hass-browser_mod/issues/1272)) ([9900e27](https://github.com/thomasloven/hass-browser_mod/commit/9900e272fc7c44846941db3890a49d236d5dd610)), closes [#1271](https://github.com/thomasloven/hass-browser_mod/issues/1271)
+
+### ⚙️ Miscellaneous
+
+* Update typescript to version 6 and associated type updates ([#1275](https://github.com/thomasloven/hass-browser_mod/issues/1275)) ([51558b3](https://github.com/thomasloven/hass-browser_mod/commit/51558b3d1464986fb72265d0ccd815956c32e78c))
+
 ## [2.13.0-beta.6](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.5...v2.13.0-beta.6) (2026-05-11)
 
 ### ⭐ New Features
