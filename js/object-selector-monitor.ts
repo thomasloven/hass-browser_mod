@@ -17,6 +17,7 @@ export class ObjectSelectorMonitor {
   private _settingsValidCallback?: (value: boolean) => void;
   private _showErrorsCallback?: (value: boolean) => void;
   private _objectSelectors?: ObjectSelector[] = undefined;
+  private _handlerMap: WeakMap<LitElement, EventListener> = new WeakMap();
 
   constructor(
     element: LitElement,
@@ -70,11 +71,11 @@ export class ObjectSelectorMonitor {
         }
     });
     const elements = form?.shadowRoot?.querySelectorAll("ha-form-grid, ha-form-expandable");
-    elements?.forEach((element: LitElement) => {
+    elements?.forEach((element) => {
         if (element.shadowRoot) {
         const forms = element.shadowRoot.querySelectorAll("ha-form");
-        forms.forEach((subForm: LitElement) => {
-            const subSelectors = this._formObjectSelectors(subForm);
+        forms.forEach((subForm) => {
+            const subSelectors = this._formObjectSelectors(subForm as LitElement);
             objectSelectors.push(...subSelectors);
         });
         }
@@ -88,26 +89,43 @@ export class ObjectSelectorMonitor {
         this.element?.shadowRoot?.querySelector("ha-form")
       );
     }
-    this.objectSelectors.map((selector) => {
-      selector.element?.addEventListener("value-changed", (ev: CustomEvent) => {
-        selector.isValid = ev.detail.isValid;
-        selector.errorMsg = ev.detail.errorMsg;
-        this.settingsValid = this.objectSelectors.every(
-          (s) => s.isValid !== false
-        );
-        if (this.settingsValid) {
-          this.showErrors = false;
-          this._debounceShowErrors.cancel();
-        } else {
-          this._debounceShowErrors(); 
+    this.objectSelectors.forEach((selector) => {
+      if (selector.element) {
+        // Remove any existing handler before adding a new one
+        const existingHandler = this._handlerMap.get(selector.element);
+        if (existingHandler) {
+          selector.element.removeEventListener("value-changed", existingHandler, { capture: true });
+          this._handlerMap.delete(selector.element);
         }
-      }, { capture: true } );
+        const handler = (ev: Event) => {
+          const customEv = ev as CustomEvent;
+          selector.isValid = customEv.detail.isValid;
+          selector.errorMsg = customEv.detail.errorMsg;
+          this.settingsValid = this.objectSelectors.every(
+            (s) => s.isValid !== false
+          );
+          if (this.settingsValid) {
+            this.showErrors = false;
+            this._debounceShowErrors.cancel();
+          } else {
+            this._debounceShowErrors(); 
+          }
+        };
+        this._handlerMap.set(selector.element, handler);
+        selector.element.addEventListener("value-changed", handler, { capture: true });
+      }
     });
   }
 
   stopMonitoring() {
-    this.objectSelectors.map((selector) => {
-      selector.element?.removeEventListener("value-changed", () => {});
+    this.objectSelectors.forEach((selector) => {
+      if (selector.element) {
+        const handler = this._handlerMap.get(selector.element);
+        if (handler) {
+          selector.element.removeEventListener("value-changed", handler, { capture: true });
+          this._handlerMap.delete(selector.element);
+        }
+      }
     });
     this.showErrors = false;
     this.settingsValid = true;

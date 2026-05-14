@@ -2,6 +2,8 @@ import { Unpromise } from "@watchable/unpromise";
 
 const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
 
+export const BROWSER_MOD_CLOSE_ANCHOR = "browser-mod-close-anchor";
+
 export async function await_element(el, hard = false) {
   if (el.localName?.includes("-"))
     await customElements.whenDefined(el.localName);
@@ -230,7 +232,7 @@ export function runOnce(restart = false) {
   return function (target, propertyKey, descriptor) {
     const fn = descriptor.value;
     let running = undefined;
-    const newfn = function (...rest) {
+    const newfn = function (this: any, ...rest) {
       if (restart && running === false) running = true;
       if (running !== undefined) return;
       running = false;

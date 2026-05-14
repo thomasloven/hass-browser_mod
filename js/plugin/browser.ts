@@ -30,7 +30,7 @@ export const BrowserStateMixin = (SuperClass) => {
 
       window.addEventListener(
         'resize',
-        debounce(function() {
+        debounce(function(this: BrowserStateMixinClass) {
           this._browser_state_update()
         }.bind(this), 500)
       );

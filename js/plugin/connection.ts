@@ -1,4 +1,7 @@
+import { Unpromise } from "@watchable/unpromise";
 import { compare_deep, hass, provideHass } from "../helpers";
+
+const RECALL_ID_TIMEOUT_MS = 5000;
 
 export const ConnectionMixin = (SuperClass) => {
   class BrowserModConnection extends SuperClass {
@@ -9,6 +12,7 @@ export const ConnectionMixin = (SuperClass) => {
     private _data;
     private _connected = false;
     private _connectionResolve;
+    private _recallIdPromise: Promise<void> = Promise.resolve();
 
     public connectionPromise = new Promise((resolve) => {
       this._connectionResolve = resolve;
@@ -49,6 +53,12 @@ export const ConnectionMixin = (SuperClass) => {
       this.LOG("Integration ready: browser_mod loaded and update received");
       this.fireBrowserEvent("browser-mod-ready");
       window.setTimeout(() => this.sendUpdate({}), 1000);
+      // Only recall ID when not using session sync — syncSession handles its own ID mapping
+      if (!this.syncSession) {
+        this._recallIdPromise = this.recall_id();
+      }
+      // Re-establish server-side session mapping if syncSession was set before connection
+      if (this.syncSession) this.store_session();
       this.userReady()
         .then(() => {
           this.onUserReady();
@@ -88,6 +98,17 @@ export const ConnectionMixin = (SuperClass) => {
     }
 
     private async userReady() {
+      // Wait for recall_id to complete so the correct browserID is set
+      // before anything depending on it (e.g. _runDefaultAction) fires.
+      // Race against a timeout so a stalled recall_id never blocks startup.
+      // If the timeout wins, throw so the caller can log the failure.
+      const recallTimeout = new Promise<void>((_, reject) =>
+        setTimeout(
+          () => reject(new Error(`recall_id did not return within ${RECALL_ID_TIMEOUT_MS}ms`)),
+          RECALL_ID_TIMEOUT_MS
+        )
+      );
+      await Unpromise.race([this._recallIdPromise, recallTimeout]);
       if (this.user) {
         return true;
       } else {

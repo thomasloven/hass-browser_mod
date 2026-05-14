@@ -27,7 +27,17 @@ This box lets you set the `BrowserID` for the current _Browser_.
 Note that it is possible to assign the same `BrowserID` to several browsers, but unpredictable things _may_ happen if several of them are open at the same time.
 There may be benefits to using the same `BrowserID` in some cases, so you'll have to experiment with what works for you.
 
-Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider following the best practice for [Browser ID updates](#browser-id-updates).
+Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider enabling [Sync Browser ID to login session](#sync-browser-id-to-login-session) or following the best practice for [Browser ID updates](#browser-id-updates).
+
+### Sync Browser ID to login session
+
+When enabled, Browser Mod stores the current `BrowserID` against your Home Assistant login session on the server. If the browser's local storage is cleared (e.g. due to privacy settings, a cache wipe, or the Home Assistant Companion App resetting its frontend cache), the `BrowserID` will be automatically recalled from the server the next time the same login session connects.
+
+This is particularly useful for:
+- **Home Assistant Companion Apps** on iOS or Android, where the frontend cache may be cleared periodically.
+- Any browser that clears local storage regularly.
+
+> **Note:** The session mapping is tied to the Home Assistant refresh token used for the current login session. If you log out and log back in, a new session is created and the mapping will need to be re-established. To restore the mapping, simply navigate to the Browser Mod panel and ensure the toggle is enabled.
 
 ### Enable camera entity
 
@@ -143,17 +153,20 @@ See [Default action](#default-action) below for tips on calling multiple actions
 
 __IMPORTANT__: Like actions popups and notifications, this setting DOES NOT support templates.
 
-### Default dashboard (legacy)
+### Default dashboard
 
-**Using this Frontend setting is not recommended. See below for options which are recommended.**
+Set the default dashboard that is shown when you access Home Assistant base URL (e.g. https://homeassistant.local/)
 
-1. Global/System ⇒ (Since 2025.12) Set the Home Assistant default system dashboard in Dashboards.
-2. Browser/Device ⇒ Use Default action with `browser_mod.navigate`. This also works with other pages than lovelace dashboards, like e.g. `logbook` or even `history?device_id=f112fd806f2520c76318406f98cd244e&start_date=2022-09-02T16%3A00%3A00.000Z&end_date=2022-09-02T19%3A00%3A00.000Z`.
-3. User ⇒ (Since 2025.12) Set Home Assistant default user dashboard in user profile.
+Browser Mod supports three levels of default dashboard and applies them in the following priority order (highest first):
 
-Set the default dashboard that is shown when you access `https://<your home assistant url>/` with nothing after the `/`.
+| Level | Scope | Overrides |
+|-------|-------|-----------|
+| **User** | Any browser, this user | Browser-level and global Browser Mod settings, and native Home Assistant defaults |
+| **Browser** | This registered browser, any user | Global Browser Mod setting and native Home Assistant defaults |
+| **Global** | All browsers, all users | Native Home Assistant defaults |
 
-> NOTE: This uses legacy method of storing default dashboard in localStorage. Home Assistant 2025.12 started storing the default dashboard in system/user settings. If the default dashboard is set via Home Assistant at either system or user level, this overrides the legacy method and Browser Mod setting will be ignored.
+> NOTE: Browser-level default dashboard override requires **Sync Browser ID to login session** to be enabled. Global and User-level overrides work without sync session.
+> When a Browser Mod default dashboard is active for a browser or user, the **Default Dashboard** row in the Home Assistant user profile is replaced with a notice that Browser Mod is managing the default dashboard. To restore the native picker, clear the relevant Browser Mod setting.
 
 ### Default action
 
@@ -250,7 +263,11 @@ See [go2rtc publishing](./go2rtc.md) for go2rtc setup, HTTPS, CORS, and troubles
 
 #### Browser ID updates
 
-While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied. To be able to restore Browser ID and Frontend settings tied to the Browser ID you can follow the best practices listed below.
+While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied.
+
+The easiest way to handle this is to enable [Sync Browser ID to login session](#sync-browser-id-to-login-session), which automatically recalls the Browser ID from the server whenever local storage is cleared, as long as the same login session is used.
+
+If you prefer a manual approach or cannot use session sync, you can follow the best practices listed below.
 
 1. Turn off auto-register. This allows to control the register order, and also limits many new Browser IDs being registered in your environment of changing Browser IDs.
 2. Don't lock the register but leave open to make the next step easy to accomplish.

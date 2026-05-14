@@ -77,7 +77,7 @@ export const CameraMixin = (SuperClass) => {
         video.srcObject = stream;
         video.play();
         this.update_camera();
-      } catch (e) {
+      } catch (e: any) {
         if (e.name !== "NotAllowedError") throw e;
         else {
           this.cameraError = true;

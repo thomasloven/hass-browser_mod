@@ -19,6 +19,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     window.browser_mod.go2rtcEnabled = !window.browser_mod.go2rtcEnabled;
     this.dirty = true;
   }
+  toggleSyncSession() {
+    window.browser_mod.syncSession = !window.browser_mod.syncSession;
+    this.requestUpdate();
+  }
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
@@ -128,6 +132,21 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               }}
             >
             </ha-form>
+          </ha-md-list-item>
+
+          <ha-md-list-item>
+            <span slot="headline">Sync Browser ID to login session</span>
+            <span slot="supporting-text"
+              >Store this Browser ID against your current login session.
+              Allows the Browser ID to be recalled if local storage is
+              cleared.</span
+            >
+            <ha-switch
+              slot="end"
+              .checked=${window.browser_mod?.syncSession}
+              @change=${this.toggleSyncSession}
+              .disabled=${window.browser_mod?.browser_locked}
+            ></ha-switch>
           </ha-md-list-item>
 
           ${window.browser_mod?.registered

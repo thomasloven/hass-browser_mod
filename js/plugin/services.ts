@@ -27,9 +27,9 @@ export const ServicesMixin = (SuperClass) => {
         });
       }
 
-      document.body.addEventListener("ll-custom", (ev: CustomEvent) => {
-        if (ev.detail.browser_mod) {
-          this._service_action(ev.detail.browser_mod);
+      document.body.addEventListener("ll-custom", (e: CustomEvent) => {
+        if (e.detail.browser_mod) {
+          this._service_action(e.detail.browser_mod);
         }
       });
     }
