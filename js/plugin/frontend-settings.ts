@@ -114,19 +114,13 @@ export const AutoSettingsMixin = (SuperClass) => {
       this.updateSidebarPanelsDebounced();
 
       // Default panel
-      // Registered browsers: server-side injection via frontend/subscribe_user_data
-      // and frontend/subscribe_system_data handles defaultPanel based on Browser Mod
-      // settings, so localStorage is not needed.
-      //
-      // Browser Mod defaultPanel priority is user > browser > global.
-      // Browser-level server-side injection resolves via syncSession/
-      // session_browser_map for the current login session.
-      // Unregistered browsers: keep localStorage as a bootstrap fallback so that
-      // user/global settings take effect immediately on first paint before the
-      // server subscription response arrives.
+      // Keep localStorage defaultPanel set whenever Browser Mod has one configured.
+      // This provides a fallback for cases where server-side injection does not
+      // resolve (e.g. session-browser mapping is unavailable), while still letting
+      // Home Assistant settings take over when Browser Mod defaultPanel is unset.
       const defaultPanel = this.settings.defaultPanel;
 
-      if (defaultPanel && !this.registered) {
+      if (defaultPanel) {
         localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
       }
 
