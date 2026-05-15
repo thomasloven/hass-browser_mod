@@ -126,15 +126,8 @@ export const AutoSettingsMixin = (SuperClass) => {
       // server subscription response arrives.
       const defaultPanel = this.settings.defaultPanel;
 
-      if (defaultPanel) {
-        if (!this.registered) {
-          localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
-        }
-      } else if (this.registered && this._removeLegacySidebarSettings) {
-        // Clear any stale localStorage value left from before registration or
-        // from a previous version of Browser Mod, so HA's native user data
-        // (injected server-side) is the sole source of truth.
-        localStorage.removeItem("defaultPanel");
+      if (defaultPanel && !this.registered) {
+        localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
       }
 
       // Kiosk Mode built into Home Assistant since 2026.1
