@@ -2,6 +2,15 @@ const ID_STORAGE_KEY = "browser_mod-browser-id";
 const ID_STORAGE_KEY_LOVELACE_PLAYER = "lovelace-player-device-id"
 const SYNC_SESSION_STORAGE_KEY = "browser_mod-sync-session";
 
+const isValidBrowserID = (id): boolean => {
+  return (
+    typeof id === "string" &&
+    id.trim() !== "" &&
+    id !== "undefined" &&
+    id !== "null"
+  );
+};
+
 export const BrowserIDMixin = (SuperClass) => {
   return class BrowserIDMixinClass extends SuperClass {
     constructor() {
@@ -38,7 +47,7 @@ export const BrowserIDMixin = (SuperClass) => {
       const result = await this.connection.sendMessagePromise({
         type: "browser_mod/recall_id",
       });
-      if (result) {
+      if (result && isValidBrowserID(result.browserID)) {
         this.browserID = result.browserID;
         // If the ID was recovered via a session mapping, reflect that in the sync flag
         if (result.via_session) {
@@ -49,11 +58,14 @@ export const BrowserIDMixin = (SuperClass) => {
 
     get browserID() {
       if (document.querySelector("hc-main")) return "CAST";
-      if (localStorage[ID_STORAGE_KEY]) {
+      const browserID = localStorage[ID_STORAGE_KEY];
+      if (isValidBrowserID(browserID)) {
         // set lovelace-player-device-id as used by card-tools, state-switch
-        localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
-        return localStorage[ID_STORAGE_KEY];
+        localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = browserID;
+        return browserID;
       }
+      delete localStorage[ID_STORAGE_KEY];
+      delete localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER];
       this.browserID = "";
       return this.browserID;
     }
@@ -67,7 +79,10 @@ export const BrowserIDMixin = (SuperClass) => {
         return "browser_mod_" + (window.fully?.getDeviceId() ? window.fully.getDeviceId().replace(/-/g,'_') : `${s4()}${s4()}_${s4()}${s4()}`);
       }
 
+      if (typeof id !== "string") return;
+      id = id.trim();
       if (id === "") id = _createBrowserID();
+      if (!isValidBrowserID(id)) return;
       const oldID = localStorage[ID_STORAGE_KEY];
       if (id === oldID) return;
       localStorage[ID_STORAGE_KEY] = id;
