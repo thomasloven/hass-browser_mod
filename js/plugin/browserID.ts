@@ -1,8 +1,8 @@
 const ID_STORAGE_KEY = "browser_mod-browser-id";
-const ID_STORAGE_KEY_LOVELACE_PLAYER = "lovelace-player-device-id"
+const ID_STORAGE_KEY_LOVELACE_PLAYER = "lovelace-player-device-id";
 const SYNC_SESSION_STORAGE_KEY = "browser_mod-sync-session";
 
-const isValidBrowserID = (id): boolean => {
+const isValidBrowserID = (id: unknown): boolean => {
   return (
     typeof id === "string" &&
     id.trim() !== "" &&
@@ -64,12 +64,10 @@ export const BrowserIDMixin = (SuperClass) => {
         localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = browserID;
         return browserID;
       }
-      delete localStorage[ID_STORAGE_KEY];
-      delete localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER];
       this.browserID = "";
       return this.browserID;
     }
-    set browserID(id) {
+    set browserID(id: unknown) {
       function _createBrowserID() {
         const s4 = () => {
           return Math.floor((1 + Math.random()) * 100000)
@@ -79,17 +77,16 @@ export const BrowserIDMixin = (SuperClass) => {
         return "browser_mod_" + (window.fully?.getDeviceId() ? window.fully.getDeviceId().replace(/-/g,'_') : `${s4()}${s4()}_${s4()}${s4()}`);
       }
 
-      if (typeof id !== "string") return;
-      id = id.trim();
-      if (id === "") id = _createBrowserID();
-      if (!isValidBrowserID(id)) return;
+      let browserID = typeof id === "string" ? id.trim() : "";
+      if (browserID === "") browserID = _createBrowserID();
+      if (!isValidBrowserID(browserID)) return;
       const oldID = localStorage[ID_STORAGE_KEY];
-      if (id === oldID) return;
-      localStorage[ID_STORAGE_KEY] = id;
+      if (browserID === oldID) return;
+      localStorage[ID_STORAGE_KEY] = browserID;
       // set lovelace-player-device-id as used by card-tools, state-switch
       localStorage[ID_STORAGE_KEY_LOVELACE_PLAYER] = localStorage[ID_STORAGE_KEY];
 
-      this.browserIDChanged(oldID, id);
+      this.browserIDChanged(oldID, browserID);
     }
 
     get syncSession() {
