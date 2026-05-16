@@ -30,14 +30,20 @@ export const PopupMixin = (SuperClass) => {
       return this._popupElements.some((popup) => popup.open === true);
     }
 
+    private _prunePopupElements() {
+      this._popupElements = this._popupElements.filter((popup) => popup?.isConnected);
+    }
+
     private popupStateListener = (ev: CustomEvent) => {
+      this._prunePopupElements();
       const popup = ev.detail?.popup;
+      if (!popup) return;
       if (ev.type === "browser-mod-popup-closed" && this._popupElements.includes(popup)) {
         this._popupElements = this._popupElements.filter(
           (p) => p !== popup
         );
       }
-      if (ev.type === "browser-mod-popup-opened") {
+      if (ev.type === "browser-mod-popup-opened" && !this._popupElements.includes(popup)) {
         this._popupElements.push(popup);
       }
     };
@@ -54,6 +60,7 @@ export const PopupMixin = (SuperClass) => {
     }
 
     async closePopup(args) {
+      this._prunePopupElements();
       const _closePopup = async (popup) => {
         const tag = popup.tag !== undefined && popup.tag !== "" ? popup.tag : "standard";
         let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -62,6 +69,7 @@ export const PopupMixin = (SuperClass) => {
           new Promise<void>((resolve) => {
             timeoutId = setTimeout(() => {
               if (onClose) this.removeEventListener('browser-mod-popup-closed', onClose);
+              this._popupElements = this._popupElements.filter((p) => p !== popup);
               console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
               resolve();
             }, 5000);
@@ -89,22 +97,22 @@ export const PopupMixin = (SuperClass) => {
 
       const { all, tag } = args;
       if (all === true) {
-        await Promise.all(this._popupElements.map((popup) => _closePopup(popup)));
+        await Promise.all(this._popupElements.filter((popup) => popup.open === true).map((popup) => _closePopup(popup)));
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
           tag != "" ?
             `browser-mod-popup-${tag}` :
             "browser-mod-popup";
-        const popup = this._popupElements.find(
-          (p) => p.nodeName.toLowerCase() === dialogTag
+        const popup = this._popupElements.slice().reverse().find(
+          (p) => p.open === true && p.nodeName.toLowerCase() === dialogTag
         );
         // Wait for the popup's dialog to close before proceeding
         if (popup?.dialog) {
           await _closePopup(popup);
         }
       } else {
-        const popup = this._popupElements.pop();
+        const popup = this._popupElements.slice().reverse().find((p) => p.open === true);
         // Wait for the popup's dialog to close before proceeding
         if (popup?.dialog) {
             await _closePopup(popup);
