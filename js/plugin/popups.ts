@@ -76,7 +76,11 @@ export const PopupMixin = (SuperClass) => {
           new Promise<void>((resolve) => {
             timeoutId = setTimeout(() => {
               if (onClose) this.removeEventListener('browser-mod-popup-closed', onClose);
-              this._popupElements = this._popupElements.filter((p) => p !== popup);
+              this.dispatchEvent(
+                new CustomEvent("browser-mod-popup-closed", {
+                  detail: { popup },
+                })
+              );
               console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
               resolve();
             }, 5000);
@@ -106,7 +110,6 @@ export const PopupMixin = (SuperClass) => {
       if (all === true) {
         const openPopups = this._popupElements.filter((popup) => popup.open === true);
         await Promise.all(openPopups.map((popup) => _closePopup(popup)));
-        this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
           tag != "" ?
