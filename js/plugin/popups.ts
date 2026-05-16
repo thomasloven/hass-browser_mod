@@ -108,6 +108,7 @@ export const PopupMixin = (SuperClass) => {
       if (all === true) {
         const openPopups = this._popupElements.filter((popup) => popup.open === true);
         await Promise.all(openPopups.map((popup) => _closePopup(popup)));
+        this._popupElements = this._popupElements.filter((popup) => popup.open === true);
       } else if (typeof tag === "string") {
         const dialogTag =
           tag != "" ?
