@@ -31,7 +31,7 @@ export const PopupMixin = (SuperClass) => {
     }
 
     private _prunePopupElements() {
-      this._popupElements = this._popupElements.filter((popup) => popup?.isConnected);
+      this._popupElements = this._popupElements.filter((popup) => popup.isConnected);
     }
 
     private _findLastOpenPopup(predicate: (popup: BrowserModPopup) => boolean = () => true) {
@@ -76,11 +76,9 @@ export const PopupMixin = (SuperClass) => {
           new Promise<void>((resolve) => {
             timeoutId = setTimeout(() => {
               if (onClose) this.removeEventListener('browser-mod-popup-closed', onClose);
-              this.dispatchEvent(
-                new CustomEvent("browser-mod-popup-closed", {
-                  detail: { popup },
-                })
-              );
+              if (!popup.isConnected) {
+                this._popupElements = this._popupElements.filter((p) => p !== popup);
+              }
               console.warn(`Browser Mod: Popup with tag "${tag}" did not close within timeout period`);
               resolve();
             }, 5000);
