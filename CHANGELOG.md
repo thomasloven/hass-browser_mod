@@ -1,3 +1,9 @@
+## [2.13.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0...v2.13.1) (2026-05-16)
+
+### 🐞 Bug Fixes
+
+* Restore default dashboard fallback by always persisting Browser Mod `defaultPanel` in localStorage. NOTE: This method only works for devices when no Home Assistant system default has ever been set. ([11855c5](https://github.com/thomasloven/hass-browser_mod/commit/11855c51bb95eff91a0b6daf915257b4a07fc570))
+
 ## [2.13.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0...v2.13.1-beta.1) (2026-05-16)
 
 ### 🐞 Bug Fixes
