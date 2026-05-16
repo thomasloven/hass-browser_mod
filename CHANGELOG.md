@@ -1,3 +1,9 @@
+## [2.13.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.1...v2.13.2) (2026-05-16)
+
+### 🐞 Bug Fixes
+
+* Prevent invalid Browser IDs from propagating through sync-session recall ([#1283](https://github.com/thomasloven/hass-browser_mod/issues/1283)) ([83f4667](https://github.com/thomasloven/hass-browser_mod/commit/83f466733dcbffd9870329f676ac095a03c6384d))
+
 ## [2.13.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0...v2.13.1) (2026-05-16)
 
 ### 🐞 Bug Fixes
