@@ -34,6 +34,13 @@ export const PopupMixin = (SuperClass) => {
       this._popupElements = this._popupElements.filter((popup) => popup?.isConnected);
     }
 
+    private _findLastOpenPopup(predicate: (popup: BrowserModPopup) => boolean = () => true) {
+      return this._popupElements
+        .slice()
+        .reverse()
+        .find((popup) => popup.open === true && predicate(popup));
+    }
+
     private popupStateListener = (ev: CustomEvent) => {
       this._prunePopupElements();
       const popup = ev.detail?.popup;
@@ -97,22 +104,23 @@ export const PopupMixin = (SuperClass) => {
 
       const { all, tag } = args;
       if (all === true) {
-        await Promise.all(this._popupElements.filter((popup) => popup.open === true).map((popup) => _closePopup(popup)));
+        const openPopups = this._popupElements.filter((popup) => popup.open === true);
+        await Promise.all(openPopups.map((popup) => _closePopup(popup)));
         this._popupElements = [];
       } else if (typeof tag === "string") {
         const dialogTag =
           tag != "" ?
             `browser-mod-popup-${tag}` :
             "browser-mod-popup";
-        const popup = this._popupElements.slice().reverse().find(
-          (p) => p.open === true && p.nodeName.toLowerCase() === dialogTag
+        const popup = this._findLastOpenPopup(
+          (p) => p.nodeName.toLowerCase() === dialogTag
         );
         // Wait for the popup's dialog to close before proceeding
         if (popup?.dialog) {
           await _closePopup(popup);
         }
       } else {
-        const popup = this._popupElements.slice().reverse().find((p) => p.open === true);
+        const popup = this._findLastOpenPopup();
         // Wait for the popup's dialog to close before proceeding
         if (popup?.dialog) {
             await _closePopup(popup);
