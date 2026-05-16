@@ -114,14 +114,15 @@ export const AutoSettingsMixin = (SuperClass) => {
       this.updateSidebarPanelsDebounced();
 
       // Default panel
-      // Keep localStorage defaultPanel set whenever Browser Mod has one configured.
-      // This provides a fallback for cases where server-side injection does not
-      // resolve (e.g. session-browser mapping is unavailable), while still letting
-      // Home Assistant settings take over when Browser Mod defaultPanel is unset.
+      // Keep localStorage defaultPanel in sync with Browser Mod setting.
+      // This provides fallback when server-side injection does not resolve, and
+      // removes Browser Mod override when defaultPanel is unset.
       const defaultPanel = this.settings.defaultPanel;
 
       if (defaultPanel) {
         localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
+      } else {
+        localStorage.removeItem("defaultPanel");
       }
 
       // Kiosk Mode built into Home Assistant since 2026.1
