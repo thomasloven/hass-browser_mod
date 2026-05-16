@@ -77,7 +77,8 @@ export const BrowserIDMixin = (SuperClass) => {
         return "browser_mod_" + (window.fully?.getDeviceId() ? window.fully.getDeviceId().replace(/-/g,'_') : `${s4()}${s4()}_${s4()}${s4()}`);
       }
 
-      let browserID = typeof id === "string" ? id.trim() : "";
+      if (typeof id !== "string") return;
+      let browserID = id.trim();
       if (browserID === "") browserID = _createBrowserID();
       if (!isValidBrowserID(browserID)) return;
       const oldID = localStorage[ID_STORAGE_KEY];
