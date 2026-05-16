@@ -114,26 +114,14 @@ export const AutoSettingsMixin = (SuperClass) => {
       this.updateSidebarPanelsDebounced();
 
       // Default panel
-      // Registered browsers: server-side injection via frontend/subscribe_user_data
-      // and frontend/subscribe_system_data handles defaultPanel based on Browser Mod
-      // settings, so localStorage is not needed.
-      //
-      // Browser Mod defaultPanel priority is user > browser > global.
-      // Browser-level server-side injection resolves via syncSession/
-      // session_browser_map for the current login session.
-      // Unregistered browsers: keep localStorage as a bootstrap fallback so that
-      // user/global settings take effect immediately on first paint before the
-      // server subscription response arrives.
+      // Keep localStorage defaultPanel in sync with Browser Mod setting.
+      // This provides fallback when server-side injection does not resolve, and
+      // removes Browser Mod override when defaultPanel is unset.
       const defaultPanel = this.settings.defaultPanel;
 
       if (defaultPanel) {
-        if (!this.registered) {
-          localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
-        }
-      } else if (this.registered && this._removeLegacySidebarSettings) {
-        // Clear any stale localStorage value left from before registration or
-        // from a previous version of Browser Mod, so HA's native user data
-        // (injected server-side) is the sole source of truth.
+        localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
+      } else {
         localStorage.removeItem("defaultPanel");
       }
 
