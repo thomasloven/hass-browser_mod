@@ -95,7 +95,7 @@ export class BrowserModPopup extends LitElement {
       this._expectingCloseEvent = true;
     } if (event && this._expectingCloseEvent) {
       this._expectingCloseEvent = false;
-      return;
+      return true;
     }
     if (!this.open) return true;
     this.open = false;
@@ -132,6 +132,7 @@ export class BrowserModPopup extends LitElement {
 
   openDialog() {
     this.open = true;
+    this._expectingCloseEvent = false;
     this.updateComplete.then(async () => {
       if (this.adaptive && this.adaptive_force_bottom_sheet) {
         this.dialog._mode = "bottom-sheet";
