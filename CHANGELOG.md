@@ -1,4 +1,4 @@
-## [2.13.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.2...v2.13.3-beta.1) (2026-05-17)
+## [2.13.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.2...v2.13.3) (2026-05-17)
 
 ### 🐞 Bug Fixes
 
