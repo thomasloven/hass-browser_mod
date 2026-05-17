@@ -4,12 +4,6 @@
 
 * Popup dialogs not opening in scenrio of opening once, switching views, opening again, after which popup will not longer open. ([#1290](https://github.com/thomasloven/hass-browser_mod/issues/1290)) ([3252afe](https://github.com/thomasloven/hass-browser_mod/commit/3252afe606a4d6e228f32a7cd4ed2e70c0a5de39)), closes [#1289](https://github.com/thomasloven/hass-browser_mod/issues/1289)
 
-## [2.13.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.2...v2.13.3-beta.1) (2026-05-17)
-
-### 🐞 Bug Fixes
-
-* Popup dialogs not opening in scenrio of opening once, switching views, opening again, after which popup will not longer open. ([#1290](https://github.com/thomasloven/hass-browser_mod/issues/1290)) ([3252afe](https://github.com/thomasloven/hass-browser_mod/commit/3252afe606a4d6e228f32a7cd4ed2e70c0a5de39)), closes [#1289](https://github.com/thomasloven/hass-browser_mod/issues/1289)
-
 ## [2.13.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.1...v2.13.2) (2026-05-16)
 
 ### 🐞 Bug Fixes
