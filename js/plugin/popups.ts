@@ -46,6 +46,7 @@ export const PopupMixin = (SuperClass) => {
       const popup = ev.detail?.popup;
       if (!popup) return;
       if (ev.type === "browser-mod-popup-closed" && this._popupElements.includes(popup)) {
+        popup.dispatchEvent(new CustomEvent("dialog-closed", { detail: { dialog: popup.localName } }));
         this._popupElements = this._popupElements.filter(
           (p) => p !== popup
         );
