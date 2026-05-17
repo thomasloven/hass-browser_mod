@@ -36,8 +36,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          DRY_RUN_FLAG=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            npx semantic-release --dry-run
-          else
-            npx semantic-release
+            DRY_RUN_FLAG="--dry-run"
           fi
+          npx semantic-release $DRY_RUN_FLAG
