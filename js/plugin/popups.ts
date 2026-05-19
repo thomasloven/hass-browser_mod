@@ -212,12 +212,14 @@ export const showBrowserModPopup = (
   BrowserModPopupParams: BrowserModPopupParams
 ): void => {
   setCustomElementClass(dialogTag);
+  const addHistory = JSON.stringify(BrowserModPopupParams.content ?? {}).includes("iframe") ? false : true;
   element.dispatchEvent(
     new CustomEvent("show-dialog", {
       detail: {
         dialogTag,
         dialogImport: () => { return customElements.whenDefined(dialogTag) },
         dialogParams: BrowserModPopupParams,
+        addHistory: addHistory,
       }
     })
   );
