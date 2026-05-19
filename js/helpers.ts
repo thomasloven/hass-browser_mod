@@ -257,6 +257,46 @@ export async function waitRepeat(fn, times, delay) {
   }
 }
 
+const IFRAME_TYPE = "iframe";
+
+function isIframeType(value: unknown): boolean {
+  return typeof value === "string" && value.toLowerCase() === IFRAME_TYPE;
+}
+
+export function popupContentContainsIframe(content: unknown): boolean {
+  if (content == null || content === false) return false;
+  if (content instanceof HTMLElement) {
+    if (isIframeType(content.tagName)) {
+      return true;
+    }
+    for (const child of content.children) {
+      if (popupContentContainsIframe(child)) {
+        return true;
+      }
+    }
+    return false;
+  }
+  if (typeof content === "string") {
+    return /<iframe[\s>]/i.test(content);
+  }
+  if (Array.isArray(content)) {
+    return content.some((item) => popupContentContainsIframe(item));
+  }
+  if (typeof content === "object" && !Array.isArray(content)) {
+    const objectContent = content as Record<string, unknown>;
+    if (isIframeType(objectContent.type)) {
+      return true;
+    }
+    for (const key of Object.keys(objectContent)) {
+      if (key === "type") continue;
+      if (popupContentContainsIframe(objectContent[key])) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 export function blankVideoUrl() {
   return "data:video/mp4;base64,AAAAGGZ0eXBpc29tAAAAAGlzb21tcDQxAAAACGZyZWUAAAAmbWRhdCELUCh9wBQ+4cAhC1AAfcAAPuHAIQtQAH3AAD7hwAAAAlNtb292AAAAbG12aGQAAAAAxzFHd8cxR3cAAV+QAAAYfQABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAG2lvZHMAAAAAEA0AT////xX/DgQAAAACAAABxHRyYWsAAABcdGtoZAAAAAfHMUd3xzFHdwAAAAIAAAAAAAAYfQAAAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAWBtZGlhAAAAIG1kaGQAAAAAxzFHd8cxR3cAAKxEAAAL/xXHAAAAAAA0aGRscgAAAAAAAAAAc291bgAAAAAAAAAAAAAAAFNvdW5kIE1lZGlhIEhhbmRsZXIAAAABBG1pbmYAAAAQc21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAAAyHN0YmwAAABkc3RzZAAAAAAAAAABAAAAVG1wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAACsRAAAAAAAMGVzZHMAAAAAA4CAgB8AQBAEgICAFEAVAAYAAAANdQAADXUFgICAAhIQBgECAAAAGHN0dHMAAAAAAAAAAQAAAAMAAAQAAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAADAAAAAQAAABRzdHN6AAAAAAAAAAoAAAADAAAAFHN0Y28AAAAAAAAAAQAAACg=";
 }
