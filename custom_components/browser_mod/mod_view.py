@@ -1,5 +1,10 @@
 from homeassistant.core import HomeAssistant
-from homeassistant.components.frontend import add_extra_js_url, async_register_built_in_panel
+from homeassistant.components.frontend import (
+    add_extra_js_url,
+    async_register_built_in_panel,
+    async_remove_panel,
+    remove_extra_js_url,
+)
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.lovelace.resources import ResourceStorageCollection
 
@@ -9,10 +14,13 @@ from .helpers import get_version
 import logging
 
 _LOGGER = logging.getLogger(__name__)
+SETTINGS_PANEL_PATH = "browser-mod"
+
 
 async def async_setup_view(hass: HomeAssistant):
 
     version = await hass.async_add_executor_job(get_version, hass)
+    frontend_script_url = FRONTEND_SCRIPT_URL + "?" + version
 
     # Serve the Browser Mod controller and add it as extra_module_url
     await hass.http.async_register_static_paths(
@@ -24,7 +32,8 @@ async def async_setup_view(hass: HomeAssistant):
             )
         ]
     )
-    add_extra_js_url(hass, FRONTEND_SCRIPT_URL + "?" + version)
+    remove_extra_js_url(hass, frontend_script_url)
+    add_extra_js_url(hass, frontend_script_url)
 
     # Serve the Browser Mod Settings panel and register it as a panel
     await hass.http.async_register_static_paths(
@@ -36,12 +45,13 @@ async def async_setup_view(hass: HomeAssistant):
             )
         ]
     )
+    async_remove_panel(hass, SETTINGS_PANEL_PATH, warn_if_unknown=False)
     async_register_built_in_panel(
         hass=hass,
         component_name="custom",
         sidebar_title="Browser Mod",
         sidebar_icon="mdi:server",
-        frontend_url_path="browser-mod",
+        frontend_url_path=SETTINGS_PANEL_PATH,
         require_admin=False,
         config={
             "_panel_custom": {
@@ -96,3 +106,9 @@ async def async_setup_view(hass: HomeAssistant):
 
                     }
                 )
+
+
+async def async_unload_view(hass: HomeAssistant):
+    version = await hass.async_add_executor_job(get_version, hass)
+    remove_extra_js_url(hass, FRONTEND_SCRIPT_URL + "?" + version)
+    async_remove_panel(hass, SETTINGS_PANEL_PATH, warn_if_unknown=False)
