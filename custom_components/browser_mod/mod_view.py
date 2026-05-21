@@ -32,7 +32,6 @@ async def async_setup_view(hass: HomeAssistant):
             )
         ]
     )
-    remove_extra_js_url(hass, frontend_script_url)
     add_extra_js_url(hass, frontend_script_url)
 
     # Serve the Browser Mod Settings panel and register it as a panel
