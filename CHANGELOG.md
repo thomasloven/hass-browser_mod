@@ -1,7 +1,8 @@
-## [2.13.4-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.3...v2.13.4-beta.1) (2026-05-19)
+## [2.13.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.3...v2.13.4) (2026-05-25)
 
 ### 🐞 Bug Fixes
 
+* Handle frontend resource scripts correctly when reloading integration from integartion menu ([#1302](https://github.com/thomasloven/hass-browser_mod/issues/1302)) ([5b2a4cf](https://github.com/thomasloven/hass-browser_mod/commit/5b2a4cf144dfbfa13aa7b7fcefc1dcc88cc1cbd7)), closes [#1301](https://github.com/thomasloven/hass-browser_mod/issues/1301)
 * Workaround iFrames in popup causing double history state by setting dialog addHistory option to false when content contains iFrame. Without this workaround, interacting with iFrame will cause any Home Assistant dialog not to open after popup is closed. ([#1298](https://github.com/thomasloven/hass-browser_mod/issues/1298)) ([558c2bd](https://github.com/thomasloven/hass-browser_mod/commit/558c2bd515cfe30537d22e142c788368a97fa8e0))
 
 ## [2.13.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.2...v2.13.3) (2026-05-17)
