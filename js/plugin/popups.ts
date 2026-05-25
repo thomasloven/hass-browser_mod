@@ -3,6 +3,7 @@ import {
   loadLoadCardHelpers,
   hass_base_el,
   BROWSER_MOD_CLOSE_ANCHOR,
+  popupContentContainsIframe,
 } from "../helpers";
 import { BrowserModPopup } from "./popup-dialog";
 
@@ -212,12 +213,14 @@ export const showBrowserModPopup = (
   BrowserModPopupParams: BrowserModPopupParams
 ): void => {
   setCustomElementClass(dialogTag);
+  const addHistory = !popupContentContainsIframe(BrowserModPopupParams.content);
   element.dispatchEvent(
     new CustomEvent("show-dialog", {
       detail: {
         dialogTag,
         dialogImport: () => { return customElements.whenDefined(dialogTag) },
         dialogParams: BrowserModPopupParams,
+        addHistory,
       }
     })
   );
