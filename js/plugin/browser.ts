@@ -1,4 +1,4 @@
-import { debounce } from "../helpers";
+import { debounce, hass_base_el } from "../helpers";
 
 export const BrowserStateMixin = (SuperClass) => {
   return class BrowserStateMixinClass extends SuperClass {
@@ -64,10 +64,11 @@ export const BrowserStateMixin = (SuperClass) => {
       update();
     }
 
-    async browser_navigate(path) {
-      if (!path) return;
-      history.pushState(null, "", path);
-      window.dispatchEvent(new CustomEvent("location-changed"));
+    async browser_navigate(navigation_path) {
+      if (!navigation_path) return;
+      const hassBaseEl = await hass_base_el();
+      const action = { action: "navigate", navigation_path };
+      hassBaseEl.dispatchEvent(new CustomEvent("hass-action", { detail: { config: {tap_action: action}, action: "tap" } }));
     }
   };
 };

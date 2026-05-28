@@ -3,7 +3,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.const import Platform
 
 from .store import BrowserModStore
-from .mod_view import async_setup_view
+from .mod_view import async_setup_view, async_unload_view
 from .connection import async_setup_connection
 from .const import DOMAIN, DATA_BROWSERS, DATA_ADDERS, DATA_STORE
 from .frontend_patch import async_restore_frontend_patches, async_setup_frontend_patches
@@ -56,6 +56,7 @@ async def async_setup_entry(hass, config_entry):
 async def async_unload_entry(hass, config_entry):
 
     unload_ok = await hass.config_entries.async_unload_platforms(config_entry, PLATFORMS)
+    await async_unload_view(hass)
     await async_restore_frontend_patches(hass)
 
     return unload_ok

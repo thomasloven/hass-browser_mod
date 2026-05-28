@@ -1,38 +1,62 @@
-## [2.13.0-beta.6](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.5...v2.13.0-beta.6) (2026-05-11)
+## [2.13.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.4...v2.13.5) (2026-05-28)
+
+### 🐞 Bug Fixes
+
+* Use Frontend native action for browser_mod.navigate to work correctly when used as a dialog action ([#1309](https://github.com/thomasloven/hass-browser_mod/issues/1309)) ([a3cd1f7](https://github.com/thomasloven/hass-browser_mod/commit/a3cd1f7dd2f19418f3c96a9d4bcac20cf9dce542)), closes [#1308](https://github.com/thomasloven/hass-browser_mod/issues/1308)
+
+## [2.13.5-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.4...v2.13.5-beta.1) (2026-05-26)
+
+### 🐞 Bug Fixes
+
+* Use Frontend native action for browser_mod.navigate to work correctly when used as a dialog action ([#1309](https://github.com/thomasloven/hass-browser_mod/issues/1309)) ([a3cd1f7](https://github.com/thomasloven/hass-browser_mod/commit/a3cd1f7dd2f19418f3c96a9d4bcac20cf9dce542)), closes [#1308](https://github.com/thomasloven/hass-browser_mod/issues/1308)
+
+## [2.13.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.3...v2.13.4) (2026-05-25)
+
+### 🐞 Bug Fixes
+
+* Handle frontend resource scripts correctly when reloading integration from integartion menu ([#1302](https://github.com/thomasloven/hass-browser_mod/issues/1302)) ([5b2a4cf](https://github.com/thomasloven/hass-browser_mod/commit/5b2a4cf144dfbfa13aa7b7fcefc1dcc88cc1cbd7)), closes [#1301](https://github.com/thomasloven/hass-browser_mod/issues/1301)
+* Workaround iFrames in popup causing double history state by setting dialog addHistory option to false when content contains iFrame. Without this workaround, interacting with iFrame will cause any Home Assistant dialog not to open after popup is closed. ([#1298](https://github.com/thomasloven/hass-browser_mod/issues/1298)) ([558c2bd](https://github.com/thomasloven/hass-browser_mod/commit/558c2bd515cfe30537d22e142c788368a97fa8e0))
+
+## [2.13.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.2...v2.13.3) (2026-05-17)
+
+### 🐞 Bug Fixes
+
+* Popup dialogs not opening in scenrio of opening once, switching views, opening again, after which popup will not longer open. ([#1290](https://github.com/thomasloven/hass-browser_mod/issues/1290)) ([3252afe](https://github.com/thomasloven/hass-browser_mod/commit/3252afe606a4d6e228f32a7cd4ed2e70c0a5de39)), closes [#1289](https://github.com/thomasloven/hass-browser_mod/issues/1289)
+
+## [2.13.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.1...v2.13.2) (2026-05-16)
+
+### 🐞 Bug Fixes
+
+* Prevent invalid Browser IDs from propagating through sync-session recall ([#1283](https://github.com/thomasloven/hass-browser_mod/issues/1283)) ([83f4667](https://github.com/thomasloven/hass-browser_mod/commit/83f466733dcbffd9870329f676ac095a03c6384d))
+
+## [2.13.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0...v2.13.1) (2026-05-16)
+
+### 🐞 Bug Fixes
+
+* Restore default dashboard fallback by always persisting Browser Mod `defaultPanel` in localStorage. NOTE: This method only works for devices when no Home Assistant system default has ever been set. ([11855c5](https://github.com/thomasloven/hass-browser_mod/commit/11855c51bb95eff91a0b6daf915257b4a07fc570))
+
+## [2.13.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0...v2.13.1-beta.1) (2026-05-16)
+
+### 🐞 Bug Fixes
+
+* Restore default dashboard fallback by always persisting Browser Mod `defaultPanel` in localStorage. NOTE: This method only works for devices when no Home Assistant system default has ever been set. ([11855c5](https://github.com/thomasloven/hass-browser_mod/commit/11855c51bb95eff91a0b6daf915257b4a07fc570))
+
+## [2.13.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.12.0...v2.13.0) (2026-05-14)
 
 ### ⭐ New Features
 
 * Closing via button actions or browser_mod.close_popup now runs underlying dialog closing animations. ([#1278](https://github.com/thomasloven/hass-browser_mod/issues/1278)) ([20abd39](https://github.com/thomasloven/hass-browser_mod/commit/20abd392e1c15b03a6b5cbb3c6952e4b31fab137)), closes [#1277](https://github.com/thomasloven/hass-browser_mod/issues/1277)
-
-## [2.13.0-beta.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.4...v2.13.0-beta.5) (2026-05-08)
-
-### ⭐ New Features
-
 * Implement defaultDashboard Frontend setting via server-side system_data and user_data overrides ([#1276](https://github.com/thomasloven/hass-browser_mod/issues/1276)) ([787be94](https://github.com/thomasloven/hass-browser_mod/commit/787be94cec2b468299e21d0ec595150f38bf3c1e))
-
-## [2.13.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.3...v2.13.0-beta.4) (2026-05-08)
-
-### ⚙️ Miscellaneous
-
-* Update typescript to version 6 and associated type updates ([#1275](https://github.com/thomasloven/hass-browser_mod/issues/1275)) ([51558b3](https://github.com/thomasloven/hass-browser_mod/commit/51558b3d1464986fb72265d0ccd815956c32e78c))
-
-## [2.13.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.2...v2.13.0-beta.3) (2026-05-07)
-
-### 🐞 Bug Fixes
-
-* Hiding of sidebar and header on Home dashboard and custom config panels ([#1272](https://github.com/thomasloven/hass-browser_mod/issues/1272)) ([9900e27](https://github.com/thomasloven/hass-browser_mod/commit/9900e272fc7c44846941db3890a49d236d5dd610)), closes [#1271](https://github.com/thomasloven/hass-browser_mod/issues/1271)
-
-## [2.13.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.0-beta.1...v2.13.0-beta.2) (2026-05-07)
+* New setting to sync Browser ID to login session which allows for Browser ID recall when using same login session on Companion Apps ([#1270](https://github.com/thomasloven/hass-browser_mod/issues/1270)) ([b5f5127](https://github.com/thomasloven/hass-browser_mod/commit/b5f5127a11132e1363c6981d1f01431b8f8de5ec)), closes [#1158](https://github.com/thomasloven/hass-browser_mod/issues/1158)
 
 ### 🐞 Bug Fixes
 
 * Browser Mod services `user_id` target resolution on HA 2026.05 ([#1274](https://github.com/thomasloven/hass-browser_mod/issues/1274)) ([475956e](https://github.com/thomasloven/hass-browser_mod/commit/475956ee56fe6734c3f047abf57f80f13d197dd0))
+* Hiding of sidebar and header on Home dashboard and custom config panels ([#1272](https://github.com/thomasloven/hass-browser_mod/issues/1272)) ([9900e27](https://github.com/thomasloven/hass-browser_mod/commit/9900e272fc7c44846941db3890a49d236d5dd610)), closes [#1271](https://github.com/thomasloven/hass-browser_mod/issues/1271)
 
-## [2.13.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.12.0...v2.13.0-beta.1) (2026-05-06)
+### ⚙️ Miscellaneous
 
-### ⭐ New Features
-
-* New setting to sync Browser ID to login session which allows for Browser ID recall when using same login session on Companion Apps ([#1270](https://github.com/thomasloven/hass-browser_mod/issues/1270)) ([b5f5127](https://github.com/thomasloven/hass-browser_mod/commit/b5f5127a11132e1363c6981d1f01431b8f8de5ec)), closes [#1158](https://github.com/thomasloven/hass-browser_mod/issues/1158)
+* Update typescript to version 6 and associated type updates ([#1275](https://github.com/thomasloven/hass-browser_mod/issues/1275)) ([51558b3](https://github.com/thomasloven/hass-browser_mod/commit/51558b3d1464986fb72265d0ccd815956c32e78c))
 
 ## [2.12.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.11.0...v2.12.0) (2026-05-03)
 
