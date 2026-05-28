@@ -1,3 +1,9 @@
+## [2.13.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.4...v2.13.5) (2026-05-28)
+
+### 🐞 Bug Fixes
+
+* Use Frontend native action for browser_mod.navigate to work correctly when used as a dialog action ([#1309](https://github.com/thomasloven/hass-browser_mod/issues/1309)) ([a3cd1f7](https://github.com/thomasloven/hass-browser_mod/commit/a3cd1f7dd2f19418f3c96a9d4bcac20cf9dce542)), closes [#1308](https://github.com/thomasloven/hass-browser_mod/issues/1308)
+
 ## [2.13.5-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.4...v2.13.5-beta.1) (2026-05-26)
 
 ### 🐞 Bug Fixes
