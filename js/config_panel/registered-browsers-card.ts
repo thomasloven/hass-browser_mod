@@ -105,7 +105,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     return html`
       <ha-card header="Registered Browsers" outlined>
         <div class="card-content">
-          <ha-md-list-item>
+          <ha-row-item>
             <span slot="headline">Auto-register</span>
             <span slot="supporting-text">
               Automatically register all new Browsers
@@ -116,8 +116,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               true}
               @change=${this.toggle_auto_register}
             ></ha-switch>
-          </ha-md-list-item>
-          <ha-md-list-item>
+          </ha-row-item>
+          <ha-row-item class="lock-register">
             <span slot="headline">Lock register</span>
             <span slot="supporting-text">
               Disable registering or unregistering of all Browsers
@@ -128,12 +128,12 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               true}
               @change=${this.toggle_lock_register}
             ></ha-switch>
-          </ha-md-list-item>
+          </ha-row-item>
 
           ${Object.keys(window.browser_mod.browsers).map((d) => {
             const browser = window.browser_mod.browsers[d];
             const device = this._find_entity(d);
-            return html` <ha-md-list-item>
+            return html` <ha-row-item>
               <span slot="headline">
                 ${d} ${device?.name_by_user ? `(${device.name_by_user})` : ""}
               </span>
@@ -164,7 +164,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               <ha-icon-button slot="end" .browserID=${d} @click=${this.unregister_browser}>
                 <ha-icon .icon=${"mdi:delete"}></ha-icon>
               </ha-icon-button>
-            </ha-md-list-item>`;
+            </ha-row-item>`;
           })}
         </div>
         ${window.browser_mod.browsers["CAST"] === undefined
@@ -190,7 +190,11 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         color: var(--primary-text-color);
       }
       ha-card .card-content {
-        --ha-md-list-item-gap: var(--ha-space-2);
+        --ha-row-item-gap: var(--ha-space-2);
+        --ha-row-item-padding-block: var(--ha-space-1);
+      }
+      .lock-register {
+        margin-bottom: var(--ha-space-4);
       }
     `;
   }

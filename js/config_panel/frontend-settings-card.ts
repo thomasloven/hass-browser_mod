@@ -180,7 +180,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                   .secondary=${"Nothing to see here"}
                   leftChevron
                 >
-                  <ha-md-list-item>
+                  <ha-row-item>
                     <span slot="headline" id="afj_heading"
                       >Allow April Fool's jokes</span
                     >
@@ -200,7 +200,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                       .checked=${true}
                       @change=${this._toggle_afj}
                     ></ha-switch>
-                  </ha-md-list-item>
+                  </ha-row-item>
                 </ha-expansion-panel>
               `
             : ``}
@@ -377,7 +377,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
             >
               ${this._hassUserHasSidebarSettings ? 
                 html`
-                <ha-md-list-item>
+                <ha-row-item>
                   <span slot="headline">Sidebar user settings</span>
                   <div slot="supporting-text" style="display: flex;">
                     <span>
@@ -393,7 +393,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                     appearance="filled"
                     @click=${() => this.clearHassUserSidebarSettings()}
                   >Clear</ha-button>
-                </ha-md-list-item>` 
+                </ha-row-item>` 
                 : "" 
               }
               <browser-mod-settings-table
@@ -415,7 +415,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
             @expanded-changed=${this.expandedChanged}
             leftChevron
           >
-            <ha-md-list-item>
+            <ha-row-item>
               <ol slot="headline">
                 <li>Click EDIT</li>
                 <li>Set up the sidebar as you want it</li>
@@ -429,7 +429,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 @click=${() => this.toggleEditSidebar()}>
                   ${this._editSidebar ? "Restore" : "Edit"}
               </ha-button>
-            </ha-md-list-item>
+            </ha-row-item>
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"sidebarPanelOrder"}
