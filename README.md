@@ -138,7 +138,7 @@ In short, things are hopefully much easier now for new users of Browser Mod at t
 
 ### **Why does my Browser ID keep changing?**
 
-Since Version 2.13.0 Browser ID can be synchronized to the logged in session. As long as you stay logged in on the device the Browser ID will not change. Use this featire by setting Sync session selection on in the Browser Mod panel for the device.
+Since Version 2.13.0 Browser ID can be synchronized to the logged in session. As long as you stay logged in on the device the Browser ID will not change. Use this feature by setting Sync session selection on in the Browser Mod panel for the device.
 
 For special cases you can also set the browser ID to e.g. `whatever` by adding `?BrowserID=whatever` (N.B. capital B) to any Home Assistant URL.
 
