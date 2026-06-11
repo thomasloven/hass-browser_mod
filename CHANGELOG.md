@@ -1,3 +1,9 @@
+## [3.0.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2026-06-11)
+
+### ⚙️ Miscellaneous
+
+* bump to v3.0.0-beta.2 ([d3cc221](https://github.com/thomasloven/hass-browser_mod/commit/d3cc221ab6e5dbf39c1375126803af7b13d984fa))
+
 ## [3.0.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.5...v3.0.0-beta.1) (2026-06-11)
 
 ### ⚠ BREAKING CHANGES
