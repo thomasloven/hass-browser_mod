@@ -1,3 +1,22 @@
+## [3.0.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.5...v3.0.0-beta.1) (2026-06-11)
+
+### ⚠ BREAKING CHANGES
+
+* **major:** Requires Home Assistant 2026.6.0(b0) or greater.
+
+### ⭐ New Features
+
+* **major:** Push Home Assistant minimum version to 2026.6.0(b0) ([cd9e2e1](https://github.com/thomasloven/hass-browser_mod/commit/cd9e2e171afaded4cc6c169b01faa91e01762813))
+
+### 🐞 Bug Fixes
+
+* detect header class in shadowRoot when hiding header ([8dd5a90](https://github.com/thomasloven/hass-browser_mod/commit/8dd5a901b467124430f78297d1a8b1a6e287bbc8))
+* Need to wait when running updates after location-changed or pop-state ([1e6ece3](https://github.com/thomasloven/hass-browser_mod/commit/1e6ece39535489d39b96ea6133adf659f5659893))
+
+### ⚙️ Miscellaneous
+
+* Migrate ha-md-list-item to ha-row-item in Browser Mod panel. ([06ca5f9](https://github.com/thomasloven/hass-browser_mod/commit/06ca5f91c5a406b2999694daf8ee3c49998cb5bc))
+
 ## [3.0.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.5...v3.0.0-beta.1) (2026-05-29)
 
 ### ⚠ BREAKING CHANGES
