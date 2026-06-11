@@ -44,10 +44,19 @@ export const AutoSettingsMixin = (SuperClass) => {
     constructor() {
       super();
 
+      // When navigating we need to wait for the new page to load before running updates hence the setTimeout.  
+      // location-changed is fired on navigate but before the new page is loaded, 
+      // and popstate is fired on back/forward navigation but also before the new page is loaded.
+      const runUpdatesOnNavigate = () => {
+        setTimeout(() => {
+          runUpdates();
+        }, 0);
+      }
+
       const runUpdates = async () => {
-        this.runUpdateTitle();
-        this.runHideHeader();
-        this.updateOverlayIcon();
+          this.runUpdateTitle();
+          this.runHideHeader();
+          this.updateOverlayIcon();
       };
 
       const searchParams = new URLSearchParams(window.location.search);
@@ -75,8 +84,8 @@ export const AutoSettingsMixin = (SuperClass) => {
         runUpdates();
       });
 
-      window.addEventListener("location-changed", runUpdates);
-      window.addEventListener("popstate", runUpdates);
+      window.addEventListener("location-changed", runUpdatesOnNavigate);
+      window.addEventListener("popstate", runUpdatesOnNavigate);
 
       this.addEventListener("browser-mod-user-ready", () => {
           this.entitiesReady().then(() => {
@@ -270,7 +279,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         let el = rootEl;
         // header is either div.header when as dashboard or header element when as panel 
         // either can be in shadow DOM of multiple elements, so loop through them up to 10 levels deep (including shadow Roots) to find it
-        while (el && (!el.querySelector(".header") && (!el.shadowRoot?.querySelector("header"))) && steps++ < 10) {
+        while (el && (!el.querySelector(".header") && !el.shadowRoot?.querySelector(".header") && !el.shadowRoot?.querySelector("header")) && steps++ < 10) {
           await await_element(el, true);
           el = el.shadowRoot ? el.shadowRoot.firstElementChild : el.firstElementChild;
           // uix or card-mod can add their style element so skip to next sibling
@@ -279,10 +288,10 @@ export const AutoSettingsMixin = (SuperClass) => {
           }
         }
         // bail if we can't find header after going through 10 levels of shadow DOM 
-        if (!el?.querySelector(".header") && !el?.shadowRoot?.querySelector("header")) return false;
+        if (!el?.querySelector(".header") && !el?.shadowRoot?.querySelector(".header") && !el?.shadowRoot?.querySelector("header")) return false;
 
         // header will be div.header or header element in shadow DOM
-        header = el.querySelector(".header") || el.shadowRoot?.querySelector("header");
+        header = el.querySelector(".header") || el.shadowRoot?.querySelector(".header") || el.shadowRoot?.querySelector("header");
         // menu button will be in light DOM of div.header or in shadow DOM of header element
         menuButton = el.querySelector("ha-menu-button") || el.shadowRoot?.querySelector("slot[name=navigationIcon]")?.assignedElements()?.[0];
       }
