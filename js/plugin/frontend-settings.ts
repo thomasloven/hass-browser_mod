@@ -44,10 +44,19 @@ export const AutoSettingsMixin = (SuperClass) => {
     constructor() {
       super();
 
+      // When navigating we need to wait for the new page to load before running updates hence the setTimeout.  
+      // location-changed is fired on navigate but before the new page is loaded, 
+      // and popstate is fired on back/forward navigation but also before the new page is loaded.
+      const runUpdatesOnNavigate = () => {
+        setTimeout(() => {
+          runUpdates();
+        }, 0);
+      }
+
       const runUpdates = async () => {
-        this.runUpdateTitle();
-        this.runHideHeader();
-        this.updateOverlayIcon();
+          this.runUpdateTitle();
+          this.runHideHeader();
+          this.updateOverlayIcon();
       };
 
       const searchParams = new URLSearchParams(window.location.search);
@@ -75,8 +84,8 @@ export const AutoSettingsMixin = (SuperClass) => {
         runUpdates();
       });
 
-      window.addEventListener("location-changed", runUpdates);
-      window.addEventListener("popstate", runUpdates);
+      window.addEventListener("location-changed", runUpdatesOnNavigate);
+      window.addEventListener("popstate", runUpdatesOnNavigate);
 
       this.addEventListener("browser-mod-user-ready", () => {
           this.entitiesReady().then(() => {
