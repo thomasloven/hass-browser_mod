@@ -8,14 +8,14 @@ from homeassistant.components.frontend import (
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.components.lovelace.resources import ResourceStorageCollection
 
-from .const import FRONTEND_SCRIPT_URL, SETTINGS_PANEL_URL
+from .const import DOMAIN, FRONTEND_SCRIPT_URL, BROWSER_PANEL_URL, CONFIG_PANEL_URL
 from .helpers import get_version
 
 import logging
 
 _LOGGER = logging.getLogger(__name__)
-SETTINGS_PANEL_PATH = "browser-mod"
-
+FRONTEND_SETTINGS_PANEL_PATH = "browser-mod"
+CONFIG_PANEL_PATH = "browser-mod-config"
 
 async def async_setup_view(hass: HomeAssistant):
 
@@ -34,28 +34,53 @@ async def async_setup_view(hass: HomeAssistant):
     )
     add_extra_js_url(hass, frontend_script_url)
 
-    # Serve the Browser Mod Settings panel and register it as a panel
+    # Serve the Browser Mod Browser Panel and register it as a panel
     await hass.http.async_register_static_paths(
         [
             StaticPathConfig(
-                SETTINGS_PANEL_URL,
-                hass.config.path("custom_components/browser_mod/browser_mod_panel.js"),
+                BROWSER_PANEL_URL,
+                hass.config.path("custom_components/browser_mod/browser_mod_browser_panel.js"),
                 True,
             )
         ]
     )
-    async_remove_panel(hass, SETTINGS_PANEL_PATH, warn_if_unknown=False)
+    async_remove_panel(hass, FRONTEND_SETTINGS_PANEL_PATH, warn_if_unknown=False)
     async_register_built_in_panel(
         hass=hass,
         component_name="custom",
         sidebar_title="Browser Mod",
         sidebar_icon="mdi:server",
-        frontend_url_path=SETTINGS_PANEL_PATH,
+        frontend_url_path=FRONTEND_SETTINGS_PANEL_PATH,
         require_admin=False,
         config={
             "_panel_custom": {
-                "name": "browser-mod-panel",
-                "js_url": SETTINGS_PANEL_URL + "?" + version,
+                "name": "browser-mod-browser-panel",
+                "js_url": BROWSER_PANEL_URL + "?" + version,
+            }
+        },
+    )
+
+    # Serve the Browser Mod Config panel and register it as a panel
+    await hass.http.async_register_static_paths(
+        [
+            StaticPathConfig(
+                CONFIG_PANEL_URL,
+                hass.config.path("custom_components/browser_mod/browser_mod_config_panel.js"),
+                True,
+            )
+        ]
+    )
+    async_remove_panel(hass, CONFIG_PANEL_PATH, warn_if_unknown=False)
+    async_register_built_in_panel(
+        hass=hass,
+        component_name="custom",
+        frontend_url_path=CONFIG_PANEL_PATH,
+        require_admin=True,
+        config_panel_domain=DOMAIN,
+        config={
+            "_panel_custom": {
+                "name": "browser-mod-config-panel",
+                "module_url": CONFIG_PANEL_URL + "?" + version,
             }
         },
     )
@@ -110,4 +135,5 @@ async def async_setup_view(hass: HomeAssistant):
 async def async_unload_view(hass: HomeAssistant):
     version = await hass.async_add_executor_job(get_version, hass)
     remove_extra_js_url(hass, FRONTEND_SCRIPT_URL + "?" + version)
-    async_remove_panel(hass, SETTINGS_PANEL_PATH, warn_if_unknown=False)
+    async_remove_panel(hass, FRONTEND_SETTINGS_PANEL_PATH, warn_if_unknown=False)
+    async_remove_panel(hass, CONFIG_PANEL_PATH, warn_if_unknown=False)

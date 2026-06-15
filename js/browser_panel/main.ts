@@ -2,15 +2,14 @@ import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 import { loadConfigDashboard } from "../helpers";
 
-import "./registered-browsers-card";
-import "./frontend-settings-card";
+import "./browser-settings-card";
 
 import pjson from "../../package.json";
 
 const bmWindow = window as any;
 
 loadConfigDashboard().then(() => {
-  class BrowserModConfigPanel extends LitElement {
+  class BrowserModBrowserPanel extends LitElement {
     @property() hass;
     @property() narrow;
     @property() connection;
@@ -24,9 +23,7 @@ loadConfigDashboard().then(() => {
     render() {
       if (!window.browser_mod) return html``;
       return html`
-        <ha-top-app-bar-fixed
-          .backButton=${true}
-        >
+        <ha-top-app-bar-fixed>
           <div slot="title">Browser Mod Settings</div>
           <div slot="actionItems">
             (${pjson.version})
@@ -39,17 +36,10 @@ loadConfigDashboard().then(() => {
           </div>
           <div class="content ha-scrollbar">
             <ha-config-section .narrow=${this.narrow} full-width>
-              ${this.hass.user?.is_admin
-                ? html`
-                    <browser-mod-registered-browsers-card
-                      .hass=${this.hass}
-                    ></browser-mod-registered-browsers-card>
-
-                    <browser-mod-frontend-settings-card
-                      .hass=${this.hass}
-                    ></browser-mod-frontend-settings-card>
-                  `
-                : ""}
+              <browser-mod-browser-settings-card
+                .hass=${this.hass}
+                .narrow=${this.narrow}
+              ></browser-mod-browser-settings-card>
             </ha-config-section>
           </div>
         </ha-top-app-bar-fixed>
@@ -79,5 +69,5 @@ loadConfigDashboard().then(() => {
     }
   }
 
-  customElements.define("browser-mod-config-panel", BrowserModConfigPanel);
+  customElements.define("browser-mod-browser-panel", BrowserModBrowserPanel);
 });
