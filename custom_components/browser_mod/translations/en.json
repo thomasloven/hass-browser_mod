@@ -2,6 +2,8 @@
     "config": {
         "abort": {
             "single_instance_allowed": "Only a single instance of Browser Mod can be added."
+        },
+        "step": {
         }
     }
 }
