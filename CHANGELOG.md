@@ -1,3 +1,9 @@
+## [3.0.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2026-06-15)
+
+### 🐞 Bug Fixes
+
+* Close icon shows on popup when dismissable is set to false. (Esc key is correctly blocked). ([#1322](https://github.com/thomasloven/hass-browser_mod/issues/1322)) ([72cef37](https://github.com/thomasloven/hass-browser_mod/commit/72cef375acf853f65f06d8b01c358e24a250ab51)), closes [#1321](https://github.com/thomasloven/hass-browser_mod/issues/1321)
+
 ## [3.0.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2026-06-11)
 
 ### ⚙️ Miscellaneous
