@@ -1,14 +1,14 @@
 # The Browser Mod Browser Panel
 
-This panel shows on every device and in a default configuration shows on the Home Assistant sidebar. It can also be reached by adding `/browser-mod` to you Home Assistant URL. e.g. `http://homeassistant.local:8123/browser-mod`.
+This panel shows on every device and in a default configuration shows on the Home Assistant sidebar. It can also be reached by adding `/browser-mod` to your Home Assistant URL. e.g. `http://homeassistant.local:8123/browser-mod`.
 
 ## This browser
 
 The most important concept for Browser Mod is the _Browser_. A _Browser_ is identified by a unique `BrowserID`. There is the option to [Sync Browser ID to login session](#sync-browser-id-to-login-session). `BrowserID` is always stored in the browsers [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).
 
-Browser Mod will initially assigning a random `BrowserID` to each _Browser_ that connects, but you can change this if to suit your setup.
+Browser Mod will initially assign a random `BrowserID` to each _Browser_ that connects, but you can change this if to suit your setup.
 
-LocalStorage works basically like cookies in that the information is stored locally on your device. Unlike a cookie, though, the information is bound to a URL. Therefore you may get different `BrowserID`s in the same browser if you e.g. access Home Assistant through different URLs inside and outside of your LAN, or through Home Assistant Cloud. In these cases you can set the `BrowserID` to the same entry by easily selecting from the `BrowserID` dropdown. Use [Sync Browser ID to login session](#sync-browser-id-to-login-session). `BrowserID` to sync the `BrowserID` to the login session for that access method.
+LocalStorage works basically like cookies in that the information is stored locally on your device. Unlike a cookie, though, the information is bound to a URL. Therefore you may get different `BrowserID`s in the same browser if you e.g. access Home Assistant through different URLs inside and outside of your LAN, or through Home Assistant Cloud. In these cases you can set the `BrowserID` to the same entry by easily selecting from the `BrowserID` dropdown. Use [Sync Browser ID to login session](#sync-browser-id-to-login-session) to sync the `BrowserID` to the login session for that access method.
 
 ### Register
 

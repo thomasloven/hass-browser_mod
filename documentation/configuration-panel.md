@@ -2,7 +2,7 @@
 
 [![Open your Home Assistant instance and show an integration.](https://my.home-assistant.io/badges/integration.svg)](https://my.home-assistant.io/redirect/integration/?domain=browser_mod)
 
-This panel is accessible by admins from the Browser Mod integration entry in Devices & services. Use the button above to go directly to the Browser Mod integration on your Home Assistant. Form the integration entry, Use the settings cog to access the panel.
+This panel is accessible by admins from the Browser Mod integration entry in Devices & services. Use the button above to go directly to the Browser Mod integration on your Home Assistant. From the integration entry, Use the settings cog to access the panel.
 
 ## Registered Browsers
 
