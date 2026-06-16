@@ -543,7 +543,7 @@ export class BrowserModPopup extends LitElement {
                   </ha-icon>
                 </ha-icon-button>
               `
-            : ""}
+            : html`<div slot="headerNavigationIcon"></div>`}
           <span 
             slot="headerTitle" 
             @click=${() => { this._cycleStyleAttributes() }} 
