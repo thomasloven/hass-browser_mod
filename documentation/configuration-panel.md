@@ -1,55 +1,10 @@
 # The Browser Mod Configuration Panel
 
-## This browser
+[![Open your Home Assistant instance and show an integration.](https://my.home-assistant.io/badges/integration.svg)](https://my.home-assistant.io/redirect/integration/?domain=browser_mod)
 
-The most important concept for Browser Mod is the _Browser_. A _Browser_ is identified by a unique `BrowserID` stored in the browsers [LocalStorage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API).
+This panel is accessible by admins from the Browser Mod integration entry in Devices & services. Use the button above to go directly to the Browser Mod integration on your Home Assistant. Form the integration entry, Use the settings cog to access the panel.
 
-Browser Mod will initially assigning a random `BrowserID` to each _Browser_ that connects, but you can change this if you want.
-
-LocalStorage works basically like cookies in that the information is stored locally on your device. Unlike a cookie, though, the information is bound to a URL. Therefore you may get different `BrowserID`s in the same browser if you e.g. access Home Assistant through different URLs inside and outside of your LAN, or through Home Assistant Cloud.
-
-### Register
-
-Registering a _Browser_ as a device will create a Home Assistant Device associated with that browser. The device has the following entities:
-
-- A `media_player` entity which will play sound and video through the browser. This entity has attributes `video_interaction_required` and `audio_interaction_required` which will be set to `true` if user interaction is required on the browser before being able to play video or audio. Generally user interaction is not required to play muted video. The `media_player` will be muted while ever user interaction is required for audio. For more information see [User interaction](#user-interaction).
-- A `light` entity will turn the screen on or off and control the brightness if you are using [Fully Kiosk Browser](https://www.fully-kiosk.com/) (FKB). If you are not using FKB the function will be simulated by covering the screen with a black (or semitransparent) box. There is a [Frontend Setting](#frontend-settings-admin-only) to optionally save the browser screen state for a browser.
-- A motion `binary_sensor` which reacts to mouse and/or keyboard activity in the Browser. In FKB this can also react to motion in front of the devices camera.
-- A number of `sensor` and `binary_sensor` entities providing different bits of information about the Browser which you may or may not find useful.
-
-> NOTE: Both the `media_player` and `light` functions can be disabled by disabling the entity in Home Assistant. If `media_player` is disabled and neither the camera entity nor go2rtc publishing is enabled, no [User interaction](#user-interaction) check will take place. If `light` is disabled, there will be no setting of screen brightness from Home Assistant, which is useful if you are using adaptive light brightness on your device and never want Browser Mod to override.
-
-Registering a browser also enables it to act as a target for Browser Mod _services_.
-
-### Browser ID
-
-This box lets you set the `BrowserID` for the current _Browser_.
-Note that it is possible to assign the same `BrowserID` to several browsers, but unpredictable things _may_ happen if several of them are open at the same time.
-There may be benefits to using the same `BrowserID` in some cases, so you'll have to experiment with what works for you.
-
-Browser Mod is trying hard to keep the Browser ID constant. If you have an environment where you are finding your Browser IDs change from time to time, consider enabling [Sync Browser ID to login session](#sync-browser-id-to-login-session) or following the best practice for [Browser ID updates](#browser-id-updates).
-
-### Sync Browser ID to login session
-
-When enabled, Browser Mod stores the current `BrowserID` against your Home Assistant login session on the server. If the browser's local storage is cleared (e.g. due to privacy settings, a cache wipe, or the Home Assistant Companion App resetting its frontend cache), the `BrowserID` will be automatically recalled from the server the next time the same login session connects.
-
-This is particularly useful for:
-- **Home Assistant Companion Apps** on iOS or Android, where the frontend cache may be cleared periodically.
-- Any browser that clears local storage regularly.
-
-> **Note:** The session mapping is tied to the Home Assistant refresh token used for the current login session. If you log out and log back in, a new session is created and the mapping will need to be re-established. To restore the mapping, simply navigate to the Browser Mod panel and ensure the toggle is enabled.
-
-### Enable camera entity
-
-If your device has a camera, this will allow it to be forwarded as a Browser Mod `camera` entity to Home Assistant.
-
-### Enable go2rtc publishing
-
-If your device has a camera, this will allow it to publish the browser camera to go2rtc using WHIP.
-
-This is independent from [Enable camera entity](#enable-camera-entity). You can enable the Browser Mod `camera` entity, go2rtc publishing, both, or neither for each registered Browser.
-
-## Registered Browsers (admin only)
+## Registered Browsers
 
 This section shows all currently registered _Browsers_ and allows you to unregister them. This is useful e.g. if a `BrowserID` has changed or if you do not have access to a device anymore.
 
@@ -59,7 +14,7 @@ You can also lock browsers so they cannot be unregistered by a non-admin user.
 
 If you are using [Home Assistant Cast](https://www.home-assistant.io/integrations/cast/#home-assistant-cast) to display a lovelace view on a Chromecast device it will get a BrowserID of "`CAST`". Since you can't access the Browser Mod config panel from the device, clicking this button will register the `CAST` browser. Most Browser Mod services will work under Home Assistant Cast.
 
-## Frontend Settings (admin only)
+## Frontend Settings
 
 This section is for settings that change the default behavior of the Home Assistant frontend.
 
@@ -241,9 +196,10 @@ This saves the screen state on browser disconnect and restores on browser reconn
 
 ### Camera resolution
 
-Set the desired resolution for the camera in pixels using the format `width x height` (e.g., `1920 x 1080`). This [Frontend setting](#frontend-settings-admin-only) allows you to control the quality and bandwidth usage of the camera stream. If not set, the browser will use its default resolution (typically 640 x 480).
+Set the desired resolution for the camera in pixels using the format `width x height` (e.g., `1920 x 1080`). This [Frontend setting](#frontend-settings) allows you to control the quality and bandwidth usage of the camera stream. If not set, the browser will use its default resolution (typically 640 x 480).
 
 Common resolutions:
+
 - `640 x 480` - VGA (default if not specified)
 - `1280 x 720` - HD (720p)
 - `1920 x 1080` - Full HD (1080p)
@@ -265,7 +221,7 @@ See [go2rtc publishing](./go2rtc.md) for go2rtc setup, HTTPS, CORS, and troubles
 
 While Browser Mod does its best to retain a Browser ID for browsers, it may change due to circumstances beyond Browser Mod's control (e.g. localStorage cleared due to Browser privacy settings). When a Browser ID changes, your Frontend settings tied to a Browser ID will not be applied.
 
-The easiest way to handle this is to enable [Sync Browser ID to login session](#sync-browser-id-to-login-session), which automatically recalls the Browser ID from the server whenever local storage is cleared, as long as the same login session is used.
+The easiest way to handle this is to enable [Sync Browser ID to login session](./browser-panel.md#sync-browser-id-to-login-session), which automatically recalls the Browser ID from the server whenever local storage is cleared, as long as the same login session is used.
 
 If you prefer a manual approach or cannot use session sync, you can follow the best practices listed below.
 
