@@ -162,7 +162,7 @@ export const loadHuiCardPicker = async () => {
 };
 
 // Loads in ha-config-dashboard which is used to copy styling
-// Also provides ha-md-list-item
+// ha-row-item is used in sidebar menu so will be available without loading any other components
 export const loadConfigDashboard = async () => {
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
@@ -176,12 +176,10 @@ export const loadConfigDashboard = async () => {
   await customElements.whenDefined("ha-panel-config");
   const configRouter: any = document.createElement("ha-panel-config");
   await configRouter?.routerOptions?.routes?.dashboard?.load?.(); // Load ha-config-dashboard
-  await configRouter?.routerOptions?.routes?.network?.load?.(); // Load ha-md-list-item
   await customElements.whenDefined("ha-config-dashboard");
 };
 
 export const loadDeveloperToolsTemplate = async () => {
-  await customElements.whenDefined("partial-panel-resolver");
   await customElements.whenDefined("partial-panel-resolver");
   const ppResolver = document.createElement("partial-panel-resolver");
   const routes = (ppResolver as any)._getRoutes([

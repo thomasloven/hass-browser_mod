@@ -55,7 +55,7 @@ async def async_setup_view(hass: HomeAssistant):
         config={
             "_panel_custom": {
                 "name": "browser-mod-browser-panel",
-                "js_url": BROWSER_PANEL_URL + "?" + version,
+                "module_url": BROWSER_PANEL_URL + "?" + version,
             }
         },
     )
