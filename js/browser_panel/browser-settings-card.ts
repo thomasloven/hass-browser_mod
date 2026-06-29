@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
 class BrowserModRegisteredBrowsersCard extends LitElement {
@@ -201,6 +201,24 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             : ""}
         </div>
       </ha-card>
+      ${this.hass.user?.is_admin
+      ? html`
+          <ha-card outlined class="integration-alert">
+            <div class="card-content">
+              <ha-alert alert-type="info">
+                Browser Mod integration settings are now found in Browser Mod integration entry in 
+                Devices & services. Use the config/settings cog to access global Browser Mod settings.
+          </ha-alert>
+          <ha-button
+            appearance="accent"
+            @click=${() => { window.browser_mod.browser_navigate("/config/integrations/integration/browser_mod") }}
+            class="navigate-button"
+          >
+            Go to Browser Mod Integration
+          </ha-button>
+        </div>
+      </ha-card>
+    ` : nothing }
     `;
   }
 
@@ -349,6 +367,17 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
       }
       ha-row-item[narrow] > ha-form {
         flex: 2;
+      }
+      .integration-alert {
+        margin-top: 16px;
+      }
+      .integration-alert .card-content {
+        display: flex;
+        flex-direction: column;
+      }
+      .navigate-button {
+        margin-top: 8px;
+        align-self: flex-end;
       }
     `;
   }
