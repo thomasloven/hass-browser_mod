@@ -1,3 +1,13 @@
+## [3.0.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2026-06-29)
+
+### ⚠ BREAKING CHANGES
+
+* Browser Mod Config panel now in integration settings. Use settings cog icon to configure global settings and Frontend settings for User/Browser/Global.
+
+### ⚙️ Miscellaneous
+
+* Move Browser Mod Config panel to integration settings. 'This Browser' remains as Frontend Browser panel.([#1323](https://github.com/thomasloven/hass-browser_mod/issues/1323)) ([de0ebbb](https://github.com/thomasloven/hass-browser_mod/commit/de0ebbb3a8e73888f2a5de350dfa7f83a8689a50)), closes [#898](https://github.com/thomasloven/hass-browser_mod/issues/898)
+
 ## [3.0.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2026-06-15)
 
 ### 🐞 Bug Fixes
