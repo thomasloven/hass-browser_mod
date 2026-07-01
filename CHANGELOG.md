@@ -1,3 +1,58 @@
+## [3.0.0-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.3...v3.0.0-beta.4) (2026-06-29)
+
+### ⚠ BREAKING CHANGES
+
+* Browser Mod Config panel now in integration settings. Use settings cog icon to configure global settings and Frontend settings for User/Browser/Global.
+
+### ⚙️ Miscellaneous
+
+* Move Browser Mod Config panel to integration settings. 'This Browser' remains as Frontend Browser panel.([#1323](https://github.com/thomasloven/hass-browser_mod/issues/1323)) ([de0ebbb](https://github.com/thomasloven/hass-browser_mod/commit/de0ebbb3a8e73888f2a5de350dfa7f83a8689a50)), closes [#898](https://github.com/thomasloven/hass-browser_mod/issues/898)
+
+## [3.0.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.2...v3.0.0-beta.3) (2026-06-15)
+
+### 🐞 Bug Fixes
+
+* Close icon shows on popup when dismissable is set to false. (Esc key is correctly blocked). ([#1322](https://github.com/thomasloven/hass-browser_mod/issues/1322)) ([72cef37](https://github.com/thomasloven/hass-browser_mod/commit/72cef375acf853f65f06d8b01c358e24a250ab51)), closes [#1321](https://github.com/thomasloven/hass-browser_mod/issues/1321)
+
+## [3.0.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0-beta.1...v3.0.0-beta.2) (2026-06-11)
+
+### ⚙️ Miscellaneous
+
+* bump to v3.0.0-beta.2 ([d3cc221](https://github.com/thomasloven/hass-browser_mod/commit/d3cc221ab6e5dbf39c1375126803af7b13d984fa))
+
+## [3.0.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.5...v3.0.0-beta.1) (2026-06-11)
+
+### ⚠ BREAKING CHANGES
+
+* **major:** Requires Home Assistant 2026.6.0(b0) or greater.
+
+### ⭐ New Features
+
+* **major:** Push Home Assistant minimum version to 2026.6.0(b0) ([cd9e2e1](https://github.com/thomasloven/hass-browser_mod/commit/cd9e2e171afaded4cc6c169b01faa91e01762813))
+
+### 🐞 Bug Fixes
+
+* detect header class in shadowRoot when hiding header ([8dd5a90](https://github.com/thomasloven/hass-browser_mod/commit/8dd5a901b467124430f78297d1a8b1a6e287bbc8))
+* Need to wait when running updates after location-changed or pop-state ([1e6ece3](https://github.com/thomasloven/hass-browser_mod/commit/1e6ece39535489d39b96ea6133adf659f5659893))
+
+### ⚙️ Miscellaneous
+
+* Migrate ha-md-list-item to ha-row-item in Browser Mod panel. ([06ca5f9](https://github.com/thomasloven/hass-browser_mod/commit/06ca5f91c5a406b2999694daf8ee3c49998cb5bc))
+
+## [3.0.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.5...v3.0.0-beta.1) (2026-05-29)
+
+### ⚠ BREAKING CHANGES
+
+* **major:** Requires Home Assistant 2026.6.0(b0) or greater.
+
+### ⭐ New Features
+
+* **major:** Push Home Assistant minimum version to 2026.6.0(b0) ([cd9e2e1](https://github.com/thomasloven/hass-browser_mod/commit/cd9e2e171afaded4cc6c169b01faa91e01762813))
+
+### ⚙️ Miscellaneous
+
+* Migrate ha-md-list-item to ha-row-item in Browser Mod panel. ([06ca5f9](https://github.com/thomasloven/hass-browser_mod/commit/06ca5f91c5a406b2999694daf8ee3c49998cb5bc))
+
 ## [2.13.5](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.4...v2.13.5) (2026-05-28)
 
 ### 🐞 Bug Fixes

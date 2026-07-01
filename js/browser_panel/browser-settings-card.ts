@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
 class BrowserModRegisteredBrowsersCard extends LitElement {
@@ -76,7 +76,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             : ""}
         </div>
         <div class="card-content">
-          <ha-md-list-item>
+          <ha-row-item>
             <span slot="headline">Register</span>
             <span slot="supporting-text"
               >Enable this browser as a Device in Home Assistant</span
@@ -90,9 +90,9 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               window.browser_mod?.global_settings["lockRegister"] ||
               !this.hass.user?.is_admin }
             ></ha-switch>
-          </ha-md-list-item>
+          </ha-row-item>
 
-          <ha-md-list-item ?narrow=${this.narrow}>
+          <ha-row-item ?narrow=${this.narrow}>
             <span slot="headline">Browser ID</span>
             <span slot="supporting-text"
               >A unique identifier for this browser-device combination.</span
@@ -132,9 +132,9 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               }}
             >
             </ha-form>
-          </ha-md-list-item>
+          </ha-row-item>
 
-          <ha-md-list-item>
+          <ha-row-item>
             <span slot="headline">Sync Browser ID to login session</span>
             <span slot="supporting-text"
               >Store this Browser ID against your current login session.
@@ -147,12 +147,12 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
               @change=${this.toggleSyncSession}
               .disabled=${window.browser_mod?.browser_locked}
             ></ha-switch>
-          </ha-md-list-item>
+          </ha-row-item>
 
           ${window.browser_mod?.registered
             ? html`
                 ${this._renderSuspensionAlert()}
-                <ha-md-list-item>
+                <ha-row-item>
                   <span slot="headline">Enable camera entity</span>
                   <span slot="supporting-text"
                     >Expose this browser camera as a Home Assistant camera
@@ -164,8 +164,8 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                     @change=${this.toggleCameraEnabled}
                     .disabled=${window.browser_mod?.browser_locked}
                   ></ha-switch>
-                </ha-md-list-item>
-                <ha-md-list-item>
+                </ha-row-item>
+                <ha-row-item>
                   <span slot="headline">Enable go2rtc publishing</span>
                   <span slot="supporting-text"
                     >Publish this browser camera to go2rtc using WHIP</span
@@ -176,7 +176,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
                     @change=${this.toggleGo2rtcEnabled}
                     .disabled=${window.browser_mod?.browser_locked}
                   ></ha-switch>
-                </ha-md-list-item>
+                </ha-row-item>
                 ${window.browser_mod?.cameraError
                   ? html`
                       <ha-alert alert-type="error">
@@ -201,6 +201,24 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             : ""}
         </div>
       </ha-card>
+      ${this.hass.user?.is_admin
+      ? html`
+          <ha-card outlined class="integration-alert">
+            <div class="card-content">
+              <ha-alert alert-type="info">
+                Browser Mod integration settings are now found in Browser Mod integration entry in 
+                Devices & services. Use the config/settings cog to access global Browser Mod settings.
+          </ha-alert>
+          <ha-button
+            appearance="accent"
+            @click=${() => { window.browser_mod.browser_navigate("/config/integrations/integration/browser_mod") }}
+            class="navigate-button"
+          >
+            Go to Browser Mod Integration
+          </ha-button>
+        </div>
+      </ha-card>
+    ` : nothing }
     `;
   }
 
@@ -344,8 +362,22 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
         display: flex;
         justify-content: space-between;
       }
-      ha-md-list-item[narrow] > ha-form {
+      ha-row-item span[slot="supporting-text"] {
+        white-space: normal;
+      }
+      ha-row-item[narrow] > ha-form {
         flex: 2;
+      }
+      .integration-alert {
+        margin-top: 16px;
+      }
+      .integration-alert .card-content {
+        display: flex;
+        flex-direction: column;
+      }
+      .navigate-button {
+        margin-top: 8px;
+        align-self: flex-end;
       }
     `;
   }

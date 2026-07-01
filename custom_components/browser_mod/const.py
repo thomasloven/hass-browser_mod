@@ -3,7 +3,8 @@ DOMAIN = "browser_mod"
 BROWSER_ID = "browserID"
 
 FRONTEND_SCRIPT_URL = "/browser_mod.js"
-SETTINGS_PANEL_URL = "/browser_mod_panel.js"
+BROWSER_PANEL_URL = "/browser_mod_browser_panel.js"
+CONFIG_PANEL_URL = "/browser_mod_config_panel.js"
 
 DATA_BROWSERS = "browsers"
 DATA_ADDERS = "adders"
