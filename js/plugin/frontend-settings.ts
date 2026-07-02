@@ -416,7 +416,7 @@ export const AutoSettingsMixin = (SuperClass) => {
                     left_button: "Edit with Browser Mod",
                     left_button_action: (data) => { 
                       localStorage.setItem(NO_SIDEBAR_EDIT_MODE_PROMPT_STORAGE_KEY, data.ignore_sidebar_edit_mode_prompt ? "true" : "false");
-                      this.browser_navigate('/browser-mod') 
+                      this.browser_navigate('/browser-mod-config') 
                     },
                     left_button_variant: "brand",
                     left_button_appearance: "accent",
