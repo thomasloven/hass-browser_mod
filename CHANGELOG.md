@@ -1,3 +1,10 @@
+## [3.0.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0...v3.0.1-beta.1) (2026-07-02)
+
+### 🐞 Bug Fixes
+
+* Sidebar settings prompt `Edit with Browser Mod` to correctly go to new integration config panel and not Frontend config panel. ([a149e30](https://github.com/thomasloven/hass-browser_mod/commit/a149e30d2eb2d6cf6a0d1005556a16ffaa2f452d))
+* When editing sidebar Frontend settings the save button will only show after second change, not after a single change. ([97fa528](https://github.com/thomasloven/hass-browser_mod/commit/97fa52889d78ee1a76a9290c647d8c863b3e22a4))
+
 ## [3.0.0](https://github.com/thomasloven/hass-browser_mod/compare/v2.13.5...v3.0.0) (2026-07-01)
 
 ### ⚠ BREAKING CHANGES
