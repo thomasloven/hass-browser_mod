@@ -1,3 +1,9 @@
+## [3.0.2-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.1...v3.0.2-beta.1) (2026-07-06)
+
+### 🐞 Bug Fixes
+
+* Edit sidebar dialog does not show on Home Assistant 2026.6.x and earlier with Browser Mod 3.0.x ([d2e4d71](https://github.com/thomasloven/hass-browser_mod/commit/d2e4d71811efdc3284a79f2c602fc033a2419784))
+
 ## [3.0.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0...v3.0.1) (2026-07-06)
 
 ### 🐞 Bug Fixes
