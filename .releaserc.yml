@@ -19,7 +19,8 @@ plugins:
         - package-lock.json
         - custom_components/browser_mod/manifest.json
         - custom_components/browser_mod/browser_mod.js
-        - custom_components/browser_mod/browser_mod_panel.js
+        - custom_components/browser_mod/browser_mod_browser_panel.js
+        - custom_components/browser_mod/browser_mod_config_panel.js
       message: "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
   - - "@semantic-release/github"
 
