@@ -1,3 +1,9 @@
+## [3.0.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.1-beta.1...v3.0.1-beta.2) (2026-07-06)
+
+### 🐞 Bug Fixes
+
+* Release to correctly push new Browser Panel and Config Panel ([678244c](https://github.com/thomasloven/hass-browser_mod/commit/678244c585298ace488ea484e90e4381ae8f212e))
+
 ## [3.0.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.0...v3.0.1-beta.1) (2026-07-02)
 
 ### 🐞 Bug Fixes
