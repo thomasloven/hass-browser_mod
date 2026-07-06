@@ -71,7 +71,7 @@ export class SidebarSettingsCustomSelector {
       await provideHass(this._dialogEditSidebar);
       this._dialogEditSidebar._order = JSON.parse(this.order);
       this._dialogEditSidebar._hidden = JSON.parse(this.hidden);
-      this._dialogEditSidebar._initDirtyTracking(
+      this._dialogEditSidebar._initDirtyTracking?.(
         { type: "deep" },
         { order: this._dialogEditSidebar._order, hidden: this._dialogEditSidebar._hidden }
       );
