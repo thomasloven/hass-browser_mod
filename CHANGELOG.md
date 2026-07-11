@@ -1,3 +1,9 @@
+## [3.0.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.2...v3.0.3-beta.1) (2026-07-11)
+
+### 🐞 Bug Fixes
+
+* Pass `theme` config when applying UIX styling to popup. Allows to use UIX theme override for popups which do not inherit any view theme as they are loaded above view in DOM. ([ecd8195](https://github.com/thomasloven/hass-browser_mod/commit/ecd8195ca80b6456dd53eb763396d6aac66a58b0))
+
 ## [3.0.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.1...v3.0.2) (2026-07-06)
 
 ### 🐞 Bug Fixes
