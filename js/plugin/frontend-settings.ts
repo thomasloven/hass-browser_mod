@@ -293,15 +293,21 @@ export const AutoSettingsMixin = (SuperClass) => {
         // header will be div.header or header element in shadow DOM
         header = el.querySelector(".header") || el.shadowRoot?.querySelector(".header") || el.shadowRoot?.querySelector("header");
         // menu button will be in light DOM of div.header or in shadow DOM of header element
-        menuButton = el.querySelector("ha-menu-button") || el.shadowRoot?.querySelector("slot[name=navigationIcon]")?.assignedElements()?.[0];
+        menuButton =  el.querySelector("ha-menu-button") ||
+                      el.shadowRoot?.querySelector("ha-menu-button") ||
+                      el.shadowRoot?.querySelector("slot[name=navigationIcon]")?.assignedElements()?.[0];
       }
 
       if (header && this.settings.hideHeader === true) {
         rootEl.style.setProperty("--header-height", "0px");
         header.style.setProperty("display", "none");
         return true;
-      } else if (menuButton && this.settings.hideSidebar === true) {
-        menuButton.style.setProperty("display", "none");
+      } else if (this.settings.hideSidebar === true) {
+        if (menuButton) {
+          menuButton.style.setProperty("display", "none");
+        } else {
+          console.warn("Browser Mod: Unable to find menu button to hide sidebar menu.");
+        }
         return true;
       }
       return false;
