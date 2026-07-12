@@ -1,3 +1,14 @@
+## [3.1.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.3-beta.1...v3.1.0-beta.1) (2026-07-12)
+
+### ⭐ New Features
+
+* For frontend settings table show Browser friendly name (device by user if renamed in integration) if it exists, followed by Browser ID in brackets, else Browser ID. ([561639f](https://github.com/thomasloven/hass-browser_mod/commit/561639fc6030da8bef620e9dfac88210f47e70e7)), closes [#1344](https://github.com/thomasloven/hass-browser_mod/issues/1344)
+
+### 🐞 Bug Fixes
+
+* For registered browsers, show device friendly name first if it has been renamed, with Browser ID in brackets - this is reverse of prior versions. ([f308b41](https://github.com/thomasloven/hass-browser_mod/commit/f308b4194f8dd85bba75fd873d7c5b08ba5c1705))
+* Sidebar menu item not hidden on strategy dashboards (Home etc) or some config pages when hideSidebar config is set for a device/user/global ([d00a159](https://github.com/thomasloven/hass-browser_mod/commit/d00a1597ac6d1f07c56a38ffe65d4be5f40ef168))
+
 ## [3.0.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.2...v3.0.3-beta.1) (2026-07-11)
 
 ### 🐞 Bug Fixes
