@@ -9,6 +9,7 @@ loadDeveloperToolsTemplate();
 
 class BrowserModFrontendSettingsCard extends LitElement {
   @property() hass;
+  @property({type: Array}) entityRegistry?: any[];
 
   @state() _dashboards = [];
   @state() _panels = {};
@@ -214,6 +215,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"titleTemplate"}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -226,6 +228,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
             <browser-mod-settings-table
               .hass=${this.hass}
               .settingKey=${"faviconTemplate"}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -239,6 +242,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .hass=${this.hass}
               .settingKey=${"kioskMode"}
               .settingSelector=${{ boolean: {}, label: "Kiosk mode" }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -252,6 +256,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .hass=${this.hass}
               .settingKey=${"hideSidebar"}
               .settingSelector=${{ boolean: {}, label: "Hide sidebar" }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -265,6 +270,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .hass=${this.hass}
               .settingKey=${"hideHeader"}
               .settingSelector=${{ boolean: {}, label: "Hide header" }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -336,6 +342,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                   },
                 ]
               }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -350,6 +357,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .settingKey=${"defaultPanel"}
               .settingSelector=${dashboardSelector}
               .default=${"lovelace"}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -364,6 +372,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .settingKey=${"defaultAction"}
               .settingSelector=${{ object: {} }}
               .default=${ {} }
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
 
@@ -405,6 +414,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                   }
                 }
                 .default=${"lovelace"}
+                .entityRegistry=${this.entityRegistry}
               ></browser-mod-settings-table>
             </ha-expansion-panel>` 
           :
@@ -437,6 +447,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 plaintext: "Press OK to store the current sidebar order",
               }}
               .default=${"lovelace"}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
             `}
@@ -450,6 +461,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .hass=${this.hass}
               .settingKey=${"sidebarTitle"}
               .settingSelector=${{ text: {} }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -465,6 +477,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 boolean: {},
                 label: "Hide interaction icon",
               }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -480,6 +493,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 boolean: {},
                 label: "Use full user interaction",
               }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -495,6 +509,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
                 boolean: {},
                 label: "Save screen state",
               }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -509,6 +524,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .settingSelector=${{
                 text: {},
               }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
@@ -523,6 +539,7 @@ class BrowserModFrontendSettingsCard extends LitElement {
               .settingSelector=${{
                 text: {},
               }}
+              .entityRegistry=${this.entityRegistry}
             ></browser-mod-settings-table>
           </ha-expansion-panel>
         </div>
