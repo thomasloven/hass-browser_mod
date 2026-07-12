@@ -135,7 +135,7 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
             const device = this._find_entity(d);
             return html` <ha-row-item>
               <span slot="headline">
-                ${d} ${device?.name_by_user ? `(${device.name_by_user})` : ""}
+                ${device?.name_by_user ? `${device.name_by_user} (${d})` : `${d}`}
               </span>
               <span slot="supporting-text">
                 Last connected:
