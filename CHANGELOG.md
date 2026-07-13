@@ -1,3 +1,14 @@
+## [3.1.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0-beta.1...v3.1.0-beta.2) (2026-07-13)
+
+### 🐞 Bug Fixes
+
+* Empty object `{}` or empty strings being saved as Frontend settings giving rise to Issue [#1346](https://github.com/thomasloven/hass-browser_mod/issues/1346) ([0362440](https://github.com/thomasloven/hass-browser_mod/commit/0362440b78c234c8a43b9e82ba5769674f35cfad))
+* Template console error when Title, Sidebar title or Favicon have template which is an empty object `{}` ([9de4a06](https://github.com/thomasloven/hass-browser_mod/commit/9de4a06a12385eb5916d3c95272b483bbcd37f4c)), closes [#1346](https://github.com/thomasloven/hass-browser_mod/issues/1346)
+
+### ⚙️ Miscellaneous
+
+* Bump minimum Home Assistant version to 2026.7.0 due to config panel top bar changes. ([b785f5a](https://github.com/thomasloven/hass-browser_mod/commit/b785f5a9b0bf5c68964951a06acaeb08a66514b7)), closes [#1341](https://github.com/thomasloven/hass-browser_mod/issues/1341)
+
 ## [3.1.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.3-beta.1...v3.1.0-beta.1) (2026-07-12)
 
 ### ⭐ New Features
