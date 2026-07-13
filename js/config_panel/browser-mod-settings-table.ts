@@ -149,14 +149,34 @@ class BrowserModSettingsTable extends LitElement {
 
         return;
       }
-      let value = newValue.value ?? newValue;
+      let value = newValue.hasOwnProperty("value") ? newValue.value : newValue;
+      if (!(this.settingSelector as any).hasOwnProperty("object") && typeof value === "object") {
+        value = undefined;
+      }
+      if (value && (this.settingSelector as any).hasOwnProperty("object") && Object.keys(value).length === 0) {
+        value = undefined;
+      }
+      if (((this.settingSelector as any).hasOwnProperty("text") || (this.settingSelector as any).hasOwnProperty("template")) && typeof value !== "string") {
+        value = undefined;
+      } else if (typeof value === "string") {
+        value = value?.trim() || undefined;
+      }
       window.browser_mod.setSetting(type, target, { [this.settingKey]: value });
     };
 
     const settings = window.browser_mod?.getSetting?.(this.settingKey);
-    const value =
+    let value =
       (type === "global" ? settings.global : settings[type][target]) ??
       this.default;
+    if (!(this.settingSelector as any).hasOwnProperty("object") && typeof value === "object") {
+      value = undefined;
+    }
+    if (value && (this.settingSelector as any).hasOwnProperty("object") && Object.keys(value).length === 0) {
+      value = undefined;
+    }
+    if ((this.settingSelector as any).hasOwnProperty("boolean")) {
+      value = value === undefined ? false : Boolean(value);
+    }
     const content = 
       (this.settingSelector as any).plaintext ?? 
       (this.settingSelector as any).schema ??
