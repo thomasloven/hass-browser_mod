@@ -1,3 +1,9 @@
+## [3.1.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0-beta.2...v3.1.0-beta.3) (2026-07-13)
+
+### ⭐ New Features
+
+* Implement Browser Mod integration diagnostics which includes Dashboard resource mode, list of Dashboard resources and Browser Mod stored settings. ([462a041](https://github.com/thomasloven/hass-browser_mod/commit/462a04155847926e642338726b84e721953bddb9))
+
 ## [3.1.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0-beta.1...v3.1.0-beta.2) (2026-07-13)
 
 ### 🐞 Bug Fixes
