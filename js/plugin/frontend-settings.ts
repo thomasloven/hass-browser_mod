@@ -166,7 +166,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       }
 
       // Sidebar title
-      if (settings.sidebarTitle) {
+      if (settings.sidebarTitle !== undefined && typeof settings.sidebarTitle === "string" && settings.sidebarTitle !== "" && settings.sidebarTitle !== '{}') {
         (async () => {
           if (this._sidebarTitleSubscription) {
             this._sidebarTitleSubscription();
@@ -179,12 +179,15 @@ export const AutoSettingsMixin = (SuperClass) => {
               variables: { browser_id: this.browserID, browser_entities: this.browserEntities },
             });
         })();
+      } else if (this._sidebarTitleSubscription) {
+        this._sidebarTitleSubscription();
+        this._sidebarTitleSubscription = undefined;
       }
 
       // Hide header
 
       // Favicon template
-      if (settings.faviconTemplate !== undefined) {
+      if (settings.faviconTemplate !== undefined && typeof settings.faviconTemplate === "string" && settings.faviconTemplate !== "" && settings.faviconTemplate !== '{}') {
         (async () => {
           if (this._faviconTemplateSubscription) {
             this._faviconTemplateSubscription();
@@ -197,10 +200,13 @@ export const AutoSettingsMixin = (SuperClass) => {
               variables: { browser_id: this.browserID, browser_entities: this.browserEntities },
             });
         })();
+      } else if (this._faviconTemplateSubscription) {
+        this._faviconTemplateSubscription();
+        this._faviconTemplateSubscription = undefined;
       }
 
       // Title template
-      if (settings.titleTemplate !== undefined) {
+      if (settings.titleTemplate !== undefined && typeof settings.titleTemplate === "string" && settings.titleTemplate !== "" && settings.titleTemplate !== '{}') {
         (async () => {
           if (this._titleTemplateSubscription) {
             this._titleTemplateSubscription();
@@ -216,6 +222,9 @@ export const AutoSettingsMixin = (SuperClass) => {
               }
             );
         })();
+      } else if (this._titleTemplateSubscription) {
+        this._titleTemplateSubscription();
+        this._titleTemplateSubscription = undefined;
       }
 
       // OverlayIcon
