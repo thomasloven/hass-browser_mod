@@ -381,3 +381,12 @@ export const frontendSettingsAdaptiveDialogStyle =
     );
     --ha-bottom-sheet-max-height: var(--ha-bottom-sheet-height);
   }`;
+
+export function lookupBrowserEntity(entityRegistry: any[], browserID: string) {
+    if (!entityRegistry) return undefined;
+    return entityRegistry.find(
+      (v) =>
+        JSON.stringify(v?.identifiers?.[0]) ===
+        JSON.stringify(["browser_mod", browserID])
+    );
+  }

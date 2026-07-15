@@ -201,8 +201,8 @@ export class BrowserModPopup extends LitElement {
         this,
         this.tag ? `browser-mod-popup-${this.tag}` : "more-info",
         (this.uix?.style ?? this.card_mod?.style) ?
-          { style: this.uix?.style ?? this.card_mod.style, debug: this.uix?.debug ?? this.card_mod?.debug ?? false } :
-          { style: {}, debug: this.uix?.debug ?? this.card_mod?.debug ?? false },
+          { style: this.uix?.style ?? this.card_mod.style, debug: this.uix?.debug ?? this.card_mod?.debug ?? false, theme: this.uix?.theme ?? this.card_mod?.theme ?? undefined } :
+          { style: {}, debug: this.uix?.debug ?? this.card_mod?.debug ?? false, theme: this.uix?.theme ?? this.card_mod?.theme ?? undefined },
         {},
         true,
         "browser_mod-uix"

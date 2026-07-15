@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing, PropertyValues } from "lit";
 import { until } from 'lit/directives/until.js';
 import { property } from "lit/decorators.js";
-import { compare_deep, debounce, frontendSettingsAdaptiveDialogStyle, selectTree } from "../helpers";
+import { compare_deep, debounce, frontendSettingsAdaptiveDialogStyle, lookupBrowserEntity, selectTree } from "../helpers";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { classMap } from 'lit/directives/class-map.js';
 
@@ -25,6 +25,8 @@ class BrowserModSettingsTable extends LitElement {
   @property() default;
 
   @property() tableData = <any>[];
+
+  @property({type: Array}) entityRegistry?: any[];
 
   private _tableFirstUpdate: (() => void) | null = null;
   private _tableUpdate = new Promise<void>((resolve) => {
@@ -147,14 +149,34 @@ class BrowserModSettingsTable extends LitElement {
 
         return;
       }
-      let value = newValue.value ?? newValue;
+      let value = newValue.hasOwnProperty("value") ? newValue.value : newValue;
+      if (!(this.settingSelector as any).hasOwnProperty("object") && typeof value === "object") {
+        value = undefined;
+      }
+      if (value && (this.settingSelector as any).hasOwnProperty("object") && Object.keys(value).length === 0) {
+        value = undefined;
+      }
+      if (((this.settingSelector as any).hasOwnProperty("text") || (this.settingSelector as any).hasOwnProperty("template")) && typeof value !== "string") {
+        value = undefined;
+      } else if (typeof value === "string") {
+        value = value?.trim() || undefined;
+      }
       window.browser_mod.setSetting(type, target, { [this.settingKey]: value });
     };
 
     const settings = window.browser_mod?.getSetting?.(this.settingKey);
-    const value =
+    let value =
       (type === "global" ? settings.global : settings[type][target]) ??
       this.default;
+    if (!(this.settingSelector as any).hasOwnProperty("object") && typeof value === "object") {
+      value = undefined;
+    }
+    if (value && (this.settingSelector as any).hasOwnProperty("object") && Object.keys(value).length === 0) {
+      value = undefined;
+    }
+    if ((this.settingSelector as any).hasOwnProperty("boolean")) {
+      value = value === undefined ? false : Boolean(value);
+    }
     const content = 
       (this.settingSelector as any).plaintext ?? 
       (this.settingSelector as any).schema ??
@@ -202,7 +224,14 @@ class BrowserModSettingsTable extends LitElement {
     const allBrowsers = window.browser_mod._data.browsers;
     const browsers = [];
     for (const target of Object.keys(allBrowsers)) {
-      if (settings.browser[target] == null) browsers.push(target);
+      const d = lookupBrowserEntity(this.entityRegistry, target);
+      if (settings.browser[target] == null) {
+        browsers.push(
+          { 
+            label: d.name_by_user ? `${d.name_by_user} (${target})` : target, 
+            value: target
+          });
+      }
     }
 
     if (browsers.length === 0) {
@@ -339,8 +368,9 @@ class BrowserModSettingsTable extends LitElement {
     for (const [k, v] of Object.entries(settings.browser ?? {})) {
       let val = (typeof(v) === "object") ? "Config" : String(v);
       if (val.length >= 20) val = val.slice(0, 20) + "...";
+      const d = lookupBrowserEntity(this.entityRegistry, k);
       data.push({
-        name: `Browser: ${k}`,
+        name: `Browser: ${d.name_by_user ? `${d.name_by_user} (${k})` : k}`,
         value: val,
         controls: html`
           <div>

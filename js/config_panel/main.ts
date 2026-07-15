@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 import { loadConfigDashboard } from "../helpers";
 
 import "./registered-browsers-card";
@@ -15,10 +15,22 @@ loadConfigDashboard().then(() => {
     @property() narrow;
     @property() connection;
 
+    @property({type: Array}) entityRegistry?: any[];
+
     firstUpdated() {
-      window.addEventListener("browser-mod-config-update", () =>
-        this.requestUpdate()
-      );
+      window.addEventListener("browser-mod-config-update", () => {
+        this.requestUpdate();
+        this._fetch_entity_registry();
+      });
+      this._fetch_entity_registry();
+    }
+
+    async _fetch_entity_registry() {
+      if (this.entityRegistry) return;
+
+      this.entityRegistry = await this.hass.callWS({
+        type: "config/device_registry/list",
+      });
     }
 
     render() {
@@ -43,10 +55,12 @@ loadConfigDashboard().then(() => {
                 ? html`
                     <browser-mod-registered-browsers-card
                       .hass=${this.hass}
+                      .entityRegistry=${this.entityRegistry}
                     ></browser-mod-registered-browsers-card>
 
                     <browser-mod-frontend-settings-card
                       .hass=${this.hass}
+                      .entityRegistry=${this.entityRegistry}
                     ></browser-mod-frontend-settings-card>
                   `
                 : ""}

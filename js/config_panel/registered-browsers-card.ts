@@ -1,33 +1,15 @@
 import { LitElement, html, css } from "lit";
-import { property, state } from "lit/decorators.js";
-import { frontendSettingsAdaptiveDialogStyle } from "../helpers";
+import { property } from "lit/decorators.js";
+import { frontendSettingsAdaptiveDialogStyle, lookupBrowserEntity } from "../helpers";
 
 class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
 
-  @state() _entity_registry?: any[];
+  @property({type: Array}) entityRegistry?: any[];
 
   firstUpdated() {
     window.browser_mod.addEventListener("browser-mod-config-update", () =>
       this.requestUpdate()
-    );
-    this._fetch_entity_registry();
-  }
-
-  async _fetch_entity_registry() {
-    if (this._entity_registry) return;
-
-    this._entity_registry = await this.hass.callWS({
-      type: "config/device_registry/list",
-    });
-  }
-
-  _find_entity(browserID) {
-    if (!this._entity_registry) return undefined;
-    return this._entity_registry.find(
-      (v) =>
-        JSON.stringify(v?.identifiers?.[0]) ===
-        JSON.stringify(["browser_mod", browserID])
     );
   }
 
@@ -132,10 +114,10 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
 
           ${Object.keys(window.browser_mod.browsers).map((d) => {
             const browser = window.browser_mod.browsers[d];
-            const device = this._find_entity(d);
+            const device = lookupBrowserEntity(this.entityRegistry, d);
             return html` <ha-row-item>
               <span slot="headline">
-                ${d} ${device?.name_by_user ? `(${device.name_by_user})` : ""}
+                ${device?.name_by_user ? `${device.name_by_user} (${d})` : `${d}`}
               </span>
               <span slot="supporting-text">
                 Last connected:
