@@ -1,3 +1,22 @@
+## [3.1.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.2...v3.1.0) (2026-07-15)
+
+### ⭐ New Features
+
+* For frontend settings table show Browser friendly name (device by user if renamed in integration) if it exists, followed by Browser ID in brackets, else Browser ID. ([561639f](https://github.com/thomasloven/hass-browser_mod/commit/561639fc6030da8bef620e9dfac88210f47e70e7)), closes [#1344](https://github.com/thomasloven/hass-browser_mod/issues/1344)
+* Implement Browser Mod integration diagnostics which includes Dashboard resource mode, list of Dashboard resources and Browser Mod stored settings. ([462a041](https://github.com/thomasloven/hass-browser_mod/commit/462a04155847926e642338726b84e721953bddb9))
+
+### 🐞 Bug Fixes
+
+* Empty object `{}` or empty strings being saved as Frontend settings giving rise to Issue [#1346](https://github.com/thomasloven/hass-browser_mod/issues/1346) ([0362440](https://github.com/thomasloven/hass-browser_mod/commit/0362440b78c234c8a43b9e82ba5769674f35cfad))
+* For registered browsers, show device friendly name first if it has been renamed, with Browser ID in brackets - this is reverse of prior versions. ([f308b41](https://github.com/thomasloven/hass-browser_mod/commit/f308b4194f8dd85bba75fd873d7c5b08ba5c1705))
+* Pass `theme` config when applying UIX styling to popup. Allows to use UIX theme override for popups which do not inherit any view theme as they are loaded above view in DOM. ([ecd8195](https://github.com/thomasloven/hass-browser_mod/commit/ecd8195ca80b6456dd53eb763396d6aac66a58b0))
+* Sidebar menu item not hidden on strategy dashboards (Home etc) or some config pages when hideSidebar config is set for a device/user/global ([d00a159](https://github.com/thomasloven/hass-browser_mod/commit/d00a1597ac6d1f07c56a38ffe65d4be5f40ef168))
+* Template console error when Title, Sidebar title or Favicon have template which is an empty object `{}` ([9de4a06](https://github.com/thomasloven/hass-browser_mod/commit/9de4a06a12385eb5916d3c95272b483bbcd37f4c)), closes [#1346](https://github.com/thomasloven/hass-browser_mod/issues/1346)
+
+### ⚙️ Miscellaneous
+
+* Bump minimum Home Assistant version to 2026.7.0 due to config panel top bar changes. ([b785f5a](https://github.com/thomasloven/hass-browser_mod/commit/b785f5a9b0bf5c68964951a06acaeb08a66514b7)), closes [#1341](https://github.com/thomasloven/hass-browser_mod/issues/1341)
+
 ## [3.1.0-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0-beta.2...v3.1.0-beta.3) (2026-07-13)
 
 ### ⭐ New Features
