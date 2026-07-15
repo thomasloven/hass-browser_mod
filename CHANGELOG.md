@@ -3,7 +3,7 @@
 ### ⭐ New Features
 
 * For frontend settings table show Browser friendly name (device by user if renamed in integration) if it exists, followed by Browser ID in brackets, else Browser ID. ([561639f](https://github.com/thomasloven/hass-browser_mod/commit/561639fc6030da8bef620e9dfac88210f47e70e7)), closes [#1344](https://github.com/thomasloven/hass-browser_mod/issues/1344)
-* Implement Browser Mod integration diagnostics which includes Dashboard resource mode, list of Dashboard resources and Browser Mod stored settings. ([462a041](https://github.com/thomasloven/hass-browser_mod/commit/462a04155847926e642338726b84e721953bddb9))
+* Implement Browser Mod integration diagnostics which includes Dashboard resource mode, list of Dashboard, list of integrations resources and Browser Mod stored settings. ([462a041](https://github.com/thomasloven/hass-browser_mod/commit/462a04155847926e642338726b84e721953bddb9))
 
 ### 🐞 Bug Fixes
 
