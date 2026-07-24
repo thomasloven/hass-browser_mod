@@ -15,15 +15,16 @@ from .const import (
     BROWSER_ID,
     DATA_STORE,
     DOMAIN,
+    ISSUE_IDS,
     WS_CONNECT,
     WS_CREATE_ISSUE,
     WS_DELETE_ISSUE,
     WS_DELETE_SESSION,
-    WS_STORE_SESSION,
     WS_LOG,
     WS_RECALL_ID,
     WS_REGISTER,
     WS_SETTINGS,
+    WS_STORE_SESSION,
     WS_UNREGISTER,
     WS_UPDATE,
 )
@@ -248,7 +249,6 @@ async def async_setup_connection(hass):
             vol.Required("type"): WS_CREATE_ISSUE,
             vol.Required("issue_id"): str,
             vol.Required("severity"): str,
-            vol.Required("translation_key"): str,
             vol.Optional("translation_placeholders"): dict,
             vol.Optional("learn_more_url"): str,
         }
@@ -260,14 +260,14 @@ async def async_setup_connection(hass):
             "error": ir.IssueSeverity.ERROR,
             "warning": ir.IssueSeverity.WARNING,
         }
-        if msg["issue_id"] and msg["severity"] in valid_severities and msg.get("translation_key"):
+        if msg["issue_id"] and msg["issue_id"] in ISSUE_IDS and msg["severity"] in valid_severities:
             ir.async_create_issue(
                 hass,
                 DOMAIN,
                 msg["issue_id"],
                 is_fixable=False,
                 severity=valid_severities[msg["severity"]],
-                translation_key=msg.get("translation_key"),
+                translation_key=ISSUE_IDS[msg["issue_id"]],
                 translation_placeholders=msg.get("translation_placeholders"),
                 learn_more_url=msg.get("learn_more_url"),
             )

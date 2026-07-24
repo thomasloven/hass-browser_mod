@@ -52,3 +52,7 @@ DYNAMIC_ENTITIES = [
 ]
 
 DATA_FRONTEND_PATCHES = "frontend_patches"
+
+ISSUE_IDS = {
+    "default_dashboard_plugin_conflict": "default_dashboard_plugin_conflict"
+}

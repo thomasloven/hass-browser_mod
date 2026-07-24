@@ -136,8 +136,7 @@ service: browser_mod.refresh
 data:
   [browser_id: <Browser IDs>]
   [user_id: <User IDs>]
-  local_storage_items:
-    - item: <localStorage key>
+  [local_storage_items: - item: <localStorage key>]
 ```
 
 | | |
