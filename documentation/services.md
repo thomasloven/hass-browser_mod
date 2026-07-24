@@ -129,14 +129,19 @@ data:
 
 ## `browser_mod.refresh`
 
-Reload the current page.
+Refresh page clearing Frontend cache with optional clearing of Browser `localStorage` items.
 
 ```yaml
 service: browser_mod.refresh
 data:
   [browser_id: <Browser IDs>]
   [user_id: <User IDs>]
+  [local_storage_items: - item: <localStorage key>]
 ```
+
+| | |
+|---|---|
+|`local_storage_items`| List of Browser `localStorage` item keys to clear before refreshing page.|
 
 ## `browser_mod.change_browser_id`
 

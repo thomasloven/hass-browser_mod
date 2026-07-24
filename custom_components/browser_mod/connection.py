@@ -1,32 +1,33 @@
 import logging
-import voluptuous as vol
 from datetime import datetime, timezone
 
-from homeassistant.components.websocket_api import (
-    event_message,
-    async_register_command,
-)
-
+import voluptuous as vol
 from homeassistant.components import websocket_api
-
+from homeassistant.components.websocket_api import (
+    async_register_command,
+    event_message,
+)
 from homeassistant.core import callback
+from homeassistant.helpers import issue_registry as ir
 
+from .browser import deleteBrowser, getBrowser, getBrowserByConnection
 from .const import (
     BROWSER_ID,
     DATA_STORE,
+    DOMAIN,
+    ISSUE_IDS,
     WS_CONNECT,
+    WS_CREATE_ISSUE,
+    WS_DELETE_ISSUE,
+    WS_DELETE_SESSION,
     WS_LOG,
     WS_RECALL_ID,
     WS_REGISTER,
     WS_SETTINGS,
     WS_STORE_SESSION,
-    WS_DELETE_SESSION,
     WS_UNREGISTER,
     WS_UPDATE,
-    DOMAIN,
 )
-
-from .browser import getBrowser, deleteBrowser, getBrowserByConnection
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -243,6 +244,45 @@ async def async_setup_connection(hass):
         """Print a debug message."""
         _LOGGER.info(f"LOG MESSAGE: {msg['message']}")
 
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): WS_CREATE_ISSUE,
+            vol.Required("issue_id"): str,
+            vol.Required("severity"): str,
+            vol.Optional("translation_placeholders"): dict,
+            vol.Optional("learn_more_url"): str,
+        }
+    )
+    def handle_create_issue(hass, connection, msg):
+        """Handle a repair issue."""
+        valid_severities = {
+            "critical": ir.IssueSeverity.CRITICAL,
+            "error": ir.IssueSeverity.ERROR,
+            "warning": ir.IssueSeverity.WARNING,
+        }
+        if msg["issue_id"] and msg["issue_id"] in ISSUE_IDS and msg["severity"] in valid_severities:
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                msg["issue_id"],
+                is_fixable=False,
+                severity=valid_severities[msg["severity"]],
+                translation_key=ISSUE_IDS[msg["issue_id"]],
+                translation_placeholders=msg.get("translation_placeholders"),
+                learn_more_url=msg.get("learn_more_url"),
+            )
+
+    @websocket_api.websocket_command(
+        {
+            vol.Required("type"): WS_DELETE_ISSUE,
+            vol.Required("issue_id"): str,
+        }
+    )
+    def handle_delete_issue(hass, connection, msg):
+        """Handle a repair issue."""
+        if msg["issue_id"]:
+            ir.async_delete_issue(hass, DOMAIN, msg["issue_id"])
+
     async_register_command(hass, handle_connect)
     async_register_command(hass, handle_register)
     async_register_command(hass, handle_unregister)
@@ -252,3 +292,5 @@ async def async_setup_connection(hass):
     async_register_command(hass, handle_store_session)
     async_register_command(hass, handle_delete_session)
     async_register_command(hass, handle_log)
+    async_register_command(hass, handle_create_issue)
+    async_register_command(hass, handle_delete_issue)
