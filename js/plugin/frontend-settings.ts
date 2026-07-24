@@ -128,10 +128,28 @@ export const AutoSettingsMixin = (SuperClass) => {
       // removes Browser Mod override when defaultPanel is unset.
       const defaultPanel = this.settings.defaultPanel;
 
-      if (defaultPanel) {
-        localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
+      // isDefaultPanelManaged is set by default-dashboard plugin to indicate that it is managing the default panel.
+      // If default-dashboard plugin is installed setting here will cause default-panel to reset and reload
+      // This causes an endless reload loop so only set defaultPanel if default-dashboard plugin is not installed
+      // otherwise raise repair issue in Home Assistant so user can decide what to do about it.
+      if (localStorage.getItem("isDefaultPanelManaged") !== "true") {
+        if (defaultPanel) {
+          localStorage.setItem("defaultPanel", `"${defaultPanel}"`);
+        } else {
+          localStorage.removeItem("defaultPanel");
+        }
+        this.connection.sendMessage({
+          type: "browser_mod/delete_issue",
+          issue_id: "default_dashboard_plugin_conflict",
+        });
       } else {
-        localStorage.removeItem("defaultPanel");
+        this.connection.sendMessage({
+          type: "browser_mod/create_issue",
+          issue_id: "default_dashboard_plugin_conflict",
+          severity: "warning",
+          learn_more_url: "https://github.com/thomasloven/hass-browser_mod#how-do-i-cleanup-after-removing-default-dashboard-plugin",
+          translation_key: "default_dashboard_plugin_conflict",
+        });
       }
 
       // Kiosk Mode built into Home Assistant since 2026.1

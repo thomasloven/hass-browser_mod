@@ -173,3 +173,23 @@ Besides removing the integration as usual, there is one extra step needed.
 In order to work well with [Home Assistant Cast](https://www.home-assistant.io/integrations/cast/#home-assistant-cast) Browser Mod will add itself to your Dashboard Resources, and you will need to remove it from there manually:
 
 [![Open your Home Assistant instance and show your dashboard resources.](https://my.home-assistant.io/badges/lovelace_resources.svg)](https://my.home-assistant.io/redirect/lovelace_resources/)
+
+### **How do I cleanup after removing default-dashboard plugin?**
+
+After removing the default-dashboard plugin, which conflicts with Browser Mod default dashboard operation, you will need to cleanup its Browser `localStorage` item `isDefaultPanelManaged`. This is the only way Browser Mod can detect that the plugin is installed and does not get remove once you remove the plugin, meaning you will continue to get a Home Assistant repair item.
+
+[![Open your Home Assistant instance and show your service developer tools with a specific action selected.](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=browser_mod.refresh)
+
+You can remove `isDefaultPanelManaged` item from the `localStorage` of all registered and online Browsers by using the [`browser_mod.refresh`](/documentation/services.md#browser_modrefresh) service with `local_storage_items` set to include `isDefaultPanelManaged`. Either use Home Assistant (Developer) tools, Actions tab and search for `browser_mod.refresh`, adding `isDefaultPanelManaged` to the list of `local_storage_items` or create a dashboard button with action as per the example below. You can use the button above to go directly to (Developer) tools with `browser_mod.refresh` selected.
+
+```yaml
+type: button
+name: Cleanup default-dashboard plugin settings
+tap_action:
+  action: perform-action
+  perform_action: browser_mod.refresh
+  target: {}
+  data:
+    local_storage_items:
+      - item: isDefaultPanelManaged
+```

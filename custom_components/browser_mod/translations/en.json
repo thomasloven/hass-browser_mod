@@ -5,5 +5,11 @@
         },
         "step": {
         }
-    }
+    },
+    "issues": {
+        "default_dashboard_plugin_conflict": {
+            "title": "Default Dashboard Plugin Conflict",
+            "description": "Default-dashboard plugin is detected, which conflicts with Browser Mod default dashboard operation.\n\nPlease remove the default-dashboard plugin from your configuration.\n\nOnce you have removed default-dashboard plugin you will need to clean up default-dashboard plugin settings to clear this warning. See Browser Mod documentation using the Learn More button below."
+        }
+  }
 }

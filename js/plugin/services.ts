@@ -186,6 +186,13 @@ export const ServicesMixin = (SuperClass) => {
 
         case "refresh":
           {
+            if (data.local_storage_items && Array.isArray(data.local_storage_items)) {
+              data.local_storage_items.forEach((item) => {
+                if (item.item && typeof item.item === "string") {
+                  window.localStorage.removeItem(item.item.trim());
+                }
+              });
+            }
             if (window.caches) {
               let cacheDeletePromises = [];
               const cacheNames = await window.caches.keys();
