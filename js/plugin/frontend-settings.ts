@@ -147,7 +147,8 @@ export const AutoSettingsMixin = (SuperClass) => {
           type: "browser_mod/create_issue",
           issue_id: "default_dashboard_plugin_conflict",
           severity: "warning",
-          learn_more_url: "https://github.com/thomasloven/hass-browser_mod#how-do-i-cleanup-after-removing-default-dashboard-plugin",
+          //learn_more_url: "https://github.com/thomasloven/hass-browser_mod#how-do-i-cleanup-after-removing-default-dashboard-plugin",
+          learn_more_url: "https://github.com/thomasloven/hass-browser_mod/tree/dev#how-do-i-clean-up-after-removing-the-default-dashboard-plugin",
         });
       }
 
