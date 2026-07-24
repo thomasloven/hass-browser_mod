@@ -180,7 +180,7 @@ After removing the default-dashboard plugin (which conflicts with Browser Mod de
 
 [![Open your Home Assistant instance and show your service developer tools with a specific action selected.](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=browser_mod.refresh)
 
-You can remove `isDefaultPanelManaged` item from the `localStorage` of all registered and online Browsers by using the [`browser_mod.refresh`](/documentation/services.md#browser_modrefresh) service with `local_storage_items` set to include `isDefaultPanelManaged`. Either use Home Assistant (Developer) tools, Actions tab and search for `browser_mod.refresh`, adding `isDefaultPanelManaged` to the list of `local_storage_items` or create a dashboard button with action as per the example below. You can use the button above to go directly to (Developer) tools with `browser_mod.refresh` selected.
+You can remove the `isDefaultPanelManaged` item from the `localStorage` of all registered and online Browsers by using the [`browser_mod.refresh`](/documentation/services.md#browser_modrefresh) service with `local_storage_items` set to include `- item: isDefaultPanelManaged`. Either use Home Assistant (Developer) tools, Actions tab and search for `browser_mod.refresh`, adding `isDefaultPanelManaged` as an `item` entry under `local_storage_items`, or create a dashboard button with action as per the example below. You can use the button above to go directly to (Developer) tools with `browser_mod.refresh` selected.
 
 ```yaml
 type: button
