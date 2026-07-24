@@ -174,9 +174,9 @@ In order to work well with [Home Assistant Cast](https://www.home-assistant.io/i
 
 [![Open your Home Assistant instance and show your dashboard resources.](https://my.home-assistant.io/badges/lovelace_resources.svg)](https://my.home-assistant.io/redirect/lovelace_resources/)
 
-### **How do I cleanup after removing default-dashboard plugin?**
+### **How do I clean up after removing the default-dashboard plugin?**
 
-After removing the default-dashboard plugin, which conflicts with Browser Mod default dashboard operation, you will need to cleanup its Browser `localStorage` item `isDefaultPanelManaged`. This is the only way Browser Mod can detect that the plugin is installed and does not get remove once you remove the plugin, meaning you will continue to get a Home Assistant repair item.
+After removing the default-dashboard plugin (which conflicts with Browser Mod default dashboard operation), you may need to remove the browser `localStorage` key `isDefaultPanelManaged`. Browser Mod uses this key to detect that the plugin is/was managing the default panel, and it may remain after uninstall—causing the Home Assistant repair warning to persist until it is cleared.
 
 [![Open your Home Assistant instance and show your service developer tools with a specific action selected.](https://my.home-assistant.io/badges/developer_call_service.svg)](https://my.home-assistant.io/redirect/developer_call_service/?service=browser_mod.refresh)
 
