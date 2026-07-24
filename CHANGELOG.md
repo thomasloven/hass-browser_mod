@@ -1,3 +1,9 @@
+## [3.1.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0...v3.1.1-beta.1) (2026-07-24)
+
+### 🐞 Bug Fixes
+
+* Detect conflicting default-dashboard plugin, prevent refresh loop and issue a repair warning with cleanup instructions. ([#1353](https://github.com/thomasloven/hass-browser_mod/issues/1353)) ([ac60e05](https://github.com/thomasloven/hass-browser_mod/commit/ac60e05be081e7d51bf3fec1ddb2241968415f0f)), closes [#1345](https://github.com/thomasloven/hass-browser_mod/issues/1345)
+
 ## [3.1.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.2...v3.1.0) (2026-07-15)
 
 ### ⭐ New Features
