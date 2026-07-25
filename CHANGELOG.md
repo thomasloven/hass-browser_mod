@@ -1,3 +1,9 @@
+## [3.1.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.1-beta.1...v3.1.1-beta.2) (2026-07-25)
+
+### 🐞 Bug Fixes
+
+* media player state churn - stamp media_position_updated_at only on real position change ([#1351](https://github.com/thomasloven/hass-browser_mod/issues/1351)) ([f53901c](https://github.com/thomasloven/hass-browser_mod/commit/f53901c12f58e854dccff1d8094b0b4c9b1b57a9))
+
 ## [3.1.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0...v3.1.1-beta.1) (2026-07-24)
 
 ### 🐞 Bug Fixes
