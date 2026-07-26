@@ -1,3 +1,9 @@
+## [3.2.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.1-beta.2...v3.2.0-beta.1) (2026-07-26)
+
+### ⭐ New Features
+
+* Add Force full user interaction Frontend settings to always use Full user interaction, not only on minimal interaction error. ([#1354](https://github.com/thomasloven/hass-browser_mod/issues/1354)) ([e6b9305](https://github.com/thomasloven/hass-browser_mod/commit/e6b930529151e9def99c01f98f913dd649df7f2b))
+
 ## [3.1.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.1-beta.1...v3.1.1-beta.2) (2026-07-25)
 
 ### 🐞 Bug Fixes
