@@ -138,14 +138,15 @@ export const RequireInteractMixin = (SuperClass) => {
       const closeIcon = document.createElement("ha-icon");
       closeIcon.setAttribute("icon", "mdi:close");
       closeIconButton.append(closeIcon);
-      closeIconButton.addEventListener("pointerdown", (ev: PointerEvent) => {
-        ev.stopPropagation();
-        ev.preventDefault();
-        if (!this._clickTouchEventHandled) {
-          this._clickTouchEventHandled = true;
+      closeIconButton.addEventListener(
+        "pointerdown",
+        (ev: PointerEvent) => {
+          ev.stopPropagation();
+          ev.preventDefault();
           this._clearInteract();
-        }
-      });
+        },
+        { once: true }
+      );
       closeIconButton.addEventListener("touchstart", (ev: TouchEvent) => {
         ev.stopPropagation();
         ev.preventDefault();
