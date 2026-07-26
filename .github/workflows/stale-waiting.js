@@ -2,7 +2,7 @@ module.exports = async ({ github, context }) => {
   const OWNER_USERNAME = context.repo.owner;
   const LABEL_NAME = 'waiting for response';
   const STALE_LABEL = 'stale';
-  const DAYS_BEFORE_STALE = 30; // 30 days of inactivity before marking as stale
+  const DAYS_BEFORE_STALE = 21; // 21 days of inactivity before marking as stale
   const DAYS_BEFORE_CLOSE = 7;  // 7 days after stale label before closing
   const MS_IN_DAY = 1000 * 60 * 60 * 24; // Milliseconds in a single day
 
