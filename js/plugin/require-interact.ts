@@ -12,6 +12,7 @@ export const RequireInteractMixin = (SuperClass) => {
       this._audioInteractionResolve = resolve;
     });
     private _interactElement: HTMLElement;
+    private _clickTouchEventHandled = false;
 
     constructor() {
       super();
@@ -34,9 +35,9 @@ export const RequireInteractMixin = (SuperClass) => {
     }
 
     private _clearInteract() {
-      this._video.remove();
+      this._video?.remove();
       this._video = undefined;
-      this._interactElement.remove();
+      this._interactElement?.remove();
       this._interactElement = undefined;
     }
 
@@ -81,29 +82,49 @@ export const RequireInteractMixin = (SuperClass) => {
       }
     }
 
+    setupInteractionIconText() {
+      if (!this._interactElement) return;
+      if (!this._interactElement.shadowRoot.querySelector("#browser-mod-text")) {
+        const interactText = document.createElement("span");
+        interactText.setAttribute("id", "browser-mod-text");
+        interactText.textContent = "Browser Mod";
+        this._interactElement.shadowRoot.append(interactText);
+      }
+      if (!this._interactElement.shadowRoot.querySelector("#tap")) {
+        const interactIcon = document.createElement("ha-icon");
+        interactIcon.setAttribute("id", "tap");
+        (interactIcon as any).icon = "mdi:gesture-tap";
+        this._interactElement.shadowRoot.append(interactIcon);
+      }
+    }
+
     minimalInteraction() {
       if (!this._interactElement) return;
-      const interactText = document.createElement("span");
-      interactText.textContent = "Browser Mod";
-      this._interactElement.shadowRoot.append(interactText);
-      const interactIcon = document.createElement("ha-icon");
-      interactIcon.setAttribute("id", "tap");
-      (interactIcon as any).icon = "mdi:gesture-tap";
-      this._interactElement.shadowRoot.append(interactIcon);
+      this.setupInteractionIconText();
 
       this._interactElement.setAttribute("minimal", "");
       const onerror = this.settings.fullInteraction ? () => this.fullInteraction() : undefined;
       this._interactElement.addEventListener(
         "pointerdown",
-        () => {
-          this._checkInteraction(onerror);
+        (ev: PointerEvent) => {
+          ev.stopPropagation();
+          ev.preventDefault();
+          if (!this._clickTouchEventHandled) {
+            this._clickTouchEventHandled = true;
+            this._checkInteraction(onerror);
+          }
         },
         { once: true }
       );
       this._interactElement.addEventListener(
         "touchstart",
-        () => {
-          this._checkInteraction(onerror);
+        (ev: TouchEvent) => {
+          ev.stopPropagation();
+          ev.preventDefault();
+          if (!this._clickTouchEventHandled) {
+            this._clickTouchEventHandled = true;
+            this._checkInteraction(onerror);
+          }
         },
         { once: true }
       );
@@ -111,28 +132,29 @@ export const RequireInteractMixin = (SuperClass) => {
 
     fullInteraction() {
       if (!this._interactElement) return;
+      this.setupInteractionIconText();
       const closeIconButton = document.createElement("ha-icon-button");
       closeIconButton.setAttribute("id", "close");
       const closeIcon = document.createElement("ha-icon");
       closeIcon.setAttribute("icon", "mdi:close");
       closeIconButton.append(closeIcon);
-      closeIconButton.addEventListener("pointerdown", () => {
-        this._clearInteract();
+      closeIconButton.addEventListener("pointerdown", (ev: PointerEvent) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if (!this._clickTouchEventHandled) {
+          this._clickTouchEventHandled = true;
+          this._clearInteract();
+        }
       });
-      closeIconButton.addEventListener("touchstart", () => {
-        this._clearInteract();
+      closeIconButton.addEventListener("touchstart", (ev: TouchEvent) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+        if (!this._clickTouchEventHandled) {
+          this._clickTouchEventHandled = true;
+          this._clearInteract();
+        }
       });
       this._interactElement.shadowRoot.append(closeIconButton);
-      const source = document.createElement("source");
-      source.setAttribute("type", "audio/mp3");
-      source.setAttribute("src", popSoundUrl());
-      this._video.replaceChild(source, this._video.firstChild);
-      this._video.load();
-      this._video.addEventListener("loadeddata", () => {
-        this._video.setAttribute("controls", "");
-        this._interactElement.removeAttribute("minimal");
-        this._interactElement.setAttribute("full", "");
-      });
       this._video.addEventListener("play", () => {
         this._video.addEventListener("ended", () => {
           window.setTimeout(() => {
@@ -148,6 +170,15 @@ export const RequireInteractMixin = (SuperClass) => {
         this.callService(service, { message });
         console.log(message, e.toString());
       });
+      const source = document.createElement("source");
+      source.setAttribute("type", "audio/mp3");
+      source.setAttribute("src", popSoundUrl());
+      this._video.replaceChild(source, this._video.firstChild);
+      this._video.muted = false;
+      this._video.load();
+      this._video.setAttribute("controls", "");
+      this._interactElement.removeAttribute("minimal");
+      this._interactElement.setAttribute("full", "");
     }
 
     async setupInteraction() {
@@ -192,7 +223,7 @@ export const RequireInteractMixin = (SuperClass) => {
       #tap {
         grid-area: icon;
         justify-self: self-end;
-        padding-right: calc(var(--icon-inset) + var(--safe-area-inset-bottom));
+        padding-right: calc(var(--icon-inset) + var(--safe-area-inset-right));
       }
       :host([full]) #tap {
         justify-self: center;
@@ -208,8 +239,8 @@ export const RequireInteractMixin = (SuperClass) => {
         align-self: self-start;
         --mdc-icon-size: 48px;
         color: var(--white-color, white);
-        padding-top: calc(var(--icon-inset) + var(--safe-area-inset-bottom));
-        padding-left: calc(var(--icon-inset) + var(--safe-area-inset-bottom));
+        padding-top: calc(var(--icon-inset) + var(--safe-area-inset-top));
+        padding-left: calc(var(--icon-inset) + var(--safe-area-inset-left));
         --mdc-ripple-hover-opacity: 0.2;
         --mdc-ripple-press-opacity: 0.33;
       }
@@ -218,7 +249,7 @@ export const RequireInteractMixin = (SuperClass) => {
         align-self: end;
         justify-self: self-end;
         padding-bottom: calc(var(--icon-inset) + var(--safe-area-inset-bottom));
-        padding-right: calc(var(--icon-inset) + var(--safe-area-inset-bottom));
+        padding-right: calc(var(--icon-inset) + var(--safe-area-inset-right));
         font-size: 0.75rem;
       }
       :host([full]) span {
@@ -253,6 +284,7 @@ export const RequireInteractMixin = (SuperClass) => {
 
       this._video = document.createElement("video");
       this._video.setAttribute("playsinline", "");
+      this._video.setAttribute("preload", "auto");
       const source = document.createElement("source");
       source.setAttribute("type", "video/mp4");
       source.setAttribute("src", blankVideoUrl());
@@ -260,7 +292,10 @@ export const RequireInteractMixin = (SuperClass) => {
       this._video.muted = true;
       this._interactElement.shadowRoot.append(this._video);
 
-      this._checkInteraction(() => this.minimalInteraction());
+      const interactionFunction = this.settings.forceFullInteraction ?
+        () => this.fullInteraction() : 
+        () => this.minimalInteraction();
+      this._checkInteraction(interactionFunction);
 
       if (this.fully) {
         this._videoInteractionResolve();

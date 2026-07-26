@@ -497,6 +497,22 @@ class BrowserModFrontendSettingsCard extends LitElement {
             ></browser-mod-settings-table>
           </ha-expansion-panel>
           <ha-expansion-panel
+            .header=${"Force full user interaction"}
+            .secondary=${"Always use full user interaction."}
+            @expanded-changed=${this.expandedChanged}
+            leftChevron
+          >
+            <browser-mod-settings-table
+              .hass=${this.hass}
+              .settingKey=${"forceFullInteraction"}
+              .settingSelector=${{
+                boolean: {},
+                label: "Force full user interaction",
+              }}
+              .entityRegistry=${this.entityRegistry}
+            ></browser-mod-settings-table>
+          </ha-expansion-panel>
+          <ha-expansion-panel
             .header=${"Save screen state"}
             .secondary=${"Save screen state when browser is disconnected"}
             @expanded-changed=${this.expandedChanged}

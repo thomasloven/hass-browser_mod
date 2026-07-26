@@ -190,6 +190,10 @@ This hides the icon in the bottom right corner which indicates that you need to 
 
 This allows for a Full [user interaction](#user-interaction) check if required.
 
+### Force full user interaction
+
+The Force full [user interaction](#user-interaction) setting forces user interaction to always be Full user interaction, bypassing the minimal icon user interaction.
+
 ### Save screen state
 
 This saves the screen state on browser disconnect and restores on browser reconnect. The screen state (on/off) and brightness are both saved. The state will be saved and restored for all browsers that have this setting applied, including those running Fully Kiosk.
@@ -213,7 +217,6 @@ Common resolutions:
 Set a go2rtc base URL to publish the Browser camera as a WHIP stream. Browser Mod will publish to `/api/webrtc?dst=<BrowserID>` under this base URL. For example, if the base URL is `https://go2rtc.example.local`, the Browser with ID `kitchen` publishes to `https://go2rtc.example.local/api/webrtc?dst=kitchen`.
 
 See [go2rtc publishing](./go2rtc.md) for go2rtc setup, HTTPS, CORS, and troubleshooting notes.
-
 
 ---
 
@@ -242,11 +245,15 @@ Due to Browser restrictions users may need to interact with a Browser after refr
 
 ![Tablet device showing interaction is required](https://github.com/user-attachments/assets/b98935b3-86e3-44bf-b745-4e0c4b6ad459)
 
-When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required __directly__ on an interactive element. If this is the case, a Frontend option is available to set [Full user interaction](#full-user-interaction) if required. When this Frontend setting is set for a Browser, and the need for Full user interaction is detected, users will see a full interaction screen like that shown below. To facilitate successful user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
+When the user interaction icon is showing, a click/touch anywhere on the screen will cause Browser Mod to again check if video/audio can be played automatically. If successful, no further action is required. For some Browsers, user interaction is required __directly__ on an interactive element. If this is the case, a Frontend option is available to set [Full user interaction](#full-user-interaction) if user interaction is required. When this Frontend setting is set for a Browser, and the need user interaction is detected, users will see a full interaction screen like that shown below. To facilitate successful Full user interaction, click the play button shown on the media controls. If successful, a short 'pop' sound will be heard and the Full interaction screen will be dismissed. If nothing happens it means there are further interaction issues and users will need to use the dismiss 'X' button to continue.
+
+In some cases the icon based minimal user interaction passes but playing unmuted video/audio automatically still fails. In this case you can try to set [Force full user interaction](#force-full-user-interaction) setting for the Browser. This will bypass the minimal icon user interaction and use the Full user interaction directly on Browser load.
 
 ![Tablet device showing full interaction](https://github.com/user-attachments/assets/a1ce01af-091e-4618-bd8e-c50ebd05f9cf)
 
 To allow for Full user interaction for a Browser, use the [Full user interaction](#full-user-interaction) Frontend setting.
+
+To force Full user interaction for a Browser, use the Force full user interaction Frontend setting.
 
 To not have any user interaction, the user interaction icon may be hidden using a [Frontend user setting](#hide-interaction-icon). This does not remove the need for interaction. You can always check the need for interaction through the `video_interaction_required` and `audio_interaction_required` attributes of the `media_player` entity for the Browser.
 
