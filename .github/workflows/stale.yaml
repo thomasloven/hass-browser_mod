@@ -6,15 +6,22 @@ on:
   schedule:
     - cron: "0 * * * *"
 
+permissions:
+  issues: write
+  pull-requests: write
+
 jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - name: 60 days stale policy
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 21 days stale policy
         uses: actions/stale@v10.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-stale: 60
+          days-before-stale: 21
           days-before-close: 7
           operations-per-run: 25
           remove-stale-when-updated: true
@@ -33,3 +40,12 @@ jobs:
             and will be closed if no further activity occurs within 7 days.
 
             Thank you for your contributions.
+
+      - name: Run waiting for response stale check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const script = require('./.github/workflows/stale-waiting.js');
+            await script({ github, context });
+
