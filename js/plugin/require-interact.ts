@@ -147,14 +147,15 @@ export const RequireInteractMixin = (SuperClass) => {
         },
         { once: true }
       );
-      closeIconButton.addEventListener("touchstart", (ev: TouchEvent) => {
-        ev.stopPropagation();
-        ev.preventDefault();
-        if (!this._clickTouchEventHandled) {
-          this._clickTouchEventHandled = true;
+      closeIconButton.addEventListener(
+        "touchstart",
+        (ev: TouchEvent) => {
+          ev.stopPropagation();
+          ev.preventDefault();
           this._clearInteract();
-        }
-      });
+        },
+        { once: true }
+      );
       this._interactElement.shadowRoot.append(closeIconButton);
       this._video.addEventListener("play", () => {
         this._video.addEventListener("ended", () => {
@@ -229,6 +230,7 @@ export const RequireInteractMixin = (SuperClass) => {
       :host([full]) #tap {
         justify-self: center;
         align-self: self-start;
+        padding: 0px;
       }
       #close {
         grid-area: close;
@@ -264,10 +266,9 @@ export const RequireInteractMixin = (SuperClass) => {
       }
       :host([full]) video {
         display: inherit;
-        justify-self: center;
+        margin: 0 auto;
         align-self: self-end;
-        width: 250px;
-        scale: 1.2;
+        width: 300px;
       }
       @media all and (max-width: 450px), all and (max-height: 500px) {
         :host {
