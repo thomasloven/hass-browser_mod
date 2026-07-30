@@ -1,3 +1,9 @@
+## [3.2.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.0-beta.1...v3.2.0-beta.2) (2026-07-30)
+
+### 🐞 Bug Fixes
+
+* await ha-panel-lovelace when checking/loading ha-dialog. Removes console error regarding window.loadCardHelpers. ([743c8f3](https://github.com/thomasloven/hass-browser_mod/commit/743c8f3019b0231850db524e7d8b7fe94c2c78ba))
+
 ## [3.2.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.1-beta.2...v3.2.0-beta.1) (2026-07-26)
 
 ### ⭐ New Features
