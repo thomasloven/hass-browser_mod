@@ -195,6 +195,7 @@ export const loadDeveloperToolsTemplate = async () => {
 };
 
 export const loadHaDialog = async () => {
+  await customElements.whenDefined("ha-panel-lovelace");
   if (customElements.get("ha-dialog")) return;
   const haEl = await hass_base_el();
   if (!haEl) return;

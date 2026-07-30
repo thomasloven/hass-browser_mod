@@ -41,6 +41,8 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
         BrowserModEntity.__init__(self, coordinator, browserID, None)
         MediaPlayerEntity.__init__(self)
         self.browser = browser
+        self._position_seen = None
+        self._position_valid_at = None
 
     @property
     def unique_id(self):
@@ -112,7 +114,22 @@ class BrowserModPlayer(BrowserModEntity, MediaPlayerEntity):
 
     @property
     def media_position_updated_at(self):
-        return dt.utcnow()
+        # Only stamp when the reported position actually changes.
+        # Returning dt.utcnow() unconditionally makes every coordinator
+        # update a brand-new state (the timestamp is a state attribute), so
+        # each connected browser floods the state machine and recorder with
+        # no-op state updates. It also breaks paused/idle position
+        # extrapolation, which relies on this being the time the position
+        # was last VALID.
+        position = self.media_position
+        if position is None:
+            self._position_seen = None
+            self._position_valid_at = None
+            return None
+        if position != self._position_seen:
+            self._position_seen = position
+            self._position_valid_at = dt.utcnow()
+        return self._position_valid_at
 
     @property
     def media_content_id(self):

@@ -22,6 +22,8 @@ WS_RECALL_ID = f"{WS_ROOT}/recall_id"
 WS_STORE_SESSION = f"{WS_ROOT}/store_session"
 WS_DELETE_SESSION = f"{WS_ROOT}/delete_session"
 WS_LOG = f"{WS_ROOT}/log"
+WS_CREATE_ISSUE = f"{WS_ROOT}/create_issue"
+WS_DELETE_ISSUE = f"{WS_ROOT}/delete_issue"
 
 BROWSER_MOD_BROWSER_SERVICES = [
     "sequence",
@@ -50,3 +52,7 @@ DYNAMIC_ENTITIES = [
 ]
 
 DATA_FRONTEND_PATCHES = "frontend_patches"
+
+ISSUE_IDS = {
+    "default_dashboard_plugin_conflict": "default_dashboard_plugin_conflict"
+}

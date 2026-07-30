@@ -483,7 +483,7 @@ navigate:
 
 refresh:
   name: refresh
-  description: "Refresh page"
+  description: "Refresh page clearing Frontend cache and optional Browser localStorage items"
   fields:
     browser_id:
       name: Target Browser
@@ -501,6 +501,18 @@ refresh:
           multiple: true
           filter:
             domain: "person"
+    local_storage_items:
+      name: Local Storage Items
+      description: "List of local storage items to clear before refresh"
+      selector:
+        object:
+          multiple: true
+          fields:
+            item:
+              label: "Local storage key to clear"
+              selector:
+                text:
+    
 
 change_browser_id:
   name: change_browser_id
@@ -630,7 +642,7 @@ javascript:
 
 deregister_browser:
   name: deregister_browser
-  description: "Deregister a browser. Include at leaset one paremeter. Calling wiith either exclude parameter will deregister all browsers except those excluded."
+  description: "Deregister a browser. Include at least one parameter. Calling with either exclude parameter will deregister all browsers except those excluded."
   fields:
     browser_id:
       name: Target Browsers
