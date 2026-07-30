@@ -10,30 +10,6 @@
 * Detect conflicting default-dashboard plugin, prevent refresh loop and issue a repair warning with cleanup instructions. ([#1353](https://github.com/thomasloven/hass-browser_mod/issues/1353)) ([ac60e05](https://github.com/thomasloven/hass-browser_mod/commit/ac60e05be081e7d51bf3fec1ddb2241968415f0f)), closes [#1345](https://github.com/thomasloven/hass-browser_mod/issues/1345)
 * media player state churn - stamp media_position_updated_at only on real position change ([#1351](https://github.com/thomasloven/hass-browser_mod/issues/1351)) ([f53901c](https://github.com/thomasloven/hass-browser_mod/commit/f53901c12f58e854dccff1d8094b0b4c9b1b57a9))
 
-## [3.2.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.0-beta.1...v3.2.0-beta.2) (2026-07-30)
-
-### 🐞 Bug Fixes
-
-* await ha-panel-lovelace when checking/loading ha-dialog. Removes console error regarding window.loadCardHelpers. ([743c8f3](https://github.com/thomasloven/hass-browser_mod/commit/743c8f3019b0231850db524e7d8b7fe94c2c78ba))
-
-## [3.2.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.1-beta.2...v3.2.0-beta.1) (2026-07-26)
-
-### ⭐ New Features
-
-* Add Force full user interaction Frontend settings to always use Full user interaction, not only on minimal interaction error. ([#1354](https://github.com/thomasloven/hass-browser_mod/issues/1354)) ([e6b9305](https://github.com/thomasloven/hass-browser_mod/commit/e6b930529151e9def99c01f98f913dd649df7f2b))
-
-## [3.1.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.1-beta.1...v3.1.1-beta.2) (2026-07-25)
-
-### 🐞 Bug Fixes
-
-* media player state churn - stamp media_position_updated_at only on real position change ([#1351](https://github.com/thomasloven/hass-browser_mod/issues/1351)) ([f53901c](https://github.com/thomasloven/hass-browser_mod/commit/f53901c12f58e854dccff1d8094b0b4c9b1b57a9))
-
-## [3.1.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0...v3.1.1-beta.1) (2026-07-24)
-
-### 🐞 Bug Fixes
-
-* Detect conflicting default-dashboard plugin, prevent refresh loop and issue a repair warning with cleanup instructions. ([#1353](https://github.com/thomasloven/hass-browser_mod/issues/1353)) ([ac60e05](https://github.com/thomasloven/hass-browser_mod/commit/ac60e05be081e7d51bf3fec1ddb2241968415f0f)), closes [#1345](https://github.com/thomasloven/hass-browser_mod/issues/1345)
-
 ## [3.1.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.0.2...v3.1.0) (2026-07-15)
 
 ### ⭐ New Features
