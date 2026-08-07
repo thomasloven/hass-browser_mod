@@ -241,7 +241,7 @@ Using this method means that the new random Browser ID never has sent informatio
 
 #### User interaction
 
-Due to Browser restrictions users may need to interact with a Browser after refresh to be able to play video/audio automatically with the media player created by Browser Mod for the Browser. Generally muted video will play automatically without needing interaction, but less so unmuted video and/or audio. To facilitate having the Browser ready to play video/audio, Browser Mod carries out interaction tests on Browser refresh. First Browser Mod checks if muted video can be played. If successful, Browser Mod next checks if unmuted video can be played. If one of these checks is not successful, Browser Mod will display an icon in the lower left of the Browser to show that user interaction is required.
+Due to Browser restrictions users may need to interact with a Browser after refresh to be able to play video/audio automatically with the media player created by Browser Mod for the Browser. Generally muted video will play automatically without needing interaction, but less so unmuted video and/or audio. To facilitate having the Browser ready to play video/audio, Browser Mod carries out interaction tests on Browser refresh. First Browser Mod checks if muted video can be played. If successful, Browser Mod next checks if unmuted video can be played. If one of these checks is not successful, Browser Mod will display an icon in the lower right of the Browser to show that user interaction is required.
 
 ![Tablet device showing interaction is required](https://github.com/user-attachments/assets/b98935b3-86e3-44bf-b745-4e0c4b6ad459)
 
