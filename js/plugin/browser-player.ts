@@ -216,5 +216,13 @@ class BrowserPlayer extends LitElement {
   }
 }
 
-if (!customElements.get("browser-player"))
-  customElements.define("browser-player", BrowserPlayer);
+window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
+  ev.stopPropagation();
+  while (!window.browser_mod) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  await window.browser_mod.connectionPromise;
+
+  if (!customElements.get("browser-player"))
+    customElements.define("browser-player", BrowserPlayer);
+});

@@ -15,7 +15,7 @@ type Columns = {
   };
 };
 
-class BrowserModSettingsTable extends LitElement {
+export class BrowserModSettingsTable extends LitElement {
   @property() settingKey;
   @property() settingSelector: any = {
     template: {}
@@ -922,6 +922,3 @@ class BrowserModSettingsTable extends LitElement {
     `;
   }
 }
-
-customElements.define("browser-mod-settings-table", BrowserModSettingsTable);
-

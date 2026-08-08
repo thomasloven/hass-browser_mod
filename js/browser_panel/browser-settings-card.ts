@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 
-class BrowserModRegisteredBrowsersCard extends LitElement {
+export class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
   @property({ type: Boolean }) dirty = false;
   @property({ type: Boolean }) public narrow = false;
@@ -382,7 +382,3 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     `;
   }
 }
-customElements.define(
-  "browser-mod-browser-settings-card",
-  BrowserModRegisteredBrowsersCard
-);

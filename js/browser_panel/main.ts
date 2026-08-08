@@ -5,6 +5,7 @@ import { loadConfigDashboard } from "../helpers";
 import "./browser-settings-card";
 
 import pjson from "../../package.json";
+import { BrowserModRegisteredBrowsersCard } from "./browser-settings-card";
 
 const bmWindow = window as any;
 
@@ -70,5 +71,8 @@ loadConfigDashboard().then(() => {
     }
   }
 
-  customElements.define("browser-mod-browser-panel", BrowserModBrowserPanel);
+  if (!customElements.get("browser-mod-browser-panel"))
+    customElements.define("browser-mod-browser-panel", BrowserModBrowserPanel);
+  if (!customElements.get("browser-mod-browser-settings-card"))
+    customElements.define("browser-mod-browser-settings-card", BrowserModRegisteredBrowsersCard);
 });

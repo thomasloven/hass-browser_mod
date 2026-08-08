@@ -2,7 +2,7 @@ import { LitElement, html, css } from "lit";
 import { property } from "lit/decorators.js";
 import { frontendSettingsAdaptiveDialogStyle, lookupBrowserEntity } from "../helpers";
 
-class BrowserModRegisteredBrowsersCard extends LitElement {
+export class BrowserModRegisteredBrowsersCard extends LitElement {
   @property() hass;
 
   @property({type: Array}) entityRegistry?: any[];
@@ -181,7 +181,3 @@ class BrowserModRegisteredBrowsersCard extends LitElement {
     `;
   }
 }
-customElements.define(
-  "browser-mod-registered-browsers-card",
-  BrowserModRegisteredBrowsersCard
-);

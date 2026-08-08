@@ -7,7 +7,7 @@ import "./browser-mod-settings-table";
 
 loadDeveloperToolsTemplate();
 
-class BrowserModFrontendSettingsCard extends LitElement {
+export class BrowserModFrontendSettingsCard extends LitElement {
   @property() hass;
   @property({type: Array}) entityRegistry?: any[];
 
@@ -585,8 +585,3 @@ class BrowserModFrontendSettingsCard extends LitElement {
     `;
   }
 }
-
-customElements.define(
-  "browser-mod-frontend-settings-card",
-  BrowserModFrontendSettingsCard
-);

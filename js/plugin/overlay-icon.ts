@@ -109,6 +109,3 @@ export class OverlayIcon extends LitElement {
     `;
   }
 }
-
-if (!customElements.get("browser-mod-overlay-icon"))
-  customElements.define("browser-mod-overlay-icon", OverlayIcon);
