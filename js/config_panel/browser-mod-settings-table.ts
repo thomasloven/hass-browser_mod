@@ -150,7 +150,7 @@ class BrowserModSettingsTable extends LitElement {
         return;
       }
       let value = newValue.hasOwnProperty("value") ? newValue.value : newValue;
-      if (!(this.settingSelector as any).hasOwnProperty("object") && typeof value === "object") {
+      if (!((this.settingSelector as any).hasOwnProperty("object") || (this.settingSelector as any).hasOwnProperty("schema")) && typeof value === "object") {
         value = undefined;
       }
       if (value && (this.settingSelector as any).hasOwnProperty("object") && Object.keys(value).length === 0) {
@@ -168,7 +168,7 @@ class BrowserModSettingsTable extends LitElement {
     let value =
       (type === "global" ? settings.global : settings[type][target]) ??
       this.default;
-    if (!(this.settingSelector as any).hasOwnProperty("object") && typeof value === "object") {
+    if (!((this.settingSelector as any).hasOwnProperty("object") || (this.settingSelector as any).hasOwnProperty("schema")) && typeof value === "object") {
       value = undefined;
     }
     if (value && (this.settingSelector as any).hasOwnProperty("object") && Object.keys(value).length === 0) {
