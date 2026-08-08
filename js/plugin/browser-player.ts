@@ -7,7 +7,7 @@ import "./types";
 
 class BrowserPlayer extends LitElement {
   @property() hass;
-  @property({ attribute: "edit-mode", reflect: true }) editMode;
+  @property({ type: Boolean }) preview;
 
   static getConfigElement() {
     return document.createElement("browser-player-editor");
@@ -18,7 +18,7 @@ class BrowserPlayer extends LitElement {
 
   _reconnect() {
     if (!window.browser_mod?.registered) {
-      if (this.parentElement.localName === "hui-card-preview") {
+      if (this.preview) {
         this.removeAttribute("hidden");
       } else {
         this.setAttribute("hidden", "");
