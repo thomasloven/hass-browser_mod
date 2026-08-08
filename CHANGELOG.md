@@ -1,3 +1,10 @@
+## [3.2.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.0...v3.2.1-beta.1) (2026-08-08)
+
+### 🐞 Bug Fixes
+
+* Overlay icon Frontend settings do not load or save since v3.1.0 ([be1c6c2](https://github.com/thomasloven/hass-browser_mod/commit/be1c6c2c86bb5e69734b99e1d5cb909e4805f88b))
+* Refactor all customElements definitions so they are not set early prior to Home Assistants scoped customElement registry ([77a79eb](https://github.com/thomasloven/hass-browser_mod/commit/77a79ebe685c63d5533cc5d9701d2d73d17cd7cb))
+
 ## [3.2.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0...v3.2.0) (2026-07-30)
 
 ### ⭐ New Features
