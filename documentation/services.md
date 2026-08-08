@@ -5,6 +5,19 @@ Browser Mod services can be called in two different ways which behave slightly d
 
 The first way is as a *Server* call. This is when the service is called from a script or automation, from Developer tools or directly from a dashboard card action.
 
+```yaml
+type: button
+name: Sever Call - Notification
+tap_action:
+  action: perform-action
+  perform_action: browser_mod.notification
+  target: {}
+  data:
+    browser_id:
+      - e37643b8cd031cfb006c04181ac31758
+    message: Browser Mod Notification
+```
+
 The second way is as a *Browser* call. This is when the service is called from a dashboard `fire-dom-event` action, or as a part of a `browser_mod.sequence` call, or as a `browser_mod.popup` `*_action`.
 
 The notable difference between the two is when no target (`browser_id` or `user_id`) is specified.
@@ -12,6 +25,21 @@ The notable difference between the two is when no target (`browser_id` or `user_
 *Server* calls route via Home Assistant server, and are sent to Browsers matching the Browser ID and/or User ID provided. If no Browser ID or User ID is provided in a *Server* call it will be performed on **ALL REGISTERED BROWSERS**.
 
 *Browser* calls are handled by the current Browser. If no Browser ID or User ID is provided in a *Browser* call it will be performed on **THE CURRENT BROWSER**.
+
+```yaml
+show_name: true
+show_icon: true
+type: button
+name: Browser Call - Notification
+tap_action:
+  action: fire-dom-event
+  browser_mod: 
+    service: browser_mod.notification
+    data:
+      # browser_id: # Browser call without browser_id will target current Browser
+      message: Browser Mod Notification
+
+```
 
 > TIP: If you wish to display a popup on a Browser using `browser_mod.popup` as a result of a user pressing a button, you will want to use a *Browser* call using `action: fire-dom-event`. This may be counterintuitive for a new Home Assistant dashboard creator and may seem more complex than it needs to be. This is due to standard implementation of Home Assistant actions being server based, and only custom integrations like Browser Mod allowing for Browser based actions. See [popups.md](popups.md) for more information and examples.
 
