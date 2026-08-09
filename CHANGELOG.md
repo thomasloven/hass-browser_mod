@@ -1,3 +1,9 @@
+## [3.2.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1-beta.1...v3.2.1-beta.2) (2026-08-09)
+
+### 🐞 Bug Fixes
+
+* Console errors when using Browser Player on dashboard. Warning message regarding browser not registered shows always whereas should only show in preview mode. ([aa4f9b6](https://github.com/thomasloven/hass-browser_mod/commit/aa4f9b6767083cbd9b7a0fa8204e6ec5cf46ffae)), closes [#1056](https://github.com/thomasloven/hass-browser_mod/issues/1056)
+
 ## [3.2.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.0...v3.2.1-beta.1) (2026-08-08)
 
 ### 🐞 Bug Fixes
