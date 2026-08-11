@@ -1,3 +1,9 @@
+## [3.2.1-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1-beta.2...v3.2.1-beta.3) (2026-08-11)
+
+### 🐞 Bug Fixes
+
+* Optimise popup timeout progress bar to update only every 1/10th timeout, max 500ms, instead of every 10ms, using linear animation to progress between updates. This approach is much less Browser resource intensive. ([41dd6af](https://github.com/thomasloven/hass-browser_mod/commit/41dd6afec66f2fc98bce02be8f5bad568ac11fff)), closes [#1363](https://github.com/thomasloven/hass-browser_mod/issues/1363)
+
 ## [3.2.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1-beta.1...v3.2.1-beta.2) (2026-08-09)
 
 ### 🐞 Bug Fixes
