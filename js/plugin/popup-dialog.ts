@@ -135,6 +135,7 @@ export class BrowserModPopup extends LitElement {
     this.open = true;
     this._expectingCloseEvent = false;
     this.updateComplete.then(async () => {
+      let injected = false;
       if (this.adaptive && this.adaptive_force_bottom_sheet) {
         this.dialog._mode = "bottom-sheet";
         this.dialog._modeSet = true;
@@ -142,6 +143,7 @@ export class BrowserModPopup extends LitElement {
           await this.dialog?.updateComplete;
           const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
           this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
+          injected = true;
         }
       } else if (this.timeout && !this.timeout_hide_progress) {
         if (this.adaptive) {
@@ -149,17 +151,30 @@ export class BrowserModPopup extends LitElement {
           const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
           if (bottomSheet) {
             this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
+            injected = true;
           } else {
             const innerDialog = this.dialog?.shadowRoot?.querySelector("ha-dialog") as any;
             if (innerDialog?.updateComplete) await innerDialog.updateComplete;
             this._injectProgressToDialogHeader(innerDialog?.shadowRoot?.querySelector("ha-dialog-header"));
+            injected = true;
           }
         } else {
           await this.dialog?.updateComplete;
           this._injectProgressToDialogHeader(this.dialog?.shadowRoot?.querySelector("ha-dialog-header"));
+          injected = true;
         }
       }
+      if (injected) {
+        setTimeout(() => {
+          if (this.timeout && this.open) {
+            const updateInterval = Math.max(50, Math.min(500, this.timeout / 10));
+            const initialProgress = Math.min(100, (updateInterval / this.timeout) * 100);
+            this.style.setProperty("--progress", `${initialProgress}%`);
+          }
+        }, 0);
+      }
     });
+
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
       const updateInterval = Math.max(50, Math.min(500, this.timeout / 10));
@@ -167,7 +182,7 @@ export class BrowserModPopup extends LitElement {
       this.style.setProperty("--progress", "0%");
       this._timeoutTimer = setInterval(() => {
         const ellapsed = new Date().getTime() - this._timeoutStart;
-        const progress = Math.min(100, (ellapsed / this.timeout) * 100);
+        const progress = Math.min(100, ((ellapsed + updateInterval) / this.timeout) * 100);
         if (!this.timeout_hide_progress) {
           this.style.setProperty("--progress", `${progress}%`);
         }
