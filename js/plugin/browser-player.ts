@@ -7,7 +7,7 @@ import "./types";
 
 class BrowserPlayer extends LitElement {
   @property() hass;
-  @property({ attribute: "edit-mode", reflect: true }) editMode;
+  @property({ type: Boolean }) preview;
 
   static getConfigElement() {
     return document.createElement("browser-player-editor");
@@ -18,7 +18,7 @@ class BrowserPlayer extends LitElement {
 
   _reconnect() {
     if (!window.browser_mod?.registered) {
-      if (this.parentElement.localName === "hui-card-preview") {
+      if (this.preview) {
         this.removeAttribute("hidden");
       } else {
         this.setAttribute("hidden", "");
@@ -216,5 +216,13 @@ class BrowserPlayer extends LitElement {
   }
 }
 
-if (!customElements.get("browser-player"))
-  customElements.define("browser-player", BrowserPlayer);
+window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
+  ev.stopPropagation();
+  while (!window.browser_mod) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  await window.browser_mod.connectionPromise;
+
+  if (!customElements.get("browser-player"))
+    customElements.define("browser-player", BrowserPlayer);
+});

@@ -104,6 +104,7 @@ export class BrowserModPopup extends LitElement {
     this.card = undefined;
     clearInterval(this._timeoutTimer);
     this.style.removeProperty("--progress");
+    this.style.removeProperty("--progress-transition-duration");
     if (this._autocloseListener) {
       window.browser_mod.removeEventListener(
         "browser-mod-activity",
@@ -134,6 +135,7 @@ export class BrowserModPopup extends LitElement {
     this.open = true;
     this._expectingCloseEvent = false;
     this.updateComplete.then(async () => {
+      let injected = false;
       if (this.adaptive && this.adaptive_force_bottom_sheet) {
         this.dialog._mode = "bottom-sheet";
         this.dialog._modeSet = true;
@@ -141,6 +143,7 @@ export class BrowserModPopup extends LitElement {
           await this.dialog?.updateComplete;
           const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
           this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
+          injected = true;
         }
       } else if (this.timeout && !this.timeout_hide_progress) {
         if (this.adaptive) {
@@ -148,22 +151,38 @@ export class BrowserModPopup extends LitElement {
           const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
           if (bottomSheet) {
             this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
+            injected = true;
           } else {
             const innerDialog = this.dialog?.shadowRoot?.querySelector("ha-dialog") as any;
             if (innerDialog?.updateComplete) await innerDialog.updateComplete;
             this._injectProgressToDialogHeader(innerDialog?.shadowRoot?.querySelector("ha-dialog-header"));
+            injected = true;
           }
         } else {
           await this.dialog?.updateComplete;
           this._injectProgressToDialogHeader(this.dialog?.shadowRoot?.querySelector("ha-dialog-header"));
+          injected = true;
         }
       }
+      if (injected) {
+        setTimeout(() => {
+          if (this.timeout && this.open) {
+            const updateInterval = Math.max(50, Math.min(500, this.timeout / 10));
+            const initialProgress = Math.min(100, (updateInterval / this.timeout) * 100);
+            this.style.setProperty("--progress", `${initialProgress}%`);
+          }
+        }, 0);
+      }
     });
+
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
+      const updateInterval = Math.max(50, Math.min(500, this.timeout / 10));
+      this.style.setProperty("--progress-transition-duration", `${updateInterval}ms`);
+      this.style.setProperty("--progress", "0%");
       this._timeoutTimer = setInterval(() => {
         const ellapsed = new Date().getTime() - this._timeoutStart;
-        const progress = (ellapsed / this.timeout) * 100;
+        const progress = Math.min(100, ((ellapsed + updateInterval) / this.timeout) * 100);
         if (!this.timeout_hide_progress) {
           this.style.setProperty("--progress", `${progress}%`);
         }
@@ -171,7 +190,7 @@ export class BrowserModPopup extends LitElement {
           clearInterval(this._timeoutTimer);
           this._timeout();
         }
-      }, 10);
+      }, updateInterval);
     }
     this._autocloseListener = undefined;
     if (this._autoclose) {
@@ -503,6 +522,7 @@ export class BrowserModPopup extends LitElement {
         background: var(--primary-color);
         z-index: 10;
         pointer-events: none;
+        transition: width var(--progress-transition-duration, 0s) linear;
       }
     `;
     headerEl.shadowRoot.prepend(style);
@@ -523,6 +543,7 @@ export class BrowserModPopup extends LitElement {
       background: var(--primary-color);
       z-index: 10;
       pointer-events: none;
+      transition: width var(--progress-transition-duration, 0s) linear;
     `;
     bottomSheetEl.prepend(progressEl);
   }

@@ -595,3 +595,14 @@ export const AutoSettingsMixin = (SuperClass) => {
   }
   return AutoSettingsMixinClass;
 };
+
+window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
+  ev.stopPropagation();
+  while (!window.browser_mod) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  await window.browser_mod.connectionPromise;
+
+  if (!customElements.get("browser-mod-overlay-icon"))
+    customElements.define("browser-mod-overlay-icon", OverlayIcon);
+});

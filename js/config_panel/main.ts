@@ -6,6 +6,9 @@ import "./registered-browsers-card";
 import "./frontend-settings-card";
 
 import pjson from "../../package.json";
+import { BrowserModSettingsTable } from "./browser-mod-settings-table";
+import { BrowserModFrontendSettingsCard } from "./frontend-settings-card";
+import { BrowserModRegisteredBrowsersCard } from "./registered-browsers-card";
 
 const bmWindow = window as any;
 
@@ -93,5 +96,12 @@ loadConfigDashboard().then(() => {
     }
   }
 
+  if (!customElements.get("browser-mod-config-panel"))
   customElements.define("browser-mod-config-panel", BrowserModConfigPanel);
+  if (!customElements.get("browser-mod-settings-table"))
+    customElements.define("browser-mod-settings-table", BrowserModSettingsTable);
+  if (!customElements.get("browser-mod-frontend-settings-card"))
+    customElements.define("browser-mod-frontend-settings-card", BrowserModFrontendSettingsCard);
+  if (!customElements.get("browser-mod-registered-browsers-card"))
+    customElements.define("browser-mod-registered-browsers-card", BrowserModRegisteredBrowsersCard);
 });
