@@ -7,25 +7,6 @@
 * Overlay icon Frontend settings do not load or save since v3.1.0 ([be1c6c2](https://github.com/thomasloven/hass-browser_mod/commit/be1c6c2c86bb5e69734b99e1d5cb909e4805f88b))
 * Refactor all customElements definitions so they are not set early prior to Home Assistants scoped customElement registry ([77a79eb](https://github.com/thomasloven/hass-browser_mod/commit/77a79ebe685c63d5533cc5d9701d2d73d17cd7cb))
 
-## [3.2.1-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1-beta.2...v3.2.1-beta.3) (2026-08-11)
-
-### 🐞 Bug Fixes
-
-* Optimise popup timeout progress bar to update only every 1/10th timeout, max 500ms, instead of every 10ms, using linear animation to progress between updates. This approach is much less Browser resource intensive. ([41dd6af](https://github.com/thomasloven/hass-browser_mod/commit/41dd6afec66f2fc98bce02be8f5bad568ac11fff)), closes [#1363](https://github.com/thomasloven/hass-browser_mod/issues/1363)
-
-## [3.2.1-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1-beta.1...v3.2.1-beta.2) (2026-08-09)
-
-### 🐞 Bug Fixes
-
-* Console errors when using Browser Player on dashboard. Warning message regarding browser not registered shows always whereas should only show in preview mode. ([aa4f9b6](https://github.com/thomasloven/hass-browser_mod/commit/aa4f9b6767083cbd9b7a0fa8204e6ec5cf46ffae)), closes [#1056](https://github.com/thomasloven/hass-browser_mod/issues/1056)
-
-## [3.2.1-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.0...v3.2.1-beta.1) (2026-08-08)
-
-### 🐞 Bug Fixes
-
-* Overlay icon Frontend settings do not load or save since v3.1.0 ([be1c6c2](https://github.com/thomasloven/hass-browser_mod/commit/be1c6c2c86bb5e69734b99e1d5cb909e4805f88b))
-* Refactor all customElements definitions so they are not set early prior to Home Assistants scoped customElement registry ([77a79eb](https://github.com/thomasloven/hass-browser_mod/commit/77a79ebe685c63d5533cc5d9701d2d73d17cd7cb))
-
 ## [3.2.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.1.0...v3.2.0) (2026-07-30)
 
 ### ⭐ New Features
