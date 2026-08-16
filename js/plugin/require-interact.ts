@@ -107,8 +107,6 @@ export const RequireInteractMixin = (SuperClass) => {
       this._interactElement.addEventListener(
         "pointerdown",
         (ev: PointerEvent) => {
-          ev.stopPropagation();
-          ev.preventDefault();
           if (!this._clickTouchEventHandled) {
             this._clickTouchEventHandled = true;
             this._checkInteraction(onerror);
@@ -119,8 +117,6 @@ export const RequireInteractMixin = (SuperClass) => {
       this._interactElement.addEventListener(
         "touchstart",
         (ev: TouchEvent) => {
-          ev.stopPropagation();
-          ev.preventDefault();
           if (!this._clickTouchEventHandled) {
             this._clickTouchEventHandled = true;
             this._checkInteraction(onerror);
