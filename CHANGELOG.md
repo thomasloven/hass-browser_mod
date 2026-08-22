@@ -4,12 +4,6 @@
 
 * Don't stop pointerdown/touchstart event propagation for minimal interaction. ([becbf80](https://github.com/thomasloven/hass-browser_mod/commit/becbf80ca86b7a3d5d42a09fd5f7b1fd6511ed94)), closes [#1369](https://github.com/thomasloven/hass-browser_mod/issues/1369)
 
-## [3.2.2-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1...v3.2.2-beta.1) (2026-08-16)
-
-### 🐞 Bug Fixes
-
-* Don't stop pointerdown/touchstart event propagation for minimal interaction. ([becbf80](https://github.com/thomasloven/hass-browser_mod/commit/becbf80ca86b7a3d5d42a09fd5f7b1fd6511ed94)), closes [#1369](https://github.com/thomasloven/hass-browser_mod/issues/1369)
-
 ## [3.2.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.0...v3.2.1) (2026-08-13)
 
 ### 🐞 Bug Fixes
