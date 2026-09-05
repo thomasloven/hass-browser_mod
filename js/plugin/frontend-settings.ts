@@ -254,11 +254,15 @@ export const AutoSettingsMixin = (SuperClass) => {
       while (!sidebar && cnt++ < 5) {
         sidebar = await selectTree(
           document.body,
-          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar $ .title"
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
         );
         if (!sidebar) await new Promise((r) => setTimeout(r, 500));
       }
-      if (sidebar) sidebar.innerHTML = result;
+      if (sidebar) {
+        sidebar.setAttribute("sidebar-title", result);
+        // Force a sidebar update as a change in sidebarTitle won't force ha-sidebar shouldUpdate
+        sidebar.requestUpdate("narrow");
+      }
     }
 
     get _currentFavicon() {
