@@ -1,3 +1,9 @@
+## [3.2.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.2...v3.2.3-beta.1) (2026-09-05)
+
+### 🐞 Bug Fixes
+
+* Since HA 2026.7.0 Browser with Sidebar title Frontend setting causes Lit error which may hang sidebar in Home Assistant dev mode. Error exists in non-dev mode but still an issue. ([ea423fb](https://github.com/thomasloven/hass-browser_mod/commit/ea423fb08d68073c0be1c159c5b8e123cdfff1ce)), closes [#1375](https://github.com/thomasloven/hass-browser_mod/issues/1375)
+
 ## [3.2.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.1...v3.2.2) (2026-08-22)
 
 ### 🐞 Bug Fixes
