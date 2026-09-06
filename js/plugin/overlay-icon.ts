@@ -1,8 +1,8 @@
 import { LitElement, html, css } from "lit";
-import { property, query, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 
 export class OverlayIcon extends LitElement {
-  @property({reflect: true}) show: string;
+  @property({type: Boolean, reflect: true}) show: boolean;
 
   @state() icon: string;
   @state() title: string;
@@ -16,15 +16,8 @@ export class OverlayIcon extends LitElement {
   private action: object;
   private _actionCallback: (action: object) => void;
 
-  constructor(
-    settings: object, 
-    actionCallback: (action: object) => void) 
-  {
-    super();
-
-    this.settings = settings;
-    this._actionCallback = actionCallback;
-    this.show = "";
+  set actionCallbackFunction(value: (action: object) => void) {
+    this._actionCallback = value;
   }
 
   set settings(value) {
@@ -46,17 +39,6 @@ export class OverlayIcon extends LitElement {
     this._actionCallback?.(this.action);
   }
 
-  async connectedCallback() {
-    super.connectedCallback();
-
-    await Promise.all(
-      [
-        customElements.whenDefined("ha-icon-button"),
-        customElements.whenDefined("ha-icon")
-      ]
-    )
-  }
-
   _renderDynamicStyles() {
     let styles = ":host {\n";
     if (this.top !== undefined) styles += `  top: ${this.top}px;\n`;
@@ -69,7 +51,7 @@ export class OverlayIcon extends LitElement {
   }
 
   render() {
-    if (!this.show === undefined) 
+    if (!this.show) 
       return html``;
 
     return html`
@@ -109,3 +91,21 @@ export class OverlayIcon extends LitElement {
     `;
   }
 }
+
+window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
+  ev.stopPropagation();
+  while (!window.browser_mod) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  await window.browser_mod.connectionPromise;
+
+  if (!customElements.get("browser-mod-overlay-icon")) {
+    customElements.define("browser-mod-overlay-icon", OverlayIcon);
+    window.customCards = window.customCards || [];
+    window.customCards.push({
+      type: "browser-mod-overlay-icon",
+      name: "Browser Mod Overlay Icon",
+      preview: true,
+    });
+  }
+});
