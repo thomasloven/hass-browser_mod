@@ -262,7 +262,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (sidebar) {
         sidebar.setAttribute("sidebar-title", result);
         // Force a sidebar update as a change in sidebarTitle won't force ha-sidebar shouldUpdate
-        sidebar.requestUpdate("narrow");
+        sidebar.requestUpdate?.("narrow");
       }
     }
 
