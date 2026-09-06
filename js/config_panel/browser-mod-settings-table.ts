@@ -228,7 +228,7 @@ export class BrowserModSettingsTable extends LitElement {
       if (settings.browser[target] == null) {
         browsers.push(
           { 
-            label: d.name_by_user ? `${d.name_by_user} (${target})` : target, 
+            label: d?.name_by_user ? `${d.name_by_user} (${target})` : target, 
             value: target
           });
       }
@@ -370,7 +370,7 @@ export class BrowserModSettingsTable extends LitElement {
       if (val.length >= 20) val = val.slice(0, 20) + "...";
       const d = lookupBrowserEntity(this.entityRegistry, k);
       data.push({
-        name: `Browser: ${d.name_by_user ? `${d.name_by_user} (${k})` : k}`,
+        name: `Browser: ${d?.name_by_user ? `${d.name_by_user} (${k})` : k}`,
         value: val,
         controls: html`
           <div>
