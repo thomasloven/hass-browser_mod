@@ -1,3 +1,9 @@
+## [3.2.3-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3-beta.2...v3.2.3-beta.3) (2026-09-06)
+
+### 🐞 Bug Fixes
+
+* (beta) Sidebar title update causing console error when sidebar not fully ready ([4b7ce8b](https://github.com/thomasloven/hass-browser_mod/commit/4b7ce8bbba8f4b58d3256e7779de0cc112125b61))
+
 ## [3.2.3-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3-beta.1...v3.2.3-beta.2) (2026-09-06)
 
 ### 🐞 Bug Fixes
