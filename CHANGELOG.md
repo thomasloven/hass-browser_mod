@@ -1,3 +1,9 @@
+## [3.2.3-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3-beta.3...v3.2.3-beta.4) (2026-09-06)
+
+### 🐞 Bug Fixes
+
+* Browser Mod settings which contain reference to a delete Browser Mod device generates console error and 'Loading...' in any Frontend settings section that includes the deleted device. ([f794ddd](https://github.com/thomasloven/hass-browser_mod/commit/f794ddda397e782c94030d5ec6b6f27b26c83ea1))
+
 ## [3.2.3-beta.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3-beta.2...v3.2.3-beta.3) (2026-09-06)
 
 ### 🐞 Bug Fixes
