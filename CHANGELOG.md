@@ -1,3 +1,9 @@
+## [3.2.3-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3-beta.1...v3.2.3-beta.2) (2026-09-06)
+
+### 🐞 Bug Fixes
+
+* Overlay icon when set may cause console errors and not display correctly. ([9c0348a](https://github.com/thomasloven/hass-browser_mod/commit/9c0348ab41a968d27ccfba2974afb246d85df6cf))
+
 ## [3.2.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.2...v3.2.3-beta.1) (2026-09-05)
 
 ### 🐞 Bug Fixes
