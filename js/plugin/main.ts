@@ -1,5 +1,6 @@
 import "./event-target-polyfill.js";
 import "./browser-player";
+import "./overlay-icon";
 
 import { ConnectionMixin } from "./connection";
 import { ScreenSaverMixin } from "./screensaver";

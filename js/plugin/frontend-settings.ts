@@ -24,6 +24,7 @@ export const AutoSettingsMixin = (SuperClass) => {
     _removeLegacySidebarSettings: Boolean = false;
     __currentTitle = undefined;
     _overlayIcon: OverlayIcon = undefined;
+    _overlayIconSetupPromise: Promise<void> = undefined;
 
     @runOnce()
     async runHideHeader() {
@@ -254,11 +255,15 @@ export const AutoSettingsMixin = (SuperClass) => {
       while (!sidebar && cnt++ < 5) {
         sidebar = await selectTree(
           document.body,
-          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar $ .title"
+          "home-assistant $ home-assistant-main $ ha-drawer ha-sidebar"
         );
         if (!sidebar) await new Promise((r) => setTimeout(r, 500));
       }
-      if (sidebar) sidebar.innerHTML = result;
+      if (sidebar) {
+        sidebar.setAttribute("sidebar-title", result);
+        // Force a sidebar update as a change in sidebarTitle won't force ha-sidebar shouldUpdate
+        sidebar.requestUpdate?.("narrow");
+      }
     }
 
     get _currentFavicon() {
@@ -378,27 +383,39 @@ export const AutoSettingsMixin = (SuperClass) => {
     async _setupOverlayIcon() {
       if (this.settings.overlayIcon) {
         if (!this._overlayIcon) {
-          this._overlayIcon = new OverlayIcon(
-                                this.settings.overlayIcon,
-                                this._runOverlayIconAction.bind(this)
-                              )
-          document.body.append(this._overlayIcon);
+          if (!this._overlayIconSetupPromise) {
+            this._overlayIconSetupPromise = Promise.all([
+              customElements.whenDefined("browser-mod-overlay-icon"),
+              customElements.whenDefined("ha-icon-button"),
+              customElements.whenDefined("ha-icon"),
+            ]).then(() => {
+              this._overlayIcon = document.createElement("browser-mod-overlay-icon") as OverlayIcon;
+              this._overlayIcon.actionCallbackFunction = this._runOverlayIconAction.bind(this);
+              this._overlayIcon.settings = this.settings.overlayIcon;
+              document.body.append(this._overlayIcon);
+              this._updateOverlayIcon();
+            });
+          }
+        } else {
+          this._overlayIcon.settings = this.settings.overlayIcon;
           this._updateOverlayIcon();
         }
       } else {
         this._overlayIcon?.remove();
         this._overlayIcon = undefined;
+        this._overlayIconSetupPromise = undefined;
       }
     }
 
     async _updateOverlayIcon() {
       if (this.settings.overlayIcon && this._overlayIcon) {
+        this._overlayIcon.settings = this.settings.overlayIcon;
         const firstPathPart = window.location.pathname?.split('/')?.[1];
         if (firstPathPart)
           if (this.settings.overlayIcon.panels?.includes(firstPathPart)) {
-            this._overlayIcon.show = "";
+            this._overlayIcon.show = true;
           } else {
-            this._overlayIcon.show = undefined;
+            this._overlayIcon.show = false;
           }
       }
     }
