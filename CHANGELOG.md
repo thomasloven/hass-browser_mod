@@ -1,3 +1,12 @@
+## [3.2.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.2...v3.2.3) (2026-09-07)
+
+### 🐞 Bug Fixes
+
+* (beta) Sidebar title update causing console error when sidebar not fully ready ([4b7ce8b](https://github.com/thomasloven/hass-browser_mod/commit/4b7ce8bbba8f4b58d3256e7779de0cc112125b61))
+* Browser Mod settings which contain reference to a delete Browser Mod device generates console error and 'Loading...' in any Frontend settings section that includes the deleted device. ([f794ddd](https://github.com/thomasloven/hass-browser_mod/commit/f794ddda397e782c94030d5ec6b6f27b26c83ea1))
+* Overlay icon when set may cause console errors and not display correctly. ([9c0348a](https://github.com/thomasloven/hass-browser_mod/commit/9c0348ab41a968d27ccfba2974afb246d85df6cf))
+* Since HA 2026.7.0 Browser with Sidebar title Frontend setting causes Lit error which may hang sidebar in Home Assistant dev mode. Error exists in non-dev mode but still an issue. ([ea423fb](https://github.com/thomasloven/hass-browser_mod/commit/ea423fb08d68073c0be1c159c5b8e123cdfff1ce)), closes [#1375](https://github.com/thomasloven/hass-browser_mod/issues/1375)
+
 ## [3.2.3-beta.4](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3-beta.3...v3.2.3-beta.4) (2026-09-06)
 
 ### 🐞 Bug Fixes
