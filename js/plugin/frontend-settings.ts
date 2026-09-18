@@ -525,13 +525,13 @@ export const AutoSettingsMixin = (SuperClass) => {
           if (settingsRow) {
             const pickText = settingsRow.querySelector(`[slot="description"]:not(.${NOTICE_ID})`);
             const dashboardSelect = settingsRow.querySelector("ha-select");
-            const noticeText = settingsRow.querySelector(`[slot="description"].${NOTICE_ID}`);
+            let noticeText = settingsRow.querySelector(`[slot="description"].${NOTICE_ID}`);
             if (!noticeText) {
-              const notice = document.createElement("span");
-              notice.classList.add(NOTICE_ID);
-              notice.slot = "description";
-              notice.textContent = "Default dashboard for this Browser is managed by Browser Mod.";
-              settingsRow.appendChild(notice);
+              noticeText = document.createElement("span");
+              noticeText.classList.add(NOTICE_ID);
+              noticeText.slot = "description";
+              noticeText.textContent = "Default dashboard for this Browser is managed by Browser Mod.";
+              settingsRow.appendChild(noticeText);
             }
             if (this.settings.defaultPanel) {
               if (pickText) pickText.style.display = "none";
