@@ -492,7 +492,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       const NOTICE_ID = "browser-mod-dashboard-notice";
 
       const applyProfileOverride = async () => {
-        if (!window.location.pathname.startsWith("/profile")) return;
+        if (!window.location.pathname.startsWith("/profile/preferences")) return;
 
         // Suppress the HA profile row whenever Browser Mod has any defaultPanel
         // setting (global/browser/user), because BM now owns effective default
@@ -513,7 +513,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         while (!dashboardRow && cnt++ < 10) {
           dashboardRow = await selectTree(
             document.body,
-            "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-profile-section-general $ ha-pick-dashboard-row"
+            "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-panel-profile ha-profile-section-preferences $ ha-pick-dashboard-row"
           );
           if (!dashboardRow) await new Promise((r) => setTimeout(r, 1000));
         }
