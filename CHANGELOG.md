@@ -1,3 +1,14 @@
+## [3.3.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3...v3.3.0-beta.1) (2026-09-18)
+
+### ⭐ New Features
+
+* Update Browser Version check and toast message including auto reload after 60s. You will see this the next update after the update including this feature as pre-updated code always runs the version check. ([ade496a](https://github.com/thomasloven/hass-browser_mod/commit/ade496abad074cd813579fda3c599d708421d5db))
+
+### 🐞 Bug Fixes
+
+* Correctly unsubscribe sidebar backend data subscriptions when updating sidebar panels. Ede case resource leak as usually sidebar panels only update once per page load. ([f51fce8](https://github.com/thomasloven/hass-browser_mod/commit/f51fce89d6bd93cf1919bc076ab582c9c83d0a27))
+* Remove OverlayIcon class from custom cards (added in error in 3.2.3). ([16bb574](https://github.com/thomasloven/hass-browser_mod/commit/16bb5744881e09dc7be8eacfe9ce621646dc9314))
+
 ## [3.2.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.2...v3.2.3) (2026-09-07)
 
 ### 🐞 Bug Fixes
