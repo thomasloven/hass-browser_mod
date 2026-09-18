@@ -32,6 +32,7 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "compare-versions": "^6.1.1",
     "@watchable/unpromise": "^1.0.2"
   },
   "allowScripts": {
