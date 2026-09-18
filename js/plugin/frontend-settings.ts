@@ -560,7 +560,17 @@ export const AutoSettingsMixin = (SuperClass) => {
       if (sidebar) {
         // force sidebar to re-apply panels with new settings
         // this is both debounced and only when Browser Mod settings change
-        sidebar.__ubsubs?.forEach((unsub) => unsub());
+        if (sidebar.__unsubs) {
+          while (sidebar.__unsubs.length) {
+            const unsub = sidebar.__unsubs.pop()!;
+            if (unsub instanceof Promise) {
+              unsub.then((unsubFunc) => unsubFunc());
+            } else {
+              unsub();
+            }
+          }
+          sidebar.__unsubs = undefined;
+        }
         sidebar.hassSubscribe && sidebar.hassSubscribe();
       }
     }
