@@ -509,12 +509,18 @@ export const AutoSettingsMixin = (SuperClass) => {
         // flat (older HA) and tabbed (newer HA) profile page structures.
         // selectTree returns null on timeout instead of throwing.
         let dashboardRow = undefined;
+        const dashboardRowPaths = [
+          // Home Assistant <= 2026.9 keeps the picker in the general section.
+          "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-profile-section-general $ ha-pick-dashboard-row",
+          // Home Assistant 2026.10 moves it to the preferences section.
+          "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-profile-section-preferences $ ha-pick-dashboard-row",
+        ];
         let cnt = 0;
         while (!dashboardRow && cnt++ < 10) {
-          dashboardRow = await selectTree(
-            document.body,
-            "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-profile-section-general $ ha-pick-dashboard-row"
-          );
+          for (const path of dashboardRowPaths) {
+            dashboardRow = await selectTree(document.body, path);
+            if (dashboardRow) break;
+          }
           if (!dashboardRow) await new Promise((r) => setTimeout(r, 1000));
         }
 
