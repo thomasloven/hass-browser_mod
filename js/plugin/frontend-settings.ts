@@ -492,7 +492,7 @@ export const AutoSettingsMixin = (SuperClass) => {
       const NOTICE_ID = "browser-mod-dashboard-notice";
 
       const applyProfileOverride = async () => {
-        if (!window.location.pathname.startsWith("/profile")) return;
+        if (!window.location.pathname.startsWith("/profile/preferences")) return;
 
         // Suppress the HA profile row whenever Browser Mod has any defaultPanel
         // setting (global/browser/user), because BM now owns effective default
@@ -513,7 +513,7 @@ export const AutoSettingsMixin = (SuperClass) => {
         while (!dashboardRow && cnt++ < 10) {
           dashboardRow = await selectTree(
             document.body,
-            "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-profile-section-general $ ha-pick-dashboard-row"
+            "home-assistant $ home-assistant-main $ ha-drawer partial-panel-resolver ha-panel-profile ha-profile-section-preferences $ ha-pick-dashboard-row"
           );
           if (!dashboardRow) await new Promise((r) => setTimeout(r, 1000));
         }
@@ -525,13 +525,13 @@ export const AutoSettingsMixin = (SuperClass) => {
           if (settingsRow) {
             const pickText = settingsRow.querySelector(`[slot="description"]:not(.${NOTICE_ID})`);
             const dashboardSelect = settingsRow.querySelector("ha-select");
-            const noticeText = settingsRow.querySelector(`[slot="description"].${NOTICE_ID}`);
+            let noticeText = settingsRow.querySelector(`[slot="description"].${NOTICE_ID}`);
             if (!noticeText) {
-              const notice = document.createElement("span");
-              notice.classList.add(NOTICE_ID);
-              notice.slot = "description";
-              notice.textContent = "Default dashboard for this Browser is managed by Browser Mod.";
-              settingsRow.appendChild(notice);
+              noticeText = document.createElement("span");
+              noticeText.classList.add(NOTICE_ID);
+              noticeText.slot = "description";
+              noticeText.textContent = "Default dashboard for this Browser is managed by Browser Mod.";
+              settingsRow.appendChild(noticeText);
             }
             if (this.settings.defaultPanel) {
               if (pickText) pickText.style.display = "none";
