@@ -1,3 +1,9 @@
+## [3.3.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.3.0-beta.1...v3.3.0-beta.2) (2026-09-30)
+
+### ⚙️ Miscellaneous
+
+* Default dashboard profile edit restriction updated inline with Home Assistant 2026.10.0 ([#1387](https://github.com/thomasloven/hass-browser_mod/issues/1387)) ([fef0264](https://github.com/thomasloven/hass-browser_mod/commit/fef02641f3732e436938be6489c6aa601a6c000d)), closes [#1319](https://github.com/thomasloven/hass-browser_mod/issues/1319)
+
 ## [3.3.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3...v3.3.0-beta.1) (2026-09-18)
 
 ### ⭐ New Features
