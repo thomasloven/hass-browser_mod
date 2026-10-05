@@ -18,17 +18,12 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/exec": "^7.1.0",
-    "@semantic-release/git": "^10.0.1",
     "@types/ungap__structured-clone": "^1.2.0",
     "@ungap/structured-clone": "^1.3.0",
     "baseline-browser-mapping": "^2.11.22",
-    "conventional-changelog-conventionalcommits": "^9.2.0",
     "lit": "3.3.1",
     "rollup": "^4.59.0",
     "rollup-plugin-typescript2": "^0.36.0",
-    "semantic-release": "^25.0.3",
     "typescript": "^6.0.3"
   },
   "dependencies": {
