@@ -101,11 +101,5 @@ window.addEventListener("browser-mod-bootstrap", async (ev: Event) => {
 
   if (!customElements.get("browser-mod-overlay-icon")) {
     customElements.define("browser-mod-overlay-icon", OverlayIcon);
-    window.customCards = window.customCards || [];
-    window.customCards.push({
-      type: "browser-mod-overlay-icon",
-      name: "Browser Mod Overlay Icon",
-      preview: true,
-    });
   }
 });
