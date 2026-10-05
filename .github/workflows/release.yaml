@@ -4,7 +4,28 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Run semantic-release in dry-run mode"
+        description: "Preview release only — do not create a commit, tag, or GitHub Release"
+        required: false
+        type: boolean
+        default: false
+      force_bump:
+        description: "When previewing, force this bump when no commit requests a release"
+        required: false
+        type: choice
+        options:
+          - none
+          - prerelease
+          - patch
+          - minor
+          - major
+        default: none
+      release_note_banner:
+        description: "Release-note banner (optional; shown in bold at the top)"
+        required: false
+        type: string
+        default: ""
+      recover_release:
+        description: "Recover the GitHub Release for the latest pushed release commit (not a preview)"
         required: false
         type: boolean
         default: false
@@ -14,30 +35,195 @@ permissions:
   issues: write
   pull-requests: write
 
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 'lts/*'
+          node-version: 24
+
+      - name: Validate release options
+        if: ${{ inputs.dry_run && inputs.recover_release }}
+        run: |
+          echo 'dry_run and recover_release cannot be used together.' >&2
+          exit 1
 
       - name: Install dependencies
+        if: ${{ !inputs.recover_release }}
         run: npm ci
 
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare release recovery
+        id: recovery
+        if: ${{ !inputs.dry_run && inputs.recover_release }}
         run: |
-          DRY_RUN_FLAG=""
-          if [ "${{ inputs.dry_run }}" = "true" ]; then
-            DRY_RUN_FLAG="--dry-run"
+          VERSION="$(node -p 'require("./package.json").version')"
+          SUBJECT="$(git log -1 --format=%s)"
+          if [ "$SUBJECT" != "chore(release): $VERSION [skip ci]" ]; then
+            echo 'Recovery requires the branch head to be its release commit.' >&2
+            exit 1
           fi
-          npx semantic-release $DRY_RUN_FLAG
+          case "$VERSION" in
+            *-*) PRERELEASE=true ;;
+            *) PRERELEASE=false ;;
+          esac
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+
+      - name: Read release notes for recovery
+        id: recovery_notes
+        if: ${{ !inputs.dry_run && inputs.recover_release }}
+        env:
+          RELEASE_VERSION: ${{ steps.recovery.outputs.version }}
+        run: node scripts/read-release-notes.mjs >> "$GITHUB_OUTPUT"
+
+      - name: Preserve legacy major feature scope
+        id: legacy_major
+        if: ${{ !inputs.recover_release }}
+        run: |
+          PREVIOUS_TAG="$(git tag --merged HEAD --list 'v*' --sort=-version:refname | head -1)"
+          RANGE="${PREVIOUS_TAG:+$PREVIOUS_TAG..}HEAD"
+          if git log --format=%s "$RANGE" | grep -Eq '^feat\(major\)(!)?: '; then
+            echo 'force_bump=major' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Calculate release
+        id: version
+        if: ${{ !inputs.recover_release }}
+        uses: mathieudutour/github-tag-action@af99e60ce8132224b8e6ebab5023449fe256ed46 # v7.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_branches: '^master$'
+          pre_release_branches: '^dev$'
+          append_to_pre_release_tag: beta
+          default_bump: false
+          default_prerelease_bump: false
+          fetch_all_tags: true
+          force_bump: ${{ steps.legacy_major.outputs.force_bump || inputs.dry_run && inputs.force_bump != 'none' && inputs.force_bump || '' }}
+          force_prerelease_bump: ${{ steps.legacy_major.outputs.force_bump || inputs.dry_run && inputs.force_bump != 'none' && inputs.force_bump || '' }}
+          custom_release_rules: >-
+            feat:minor:⭐ New Features,fix:patch:🐞 Bug Fixes,revert:patch:🐞 Bug Fixes,
+            perf:minor:⚡ Performance Improvements,docs:patch:📔 Documentation,
+            deps:patch:📦 Dependency Upgrades,refactor:patch:⚙️ Miscellaneous,
+            style:patch:⚙️ Miscellaneous
+          dry_run: true
+
+      - name: Show release calculation
+        env:
+          RELEASE_TYPE: ${{ steps.version.outputs.release_type }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_TAG: ${{ steps.version.outputs.new_tag }}
+        run: |
+          printf 'version: %s\n' "${RELEASE_VERSION:-none}"
+          printf 'tag: %s\n' "${RELEASE_TAG:-none}"
+          printf 'release type: %s\n' "${RELEASE_TYPE:-none}"
+
+      - name: Format release notes
+        id: notes
+        if: ${{ steps.version.outputs.new_version != '' }}
+        env:
+          RELEASE_NOTES: ${{ steps.version.outputs.changelog }}
+          RELEASE_NOTE_BANNER: ${{ inputs.release_note_banner }}
+        run: node scripts/format-release-notes.mjs >> "$GITHUB_OUTPUT"
+
+      - name: Show generated release notes
+        if: ${{ steps.version.outputs.new_version != '' }}
+        env:
+          RELEASE_NOTES: ${{ steps.notes.outputs.changelog }}
+        run: printf '%s\n' "$RELEASE_NOTES"
+
+      - name: Require a release branch
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
+        run: |
+          case "$GITHUB_REF_NAME" in
+            dev|master) ;;
+            *)
+              echo "Releases may only run from dev or master; received $GITHUB_REF_NAME." >&2
+              exit 1
+              ;;
+          esac
+
+      - name: Set package version
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
+        run: npm version '${{ steps.version.outputs.new_version }}' --no-git-tag-version
+
+      - name: Build release files
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
+        run: npm run build
+
+      - name: Update changelog
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
+        env:
+          RELEASE_NOTES: ${{ steps.notes.outputs.changelog }}
+        run: node scripts/prepend-release-notes.mjs
+
+      - name: Commit release files
+        id: release_commit
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -- \
+            CHANGELOG.md \
+            package.json \
+            package-lock.json \
+            custom_components/browser_mod/manifest.json \
+            custom_components/browser_mod/browser_mod.js \
+            custom_components/browser_mod/browser_mod_browser_panel.js \
+            custom_components/browser_mod/browser_mod_config_panel.js
+          git diff --cached --quiet && {
+            echo 'The release did not change any tracked files.' >&2
+            exit 1
+          }
+          git commit -m 'chore(release): ${{ steps.version.outputs.new_version }} [skip ci]'
+          git push origin "HEAD:$GITHUB_REF_NAME"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        id: github_release
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: ${{ steps.version.outputs.new_tag }}
+          target_commitish: ${{ steps.release_commit.outputs.sha }}
+          body: ${{ steps.notes.outputs.changelog }}
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          make_latest: ${{ steps.version.outputs.prerelease == 'true' && 'false' || 'true' }}
+
+      - name: Recover GitHub release
+        if: ${{ !inputs.dry_run && inputs.recover_release }}
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        with:
+          tag_name: ${{ steps.recovery.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          body: ${{ steps.recovery_notes.outputs.changelog }}
+          prerelease: ${{ steps.recovery.outputs.prerelease }}
+          make_latest: ${{ steps.recovery.outputs.prerelease == 'true' && 'false' || 'true' }}
+
+      - name: Notify linked issues and pull requests
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' && steps.version.outputs.prerelease != 'true' }}
+        uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1.4.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-template: |
+            Release {release_link} addresses this.
+
+      - name: Notify linked issues and pull requests for recovered release
+        if: ${{ !inputs.dry_run && inputs.recover_release && steps.recovery.outputs.prerelease != 'true' }}
+        uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1.4.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          comment-template: |
+            Release {release_link} addresses this.
