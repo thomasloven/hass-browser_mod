@@ -1,10 +1,7 @@
-## [3.3.0-beta.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.3.0-beta.1...v3.3.0-beta.2) (2026-09-30)
+## [3.3.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3...v3.3.0) (2026-10-07)
 
-### ⚙️ Miscellaneous
 
-* Default dashboard profile edit restriction updated inline with Home Assistant 2026.10.0 ([#1387](https://github.com/thomasloven/hass-browser_mod/issues/1387)) ([fef0264](https://github.com/thomasloven/hass-browser_mod/commit/fef02641f3732e436938be6489c6aa601a6c000d)), closes [#1319](https://github.com/thomasloven/hass-browser_mod/issues/1319)
-
-## [3.3.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3...v3.3.0-beta.1) (2026-09-18)
+**Requires Home Assistant 2026.10.0 or greater**
 
 ### ⭐ New Features
 
@@ -14,6 +11,12 @@
 
 * Correctly unsubscribe sidebar backend data subscriptions when updating sidebar panels. Ede case resource leak as usually sidebar panels only update once per page load. ([f51fce8](https://github.com/thomasloven/hass-browser_mod/commit/f51fce89d6bd93cf1919bc076ab582c9c83d0a27))
 * Remove OverlayIcon class from custom cards (added in error in 3.2.3). ([16bb574](https://github.com/thomasloven/hass-browser_mod/commit/16bb5744881e09dc7be8eacfe9ce621646dc9314))
+
+### ⚙️ Miscellaneous
+
+* Default dashboard profile edit restriction updated inline with Home Assistant 2026.10.0 ([#1387](https://github.com/thomasloven/hass-browser_mod/issues/1387)) ([fef0264](https://github.com/thomasloven/hass-browser_mod/commit/fef02641f3732e436938be6489c6aa601a6c000d)), closes [#1319](https://github.com/thomasloven/hass-browser_mod/issues/1319)
+* Migrate ci tooling from semantic-release to targeted GitHub actions. ([#1393](https://github.com/thomasloven/hass-browser_mod/issues/1393)) ([a57c334](https://github.com/thomasloven/hass-browser_mod/commit/a57c334b125c05c4ef5a1a9da2d43ac405bb4e43))
+
 
 ## [3.2.3](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.2...v3.2.3) (2026-09-07)
 
