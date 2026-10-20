@@ -1,3 +1,10 @@
+## [3.4.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.3.0...v3.4.0) (2026-10-20)
+
+
+### ⭐ New Features
+
+* Add local brand assets ([#1400](https://github.com/thomasloven/hass-browser_mod/issues/1400)) ([9a64ba2](https://github.com/thomasloven/hass-browser_mod/commit/9a64ba22defee1f729284334bf7463172702affb))
+
 ## [3.3.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3...v3.3.0) (2026-10-07)
 
 
