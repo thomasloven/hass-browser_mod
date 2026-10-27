@@ -16,6 +16,12 @@ from .panel import PanelSensor
 _LOGGER = logging.getLogger(__name__)
 
 
+def getBrowserDevices(hass, browserID):
+    """Return every device registered for a browser ID."""
+    dr = device_registry.async_get(hass)
+    return dr.async_get_devices(identifiers={(DOMAIN, browserID)})
+
+
 class Coordinator(DataUpdateCoordinator):
     def __init__(self, hass, browserID):
         super().__init__(
@@ -186,7 +192,6 @@ class BrowserModBrowser:
 
     def delete(self, hass):
         """Delete the device and associated entities."""
-        dr = device_registry.async_get(hass)
         er = entity_registry.async_get(hass)
 
         for e in self.entities.values():
@@ -194,8 +199,8 @@ class BrowserModBrowser:
 
         self.entities = {}
 
-        device = dr.async_get_device({(DOMAIN, self.browserID)})
-        hass.add_job(removeDevice, hass, self.browserID, device.id)
+        for device in getBrowserDevices(hass, self.browserID):
+            hass.add_job(removeDevice, hass, self.browserID, device.id)
 
     @property
     def connection(self):
@@ -239,12 +244,10 @@ def deleteBrowser(hass, browserID):
         del browsers[browserID]
     else:
         # Non-reporting Browser
-        dr = device_registry.async_get(hass)
         er = entity_registry.async_get(hass)
         _LOGGER.debug("deleteBrowser: Removing non-reporting browser %s", browserID)
 
-        dev = dr.async_get_device({(DOMAIN, browserID)})
-        if dev:
+        for dev in getBrowserDevices(hass, browserID):
             # Remove all entities associated with the device
             for entity in entity_registry.async_entries_for_device(er, dev.id, include_disabled_entities=True):
                 if entity.platform == DOMAIN:
