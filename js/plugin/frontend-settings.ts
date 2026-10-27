@@ -571,7 +571,7 @@ export const AutoSettingsMixin = (SuperClass) => {
           }
           sidebar.__unsubs = undefined;
         }
-        sidebar.hassSubscribe && sidebar.hassSubscribe();
+        sidebar.__unsubs = sidebar.hassSubscribe?.();
       }
     }
 
