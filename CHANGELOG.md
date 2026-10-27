@@ -1,9 +1,10 @@
-### [3.4.1-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.0...v3.4.1-beta.0) (2026-10-25)
+### [3.4.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.0...v3.4.1) (2026-10-27)
 
 
 ### 🐞 Bug Fixes
 
 * Replace Home Assistant async_get_device with async_get_devices. ([#1402](https://github.com/thomasloven/hass-browser_mod/issues/1402)) ([bd53bd6](https://github.com/thomasloven/hass-browser_mod/commit/bd53bd69bd53b98a2e4940004df3b0f12e7bda85)), closes [#1401](https://github.com/thomasloven/hass-browser_mod/issues/1401)
+* sidebar subscription leak on settings refresh ([#1404](https://github.com/thomasloven/hass-browser_mod/issues/1404)) ([38ea87a](https://github.com/thomasloven/hass-browser_mod/commit/38ea87a3228e69dbb9647626ddb647116ba58777))
 
 ## [3.3.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.2.3...v3.3.0) (2026-10-07)
 
