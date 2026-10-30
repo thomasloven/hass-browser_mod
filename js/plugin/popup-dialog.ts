@@ -510,7 +510,6 @@ export class BrowserModPopup extends LitElement {
     style.textContent = `
       :host {
         position: relative;
-        overflow: hidden;
       }
       :host::before {
         content: "";
