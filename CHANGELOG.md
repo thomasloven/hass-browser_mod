@@ -1,3 +1,10 @@
+### [3.4.2-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.1...v3.4.2-beta.0) (2026-10-30)
+
+
+### 🐞 Bug Fixes
+
+* **popup:** Incorrect popup header height for standard popup when timeout used. ([b46e5ce](https://github.com/thomasloven/hass-browser_mod/commit/b46e5ce32035721f13d0f1de278ddc5e03d0e9d3)), closes [#1408](https://github.com/thomasloven/hass-browser_mod/issues/1408)
+
 ### [3.4.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.0...v3.4.1) (2026-10-27)
 
 
