@@ -213,7 +213,7 @@ jobs:
           make_latest: ${{ steps.recovery.outputs.prerelease == 'true' && 'false' || 'true' }}
 
       - name: Notify linked issues and pull requests
-        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' && steps.version.outputs.prerelease != 'true' }}
+        if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
         uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1.4.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -221,7 +221,7 @@ jobs:
             Release {release_link} addresses this.
 
       - name: Notify linked issues and pull requests for recovered release
-        if: ${{ !inputs.dry_run && inputs.recover_release && steps.recovery.outputs.prerelease != 'true' }}
+        if: ${{ !inputs.dry_run && inputs.recover_release }}
         uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1.4.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
