@@ -1,3 +1,10 @@
+### [3.4.2-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.2-beta.0...v3.4.2-beta.1) (2026-11-08)
+
+
+### 🐞 Bug Fixes
+
+* Media player state incorrectly has `paused` state after `media_player.stop`. ([#1411](https://github.com/thomasloven/hass-browser_mod/issues/1411)) ([390b943](https://github.com/thomasloven/hass-browser_mod/commit/390b9439cdb626daa0f475691fe6433b21f0c77b)), closes [#1409](https://github.com/thomasloven/hass-browser_mod/issues/1409)
+
 ### [3.4.2-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.1...v3.4.2-beta.0) (2026-10-30)
 
 
