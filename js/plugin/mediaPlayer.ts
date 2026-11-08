@@ -6,6 +6,7 @@ export const MediaPlayerMixin = (SuperClass) => {
     private _audio_player;
     private _video_player;
     private _player_enabled;
+    private _player_stopped: boolean = false;
     private _canPlayVideo: boolean = false;
     private _canPlayAudio: boolean = false;
 
@@ -59,6 +60,7 @@ export const MediaPlayerMixin = (SuperClass) => {
 
       this.addEventListener("command-player-play", (ev) => {
         if (this.player.src && ev.detail?.media_content_id === undefined) {
+          this._player_stopped = false;
           this.player.play();
           this._show_video_player();
           return;
@@ -74,6 +76,7 @@ export const MediaPlayerMixin = (SuperClass) => {
         if (ev.detail?.media_content_id)
           this.player.src = ev.detail.media_content_id;
         this.extra = ev.detail?.extra;
+        this._player_stopped = false;
         this.player.play();
         this._show_video_player();
       });
@@ -81,8 +84,11 @@ export const MediaPlayerMixin = (SuperClass) => {
         this.player.pause()
       );
       this.addEventListener("command-player-stop", (ev) => {
-        this.player.src = null;
+        this._player_stopped = true;
         this.player.pause();
+        this.player.removeAttribute("src");
+        this.player.load();
+        this._player_update();
       });
       this.addEventListener("command-player-set-volume", (ev) => {
         if (ev.detail?.volume_level === undefined) return;
@@ -98,13 +104,15 @@ export const MediaPlayerMixin = (SuperClass) => {
         setTimeout(() => this._player_update(), 10);
       });
       this.addEventListener("command-player-turn-off", (ev) => {
+        this._player_stopped = false;
         if (
           this.player === this._video_player &&
           this._video_player.isConnected
         )
           this.closePopup({ tag: "media_player" });
         else if (this.player.src) this.player.pause();
-        this.player.src = "";
+        this.player.removeAttribute("src");
+        this.player.load();
         this._player_update();
       });
 
@@ -140,10 +148,10 @@ export const MediaPlayerMixin = (SuperClass) => {
 
     private _player_update() {
       const state = this._player_enabled
-        ? !this.player.src || this.player.src === window.location.href
-          ? "off"
-          : this.player.ended
+        ? this._player_stopped || this.player.ended
           ? "stopped"
+          : !this.player.src || this.player.src === window.location.href
+          ? "off"
           : this.player.paused
           ? "paused"
           : "playing"
