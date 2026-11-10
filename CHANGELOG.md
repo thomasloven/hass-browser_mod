@@ -1,3 +1,11 @@
+### [3.4.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.1...v3.4.2) (2026-11-10)
+
+
+### 🐞 Bug Fixes
+
+* **popup:** Incorrect popup header height for standard popup when timeout used. ([b46e5ce](https://github.com/thomasloven/hass-browser_mod/commit/b46e5ce32035721f13d0f1de278ddc5e03d0e9d3)), closes [#1408](https://github.com/thomasloven/hass-browser_mod/issues/1408)
+* Media player state incorrectly has `paused` state after `media_player.stop`. ([#1411](https://github.com/thomasloven/hass-browser_mod/issues/1411)) ([390b943](https://github.com/thomasloven/hass-browser_mod/commit/390b9439cdb626daa0f475691fe6433b21f0c77b)), closes [#1409](https://github.com/thomasloven/hass-browser_mod/issues/1409)
+
 ### [3.4.2-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.2-beta.0...v3.4.2-beta.1) (2026-11-08)
 
 
