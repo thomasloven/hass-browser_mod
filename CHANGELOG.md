@@ -1,3 +1,12 @@
+### [3.4.3-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.2...v3.4.3-beta.0) (2026-11-14)
+
+
+### 🐞 Bug Fixes
+
+* Revert "Merge pull request #1416 from thomasloven/dialog-close-issue" (#1417) ([d131b8f](https://github.com/thomasloven/hass-browser_mod/commit/d131b8f6ba36761a45ffd56e8d23bc1046097383)), closes [#1416](https://github.com/thomasloven/hass-browser_mod/issues/1416) [#1417](https://github.com/thomasloven/hass-browser_mod/issues/1417)
+* Closing directly nested dialog closes popup. This happens when custom cards use ha-dialog directly rather than using HA dialog manager. ([#1418](https://github.com/thomasloven/hass-browser_mod/issues/1418)) ([fb858fd](https://github.com/thomasloven/hass-browser_mod/commit/fb858fd1730375235cab82b57170c92cf2efcc28)), closes [#1415](https://github.com/thomasloven/hass-browser_mod/issues/1415)
+* **popup:** Reset `--dialog-content-padding` to initial to allow any directly nested child dialogs to get default HA dialog padding. Only applies to custom cards that host ha-dialog direct and not use HA dialog manager. ([#1419](https://github.com/thomasloven/hass-browser_mod/issues/1419)) ([5cdadec](https://github.com/thomasloven/hass-browser_mod/commit/5cdadec12e8a8f1f35c46030aab7ff6aeafcdae3))
+
 ### [3.4.2](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.1...v3.4.2) (2026-11-10)
 
 
