@@ -134,7 +134,12 @@ export class BrowserModPopup extends LitElement {
   private _handleDialogClosed(event: CustomEvent) {
     // `closed` events from dialogs rendered by popup content bubble through the
     // popup dialog. Only the popup's own dialog is allowed to close the popup.
-    if (event.target !== event.currentTarget) return;
+    if (event.target !== event.currentTarget) {
+      // Keep nested dialog events from consuming the host's one-time `closed`
+      // listener, which performs the popup's post-close cleanup.
+      event.stopPropagation();
+      return;
+    }
     this.closeDialog(event);
   }
 
