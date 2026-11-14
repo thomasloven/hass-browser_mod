@@ -131,6 +131,13 @@ export class BrowserModPopup extends LitElement {
     return true;
   }
 
+  private _handleDialogClosed(event: CustomEvent) {
+    // `closed` events from dialogs rendered by popup content bubble through the
+    // popup dialog. Only the popup's own dialog is allowed to close the popup.
+    if (event.target !== event.currentTarget) return;
+    this.closeDialog(event);
+  }
+
   openDialog() {
     this.open = true;
     this._expectingCloseEvent = false;
@@ -626,7 +633,7 @@ export class BrowserModPopup extends LitElement {
         <ha-adaptive-dialog
           .hass=${this.hass}
           .open=${this.open}
-          @closed=${(ev: CustomEvent) => this.closeDialog(ev)}
+          @closed=${(event: CustomEvent) => this._handleDialogClosed(event)}
           ?prevent-scrim-close=${!this.dismissable}
           ?without-header=${!this.title}
           ?allow-mode-change=${this.adaptive_allow_mode_change}
@@ -642,7 +649,7 @@ export class BrowserModPopup extends LitElement {
         .hass=${this.hass}
         .open=${this.open}
         type=${this._styleAttributes["classic"] ? "" : "standard"}
-        @closed=${(ev: CustomEvent) => this.closeDialog(ev)}
+        @closed=${(event: CustomEvent) => this._handleDialogClosed(event)}
         ?prevent-scrim-close=${!this.dismissable}
         ?without-header=${!this.title}
         flexContent
