@@ -716,6 +716,10 @@ export class BrowserModPopup extends LitElement {
         visibility: hidden;
       }
       .content {
+        /* The popup dialog itself needs zero native padding because the
+         * container below provides it. Reset the inherited value here so
+         * dialogs rendered by popup cards retain their own default padding. */
+        --dialog-content-padding: initial;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
         outline: none !important;
