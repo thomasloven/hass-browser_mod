@@ -703,6 +703,7 @@ export class BrowserModPopup extends LitElement {
         display: none;
         visibility: hidden;
       }
+        --dialog-content-padding: initial;
       .content {
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-focus-ring-color: rgba(0, 0, 0, 0);
