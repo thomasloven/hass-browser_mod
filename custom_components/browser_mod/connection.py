@@ -94,13 +94,25 @@ async def async_setup_connection(hass):
             # Browser settings (which include defaultAction and overlayIcon,
             # i.e. actions that are executed in that Browser).
             newBrowserID = data.get(BROWSER_ID)
-            if store.get_browser(browserID).locked or (
-                newBrowserID is not None and store.get_browser(newBrowserID).locked
-            ):
+            if store.get_browser(browserID).locked:
                 connection.send_error(
                     msg["id"],
                     websocket_api.ERR_UNAUTHORIZED,
                     "Browser is locked",
+                )
+                return
+            # A rename copies the whole stored record to the new ID, so it
+            # must not overwrite an existing Browser. The frontend only
+            # renames to an unused ID (browserIDChanged).
+            if (
+                newBrowserID is not None
+                and newBrowserID != browserID
+                and newBrowserID in store.data.browsers
+            ):
+                connection.send_error(
+                    msg["id"],
+                    websocket_api.ERR_UNAUTHORIZED,
+                    "Browser ID is already in use",
                 )
                 return
             for key in ("settings", "locked"):
