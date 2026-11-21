@@ -16,6 +16,11 @@ from .browser import deleteBrowsers
 
 _LOGGER = logging.getLogger(__name__)
 
+# Services that run arbitrary code in the target Browser. When called by a user
+# (e.g. from a dashboard), they only reach Browsers of that same user. Calls
+# without a user (automations) are not restricted, as an admin created them.
+SANDBOXED_SERVICES = ("javascript", "sequence")
+
 
 async def async_setup_services(hass):
     def get_browser_ids(data, selectorSuffix=""):
@@ -61,7 +66,14 @@ async def async_setup_services(hass):
         
         return browserIDs
 
-    def call_service(service, targets, data):
+    def browser_has_user(browser, user_id):
+        """True if the Browser has an open connection of the given user."""
+        return any(
+            connection.user is not None and connection.user.id == user_id
+            for (connection, _cid) in browser.connection
+        )
+
+    def call_service(service, targets, data, sandbox_user_id=None):
         browserTargets = targets["browsers"]
         userTargets = targets["users"]
 
@@ -79,11 +91,26 @@ async def async_setup_services(hass):
                     if browser.data.get("browser", {}).get("userData", {}).get("id") == userId:
                         browserTargets.append(key)
 
+        skipped = []
         for browserTarget in browserTargets:
             if browserTarget not in browsers:
                 continue
             browser = browsers[browserTarget]
+            if sandbox_user_id is not None and not browser_has_user(
+                browser, sandbox_user_id
+            ):
+                skipped.append(browserTarget)
+                continue
             hass.create_task(browser.send(service, **data))
+
+        if skipped:
+            _LOGGER.warning(
+                "browser_mod.%s called by user %s was not sent to Browsers of "
+                "other users: %s",
+                service,
+                sandbox_user_id,
+                ", ".join(skipped),
+            )
 
     def handle_browser_service(call):
         service = call.service
@@ -109,7 +136,11 @@ async def async_setup_services(hass):
 
         targets = {"browsers": browserIDs, "users": userIDs}
 
-        call_service(service, targets, data)
+        sandbox_user_id = None
+        if service in SANDBOXED_SERVICES:
+            sandbox_user_id = call.context.user_id
+
+        call_service(service, targets, data, sandbox_user_id)
     
     # Hanldler for server browser_mod.deregister_browser
     async def deregister_browser(call):

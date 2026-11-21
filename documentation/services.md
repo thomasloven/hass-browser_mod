@@ -499,6 +499,8 @@ Note that if `browser_id` and `user_id` is omitted in the service calls listed i
 
 TIP: To target browsers matching the current loggded in user ID you can use `user_id: THIS`. This may be useful when you have a number of panels logged in as a viewing account and wish for the sequence to be performed on all the panels.
 
+> NOTE: When this service is called as a *Server* call by a user (e.g. from a dashboard), it is only sent to Browsers where that same user is logged in. Other Browsers are skipped and a warning is logged. Calls from automations are not restricted. To run it on Browsers of other users, call it from an automation.
+
 ## `browser_mod.delay`
 
 Wait for a specified time. Only valid in a `browser_mod.sequence` sequence. It does nothing if used in isolation.
@@ -548,6 +550,8 @@ data:
 |`code` | Code to run. |
 
 Only use this one if you know what you're doing.
+
+> NOTE: When this service is called as a *Server* call by a user (e.g. from a dashboard), it is only sent to Browsers where that same user is logged in. Other Browsers are skipped and a warning is logged. Calls from automations are not restricted. To run it on Browsers of other users, call it from an automation.
 
 Some helpful functions that are available:
 
