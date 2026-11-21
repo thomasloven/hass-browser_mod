@@ -1,3 +1,10 @@
+### [3.4.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.3-beta.0...v3.4.3-beta.1) (2026-11-21)
+
+
+### 🐞 Bug Fixes
+
+* MIgrate progress bar to use GPU friendly transform rather than directly altering width. ([#1421](https://github.com/thomasloven/hass-browser_mod/issues/1421)) ([827d19f](https://github.com/thomasloven/hass-browser_mod/commit/827d19fcdc9c7d357f0fe31d4b17a6f5952f4859)), closes [#1420](https://github.com/thomasloven/hass-browser_mod/issues/1420)
+
 ### [3.4.3-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.2...v3.4.3-beta.0) (2026-11-14)
 
 
