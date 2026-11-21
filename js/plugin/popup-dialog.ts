@@ -102,7 +102,7 @@ export class BrowserModPopup extends LitElement {
     this._objectSelectorMonitor.stopMonitoring();
     this.card?.remove?.();
     this.card = undefined;
-    clearInterval(this._timeoutTimer);
+    clearTimeout(this._timeoutTimer);
     this.style.removeProperty("--progress");
     this.style.removeProperty("--progress-transition-duration");
     if (this._autocloseListener) {
@@ -147,7 +147,6 @@ export class BrowserModPopup extends LitElement {
     this.open = true;
     this._expectingCloseEvent = false;
     this.updateComplete.then(async () => {
-      let injected = false;
       if (this.adaptive && this.adaptive_force_bottom_sheet) {
         this.dialog._mode = "bottom-sheet";
         this.dialog._modeSet = true;
@@ -155,7 +154,6 @@ export class BrowserModPopup extends LitElement {
           await this.dialog?.updateComplete;
           const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
           this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
-          injected = true;
         }
       } else if (this.timeout && !this.timeout_hide_progress) {
         if (this.adaptive) {
@@ -163,46 +161,21 @@ export class BrowserModPopup extends LitElement {
           const bottomSheet = this.dialog?.shadowRoot?.querySelector("ha-bottom-sheet");
           if (bottomSheet) {
             this._injectProgressToBottomSheet(bottomSheet as HTMLElement);
-            injected = true;
           } else {
             const innerDialog = this.dialog?.shadowRoot?.querySelector("ha-dialog") as any;
             if (innerDialog?.updateComplete) await innerDialog.updateComplete;
             this._injectProgressToDialogHeader(innerDialog?.shadowRoot?.querySelector("ha-dialog-header"));
-            injected = true;
           }
         } else {
           await this.dialog?.updateComplete;
           this._injectProgressToDialogHeader(this.dialog?.shadowRoot?.querySelector("ha-dialog-header"));
-          injected = true;
         }
-      }
-      if (injected) {
-        setTimeout(() => {
-          if (this.timeout && this.open) {
-            const updateInterval = Math.max(50, Math.min(500, this.timeout / 10));
-            const initialProgress = Math.min(100, (updateInterval / this.timeout) * 100);
-            this.style.setProperty("--progress", `${initialProgress}%`);
-          }
-        }, 0);
       }
     });
 
     if (this.timeout) {
       this._timeoutStart = new Date().getTime();
-      const updateInterval = Math.max(50, Math.min(500, this.timeout / 10));
-      this.style.setProperty("--progress-transition-duration", `${updateInterval}ms`);
-      this.style.setProperty("--progress", "0%");
-      this._timeoutTimer = setInterval(() => {
-        const ellapsed = new Date().getTime() - this._timeoutStart;
-        const progress = Math.min(100, ((ellapsed + updateInterval) / this.timeout) * 100);
-        if (!this.timeout_hide_progress) {
-          this.style.setProperty("--progress", `${progress}%`);
-        }
-        if (ellapsed >= this.timeout) {
-          clearInterval(this._timeoutTimer);
-          this._timeout();
-        }
-      }, updateInterval);
+      this._timeoutTimer = setTimeout(() => this._timeout(), this.timeout);
     }
     this._autocloseListener = undefined;
     if (this._autoclose) {
@@ -516,47 +489,63 @@ export class BrowserModPopup extends LitElement {
 
   _injectProgressToDialogHeader(headerEl: Element | null) {
     if (!headerEl?.shadowRoot) return;
-    if (headerEl.shadowRoot.querySelector(".browser-mod-progress-style")) return;
-    const style = document.createElement("style");
-    style.classList.add("browser-mod-progress-style");
-    style.textContent = `
-      :host {
-        position: relative;
-      }
-      :host::before {
-        content: "";
+    let progressEl = headerEl.shadowRoot.querySelector(".browser-mod-progress-bar") as HTMLElement;
+    if (!progressEl) {
+      (headerEl as HTMLElement).style.position = "relative";
+      progressEl = document.createElement("div");
+      progressEl.classList.add("browser-mod-progress-bar");
+      progressEl.style.cssText = `
         position: absolute;
         top: 0;
         left: 0;
         height: 3px;
-        width: calc(100% - var(--progress, 0%));
+        width: 100%;
         background: var(--primary-color);
         z-index: 10;
         pointer-events: none;
-        transition: width var(--progress-transition-duration, 0s) linear;
-      }
-    `;
-    headerEl.shadowRoot.prepend(style);
+        transform: scaleX(1);
+        transform-origin: left;
+        will-change: transform;
+      `;
+      headerEl.shadowRoot.prepend(progressEl);
+    }
+    this._animateTimeoutProgress(progressEl);
   }
 
   _injectProgressToBottomSheet(bottomSheetEl: HTMLElement | null) {
     if (!bottomSheetEl) return;
-    if (bottomSheetEl.querySelector(".browser-mod-progress-bar")) return;
-    const progressEl = document.createElement("div");
-    progressEl.classList.add("browser-mod-progress-bar");
-    progressEl.setAttribute("slot", "header");
-    progressEl.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 3px;
-      width: calc(100% - var(--progress, 0%));
-      background: var(--primary-color);
-      z-index: 10;
-      pointer-events: none;
-      transition: width var(--progress-transition-duration, 0s) linear;
-    `;
-    bottomSheetEl.prepend(progressEl);
+    let progressEl = bottomSheetEl.querySelector(".browser-mod-progress-bar") as HTMLElement;
+    if (!progressEl) {
+      progressEl = document.createElement("div");
+      progressEl.classList.add("browser-mod-progress-bar");
+      progressEl.setAttribute("slot", "header");
+      progressEl.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 100%;
+        background: var(--primary-color);
+        z-index: 10;
+        pointer-events: none;
+        transform: scaleX(1);
+        transform-origin: left;
+        will-change: transform;
+      `;
+      bottomSheetEl.prepend(progressEl);
+    }
+    this._animateTimeoutProgress(progressEl);
+  }
+
+  _animateTimeoutProgress(progressEl: HTMLElement) {
+    if (!this.timeout || this.timeout_hide_progress || !this.open) return;
+    const elapsed = Date.now() - this._timeoutStart;
+    const remaining = Math.max(0, this.timeout - elapsed);
+    progressEl.getAnimations().forEach((animation) => animation.cancel());
+    progressEl.animate(
+      [{ transform: `scaleX(${Math.max(0, 1 - elapsed / this.timeout)})` }, { transform: "scaleX(0)" }],
+      { duration: remaining, easing: "linear", fill: "forwards" }
+    );
   }
 
   render() {
