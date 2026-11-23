@@ -6,7 +6,9 @@
   "scripts": {
     "build": "rollup -c",
     "update-manifest-version": "node -e \"const pkg = require('./package.json'); const manifest = require('./custom_components/browser_mod/manifest.json'); manifest.version = pkg.version; require('fs').writeFileSync('./custom_components/browser_mod/manifest.json', JSON.stringify(manifest, null, 2) + '\\n');\"",
+    "compress-build-artifacts": "node -e \"const fs = require('fs'); const path = require('path'); const zlib = require('zlib'); const buildDir = path.join(__dirname, 'custom_components/browser_mod'); fs.readdirSync(buildDir).forEach(file => { if (file.endsWith('.js')) { const filePath = path.join(buildDir, file); const contents = fs.readFileSync(filePath); fs.writeFileSync(filePath + '.gz', zlib.gzipSync(contents)); } });\"",
     "prebuild": "npm run update-manifest-version",
+    "postbuild": "npm run compress-build-artifacts",
     "watch": "rollup -c --watch"
   },
   "keywords": [],

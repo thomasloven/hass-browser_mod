@@ -3,12 +3,16 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.const import Platform
 
 from .store import BrowserModStore
-from .mod_view import async_setup_view, async_unload_view
+from .mod_view import (
+    async_get_frontend_asset_snapshot,
+    async_setup_static_paths,
+    async_setup_view,
+    async_unload_view,
+)
 from .connection import async_setup_connection
 from .const import DOMAIN, DATA_BROWSERS, DATA_ADDERS, DATA_STORE
 from .frontend_patch import async_restore_frontend_patches, async_setup_frontend_patches
 from .service import async_setup_services
-from .helpers import get_version
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -25,18 +29,26 @@ PLATFORMS = [
 
 async def async_setup(hass, config):
 
+    # Snapshot assets before reading the version so both are always from the
+    # same installed release, even if HACS updates files while HA is running.
+    frontend_assets = await async_get_frontend_asset_snapshot(hass)
+
     store = BrowserModStore(hass)
     await store.load()
     await store.cleanup_session_map(hass)
 
-    version = await hass.async_add_executor_job(get_version, hass)
-    await store.set_version(version)
+    await store.set_version(frontend_assets.version)
 
     hass.data[DOMAIN] = {
         DATA_BROWSERS: {},
         DATA_ADDERS: {},
         DATA_STORE: store,
     }
+
+    # Capture and register frontend assets once per Home Assistant process.
+    # HACS can then replace the integration files without changing assets served
+    # by this already-running process.
+    await async_setup_static_paths(hass)
 
     return True
 
