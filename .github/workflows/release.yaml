@@ -8,17 +8,6 @@ on:
         required: false
         type: boolean
         default: false
-      force_bump:
-        description: "When previewing, force this bump when no commit requests a release"
-        required: false
-        type: choice
-        options:
-          - none
-          - prerelease
-          - patch
-          - minor
-          - major
-        default: none
       release_note_banner:
         description: "Release-note banner (optional; shown in bold at the top)"
         required: false
@@ -50,7 +39,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
 
@@ -89,16 +78,6 @@ jobs:
           RELEASE_VERSION: ${{ steps.recovery.outputs.version }}
         run: node scripts/read-release-notes.mjs >> "$GITHUB_OUTPUT"
 
-      - name: Preserve legacy major feature scope
-        id: legacy_major
-        if: ${{ !inputs.recover_release }}
-        run: |
-          PREVIOUS_TAG="$(git tag --merged HEAD --list 'v*' --sort=-version:refname | head -1)"
-          RANGE="${PREVIOUS_TAG:+$PREVIOUS_TAG..}HEAD"
-          if git log --format=%s "$RANGE" | grep -Eq '^feat\(major\)(!)?: '; then
-            echo 'force_bump=major' >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Calculate release
         id: version
         if: ${{ !inputs.recover_release }}
@@ -111,10 +90,7 @@ jobs:
           default_bump: false
           default_prerelease_bump: false
           fetch_all_tags: true
-          force_bump: ${{ steps.legacy_major.outputs.force_bump || inputs.dry_run && inputs.force_bump != 'none' && inputs.force_bump || '' }}
-          force_prerelease_bump: ${{ steps.legacy_major.outputs.force_bump || inputs.dry_run && inputs.force_bump != 'none' && inputs.force_bump || '' }}
           custom_release_rules: >-
-            feat:minor:⭐ New Features,fix:patch:🐞 Bug Fixes,revert:patch:🐞 Bug Fixes,
             perf:minor:⚡ Performance Improvements,docs:patch:📔 Documentation,
             deps:patch:📦 Dependency Upgrades,refactor:patch:⚙️ Miscellaneous,
             style:patch:⚙️ Miscellaneous
@@ -197,7 +173,7 @@ jobs:
       - name: Create GitHub release
         id: github_release
         if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
           tag_name: ${{ steps.version.outputs.new_tag }}
           target_commitish: ${{ steps.release_commit.outputs.sha }}
@@ -207,7 +183,7 @@ jobs:
 
       - name: Recover GitHub release
         if: ${{ !inputs.dry_run && inputs.recover_release }}
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+        uses: softprops/action-gh-release@8a0cd651e5b2365bd640854a3fa5dfc70e4875f3 # v3.0.4
         with:
           tag_name: ${{ steps.recovery.outputs.tag }}
           target_commitish: ${{ github.sha }}
@@ -217,16 +193,16 @@ jobs:
 
       - name: Notify linked issues and pull requests
         if: ${{ !inputs.dry_run && steps.version.outputs.new_version != '' }}
-        uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1.4.1
-        with:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          comment-template: |
-            Release {release_link} addresses this.
+          RELEASE_LABEL: ${{ steps.version.outputs.prerelease == 'true' && 'released on @dev' || 'released' }}
+          RELEASE_COMMENT: Release {release_link} addresses this.
+        run: node scripts/notify-released-items.mjs
 
       - name: Notify linked issues and pull requests for recovered release
         if: ${{ !inputs.dry_run && inputs.recover_release }}
-        uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1.4.1
-        with:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          comment-template: |
-            Release {release_link} addresses this.
+          RELEASE_LABEL: ${{ steps.recovery.outputs.prerelease == 'true' && 'released on @dev' || 'released' }}
+          RELEASE_COMMENT: Release {release_link} addresses this.
+        run: node scripts/notify-released-items.mjs
