@@ -181,8 +181,11 @@ jobs:
             package-lock.json \
             custom_components/browser_mod/manifest.json \
             custom_components/browser_mod/browser_mod.js \
+            custom_components/browser_mod/browser_mod.js.gz \
             custom_components/browser_mod/browser_mod_browser_panel.js \
-            custom_components/browser_mod/browser_mod_config_panel.js
+            custom_components/browser_mod/browser_mod_browser_panel.js.gz \
+            custom_components/browser_mod/browser_mod_config_panel.js \
+            custom_components/browser_mod/browser_mod_config_panel.js.gz
           git diff --cached --quiet && {
             echo 'The release did not change any tracked files.' >&2
             exit 1
