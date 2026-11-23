@@ -1,3 +1,10 @@
+## [3.5.0-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.3-beta.1...v3.5.0-beta.0) (2026-11-23)
+
+
+### Features
+
+* Compress Frontend scripts to reduce transfer size. Server Frontend scripts from temp location allowing Browser Mod upgrade without needed immediate Home Assistant restart. ([#1426](https://github.com/thomasloven/hass-browser_mod/issues/1426)) ([9fa651e](https://github.com/thomasloven/hass-browser_mod/commit/9fa651e969714bb8d6d57df14d7d5c18fc6fb1f2))
+
 ### [3.4.3-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.3-beta.0...v3.4.3-beta.1) (2026-11-21)
 
 
