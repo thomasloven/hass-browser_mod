@@ -74,6 +74,71 @@ const linkedItems = new Set();
 const closesMatcher =
   /aria-label="This (?:commit|pull request) closes issue #(\d+)\."/g;
 
+async function addLinkedItemsFromPullRequest(number) {
+  const data = await graphql(
+    `
+      query ($owner: String!, $repo: String!, $number: Int!) {
+        repository(owner: $owner, name: $repo) {
+          pullRequest(number: $number) {
+            bodyHTML
+            labels(first: 100) {
+              pageInfo { hasNextPage }
+              nodes { name }
+            }
+            timelineItems(itemTypes: [CONNECTED_EVENT, DISCONNECTED_EVENT], first: 100) {
+              pageInfo { hasNextPage }
+              nodes {
+                ... on ConnectedEvent {
+                  __typename
+                  isCrossRepository
+                  subject { ... on Issue { number } }
+                }
+                ... on DisconnectedEvent {
+                  __typename
+                  isCrossRepository
+                  subject { ... on Issue { number } }
+                }
+              }
+            }
+          }
+        }
+      }
+    `,
+    { owner, repo, number },
+  );
+  const pullRequest = data.repository?.pullRequest;
+
+  if (!pullRequest) {
+    return;
+  }
+
+  if (pullRequest.labels.pageInfo.hasNextPage) {
+    console.warn(`More than 100 labels are present on #${number}.`);
+  }
+  if (pullRequest.timelineItems.pageInfo.hasNextPage) {
+    console.warn(`More than 100 linked items are present on #${number}.`);
+  }
+  if (pullRequest.labels.nodes.some(({ name }) => name === "dependencies")) {
+    return;
+  }
+
+  linkedItems.add(number);
+  for (const match of pullRequest.bodyHTML.matchAll(closesMatcher)) {
+    linkedItems.add(Number.parseInt(match[1], 10));
+  }
+
+  const seen = new Set();
+  for (const item of [...pullRequest.timelineItems.nodes].reverse()) {
+    if (item.isCrossRepository || !item.subject || seen.has(item.subject.number)) {
+      continue;
+    }
+    if (item.__typename === "ConnectedEvent") {
+      linkedItems.add(item.subject.number);
+    }
+    seen.add(item.subject.number);
+  }
+}
+
 for (const commit of comparison.commits) {
   const data = await graphql(
     `
@@ -82,32 +147,6 @@ for (const commit of comparison.commits) {
           ... on Commit {
             messageHeadlineHTML
             messageBodyHTML
-            associatedPullRequests(first: 100, states: [MERGED]) {
-              pageInfo { hasNextPage }
-              nodes {
-                bodyHTML
-                number
-                labels(first: 100) {
-                  pageInfo { hasNextPage }
-                  nodes { name }
-                }
-                timelineItems(itemTypes: [CONNECTED_EVENT, DISCONNECTED_EVENT], first: 100) {
-                  pageInfo { hasNextPage }
-                  nodes {
-                    ... on ConnectedEvent {
-                      __typename
-                      isCrossRepository
-                      subject { ... on Issue { number } }
-                    }
-                    ... on DisconnectedEvent {
-                      __typename
-                      isCrossRepository
-                      subject { ... on Issue { number } }
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -116,44 +155,21 @@ for (const commit of comparison.commits) {
   );
   const commitData = data.resource;
 
-  if (!commitData) {
-    continue;
+  if (commitData) {
+    const html = [commitData.messageHeadlineHTML, commitData.messageBodyHTML].join(
+      " ",
+    );
+    for (const match of html.matchAll(closesMatcher)) {
+      linkedItems.add(Number.parseInt(match[1], 10));
+    }
   }
 
-  if (commitData.associatedPullRequests.pageInfo.hasNextPage) {
-    console.warn(`More than 100 pull requests are associated with ${commit.sha}.`);
-  }
-
-  const html = [
-    commitData.messageHeadlineHTML,
-    commitData.messageBodyHTML,
-    ...commitData.associatedPullRequests.nodes.map(({ bodyHTML }) => bodyHTML),
-  ].join(" ");
-  for (const match of html.matchAll(closesMatcher)) {
-    linkedItems.add(Number.parseInt(match[1], 10));
-  }
-
-  const seen = new Set();
-  for (const pullRequest of commitData.associatedPullRequests.nodes) {
-    if (pullRequest.labels.pageInfo.hasNextPage) {
-      console.warn(`More than 100 labels are present on #${pullRequest.number}.`);
-    }
-    if (pullRequest.timelineItems.pageInfo.hasNextPage) {
-      console.warn(`More than 100 linked items are present on #${pullRequest.number}.`);
-    }
-    if (pullRequest.labels.nodes.some(({ name }) => name === "dependencies")) {
-      continue;
-    }
-
-    linkedItems.add(pullRequest.number);
-    for (const item of [...pullRequest.timelineItems.nodes].reverse()) {
-      if (item.isCrossRepository || !item.subject || seen.has(item.subject.number)) {
-        continue;
-      }
-      if (item.__typename === "ConnectedEvent") {
-        linkedItems.add(item.subject.number);
-      }
-      seen.add(item.subject.number);
+  const pullRequests = await request(
+    `${apiUrl}/repos/${owner}/${repo}/commits/${commit.sha}/pulls?per_page=100`,
+  );
+  for (const pullRequest of pullRequests) {
+    if (pullRequest.merged_at) {
+      await addLinkedItemsFromPullRequest(pullRequest.number);
     }
   }
 }
