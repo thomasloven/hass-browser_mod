@@ -301,11 +301,8 @@ export const AutoSettingsMixin = (SuperClass) => {
         rootEl,
         "ha-panel-lovelace$hui-root$.header"
       );
-      let menuButton;
 
-      if (header) {
-        menuButton = header.querySelector("ha-menu-button");
-      } else {
+      if (!header) {
         let steps = 0;
         let el = rootEl;
         // header is either div.header when as dashboard or header element when as panel 
@@ -323,10 +320,6 @@ export const AutoSettingsMixin = (SuperClass) => {
 
         // header will be div.header or header element in shadow DOM
         header = el.querySelector(".header") || el.shadowRoot?.querySelector(".header") || el.shadowRoot?.querySelector("header");
-        // menu button will be in light DOM of div.header or in shadow DOM of header element
-        menuButton =  el.querySelector("ha-menu-button") ||
-                      el.shadowRoot?.querySelector("ha-menu-button") ||
-                      el.shadowRoot?.querySelector("slot[name=navigationIcon]")?.assignedElements()?.[0];
       }
 
       if (header && this.settings.hideHeader === true) {
@@ -334,10 +327,17 @@ export const AutoSettingsMixin = (SuperClass) => {
         header.style.setProperty("display", "none");
         return true;
       } else if (this.settings.hideSidebar === true) {
-        if (menuButton) {
-          menuButton.style.setProperty("display", "none");
-        } else {
-          console.warn("Browser Mod: Unable to find menu button to hide sidebar menu.");
+        const styleId = "browser-mod-hide-sidebar-menu-button";
+        if (!header.querySelector(`#${styleId}`)) {
+          const hideMenuButtonStyle = document.createElement("style");
+          hideMenuButtonStyle.id = styleId;
+          hideMenuButtonStyle.textContent = `
+            ha-menu-button,
+            slot[name="navigationIcon"]::slotted(ha-menu-button) {
+              display: none;
+            }
+          `;
+          header.append(hideMenuButtonStyle);
         }
         return true;
       }
