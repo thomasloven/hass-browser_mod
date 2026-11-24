@@ -1,3 +1,10 @@
+## [3.5.0-beta.1](https://github.com/thomasloven/hass-browser_mod/compare/v3.5.0-beta.0...v3.5.0-beta.1) (2026-11-24)
+
+
+### Bug Fixes
+
+* Hide sidebar menu icon by injected style rather than looking for element which may not yet exist. ([#1427](https://github.com/thomasloven/hass-browser_mod/issues/1427)) ([ae218d9](https://github.com/thomasloven/hass-browser_mod/commit/ae218d9ccb50acf5cab975623d4e109cec3089d9)), closes [#1425](https://github.com/thomasloven/hass-browser_mod/issues/1425)
+
 ## [3.5.0-beta.0](https://github.com/thomasloven/hass-browser_mod/compare/v3.4.3-beta.1...v3.5.0-beta.0) (2026-11-23)
 
 
