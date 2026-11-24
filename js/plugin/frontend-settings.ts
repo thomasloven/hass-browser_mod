@@ -327,14 +327,18 @@ export const AutoSettingsMixin = (SuperClass) => {
         header.style.setProperty("display", "none");
         return true;
       } else if (this.settings.hideSidebar === true) {
-        const hideMenuButtonStyle = document.createElement("style");
-        hideMenuButtonStyle.textContent = `
-          ha-menu-button,
-          slot[name="navigationIcon"]::slotted(ha-menu-button) {
-            display: none;
-          }
-        `;
-        header.append(hideMenuButtonStyle);
+        const styleId = "browser-mod-hide-sidebar-menu-button";
+        if (!header.querySelector(`#${styleId}`)) {
+          const hideMenuButtonStyle = document.createElement("style");
+          hideMenuButtonStyle.id = styleId;
+          hideMenuButtonStyle.textContent = `
+            ha-menu-button,
+            slot[name="navigationIcon"]::slotted(ha-menu-button) {
+              display: none;
+            }
+          `;
+          header.append(hideMenuButtonStyle);
+        }
         return true;
       }
       return false;
