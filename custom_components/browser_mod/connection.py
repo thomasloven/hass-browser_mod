@@ -87,6 +87,37 @@ async def async_setup_connection(hass):
         data = msg.get("data", {})
         if "last_seen" in data:
             del data["last_seen"]
+
+        if not connection.user.is_admin:
+            # Non-admin users may (auto-)register their own Browser and toggle
+            # camera/go2rtc, but must not touch locked Browsers nor write
+            # Browser settings (which include defaultAction and overlayIcon,
+            # i.e. actions that are executed in that Browser).
+            newBrowserID = data.get(BROWSER_ID)
+            if store.get_browser(browserID).locked:
+                connection.send_error(
+                    msg["id"],
+                    websocket_api.ERR_UNAUTHORIZED,
+                    "Browser is locked",
+                )
+                return
+            # A rename copies the whole stored record to the new ID, so it
+            # must not overwrite an existing Browser. The frontend only
+            # renames to an unused ID (browserIDChanged).
+            if (
+                newBrowserID is not None
+                and newBrowserID != browserID
+                and newBrowserID in store.data.browsers
+            ):
+                connection.send_error(
+                    msg["id"],
+                    websocket_api.ERR_UNAUTHORIZED,
+                    "Browser ID is already in use",
+                )
+                return
+            for key in ("settings", "locked"):
+                data.pop(key, None)
+
         if BROWSER_ID in data:
             # Change ID of registered browser
             newBrowserID = data[BROWSER_ID]
@@ -124,6 +155,12 @@ async def async_setup_connection(hass):
         browserID = msg[BROWSER_ID]
         store = hass.data[DOMAIN][DATA_STORE]
 
+        if not connection.user.is_admin and store.get_browser(browserID).locked:
+            connection.send_error(
+                msg["id"], websocket_api.ERR_UNAUTHORIZED, "Browser is locked"
+            )
+            return
+
         deleteBrowser(hass, browserID)
         await store.delete_browser(browserID)
 
@@ -146,6 +183,10 @@ async def async_setup_connection(hass):
             dev = getBrowser(hass, browserID)
             dev.update(hass, msg.get("data", {}))
 
+    # Global and user settings include defaultAction and overlayIcon, which the
+    # frontend executes in every Browser (including those of admins).
+    # Only admins may write them; the config panel is admin-only anyway.
+    @websocket_api.require_admin
     @websocket_api.websocket_command(
         {
             vol.Required("type"): WS_SETTINGS,

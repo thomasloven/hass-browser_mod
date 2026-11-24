@@ -8,7 +8,9 @@ This panel is accessible by admins from the Browser Mod integration entry in Dev
 
 This section shows all currently registered _Browsers_ and allows you to unregister them. This is useful e.g. if a `BrowserID` has changed or if you do not have access to a device anymore.
 
-You can also lock browsers so they cannot be unregistered by a non-admin user.
+You can also lock browsers so they cannot be unregistered or changed by a non-admin user.
+
+Global, user and Browser settings can only be changed by admin users. Non-admin users can still register their own Browser (e.g. with auto-register), but cannot change its settings.
 
 ### Register CAST browser
 
